@@ -1,0 +1,118 @@
+{
+ "status": "ok",
+ "message-type": "work-list",
+ "message": {
+  "items": [
+   {
+    "DOI": "10.21956/f1000research.1001.r5001",
+    "type": "peer-review",
+    "prefix": "10.21956",
+    "member": "0",
+    "title": [
+     "Synthetic record"
+    ],
+    "container-title": [],
+    "created": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "deposited": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "indexed": {
+     "date-time": "2026-01-06T00:00:00Z"
+    },
+    "relation": {
+     "is-review-of": [
+      {
+       "id": "10.12688/f1000research.1001.1",
+       "id-type": "doi"
+      }
+     ]
+    },
+    "issued": {
+     "date-parts": [
+      [
+       2022,
+       6,
+       6
+      ]
+     ]
+    }
+   },
+   {
+    "DOI": "10.21956/wellcomeopenres.2002.r6001",
+    "type": "peer-review",
+    "prefix": "10.21956",
+    "member": "0",
+    "title": [
+     "Synthetic record"
+    ],
+    "container-title": [],
+    "created": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "deposited": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "indexed": {
+     "date-time": "2026-01-06T00:00:00Z"
+    },
+    "relation": {
+     "is-review-of": [
+      {
+       "id": "10.12688/wellcomeopenres.2002.1",
+       "id-type": "doi"
+      }
+     ]
+    },
+    "issued": {
+     "date-parts": [
+      [
+       2023,
+       2,
+       2
+      ]
+     ]
+    }
+   },
+   {
+    "DOI": "10.21956/gatesopenres.3003.r7001",
+    "type": "peer-review",
+    "prefix": "10.21956",
+    "member": "0",
+    "title": [
+     "Synthetic record"
+    ],
+    "container-title": [],
+    "created": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "deposited": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "indexed": {
+     "date-time": "2026-01-06T00:00:00Z"
+    },
+    "relation": {
+     "is-review-of": [
+      {
+       "id": "10.12688/gatesopenres.3003.1",
+       "id-type": "doi"
+      }
+     ]
+    },
+    "issued": {
+     "date-parts": [
+      [
+       2024,
+       2,
+       2
+      ]
+     ]
+    }
+   }
+  ],
+  "next-cursor": null,
+  "total-results": 3
+ }
+}

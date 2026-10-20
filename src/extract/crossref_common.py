@@ -1,0 +1,355 @@
+"""Shared machinery for the two Crossref extraction stages.
+
+Retrieval unit: one cursor walk per scope ``works__<prefix>__<type>``.
+Flattening unit: one interim CSV per register row, produced only from a
+complete walk.  Nothing here aggregates or counts.
+"""
+
+from __future__ import annotations
+
+import json
+from dataclasses import dataclass, field
+from pathlib import Path
+from typing import Any, Callable, Mapping
+from urllib.parse import quote, parse_qs, urlsplit
+
+from ..common.config import RunConfig
+from ..common.dates import format_partial_date, parse_crossref_date, parse_timestamp
+from ..common.http import PoliteClient, default_transport
+from ..common.identifiers import normalise_doi
+from ..common.interim import (CROSSREF_REVIEW_COLUMNS, CROSSREF_WORK_COLUMNS, resolve_interim_root,
+                              write_csv)
+from ..common.manifest import (DEFAULT_MANIFEST_ROOT, WalkRecord, list_walks, run_manifest_path,
+                               update_run_manifest_scope, select_walk, load_run_manifest, write_run_manifest)
+from ..common.raw_store import RawStore
+from ..common.walk import CursorWalker, ParsedPage
+from .selectors import (REVIEW_RECORD_TYPE, CrossrefScope, CrossrefSelector, crossref_scopes,
+                        crossref_selectors, review_targets)
+
+SOURCE = "crossref"
+
+
+class ExtractionIncomplete(RuntimeError):
+    """Raised after all scopes were attempted when at least one is not complete."""
+
+
+@dataclass
+class ScopeOutcome:
+    scope: CrossrefScope
+    walk: WalkRecord
+    rows_written: dict[str, int] = field(default_factory=dict)
+    blocked_rows: list[str] = field(default_factory=list)
+
+    @property
+    def complete(self) -> bool:
+        return self.walk.is_complete
+
+
+# ---------------------------------------------------------------- requests
+def http_settings(run_config: RunConfig, sources_config: Mapping[str, Any]) -> dict[str, Any]:
+    defaults = dict(sources_config.get("http_defaults") or {})
+    overrides = dict((run_config.extra or {}).get("http") or {})
+    merged = {**defaults, **overrides}
+    merged.setdefault("timeout_seconds", 60)
+    merged.setdefault("max_attempts_per_page", 5)
+    merged.setdefault("backoff_seconds", [2, 5, 15, 45, 120])
+    merged.setdefault("accept", "application/json")
+    return merged
+
+
+def build_client(run_config: RunConfig, sources_config: Mapping[str, Any], *, transport=None,
+                 sleeper=None, logger=None) -> PoliteClient:
+    settings = http_settings(run_config, sources_config)
+    source = sources_config["sources"][SOURCE]
+    rate = source.get("rate_limit") or {}
+    per_second = float(rate.get("max_requests_per_second") or 1)
+    kwargs: dict[str, Any] = dict(
+        user_agent=run_config.user_agent(), timeout_seconds=float(settings["timeout_seconds"]),
+        max_attempts_per_page=int(settings["max_attempts_per_page"]),
+        backoff_seconds=[float(b) for b in settings["backoff_seconds"]],
+        min_interval_seconds=1.0 / per_second if per_second > 0 else 1.0,
+        accept=str(settings["accept"]), transport=transport or default_transport, logger=logger)
+    if sleeper is not None:
+        kwargs["sleeper"] = sleeper
+    return PoliteClient(**kwargs)
+
+
+def url_builder(run_config: RunConfig, sources_config: Mapping[str, Any], scope: CrossrefScope
+                ) -> Callable[[str], str]:
+    source = sources_config["sources"][SOURCE]
+    template = source["query_templates"]["works_by_prefix_and_type"].strip()
+    pagination = source.get("pagination") or {}
+    rows = int(pagination.get("rows") or 1000)
+    select = pagination.get("select_fields") or []
+    base = source["base_url"].rstrip("/")
+
+    def build(cursor: str) -> str:
+        path = template.format(doi_prefix=scope.prefix, record_type=scope.record_type, rows=rows,
+                               cursor=quote(cursor or "*", safe=""), mailto=quote(run_config.mailto, safe="@"))
+        if select:
+            path += "&select=" + ",".join(select)
+        if "sort" in parse_qs(urlsplit(path).query):
+            raise ValueError("sort is not allowed with Crossref cursor pagination")
+        return base + path
+    return build
+
+
+def parse_crossref_page(body: bytes) -> ParsedPage:
+    payload = json.loads(body.decode("utf-8"))
+    if payload.get("status") != "ok":
+        return ParsedPage(items_in_page=0, next_cursor=None, cursor_invalid=True)
+    message = payload.get("message")
+    if not isinstance(message, dict) or not isinstance(message.get("items"), list):
+        raise ValueError("Crossref page must contain an items array")
+    items = message["items"]
+    next_cursor = message.get("next-cursor")
+    total = message.get("total-results")
+    if type(total) is not int or total < 0:
+        total = None
+    return ParsedPage(len(items), str(next_cursor) if next_cursor else None, total_results=total)
+
+
+def initial_cursor(sources_config: Mapping[str, Any]) -> str:
+    pagination = sources_config["sources"][SOURCE].get("pagination") or {}
+    return str(pagination.get("initial_cursor") or "*")
+
+
+# --------------------------------------------------------------- flattening
+def _first(value: Any) -> str:
+    if isinstance(value, list):
+        return str(value[0]).strip() if value else ""
+    return "" if value is None else str(value).strip()
+
+
+def flatten_item(item: Mapping[str, Any], *, platform_id: str, walk: WalkRecord, page: int,
+                 accepted_attempt: int, retrieved_at_utc: str) -> dict[str, Any]:
+    relation = item.get("relation") or {}
+    targets = relation.get("is-review-of") if isinstance(relation, Mapping) else None
+    joined = "; ".join(str(t.get("id", "")) for t in targets if isinstance(t, Mapping)) if targets else ""
+    return {
+        "doi": normalise_doi(item.get("DOI", "")) if item.get("DOI") else "",
+        "doi_original": str(item.get("DOI", "")),
+        "type": str(item.get("type", "")),
+        "subtype": str(item.get("subtype", "") or ""),
+        "title": _first(item.get("title")),
+        "prefix": str(item.get("prefix", "") or ""),
+        "member": str(item.get("member", "") or ""),
+        "container_title": _first(item.get("container-title")),
+        "created": parse_timestamp((item.get("created") or {}).get("date-time")),
+        "deposited": parse_timestamp((item.get("deposited") or {}).get("date-time")),
+        "indexed": parse_timestamp((item.get("indexed") or {}).get("date-time")),
+        "issued": format_partial_date(parse_crossref_date(item.get("issued"))),
+        "posted": format_partial_date(parse_crossref_date(item.get("posted"))),
+        "published_online": format_partial_date(parse_crossref_date(item.get("published-online"))),
+        "published_print": format_partial_date(parse_crossref_date(item.get("published-print"))),
+        "relation_is_review_of": joined,
+        "retrieved_at_utc": retrieved_at_utc,
+        "platform_id": platform_id,
+        "walk_id": walk.walk_id,
+        "page": page,
+        "accepted_attempt": accepted_attempt,
+    }
+
+
+def iter_walk_items(store: RawStore, walk: WalkRecord):
+    """Yield ``(item, page_entry)`` for every record of a complete walk."""
+    if not walk.is_complete:
+        raise ExtractionIncomplete(f"walk {walk.walk_id} of scope {walk.scope} is {walk.state}; "
+                                   "incomplete walks are never flattened")
+    for page in walk.pages:
+        payload = store.read_response_json(page.response_path)
+        for item in (payload.get("message") or {}).get("items") or []:
+            yield item, page
+
+
+def flatten_works(store: RawStore, walk: WalkRecord, selectors: list[CrossrefSelector]
+                  ) -> dict[str, list[dict[str, Any]]]:
+    """Split a works walk into per-row interim rows (§4.1)."""
+    out: dict[str, list[dict[str, Any]]] = {s.row_id: [] for s in selectors}
+    for item, page in iter_walk_items(store, walk):
+        for sel in selectors:
+            if sel.matches_work(item):
+                row = flatten_item(item, platform_id=sel.row_id, walk=walk, page=page.page,
+                                                    accepted_attempt=page.accepted_attempt,
+                                                    retrieved_at_utc=page.accepted_at_utc)
+                if sel.journals:
+                    bases = sel.attribution_bases(item)
+                    row.update(attribution_basis=";".join(bases), included="" if bases else "false",
+                               exclusion_reason="" if bases else "no_journal_attribution")
+                out[sel.row_id].append(row)
+    return out
+
+
+def flatten_reviews(store: RawStore, walk: WalkRecord, selectors: list[CrossrefSelector], prefix: str
+                    ) -> dict[str, list[dict[str, Any]]]:
+    """Split a peer-review walk into per-row interim rows (§4.2).
+
+    Records that no row claims are kept under ``unattributed__<prefix>`` so
+    that nothing silently disappears between the raw store and the interim
+    layer.
+    """
+    unattributed = f"unattributed__{prefix}"
+    out: dict[str, list[dict[str, Any]]] = {s.row_id: [] for s in selectors}
+    out[unattributed] = []
+    for item, page in iter_walk_items(store, walk):
+        if item.get("type") != REVIEW_RECORD_TYPE:
+            continue
+        targets = review_targets(item)
+        claimants = [s for s in selectors if s.claims_review(item, targets)]
+        keys = [s.row_id for s in claimants] or [unattributed]
+        for key in keys:
+            base = flatten_item(item, platform_id=key, walk=walk, page=page.page,
+                                accepted_attempt=page.accepted_attempt, retrieved_at_utc=page.accepted_at_utc)
+            for target in targets:
+                out[key].append({**base, "target_id_raw": target.raw, "target_id_type": target.id_type,
+                                 "target_flag": target.flag})
+    return out
+
+
+# ------------------------------------------------------------------- driver
+def run_crossref(run_config: RunConfig, sources_config: Mapping[str, Any], platforms: list[Mapping[str, Any]],
+                 logger, *, kinds: str, raw_root=None, manifest_root: Path | None = None, interim_root=None,
+                 transport=None, sleeper=None, force_new_walk: bool = False) -> list[ScopeOutcome]:
+    """Walk every scope of ``kinds`` (``works`` or ``reviews``) and flatten complete ones.
+
+    Raises :class:`ExtractionIncomplete` at the end when any scope is not complete,
+    after every scope has been attempted and every complete scope flattened.
+    """
+    selectors = crossref_selectors(platforms)
+    scopes = crossref_scopes(selectors, kinds)
+    store = RawStore(raw_root)
+    manifest_root = Path(manifest_root) if manifest_root else DEFAULT_MANIFEST_ROOT
+    interim = resolve_interim_root(interim_root)
+    client = build_client(run_config, sources_config, transport=transport, sleeper=sleeper, logger=logger)
+    outcomes: list[ScopeOutcome] = []
+    accumulated: dict[str, list[dict[str, Any]]] = {}
+    blocked: set[str] = set()
+    for scope in scopes:
+        pagination = sources_config["sources"][SOURCE]["pagination"]
+        walker = CursorWalker(client=client, store=store, manifest_root=manifest_root, run_id=run_config.run_id,
+                              source=SOURCE, scope=scope.scope_id, logger=logger,
+                              total_tolerance=pagination.get("total_tolerance", 0),
+                              tolerance_reason=pagination.get("tolerance_reason", ""))
+        walk = walker.run(build_url=url_builder(run_config, sources_config, scope),
+                          parse_page=parse_crossref_page, initial_cursor=initial_cursor(sources_config),
+                          force_new_walk=force_new_walk)
+        walks = list_walks(manifest_root, run_config.run_id, SOURCE, scope.scope_id)
+        selected, _ = select_walk(walks, run_config.selected_walk_policy)
+        if selected is not None:
+            walk = selected
+        update_run_manifest_scope(run_manifest_path(manifest_root, run_config.run_id), run_id=run_config.run_id,
+                                  cutoff=run_config.analysis_cutoff_date.isoformat(),
+                                  policy=run_config.selected_walk_policy, source=SOURCE,
+                                  scope=scope.scope_id, walks=walks)
+        outcome = ScopeOutcome(scope=scope, walk=walk)
+        if scope.record_type == REVIEW_RECORD_TYPE:
+            dependents = [s for s in selectors if scope.prefix in s.review_prefixes()
+                          and REVIEW_RECORD_TYPE in s.record_types]
+        else:
+            dependents = [s for s in selectors if scope.prefix in s.work_prefixes()
+                          and scope.record_type in s.record_types]
+        if not walk.is_complete:
+            outcome.blocked_rows = [s.row_id for s in dependents]
+            blocked.update(outcome.blocked_rows)
+            if logger is not None:
+                logger.event("scope_blocked", source=SOURCE, scope=scope.scope_id, walk_state=walk.state,
+                             blocked_rows=outcome.blocked_rows)
+            outcomes.append(outcome)
+            continue
+        if scope.record_type == REVIEW_RECORD_TYPE:
+            tables = flatten_reviews(store, walk, dependents, scope.prefix)
+        else:
+            tables = flatten_works(store, walk, dependents)
+        for key, rows in tables.items():
+            accumulated.setdefault(key, []).extend(rows)
+            outcome.rows_written[key] = outcome.rows_written.get(key, 0) + len(rows)
+        outcomes.append(outcome)
+    # One interim file per row, written only when none of the row's scopes is blocked.
+    if kinds == "reviews":
+        name, columns = "crossref_peer_reviews", CROSSREF_REVIEW_COLUMNS
+    else:
+        name, columns = "crossref_works", CROSSREF_WORK_COLUMNS
+    for key in sorted(accumulated):
+        if key in blocked:
+            if logger is not None:
+                logger.event("interim_withheld", source=SOURCE, row_id=key,
+                             reason="at least one scope of this row is not complete")
+            continue
+        write_csv(interim / f"{name}__{key}.csv", columns, accumulated[key])
+    if kinds == "reviews":
+        refresh_journal_attribution(run_config, selectors, store, manifest_root, interim)
+    incomplete = [o for o in outcomes if not o.complete]
+    if incomplete:
+        detail = "; ".join(f"{o.scope.scope_id}: {o.walk.state} (blocks {', '.join(o.blocked_rows) or 'no row'})"
+                           for o in incomplete)
+        raise ExtractionIncomplete(f"{len(incomplete)} Crossref scope(s) not complete — {detail}")
+    return outcomes
+
+
+def refresh_journal_attribution(run_config, selectors, store, manifest_root, interim):
+    """Rebuild journal rows from selected complete walks, joining review evidence.
+
+    Work-stage fields are preliminary until the peer-review stage completes.
+    This function performs no requests and never modifies the register.
+    """
+    for sel in selectors:
+        if not sel.journals:
+            continue
+        required = crossref_scopes([sel])
+        selected = []
+        for scope in required:
+            walk, _ = select_walk(list_walks(manifest_root, run_config.run_id, SOURCE, scope.scope_id),
+                                  run_config.selected_walk_policy)
+            if walk is None:
+                break
+            selected.append((scope, walk))
+        if len(selected) != len(required):
+            continue
+        reviewed = set()
+        review_walks = []
+        for scope in crossref_scopes(selectors, "reviews"):
+            walk, _ = select_walk(list_walks(manifest_root, run_config.run_id, SOURCE, scope.scope_id),
+                                  run_config.selected_walk_policy)
+            if walk is None:
+                break
+            review_walks.append((scope, walk))
+        if len(review_walks) != len(crossref_scopes(selectors, "reviews")):
+            continue
+        for scope, walk in review_walks:
+            for item, _ in iter_walk_items(store, walk):
+                if item.get("type") == REVIEW_RECORD_TYPE:
+                    reviewed.update(t.doi for t in review_targets(item) if not t.flag and t.doi)
+        rows = []
+        observed = set()
+        yearly = {}
+        for scope, walk in selected:
+            if scope.record_type == REVIEW_RECORD_TYPE:
+                continue
+            for item, page in iter_walk_items(store, walk):
+                if not sel.matches_work(item):
+                    continue
+                row = flatten_item(item, platform_id=sel.row_id, walk=walk, page=page.page,
+                                   accepted_attempt=page.accepted_attempt,
+                                   retrieved_at_utc=page.accepted_at_utc)
+                bases = sel.attribution_bases(item, reviewed)
+                row.update(attribution_basis=";".join(bases), included="" if bases else "false",
+                           exclusion_reason="" if bases else "no_journal_attribution")
+                rows.append(row)
+                if sel.is_egusphere(row["doi"]):
+                    observed.update(bases)
+                    year = (row["posted"] or row["issued"] or "")[:4] or "missing_event_date"
+                    bucket = yearly.setdefault(year, {"unattributed": 0,
+                                                       "coverage": "partial_known_scope"})
+                    bucket["unattributed"] += int(not bases)
+        write_csv(interim / f"crossref_works__{sel.row_id}.csv", CROSSREF_WORK_COLUMNS, rows)
+        path = run_manifest_path(manifest_root, run_config.run_id)
+        payload = load_run_manifest(path)
+        payload.setdefault("attribution", {})[sel.row_id] = {
+            "signals_observed": sorted(observed),
+            "effective_register_status": "quantified" if observed else "register_only",
+            "fallback_reason": "" if observed else "no_attribution_signal_in_completed_run",
+            "yearly_scope": yearly,
+            "selected_walks": {s.scope_id: w.walk_id for s, w in selected},
+            "review_evidence_walks": {s.scope_id: w.walk_id for s, w in review_walks},
+        }
+        write_run_manifest(path, payload)

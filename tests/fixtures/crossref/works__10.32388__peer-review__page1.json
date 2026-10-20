@@ -1,0 +1,399 @@
+{
+ "status": "ok",
+ "message-type": "work-list",
+ "message": {
+  "items": [
+   {
+    "DOI": "10.32388/AAAA11.R1",
+    "type": "peer-review",
+    "prefix": "10.32388",
+    "member": "0",
+    "title": [
+     "Synthetic record"
+    ],
+    "container-title": [],
+    "created": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "deposited": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "indexed": {
+     "date-time": "2026-01-06T00:00:00Z"
+    },
+    "relation": {
+     "is-review-of": [
+      {
+       "id": "10.32388/AAAA11",
+       "id-type": "doi"
+      }
+     ]
+    },
+    "issued": {
+     "date-parts": [
+      [
+       2024,
+       4,
+       2
+      ]
+     ]
+    }
+   },
+   {
+    "DOI": "10.32388/AAAA11.R2",
+    "type": "peer-review",
+    "prefix": "10.32388",
+    "member": "0",
+    "title": [
+     "Synthetic record"
+    ],
+    "container-title": [],
+    "created": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "deposited": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "indexed": {
+     "date-time": "2026-01-06T00:00:00Z"
+    },
+    "relation": {
+     "is-review-of": [
+      {
+       "id": "10.32388/AAAA11",
+       "id-type": "doi"
+      }
+     ]
+    },
+    "issued": {
+     "date-parts": [
+      [
+       2024,
+       5,
+       9
+      ]
+     ]
+    }
+   },
+   {
+    "DOI": "10.32388/BBBB22.R1",
+    "type": "peer-review",
+    "prefix": "10.32388",
+    "member": "0",
+    "title": [
+     "Synthetic record"
+    ],
+    "container-title": [],
+    "created": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "deposited": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "indexed": {
+     "date-time": "2026-01-06T00:00:00Z"
+    },
+    "relation": {
+     "is-review-of": [
+      {
+       "id": "10.32388/BBBB22.2",
+       "id-type": "doi"
+      }
+     ]
+    },
+    "issued": {
+     "date-parts": [
+      [
+       2025,
+       3,
+       1
+      ]
+     ]
+    }
+   },
+   {
+    "DOI": "10.32388/DDDD44.R1",
+    "type": "peer-review",
+    "prefix": "10.32388",
+    "member": "0",
+    "title": [
+     "Synthetic record"
+    ],
+    "container-title": [],
+    "created": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "deposited": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "indexed": {
+     "date-time": "2026-01-06T00:00:00Z"
+    },
+    "relation": {
+     "is-review-of": [
+      {
+       "id": "10.32388/DDDD44",
+       "id-type": "doi"
+      }
+     ]
+    },
+    "issued": {
+     "date-parts": [
+      [
+       2026,
+       11,
+       1
+      ]
+     ]
+    }
+   },
+   {
+    "DOI": "10.32388/XXXX77.R1",
+    "type": "peer-review",
+    "prefix": "10.32388",
+    "member": "0",
+    "title": [
+     "Synthetic record"
+    ],
+    "container-title": [],
+    "created": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "deposited": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "indexed": {
+     "date-time": "2026-01-06T00:00:00Z"
+    },
+    "relation": {
+     "is-review-of": [
+      {
+       "id": "10.1101/2024.01.01.000001",
+       "id-type": "doi"
+      }
+     ]
+    },
+    "issued": {
+     "date-parts": [
+      [
+       2024,
+       6,
+       6
+      ]
+     ]
+    }
+   },
+   {
+    "DOI": "10.32388/XXXX78.R1",
+    "type": "peer-review",
+    "prefix": "10.32388",
+    "member": "0",
+    "title": [
+     "Synthetic record"
+    ],
+    "container-title": [],
+    "created": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "deposited": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "indexed": {
+     "date-time": "2026-01-06T00:00:00Z"
+    },
+    "relation": {
+     "is-review-of": [
+      {
+       "id": "10.1101/2024.01.01.000001",
+       "id-type": "doi"
+      }
+     ]
+    },
+    "issued": {
+     "date-parts": [
+      [
+       2024,
+       8,
+       8
+      ]
+     ]
+    }
+   },
+   {
+    "DOI": "10.32388/YYYY88.R1",
+    "type": "peer-review",
+    "prefix": "10.32388",
+    "member": "0",
+    "title": [
+     "Synthetic record"
+    ],
+    "container-title": [],
+    "created": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "deposited": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "indexed": {
+     "date-time": "2026-01-06T00:00:00Z"
+    },
+    "relation": {
+     "is-review-of": [
+      {
+       "id": "10.XXXX/placeholder",
+       "id-type": "doi"
+      }
+     ]
+    },
+    "issued": {
+     "date-parts": [
+      [
+       2024,
+       6,
+       6
+      ]
+     ]
+    }
+   },
+   {
+    "DOI": "10.32388/YYYY89.R1",
+    "type": "peer-review",
+    "prefix": "10.32388",
+    "member": "0",
+    "title": [
+     "Synthetic record"
+    ],
+    "container-title": [],
+    "created": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "deposited": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "indexed": {
+     "date-time": "2026-01-06T00:00:00Z"
+    },
+    "relation": {
+     "is-review-of": [
+      {
+       "id": "not-a-doi",
+       "id-type": "url"
+      }
+     ]
+    },
+    "issued": {
+     "date-parts": [
+      [
+       2024,
+       6,
+       6
+      ]
+     ]
+    }
+   },
+   {
+    "DOI": "10.32388/YYYY90.R1",
+    "type": "peer-review",
+    "prefix": "10.32388",
+    "member": "0",
+    "title": [
+     "Synthetic record"
+    ],
+    "container-title": [],
+    "created": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "deposited": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "indexed": {
+     "date-time": "2026-01-06T00:00:00Z"
+    },
+    "relation": {
+     "is-review-of": [
+      {
+       "id": "10.32388/YYYY90.R1",
+       "id-type": "doi"
+      }
+     ]
+    },
+    "issued": {
+     "date-parts": [
+      [
+       2024,
+       6,
+       6
+      ]
+     ]
+    }
+   },
+   {
+    "DOI": "10.32388/YYYY91.R1",
+    "type": "peer-review",
+    "prefix": "10.32388",
+    "member": "0",
+    "title": [
+     "Synthetic record"
+    ],
+    "container-title": [],
+    "created": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "deposited": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "indexed": {
+     "date-time": "2026-01-06T00:00:00Z"
+    },
+    "relation": {},
+    "issued": {
+     "date-parts": [
+      [
+       2024,
+       6,
+       6
+      ]
+     ]
+    }
+   },
+   {
+    "DOI": "10.32388/ZZZZ99.R1",
+    "type": "peer-review",
+    "prefix": "10.32388",
+    "member": "0",
+    "title": [
+     "Synthetic record"
+    ],
+    "container-title": [],
+    "created": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "deposited": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "indexed": {
+     "date-time": "2026-01-06T00:00:00Z"
+    },
+    "relation": {
+     "is-review-of": [
+      {
+       "id": "https://example.org/some-work",
+       "id-type": "url"
+      }
+     ]
+    },
+    "issued": {
+     "date-parts": [
+      [
+       2024,
+       6,
+       6
+      ]
+     ]
+    }
+   }
+  ],
+  "next-cursor": "CURSOR-QPR-2",
+  "total-results": 11
+ }
+}

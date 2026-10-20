@@ -1,0 +1,122 @@
+{
+ "status": "ok",
+ "message-type": "work-list",
+ "message": {
+  "items": [
+   {
+    "DOI": "10.32388/AAAA11",
+    "type": "posted-content",
+    "prefix": "10.32388",
+    "member": "0",
+    "title": [
+     "Synthetic record"
+    ],
+    "container-title": [],
+    "created": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "deposited": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "indexed": {
+     "date-time": "2026-01-06T00:00:00Z"
+    },
+    "subtype": "preprint",
+    "posted": {
+     "date-parts": [
+      [
+       2024,
+       3,
+       11
+      ]
+     ]
+    },
+    "issued": {
+     "date-parts": [
+      [
+       2024,
+       3,
+       11
+      ]
+     ]
+    }
+   },
+   {
+    "DOI": "10.32388/BBBB22.2",
+    "type": "posted-content",
+    "prefix": "10.32388",
+    "member": "0",
+    "title": [
+     "Synthetic record"
+    ],
+    "container-title": [],
+    "created": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "deposited": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "indexed": {
+     "date-time": "2026-01-06T00:00:00Z"
+    },
+    "subtype": "preprint",
+    "posted": {
+     "date-parts": [
+      [
+       2025,
+       2
+      ]
+     ]
+    },
+    "issued": {
+     "date-parts": [
+      [
+       2025,
+       2
+      ]
+     ]
+    }
+   },
+   {
+    "DOI": "10.32388/CCCC33",
+    "type": "posted-content",
+    "prefix": "10.32388",
+    "member": "0",
+    "title": [
+     "WITHDRAWN"
+    ],
+    "container-title": [],
+    "created": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "deposited": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "indexed": {
+     "date-time": "2026-01-06T00:00:00Z"
+    },
+    "subtype": "preprint",
+    "posted": {
+     "date-parts": [
+      [
+       2023,
+       7,
+       1
+      ]
+     ]
+    },
+    "issued": {
+     "date-parts": [
+      [
+       2023,
+       7,
+       1
+      ]
+     ]
+    }
+   }
+  ],
+  "next-cursor": "CURSOR-QPC-2",
+  "total-results": 3
+ }
+}

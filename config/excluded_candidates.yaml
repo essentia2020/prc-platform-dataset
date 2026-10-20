@@ -1,0 +1,235 @@
+# Audited candidates that are not register rows — source of truth.
+#
+# config/excluded_candidates.csv is regenerated from this file with
+# `python -m src.common.register --export`; never edit the CSV by hand.
+#
+# failed_criterion refers to the numbered inclusion criteria in
+# config/classification_scheme.md (1 publish-first sequence; 2 public
+# evaluation or curation output; 3 verifiable workflow).  `null` means the
+# candidate has not yet been assessed against the criteria in this pass
+# (verification_status: pending) and awaits a ruling.
+#
+# comparator: true marks conventional pre-publication-review venues that are
+# kept only as comparators; they fail criterion 1 by definition and are never
+# register rows.
+#
+# A candidate that satisfies all three criteria but has no machine-readable
+# records in Crossref or Sciety is NOT excluded: it belongs in
+# config/platforms.yaml with register_status = register_only.
+
+excluded_candidates:
+
+  - candidate_id: screenit
+    candidate_name: "ScreenIT (Automated Screening Working Group)"
+    operator: "Automated Screening Working Group"
+    candidate_type: automated_screening_pipeline
+    failed_criterion: 2
+    comparator: false
+    verification_status: verified
+    reason: >-
+      Outputs are reports of an automated screening pipeline (tool-based
+      checks for reporting and transparency problems) applied to COVID-19
+      preprints; the group page describes tools and a pipeline, not human
+      peer evaluation or curation. Activity visible on Sciety is dated 2020.
+      Exclusion as automated screening rather than peer evaluation is
+      approved in D-026.
+    machine_readable_source: sciety
+    evidence_url:
+      - https://sciety.org/groups/screenit
+    verified_on: "2026-10-20"
+
+  - candidate_id: gigascience
+    candidate_name: "GigaScience"
+    operator: "GigaScience Press / Oxford University Press"
+    candidate_type: journal_open_review
+    failed_criterion: 1
+    comparator: true
+    verification_status: verified
+    reason: >-
+      Journal with open (signed, published) peer review conducted before the
+      acceptance decision; the publicly available report follows and does not
+      precede the editorial decision. Posting of reviews to preprints via
+      Sciety does not change the pre-publication sequence of the journal
+      workflow. Kept as a comparator.
+    machine_readable_source: sciety
+    evidence_url:
+      - https://sciety.org/groups/gigascience/about
+    verified_on: "2026-10-20"
+
+  - candidate_id: gigabyte
+    candidate_name: "GigaByte"
+    operator: "GigaScience Press"
+    candidate_type: journal_open_review
+    failed_criterion: 1
+    comparator: true
+    verification_status: verified
+    reason: >-
+      Data-journal with open, non-anonymous peer review before acceptance;
+      reviewer names and reports are published with the accepted article.
+      Review precedes and gates publication, so the journal fails the
+      publish-first criterion. Kept as a comparator.
+    machine_readable_source: crossref
+    evidence_url:
+      - https://gigabytejournal.com/reviewer-information
+    verified_on: "2026-10-20"
+
+  - candidate_id: peerj
+    candidate_name: "PeerJ"
+    operator: "PeerJ Inc."
+    candidate_type: journal_transparent_review
+    failed_criterion: 1
+    comparator: true
+    verification_status: verified
+    reason: >-
+      Conventional pre-publication review with optional publication of the
+      review history alongside the accepted article (transparent review).
+      PeerJ Preprints stopped accepting submissions at the end of 2019. The
+      evaluation does not follow a publish-first sequence. Kept as a
+      comparator.
+    machine_readable_source: sciety
+    evidence_url:
+      - https://sciety.org/groups/peerj/about
+    verified_on: "2026-10-20"
+
+  # ---- Candidates named in the limitations list; assessed under D-028 ----
+
+  - candidate_id: embo_early_evidence_base
+    candidate_name: "EMBO Press — Early Evidence Base"
+    operator: "EMBO Press"
+    candidate_type: aggregator_of_reviewed_preprints
+    failed_criterion: 2
+    comparator: false
+    verification_status: verified
+    reason: >-
+      Aggregates reviewed preprints and their DocMaps from other services
+      (for example Review Commons) and does not itself produce evaluation or
+      curation outputs attributable to it; counting it would duplicate rows
+      already in the register (D-028).
+    machine_readable_source: none
+    evidence_url:
+      - https://eeb.embo.org/about
+    verified_on: "2026-10-20"
+  - candidate_id: pubpeer
+    candidate_name: "PubPeer"
+    operator: "The PubPeer Foundation"
+    candidate_type: post_publication_commenting
+    failed_criterion: 2
+    comparator: false
+    verification_status: verified
+    reason: >-
+      Post-publication commenting platform ("the online journal club")
+      whose content is created by its users; the about page describes no
+      structured review or curation output attributable to the service, no
+      DOIs for comments and no Crossref or Sciety record. The same
+      operator's Peeriodicals service, which does publish solicited reviews
+      and editorial decisions, is a register row (D-028).
+    machine_readable_source: none
+    evidence_url:
+      - https://pubpeer.com/static/about
+    verified_on: "2026-10-20"
+  - candidate_id: researchhub
+    reassess_by: documentation_stabilised_before_release_freeze
+    candidate_name: "ResearchHub / ResearchHub Journal"
+    operator: "ResearchHub Foundation"
+    candidate_type: incentivised_peer_review_marketplace
+    failed_criterion: 3
+    comparator: false
+    verification_status: verified
+    reason: >-
+      The platform's own pages describe two different workflows on the
+      verification date: one journal page states that every submission is
+      immediately available as a preprint and that unblinded, paid reviews
+      are published before a version of record; the current journal page
+      and the peer-review page describe a registered-reports journal whose
+      paid public reviews address funding proposals before data collection.
+      The evaluated object (a proposal, not a public research work) and the
+      sequence cannot be classified consistently from the platform's own
+      documentation, so criterion 3 fails in this pass (D-028). Re-assess
+      when the documentation stabilises.
+    machine_readable_source: none
+    evidence_url:
+      - https://www.researchhub.com/researchhub-journal
+      - https://www.researchhub.com/journal
+      - https://www.researchhub.com/peer-review
+    verified_on: "2026-10-20"
+  - candidate_id: hypothesis_journal_clubs
+    candidate_name: "hypothes.is-based preprint journal clubs"
+    operator: "various"
+    candidate_type: annotation_journal_clubs
+    failed_criterion: null
+    comparator: false
+    verification_status: not_verifiable
+    reason: >-
+      Heterogeneous set of journal clubs annotating preprints with
+      hypothes.is; no single operator, no service-level documentation and no
+      machine-readable record in Crossref or Sciety outside groups already
+      in the register. Not verifiable as a platform.
+    machine_readable_source: none
+    evidence_url:
+      - https://web.hypothes.is/
+    verified_on: "2026-10-20"
+
+  - candidate_id: episciences
+    candidate_name: "Episciences overlay journals"
+    operator: "CCSD (CNRS, Inria, INRAE)"
+    candidate_type: overlay_journal_platform
+    failed_criterion: null
+    comparator: false
+    verification_status: not_verifiable
+    reason: >-
+      Overlay journals on preprint repositories. The platform's about page
+      retrieved in this pass does not describe the review sequence, and the
+      documentation site did not respond on the verification date. Expected
+      to fail criterion 1 or 2 (confidential review before overlay
+      acceptance, reports not published) but this is not verified on the
+      platform's own pages; re-check in a later pass.
+    machine_readable_source: none
+    evidence_url:
+      - https://www.episciences.org/en/about/
+    verified_on: "2026-10-20"
+  - candidate_id: researchers_one
+    candidate_name: "Researchers.One"
+    operator: "Researchers.One"
+    candidate_type: publish_first_platform
+    failed_criterion: 3
+    comparator: false
+    verification_status: not_verifiable
+    reason: >-
+      The about page returned a 404 error at verification; the workflow
+      cannot be verified on the platform's own website.
+    machine_readable_source: none
+    evidence_url:
+      - https://researchers.one/about
+    verified_on: "2026-10-20"
+
+  - candidate_id: sinai_immunology_review_project
+    candidate_name: "Sinai Immunology Review Project"
+    operator: "Icahn School of Medicine at Mount Sinai"
+    candidate_type: community_preprint_review
+    failed_criterion: 3
+    comparator: false
+    verification_status: not_verifiable
+    reason: >-
+      Community review of COVID-19 immunology preprints (2020). The project
+      domain did not resolve on the verification date, so the workflow
+      cannot be verified on the project's own website; no Sciety group or
+      Crossref peer-review deposits are known.
+    machine_readable_source: none
+    evidence_url:
+      - https://www.sinai-immunology-review-project.org/
+    verified_on: "2026-10-20"
+  - candidate_id: preprint_server_comments
+    candidate_name: "bioRxiv / medRxiv comment sections"
+    operator: "Cold Spring Harbor Laboratory"
+    candidate_type: preprint_comments
+    failed_criterion: 2
+    comparator: false
+    verification_status: verified
+    reason: >-
+      Unstructured reader comments on preprint servers are not evaluation or
+      curation outputs attributable to a service and are not exposed as
+      Crossref peer-review records or Sciety evaluations.
+    machine_readable_source: none
+    evidence_url:
+      - https://www.biorxiv.org/about/FAQ
+    verified_on: "2026-10-20"

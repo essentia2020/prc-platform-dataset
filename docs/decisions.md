@@ -1,0 +1,959 @@
+# Decision log — PRC Platform Dataset 1.4.0
+
+Numbered record of every design, classification and process decision.
+Each entry states the date, the question, the options considered, the
+decision, the evidence URL(s) and who decided. Every entry, D-001 through
+D-041 and Q-1 through Q-4, carries `decided_by: researcher`. D-027 through
+D-031 document preparation choices; D-032 through D-035 record the
+decisions on extraction, 2026-10-20, and govern their implementation;
+D-036 through D-041 record the decisions on normalisation, analysis and
+reporting, 2026-10-20. Confidence
+and decision status are independent: a decided classification may retain
+medium or low confidence without being provisional.
+
+Decision entries in this log are identified by decision number, date and subject.
+
+---
+
+## D-001 — Qeios: two register rows with separate classifications
+
+- **Date:** 2026-10-19
+- **Decided by:** researcher
+- **Question:** How should Qeios be represented, given that it hosts works
+  under its own DOI prefix and also registers public reviews of works hosted
+  elsewhere?
+- **Options considered:** (a) one row for the organisation; (b) two rows,
+  one per counting event, linked by `organisation_id`; (c) hosted works only.
+- **Decision:** (b). Two register rows with separate classifications:
+
+| Field | `qeios_hosted_works` | `qeios_external_works` |
+|---|---|---|
+| `organisation_id` | qeios | qeios |
+| `prc_role` | integrated_platform | review_service |
+| Axis 1 `initiation_class` | `author_initiated`, confidence `medium` | `community_initiated`, confidence `medium` |
+| Axis 2 `prc_configuration` | `approval_threshold`, confidence `medium` | `review_or_curation_service`, confidence `high` |
+| `counting_event` | first public posting of a hosted work that has ≥1 deposited public review | earliest public Qeios review of a work hosted outside 10.32388 |
+| `status` / coverage | `active`; `partial_coverage` (deposition discontinuity after 2024) | `dormant` (registration of external reviews largely ceased after 2022); `partial_coverage` |
+| `evidence_url` | https://www.qeios.com/publishing-policy ; https://www.qeios.com/about ; https://www.qeios.com/plans | https://www.qeios.com/publishing-policy plus the Crossref `is-review-of` targets themselves |
+
+- **Rationale:** For hosted works, evaluation is triggered by the authors'
+  act of posting on the platform; the platform then invites reviewers
+  (including automated invitation) and admits volunteered reviews, which is
+  the same structure as other author-submission platforms, so spontaneous
+  reviewers do not make the class `mixed`. The optional Version-of-Record
+  step requires at least four reviews with average ratings above a defined
+  threshold, which places the hosted series in `approval_threshold`; the
+  `configuration_note` states that the step is optional and author-triggered
+  and that the Version of Record may be published by its authors. For
+  external works, the reviewed articles and preprints were never submitted
+  to the platform and were selected by the platform or its reviewers; the
+  selection mechanism is not documented on the current website, hence
+  confidence `medium` and `model_since` noting the 2021–2022 concentration.
+  A hosted work is included only when its first public posting and at least
+  one qualifying public review are dated on or before `analysis_cutoff_date`
+  and present in the completed retrieval. The two rows are never summed;
+  `cross_platform_overlap.csv` must show zero overlap between them by
+  construction (pipeline test).
+- **Evidence:** https://www.qeios.com/publishing-policy ;
+  https://www.qeios.com/about ; https://www.qeios.com/plans
+
+## D-002 — SciPost: `author_initiated` (high) / `hybrid_public_discussion` (high)
+
+- **Date:** 2026-10-19
+- **Decided by:** researcher
+- **Question:** How is SciPost classified on both axes, and what is its
+  counting event?
+- **Options considered:** (a) `core_publish_first` (public refereeing of a
+  posted submission); (b) `hybrid_public_discussion` (public refereeing
+  followed by a binding editorial decision); (c) comparator (conventional
+  journal).
+- **Decision:** `author_initiated` (high) on axis 1;
+  `hybrid_public_discussion` (high) on axis 2.
+- **Rationale:** After an Editor-in-charge is assigned, a public Submission
+  Page is opened for invited and contributed reports, comments and author
+  replies; the Editorial College then takes a binding publish-or-reject
+  decision by vote. Public discussion followed by a conventional editorial
+  decision is the defining test of `hybrid_public_discussion`. The
+  `configuration_note` records the differences from Copernicus: the
+  Submission Page may be removed from public view after rejection or
+  withdrawal unless the authors ask to keep it, and the editorial
+  recommendation itself is not public. Consequently the `counting_event` is
+  publication of the work (Crossref `journal-article` under 10.21468,
+  excluding `10.21468/scipost.report.*`): rejected submissions are not
+  deposited, so the series measures published works that underwent public
+  refereeing, not all submissions. Evidence fields:
+  `public_review_reports = true`, `reviewer_identity_disclosed = optional`,
+  `public_author_response = true`, `summary_assessment = false`,
+  `approval_status_public = false`. Authors' ability to suggest or exclude
+  referees is a variation of author submission and does not
+  create a second entry route.
+- **Evidence:** https://scipost.org/submissions/editorial_procedure ;
+  https://scipost.org/submissions/editorial_workflow ;
+  https://scipost.org/EdCol_by-laws
+
+## D-003 — Licensing split
+
+- **Date:** 2026-10-20 (user ruling)
+- **Decided by:** researcher
+- **Question:** Which licences apply to code and to data, and with which
+  directory scopes?
+- **Options considered:** (a) MIT for code, CC BY 4.0 for data with the
+  directory scopes below; (b) a single licence for everything; (c) CC0 for
+  data.
+- **Decision:** (a). `LICENSE` = MIT, scope `src/`, `tools/`, `tests/`.
+  `LICENSE-DATA` = CC BY 4.0, scope `config/`, `data/processed/`,
+  `reports/`, `docs/`. README has a "Licensing" section naming both files
+  and their directory scopes; `data/raw/` responses carry the source terms
+  recorded in `config/sources.yaml`.
+- **Evidence:** https://opensource.org/license/mit ;
+  https://creativecommons.org/licenses/by/4.0/
+
+## D-004 — Repository-history audit
+
+- **Date:** 2026-10-20 (user ruling)
+- **Decided by:** researcher
+- **Question:** Is the repository new (history audit from the first commit)
+  or pre-existing (history rewrite or a documented starting revision)?
+- **Options considered:** (a) new repository, audit covers every commit
+  from the initial commit; (b) pre-existing repository with history rewrite;
+  (c) pre-existing repository with a documented starting revision.
+- **Decision:** (a). The repository is new. `tools/audit_text.py --history`
+  covers all commits from the initial commit; no starting-revision
+  limitation is documented. History rewriting remains prohibited without
+  explicit user approval.
+- **Evidence:** not applicable (process decision).
+
+## D-005 — Raw-response storage
+
+- **Date:** 2026-10-20 (user ruling)
+- **Decided by:** researcher
+- **Question:** Are immutable raw responses tracked in Git, stored with
+  Git LFS, or kept outside the repository with checksums tracked?
+- **Options considered:** (a) outside the repository, checksums tracked;
+  (b) Git LFS; (c) tracked in Git.
+- **Decision:** (a). `data/raw/` is excluded from Git. Both manifests — the
+  run-level `data/manifests/<run_id>.json` and the accepted-page
+  `data/manifests/<run_id>/<walk_id>.manifest.jsonl` — are tracked. Each
+  manifest records the SHA-256 of every accepted
+  `page_<n>/attempt_<k>.response.json.gz`; `reports/CHECKSUMS.txt`
+  references the manifests rather than duplicating hashes.
+  `tests/test_manifest_checksums_match.py` verifies bytes against the
+  manifests when a local raw store is present (`PRC_RAW_STORE`); otherwise it
+  skips with an explicit "raw store absent" message and never passes
+  silently. The raw-response archive is deposited as a separate Zenodo
+  record linked to the release.
+- **Evidence:** not applicable (process decision).
+
+## D-006 — Zenodo concept record
+
+- **Date:** 2026-10-20 (user ruling)
+- **Decided by:** researcher
+- **Question:** Will release 1.4.0 use a new Zenodo concept record or
+  become a version of an existing concept record?
+- **Options considered:** (a) new concept record, no related-identifier
+  link to any other dataset record; (b) reuse of an existing concept record.
+- **Decision:** (a). New concept record; no related-identifier link to any
+  other dataset record. `CITATION.cff` contains no placeholder text: the
+  `doi` field is omitted until the DOI is reserved in the
+  Zenodo draft and inserted before release freeze. One related identifier is
+  added to the Zenodo metadata and to `CITATION.cff:references`: the
+  conference presentation registered under R3 in
+  `config/audit_allowlist.yaml`, relation `isSupplementTo`. The presentation
+  is outside the repository audit and its content is not quoted.
+- **Evidence:** https://doi.org/10.5281/zenodo.22787722
+
+## D-007 — Project structure
+
+- **Date:** 2026-10-20 (user ruling)
+- **Decided by:** researcher
+- **Question:** Is the proposed repository layout approved?
+- **Options considered:** the proposed tree; amendments listed below.
+- **Decision:** Approved with amendments: `src/common/log.py` (not
+  `logging.py`); tracked `data/manifests/`; `.gitignore` excludes
+  `data/raw/`, `data/interim/`, `logs/` (keeping `.gitkeep`),
+  `.audit_tokens.txt` and `*.audit_tokens*`; `LICENSE-DATA` at the root;
+  `--tokens` overrides `PRC_AUDIT_TOKENS` and the audit fails if both are set
+  and differ; `tests/test_audit_self_clean.py` fails on a missing, empty or
+  zero-token token file; `tests/test_platforms_csv_in_sync.py`,
+  `tests/test_audit_self_clean.py` and
+  `tests/test_manifest_checksums_match.py` are part of the test listing.
+- **Evidence:** not applicable (process decision).
+
+## D-008 — Audit tokens (R1) and voice rule (R4)
+
+- **Date:** 2026-10-20 (user ruling)
+- **Decided by:** researcher
+- **Question:** How are R1 tokens matched, and which process words belong
+  to R1 or R4?
+- **Options considered:** substring matching; word-boundary matching;
+  moving tool-related words to R4.
+- **Decision:** R1 matches on regular expressions with word boundaries by
+  default; multi-word tokens use `\s+`; all-caps abbreviations are
+  case-sensitive, all other tokens case-insensitive. At adoption, the names
+  of the five decision reviews and the wording describing how decisions are
+  collected were not included in the local token list, because they were
+  required vocabulary of this log. Tool
+  names and tool-role words are R4 patterns, not R1 tokens. The token file
+  is authored and kept locally outside the repository; its content is never
+  echoed in any repository file or report.
+- **Evidence:** not applicable (process decision).
+
+## D-009 — Limitations as a separate file
+
+- **Date:** 2026-10-20 (user ruling)
+- **Decided by:** researcher
+- **Question:** Are limitations kept in `docs/limitations.md` or folded
+  into README?
+- **Options considered:** (a) separate file with a short README section
+  linking to it; (b) README only.
+- **Decision:** (a). `docs/limitations.md` is kept; README contains a short
+  "Limitations" section that links to it, not a copy.
+- **Evidence:** not applicable (process decision).
+
+## D-010 — One field for the data source
+
+- **Date:** 2026-10-20 (user ruling)
+- **Decided by:** researcher
+- **Question:** The register-row event map and the register description
+  used two names for the same field.
+- **Options considered:** keep both; harmonise to one.
+- **Decision:** One field, `data_source` (`crossref` / `sciety` / `both` /
+  `none`), used everywhere: `config/platforms.yaml`, the data dictionary and
+  the register-row event map.
+- **Evidence:** not applicable (schema decision).
+
+## D-011 — Permitted citations
+
+- **Date:** 2026-10-20 (user ruling)
+- **Decided by:** researcher
+- **Question:** Which conceptual sources may be cited, where, and in which
+  voice?
+- **Options considered:** one source only (PRC definition); two sources
+  (PRC definition plus workflow-configuration axis).
+- **Decision:** Both. The first source is the sole source for the PRC
+  definition (README "Definition", `config/classification_scheme.md`). The
+  second is the conceptual source for the workflow-configuration axis; it is
+  the dataset author's own article and is cited in README "Related
+  publications" and in `config/classification_scheme.md` (axis 2 rationale)
+  in first-person or neutral voice only — never as third-person
+  self-reference; one positive R4 fixture covers this pattern. Both are
+  registered in `config/audit_allowlist.yaml` under R3 with exact
+  bibliographic strings and are listed in `CITATION.cff:references`
+  (together with the presentation of D-006). Author name, ORCID and
+  affiliation are legitimate in `CITATION.cff` and are not R1 tokens.
+- **Evidence:** see `config/audit_allowlist.yaml` (R3 entries).
+
+---
+
+## Decisions, 2026-10-20: platform classification
+
+All entries below record decisions, 2026-10-20. Approval of a method is distinct from
+completion of its evidence checks; outstanding checks are stated explicitly.
+
+## D-012 — F1000-platform stems: which rows, and splitting of merged sites
+
+- **Date:** 2026-10-20
+- **Status:** decided
+- decided_by: researcher
+- **Question:** Which F1000-platform stems form register rows, and are
+  the renamed sites (Health Open Research, formerly AMRC Open Research;
+  Open Research Africa, formerly AAS Open Research) kept as one row each or
+  split by DOI stem?
+- **Options considered:** (a) one row per currently operating site, with
+  DOI-stem patterns covering the former stems (proposed); (b) one row per
+  historical stem; (c) a single F1000-platform row.
+- **Decision:** (a). One row per current site, with former DOI stems covered
+  by `doi_pattern`; site-renaming history belongs in `model_note`.
+  Rows: F1000Research, Wellcome Open Research, Gates
+  Open Research, Open Research Europe, HRB Open Research, NIHR Open Research,
+  Health Open Research, Open Research Africa, Routledge Open Research
+  (`medium`, own site not parsed), MedEd Publish (separate counting rule),
+  Emerald Open Research (`closed`). Stem patterns are in
+  `doi_pattern` and `extraction_selector.crossref.doi_regex`. D-013 specifies
+  the separate Gates and VeriXiv series.
+- **Evidence:** https://f1000research.com/about ;
+  https://www.f1000.com/resources-for-researchers/where-to-publish-your-research/f1000-publishing-venues/
+
+## D-013 — Gates Open Research: model change (VeriXiv) in 2024
+
+- **Date:** 2026-10-20
+- **Status:** decided; deposit verification remains open for VeriXiv
+- decided_by: researcher
+- **Question:** Since August 2024 new submissions are first posted as
+  preprints on VeriXiv and published on Gates Open Research after passing
+  peer review. Does the row keep `approval_threshold` with `model_since =
+  2024` and a provisional coverage note, or is a second row needed for the
+  VeriXiv stage?
+- **Options considered:** (a) one row, configuration unchanged, note and
+  `provisional: true` until the first local run shows where the first
+  public posting is registered (proposed); (b) second row for VeriXiv
+  preprints; (c) close the series at 2024.
+- **Decision:** (b). Two series share `organisation_id: gates_f1000`:
+  `gates_open_research` has configuration `approval_threshold`, counts v1
+  publication, and ends in 2024; `verixiv` counts first preprint posting
+  conditional on at least one public review and has `model_since: 2024`.
+  VeriXiv remains provisional until Crossref peer-review deposits are
+  confirmed by the local run. Both the posting and the qualifying review
+  must be dated on or before the cutoff and present in the completed
+  retrieval. Non-zero Version-of-Record/preprint overlap between the two
+  rows is expected and reported, not a pipeline error. Work identity across
+  their distinct DOIs requires explicit correspondence, never a title-only
+  match. The zero-intersection test remains specific to the two Qeios rows.
+- **Evidence:** https://gatesopenresearch.org/about
+
+## D-014 — Emerald Open Research: closure year
+
+- **Date:** 2026-10-20
+- **Status:** decided
+- decided_by: researcher
+- **Question:** The platform site no longer lists approval statuses and the
+  content is re-hosted on Emerald Insight as volume 1 (2023); the closure
+  date is not stated on the platform site.
+- **Options considered:** (a) `status = closed`, `coverage_end_year =
+  2023`, `configuration_confidence = medium` (proposed); (b) wait for the
+  first local run and set the end year from the last `issued` date.
+- **Decision:** (a). `status: closed`, `coverage_end_year: 2023`.
+  Retain `configuration_confidence: medium`; clear `provisional`.
+- **Evidence:** https://emeraldopenresearch.com/about ;
+  https://www.emerald.com/insight/publication/issn/2631-3952
+
+## D-015 — Copernicus interactive public peer review: journal list and counting event
+
+- **Date:** 2026-10-20
+- **Status:** decided; journal-level verification remains to be completed
+- decided_by: researcher
+- **Question:** (i) Which Copernicus journals operate interactive public
+  peer review (all EGU journals use EGUsphere from 1 January 2025; earlier,
+  journal-specific discussion forums)? (ii) Is the counting event the final
+  article (`issued`) or the discussion preprint?
+- **Options considered:** (i) journals showing a "Preprints" forum on the
+  publisher's journal index (proposed) versus a hand-verified list per
+  journal; (ii) final article (comparable with SciPost; proposed) versus
+  discussion preprint (captures rejected submissions, but the preprint DOI
+  stems differ by journal and era).
+- **Decision:** Use a hand-verified journal list with an `evidence_url` for
+  each journal: interactive review is journal-specific. Count the discussion
+  preprint at entry into public discussion, not the final article.
+  `configuration_note` must distinguish this from SciPost's final-article
+  rule. A generic publisher index is not evidence of interactive review for
+  every journal. Discussion preprints may remain observable after rejection;
+  no blanket rejected-submission invisibility claim applies to this series.
+  Verify journal-specific discussion DOI patterns and EGUsphere journal
+  attribution before enabling quantification. Stand-alone EGUsphere records
+  without evidence of entry into the selected journal workflows are not
+  automatically included.
+- **Evidence:** https://publications.copernicus.org/services/public_peer_review.html ;
+  https://www.egusphere.net/about/faqs.html
+
+## D-016 — JMIRx Med: `mixed` / `core_publish_first` (both medium)
+
+- **Date:** 2026-10-20
+- **Status:** decided
+- decided_by: researcher
+- **Question:** Editors prospect medRxiv preprints and authors may
+  self-nominate; reports are published only with the accepted article.
+- **Options considered:** axis 1 `mixed` (proposed) or `author_initiated`
+  (if prospecting is marginal); axis 2 `hybrid_public_discussion` (proposed)
+  or exclusion as a comparator (if the publicly posted preprint is not
+  considered the platform's own publish step).
+- **Decision:** `mixed` (medium) on axis 1; `core_publish_first` (medium)
+  on axis 2; `prc_role: overlay_journal`. No public discussion precedes the
+  decision. Clear `provisional`. This is an explicit row-specific ruling,
+  not a claim that an editorial decision is absent; the approved derived
+  binding-decision mapping remains a configuration-derived variable.
+  The final-article counting event is unchanged by this classification ruling.
+- **Evidence:** https://support.jmir.org/hc/en-us/articles/360034752692-What-is-JMIRx ;
+  https://xmed.jmir.org/
+
+## D-017 — Access Microbiology: configuration and `model_since`
+
+- **Date:** 2026-10-20
+- **Status:** decided; coverage start awaits the local run
+- decided_by: researcher
+- **Question:** Preprint posted before review, reports and decision
+  published with DOIs after a conventional accept decision; the start year of
+  the open-research-platform model could not be confirmed on the Society's
+  site.
+- **Options considered:** `hybrid_public_discussion` (proposed, medium)
+  versus `core_publish_first`; `coverage_start_year = 2023` versus the first
+  year observed in the local run.
+- **Decision:** `hybrid_public_discussion` (medium). Clear `provisional`;
+  take the series start year from the completed local run, not from 2023.
+  Until then `model_since` and `coverage_start_year` are unset. Resolve the
+  observed start from qualifying preprint events, not the journal's launch
+  year or registration timestamps; do not infer unobserved zeros.
+- **Evidence:** https://sciety.org/groups/access-microbiology/about ;
+  https://www.microbiologyresearch.org/content/journal/acmi/about
+
+## D-018 — PREreview: `community_initiated` (medium) versus `mixed`
+
+- **Date:** 2026-10-20
+- **Status:** decided
+- decided_by: researcher
+- **Question:** Any researcher may review any preprint, and a documented
+  "request a PREreview" route is open to anyone including authors; a request
+  does not commission a review.
+- **Options considered:** (a) `community_initiated`, medium (proposed:
+  reviewers still self-select); (b) `mixed`.
+- **Decision:** (a). `community_initiated` (medium); retain
+  `review_or_curation_service` and clear `provisional`.
+- **Evidence:** https://prereview.org/request-a-prereview
+
+## D-019 — Biophysics Colab: `mixed` (low)
+
+- **Date:** 2026-10-20
+- **Status:** decided
+- decided_by: researcher
+- **Question:** Curators consider preprints in scope and engage reviewers
+  with the authors' consent; authors may also approach the service. The share
+  of each route is undocumented.
+- **Options considered:** (a) `mixed`, low (proposed); (b)
+  `community_initiated` with consent noted; (c) `author_initiated`.
+- **Decision:** (a). `mixed` (low); retain `review_or_curation_service`.
+  Low confidence records evidence uncertainty, not a pending classification
+  ruling; `provisional: false`.
+- **Evidence:** https://www.sciencecolab.org/biophysics-colab
+
+## D-020 — Life Science Editors Foundation and Life Science Editors: inclusion and class
+
+- **Date:** 2026-10-20
+- **Status:** decided
+- decided_by: researcher
+- **Question:** Both Sciety groups publish signed editorial assessments of
+  preprints; the foundation reviews work of scientists from under-represented
+  groups, the company's assessments may be a paid author service. The
+  foundation's own site could not be read; the company has no documented
+  workflow page.
+- **Options considered:** (a) keep both rows as `mixed` (low),
+  `provisional: true` (proposed); (b) foundation only; (c) move the company
+  to `config/excluded_candidates.yaml` (criterion 3).
+- **Decision:** (a). Keep both rows as `mixed` (low) and
+  `review_or_curation_service` (medium). Apply Q-3: clear `provisional`
+  because the inclusion and classification ruling is now made. Retain the
+  evidence limitations in the notes.
+- **Evidence:** https://sciety.org/groups/life-science-editors-foundation/about ;
+  https://www.lifescienceeditors.org/foundation ;
+  https://sciety.org/groups/life-science-editors/about
+
+## D-021 — The Unjournal: `mixed` (medium)
+
+- **Date:** 2026-10-20
+- **Status:** decided
+- decided_by: researcher
+- **Question:** The service identifies and solicits research and also
+  accepts author submissions through documented forms.
+- **Options considered:** (a) `mixed`, medium (proposed); (b)
+  `community_initiated`.
+- **Decision:** (a). `mixed` (medium); retain `review_or_curation_service`.
+  `provisional: false`.
+- **Evidence:** https://www.unjournal.org/about
+
+## D-022 — ASAPbio crowd review rows: status and overlap with PREreview
+
+- **Date:** 2026-10-20
+- **Status:** decided
+- decided_by: researcher
+- **Question:** Crowd reviews (2021–2024) were posted on PREreview and
+  appear as separate Sciety groups (English-language crowd; SciELO
+  Portuguese-language crowd). Are both rows kept, with `status = dormant`,
+  and the overlap with the PREreview row reported?
+- **Options considered:** (a) two rows, `community_initiated` (medium),
+  overlap reported in `cross_platform_overlap.csv` (proposed); (b) one row;
+  (c) fold into PREreview.
+- **Decision:** (a). Keep two dormant series with `community_initiated`
+  (medium). Report their overlap with PREreview in
+  `cross_platform_overlap.csv`; do not treat shared evaluations as an error.
+  Clear `provisional`.
+- **Evidence:** https://asapbio.org/crowd-preprint-review
+
+## D-023 — Arcadia Science: operating status
+
+- **Date:** 2026-10-20
+- **Status:** decided
+- decided_by: researcher
+- **Question:** The starting hypothesis was that the service ceased in
+  2025; the Sciety group shows evaluation activity through October 2026.
+- **Options considered:** (a) `status = active`, as observed (proposed);
+  (b) `dormant`.
+- **Decision:** (a). `status: active`. Record in `model_note` that the
+  "ceased 2025" hypothesis is refuted: only the publishing venue moved in
+  December 2025. This dated correction is recorded as a user ruling, 2026-10-20; it
+  must not be converted into a service-closure date.
+- **Evidence:** https://sciety.org/groups/arcadia-science ;
+  https://research.arcadiascience.com/
+
+## D-024 — PeerRef: dormant service
+
+- **Date:** 2026-10-20
+- **Status:** decided
+- decided_by: researcher
+- **Question:** Authors request journal-independent review; the latest
+  Sciety activity is dated 2023 and the service site shows no new activity.
+- **Options considered:** (a) `status = dormant`, `partial_coverage`,
+  open series (proposed); (b) `closed` with `coverage_end_year = 2023`.
+- **Decision:** (a). `status: dormant`, `data_status: partial_coverage`,
+  and an open series (`coverage_end_year: null`); not a 2023 closure.
+- **Evidence:** https://www.peerref.com/ ; https://sciety.org/groups/peerref
+
+## D-025 — MetaROR: data source
+
+- **Date:** 2026-10-20
+- **Status:** decided
+- decided_by: researcher
+- **Question:** MetaROR publishes reviews and curation statements via
+  Sciety; whether it also deposits Crossref peer-review records is unknown.
+- **Options considered:** (a) `data_source = sciety` (proposed); (b)
+  `both`, to be confirmed in the first local run.
+- **Decision:** (a). `data_source: sciety` until the local run provides
+  evidence supporting an additional Crossref selector.
+- **Evidence:** https://metaror.org/about/ ; https://metaror.org/how-it-works/
+
+## D-026 — Excluded candidates and pending verifications
+
+- **Date:** 2026-10-20
+- **Status:** decided; pending candidate checks remain required
+- decided_by: researcher
+- **Question:** ScreenIT (automated screening), GigaScience, GigaByte and
+  PeerJ (pre-publication review with published reports) are proposed as
+  exclusions; the candidates named in `docs/limitations.md` (ScienceOpen,
+  EMBO Early Evidence Base, PubPeer, ResearchHub, hypothes.is journal clubs,
+  Episciences, Peeriodicals, Octopus, Researchers.One, Sinai Immunology
+  Review Project, preprint comment sections) are recorded with
+  `verification_status: pending` or `not_verifiable`.
+- **Options considered:** (a) accept the exclusions and complete the
+  pending verifications before approving the extraction scripts, adding `register_only` rows
+  where criteria 1–3 are met (proposed); (b) leave the pending candidates as
+  limitations only.
+- **Decision:** (a). Accept the exclusions of ScreenIT, GigaScience,
+  GigaByte and PeerJ. Complete the pending candidate verifications before
+  approving the extraction scripts. Add `register_only` rows for candidates satisfying criteria
+  1–3 without an adequate permitted-source selector; do not treat absence
+  of machine-readable records as a substantive exclusion criterion.
+- **Evidence:** `config/excluded_candidates.yaml` (per-candidate URLs).
+
+## Q-1 — Analysis cutoff
+
+- **Date:** 2026-10-20
+- **Status:** decided
+- decided_by: researcher
+- **Question:** Which analysis cutoff should be used?
+- **Options considered:** 2026-09-30; 2025-12-31; another specified date.
+- **Decision:** Keep `analysis_cutoff_date: 2026-09-30`. Label 2026 as
+  `year_to_date`, set `partial_year: true`, and identify the exact cutoff
+  in analytical output metadata.
+- **Evidence:** not applicable (analysis parameter).
+
+## Q-2 — Repository URL and DOI
+
+- **Date:** 2026-10-20
+- **Status:** decided
+- decided_by: researcher
+- **Question:** When should the public repository URL be added?
+- **Options considered:** now; when the DOI is reserved, before release freeze.
+- **Decision:** Add the repository URL together with the
+  reserved DOI before release freeze. Omit these fields until their real values are available;
+  no placeholders in `CITATION.cff`.
+- **Evidence:** not applicable (release metadata decision).
+
+## Q-3 — Provisional flag
+
+- **Date:** 2026-10-20
+- **Status:** decided
+- decided_by: researcher
+- **Question:** Does confidence below high imply a provisional classification?
+- **Options considered:** confidence-driven provisional status; explicit
+  unresolved-ruling status.
+- **Decision:** Clear `provisional` on ruling. Medium confidence alone never
+  sets `provisional`; retained low or medium confidence documents uncertainty.
+  D-013 explicitly retains VeriXiv's provisional status pending deposit
+  confirmation. Coverage and selector readiness are separate from
+  classification confidence and must not be concealed by clearing a flag.
+- **Evidence:** not applicable (classification governance).
+
+## D-027 — Copernicus: hand-verified journal list and discussion-preprint selectors
+
+- **Date:** 2026-10-20
+- **Status:** decided; confirmed by user ruling, 2026-10-20
+- decided_by: researcher
+- **Question:** Which Copernicus journals operate interactive public peer
+  review, and how are their discussion preprints selected (D-015)?
+- **Method:** every journal listed on the publisher's journal index was
+  checked on its own `peer_review/` page; the DOI stems on each journal's
+  preprint listing page were recorded as descriptive evidence.
+- **Result:** 29 journals verified as operating interactive public peer
+  review (each with `evidence_url`, `verified_on` and two
+  `journal_specific_doi_regex` entries); 10 journals verified as
+  conventional review and listed under
+  `journals_not_using_interactive_review` with their own evidence URL.
+  Three DOI regimes exist: `<stem>d-<volume>-<page>-<year>` (former
+  Discussions journals, 2001 onwards), `<stem>-<year>-<number>` (journal
+  discussion forums) and `egusphere-<year>-<number>` (EGUsphere; all EGU
+  journals from 2025-01-01, several journals earlier; journals of other
+  owners keep their own stems).
+- **Options considered:** (a) `register_only` until every regime can be
+  attributed; (b) `quantified` with the journal-specific regimes attributed
+  by DOI and an explicit EGUsphere attribution rule whose carrying field is
+  confirmed in the local run; (c) count every EGUsphere preprint.
+- **Decision:** (b). `register_status: quantified`, `data_status:
+  machine_readable`, `selector_status: verified_journal_list`. EGUsphere also
+  hosts stand-alone preprints without journal relation (community comments
+  only), so an EGUsphere preprint counts only when its Crossref record is
+  attributed to a verified journal (`relation.is-preprint-of` resolving to
+  a verified-journal article, or the journal title in `container-title` /
+  `group-title`); unattributed EGUsphere preprints are reported per year in
+  the quality log (DQ-010) and never counted. (c) is rejected because it
+  would count works that never entered interactive review. The attributed
+  series is a lower bound in the EGUsphere regime; D-032 governs attribution
+  and also accepts an incoming Crossref peer-review relation as evidence.
+- **Evidence:**
+  https://publications.copernicus.org/services/public_peer_review.html;
+  https://www.egusphere.net/about/faqs.html; per-journal URLs in
+  `config/platforms.yaml`.
+
+## D-028 — Disposition of the pending candidates (D-026)
+
+- **Date:** 2026-10-20
+- **Status:** decided; confirmed by user ruling, 2026-10-20
+- decided_by: researcher
+- **Question:** Which of the pending candidates satisfy inclusion criteria
+  1–3 on their own websites?
+- **Decision:**
+  - ScienceOpen — criteria 1–3 met (post-publication public reviews of
+    indexed works by named members; author-invited reviews also exist):
+    new row `scienceopen_reviews`, `register_only`, `data_source: none`
+    until Crossref review deposits are confirmed in a later pass.
+  - Octopus — criteria 1–3 met (publish-first record with a public Peer
+    Review publication type); DOIs are minted through DataCite, outside the
+    permitted sources: new row `octopus`, `register_only`.
+  - Peeriodicals — criteria 1–3 met (editor-selected existing works,
+    solicited public reviews, published decisions; collections updated in
+    2025): new row `peeriodicals`, `register_only`; previously marked
+    `not_verifiable`, now verified.
+  - ResearchHub — excluded, criterion 3: the platform's own pages describe
+    two different workflows on the verification date (preprint-first open
+    paid review versus a registered-reports journal reviewing funding
+    proposals); re-assess when the documentation stabilises.
+  - PubPeer — excluded, criterion 2 (user commenting, no structured output
+    attributable to the service, no identifiers).
+  - EMBO Early Evidence Base — excluded, criterion 2 (aggregator of
+    evaluations produced by other register rows).
+  - Episciences — `not_verifiable` in this pass (documentation site did not
+    respond; about page silent on the review sequence).
+  - Sinai Immunology Review Project — `not_verifiable` (domain does not
+    resolve).
+  - hypothes.is journal clubs, Researchers.One and preprint comment
+    sections remain as recorded in D-026.
+- **Evidence:** per-candidate URLs in `config/excluded_candidates.yaml` and
+  `config/platforms.yaml`.
+
+## D-029 — Sciety retrieval: per-publisher index and group identity
+
+- **Date:** 2026-10-20
+- **Status:** decided
+- decided_by: researcher
+- **Question:** How is each Sciety group retrieved and recognised?
+- **Options considered:** (a) one full-index walk filtered locally; (b) one
+  paginated walk per group with the documented
+  `index?publisheraccount=<group page URL>` filter, verified locally
+  against the docmap `publisher.account.id`.
+- **Decision:** (b). The group page URL (`https://sciety.org/groups/<slug>`)
+  is the scope key; the group id shown on each group page is stored as
+  `group_id` so that docmaps are accepted under either account form.
+  Publisher-account mismatches hard-fail normalisation under D-034.
+  The slug of the Rapid Reviews\Infectious Diseases group is
+  `rapid-reviews-covid-19` (the former slug returns 404) and was corrected.
+- **Evidence:** https://sciety.org/docmaps/v1/ (endpoint documentation);
+  group pages linked from `config/platforms.yaml`.
+
+## D-030 — Crossref retrieval scopes and interim attribution
+
+- **Date:** 2026-10-20
+- **Status:** decided
+- decided_by: researcher
+- **Question:** How are Crossref walks organised for rows sharing a prefix?
+- **Decision:** One cursor walk per scope `works__<prefix>__<type>`; rows
+  are split from a shared scope by their DOI regex (never by bare prefix).
+  Peer-review scopes include the separate review prefixes declared by rows
+  (`review_doi_prefix`, for example 10.21956 for the F1000 family). A review
+  record is attributed to a row by its targets (`is-review-of` DOI matching
+  the row's work selector), by an explicit `review_doi_regex`, by
+  `container-title`, or — for `qeios_external_works` — by targets outside
+  the row prefix. Review records claimed by no row are kept in
+  `crossref_peer_reviews__unattributed__<prefix>.csv`; a fourth target flag
+  `missing` marks records without any `is-review-of` relation. Rows with a
+  pending selector (VeriXiv) are not extracted until the selector is
+  confirmed.
+- **Evidence:** `src/extract/selectors.py`; `docs/data_dictionary.md` §4.
+
+## D-031 — Walk life cycle, manifests and selection
+
+- **Date:** 2026-10-20
+- **Status:** decided
+- decided_by: researcher
+- **Decision:** Every attempt (accepted or rejected) is stored before the
+  next request; files are opened in exclusive-create mode so no raw file is
+  ever overwritten. Walk manifests are append-only JSONL named
+  `<source>__<scope>__<walk_id>.manifest.jsonl` under
+  `data/manifests/<run_id>/`; a definitive 4xx (other than 429) after page
+  1, or a source payload reporting an unusable cursor, closes the walk as
+  `incomplete_restarted` and a new walk starts from the initial cursor (at
+  most three restarts per invocation); an exhausted attempt budget closes
+  the walk as `failed`. A walk left `in_progress` by an interrupted process
+  is closed as `incomplete_restarted` at the next invocation, never resumed.
+  Crossref completion requires terminal page evidence and the first-page
+  total check (D-035); Sciety follows the separate continuation rule
+  (D-034). Only complete
+  walks are flattened; an interim file for a row is written only when none
+  of the row's scopes is blocked, and the stage exits with an error naming
+  the blocked rows. HTTP 429 and 5xx are retried with the configured
+  backoff, honouring `Retry-After` and the `X-Rate-Limit-*` headers.
+- **Evidence:** `src/common/{http,raw_store,manifest,walk}.py`; tests in
+  `tests/test_raw_store_and_walks.py`.
+
+## Implementation note: location of the eligibility and cell conventions
+
+- **Date:** 2026-10-20
+- **Status:** decided
+- decided_by: researcher
+- **Decision:** The cutoff rule, the event map and tie-break, the
+  four-valued evaluation identity, the parent-resolution check, the
+  configuration-derived `binding_publication_decision` and the cell
+  conventions (blank versus zero, `not_observable` priority, partial year,
+  additivity) are implemented once in `src/common/eligibility.py` and
+  `src/common/aggregates.py` so that the boundary tests exercise the exact
+  functions later used by `src/analyse/`.
+- **Evidence:** `tests/test_eligibility_rules.py`,
+  `tests/test_aggregate_conventions.py`, `tests/test_dates_cutoff.py`.
+
+## D-032: Copernicus attribution and coverage
+
+- **Date:** 2026-10-20
+- **Status:** decided
+- decided_by: researcher
+- **Question:** Which signals attribute an EGUsphere preprint (C-1)?
+- **Options:** attributed lower-bound series; all EGUsphere preprints;
+  register-only fallback.
+- **Decision:** attributed lower-bound series. Any of `is-preprint-of` to a
+  verified journal article, a verified journal title in the record, or a
+  Crossref peer-review record with `is-review-of` targeting the preprint is
+  sufficient. Store all matching signals in `attribution_basis` per record.
+  Pre-EGUsphere discussion DOIs are attributed by DOI pattern. Unattributed
+  preprints remain in interim with `included=false` and
+  `exclusion_reason=no_journal_attribution`.
+- **Coverage:** `coverage_matrix` marks affected years `partial_known_scope`
+  with the lower-bound limitation. The separate `partial_year` field
+  retains the cutoff-year flag. Use the register-only fallback only if none
+  of the three signals appears in the completed local run.
+- **Implementation:** rebuild attribution after both works and review scopes
+  complete; record signals, selected walks and yearly unattributed totals in
+  the run manifest. An attributed interim record has blank `included`
+  pending final cutoff and eligibility checks, not an automatic inclusion.
+- **Authority:** C-1 ruling (user ruling, 2026-10-20); controls the attribution rule
+  in D-027. The code-location note is retained without a decision number so
+  D-032 through D-035 correspond to C-1 through C-4; Git history is unchanged.
+
+## D-033: Candidate dispositions and ResearchHub reassessment
+
+- **Date:** 2026-10-20
+- **Status:** decided
+- decided_by: researcher
+- **Question:** Confirm the candidate dispositions (C-2)?
+- **Options:** accept D-028; change individual candidate dispositions.
+- **Decision:** accept D-028. ResearchHub remains excluded and carries
+  `reassess_by: documentation_stabilised_before_release_freeze` in `config/excluded_candidates.yaml`; expose
+  the optional scheduling field in the CSV export.
+- **Authority:** C-2 ruling (user ruling, 2026-10-20).
+
+## D-034: Sciety pagination and publisher integrity
+
+- **Date:** 2026-10-20
+- **Status:** decided
+- decided_by: researcher
+- **Question:** Group-filtered walk or full-index walk (C-3)?
+- **Decision:** paginated walk per group using
+  `publisheraccount=<group URL>`. Record the decoded query parameters,
+  including that parameter, in every request sidecar. Preserve it across
+  continuation pages. At the normalisation boundary, any docmap with an
+  absent or different publisher account causes a hard failure, including
+  docmaps without evaluation outputs; silent dropping is forbidden.
+  Configured UUID and slug URLs identifying the same group are equivalent.
+- **Fallback:** full-index retrieval with explicit group partitioning;
+  never silently change retrieval scope after a filtered response fails.
+- **Completion:** separate from Crossref. Validate every `articles` array,
+  follow configured continuation links until absent/null, and require no
+  unresolved `has_more` indicator. Empty pages with a continuation do not
+  terminate the walk. Malformed or conflicting continuation values, endpoint
+  or group changes and repeated continuation URLs fail. Continuation-field
+  paths are configuration assumptions to confirm during the local run.
+- **Authority:** C-3 ruling (user ruling, 2026-10-20); governs D-029.
+
+## D-035: Crossref completion and restart budget
+
+- **Date:** 2026-10-20
+- **Status:** decided
+- decided_by: researcher
+- **Question:** Completion and restart conditions (C-4)?
+- **Options:** three restarts per invocation; manual restart after each
+  rejected cursor.
+- **Decision:** retain the three-restart budget and immutable walk ids.
+  Complete only when a page returns fewer items than requested `rows`
+  (including an empty following page) AND the accepted-page item total
+  equals the first page's `total-results`. An empty first page is complete
+  only when `total-results == 0`. Any nonzero tolerance must be configured
+  with a reason and recorded in the manifest; default tolerance is zero.
+  Missing `next-cursor` is an anomaly, never completion evidence by itself.
+- **Manifest:** record the rule, terminal evidence, first-page total,
+  accepted item total, difference, tolerance and reason. Preserve page-level
+  anomalies. Total mismatches withhold the scope and dependent rows.
+- **Configuration test:** assert no `sort` with cursor pagination; runtime
+  URL construction rejects that combination as well.
+- **Authority:** C-4 ruling (user ruling, 2026-10-20); governs D-031. Sciety completion
+  is defined independently in D-034.
+
+---
+
+## Decisions, 2026-10-20: normalisation, analysis and reporting
+
+## D-036: Requirement of a qualifying evaluation is read from the register
+
+- **Date:** 2026-10-20
+- **Status:** decided (user ruling, 2026-10-20: option (c) accepted)
+- decided_by: researcher
+- **Question:** How does the analysis know that a posting-counted row also
+  needs at least one qualifying public evaluation on or before the cutoff
+  (Qeios hosted works; VeriXiv once quantified)?
+- **Options:** (a) a hard-coded list of row ids in the analysis module;
+  (b) a new boolean register field; (c) derive the requirement from the
+  existing `eligibility_events` text with a fixed pattern and a test that
+  pins the derived set.
+- **Decision:** (c). `requires_evaluation()` matches `at least one
+  [qualifying] [public] review|evaluation` in `eligibility_events`; rows
+  counted by `earliest_qualifying_evaluation` never need the extra gate.
+  `tests/test_binding_decision_consistent.py` pins the derived set to
+  exactly `{qeios_hosted_works, verixiv}` by set equality and size, so any
+  change to the set — additions included — fails the test until the register
+  edit is reviewed and the pin is updated deliberately.
+- **Authority:** instruction §9.2 (register-row event map); user ruling, 2026-10-20.
+
+## D-037: Cross-check scopes never block a row
+
+- **Date:** 2026-10-20
+- **Status:** decided
+- decided_by: researcher
+- **Question:** Does an incomplete `role: cross_check` scope (for example
+  Sciety for eLife, Crossref for Rapid Reviews) withhold the row's counts?
+- **Options:** (a) every scope of a row blocks; (b) only primary (counting)
+  scopes block; cross-check scopes are reported separately.
+- **Decision:** (b). `src/common/run_state.py` derives `extraction_status`
+  from primary scopes only; the state of cross-check scopes is written to
+  `analysis_manifest.json` and `normalisation_summary.json`. A cross-check
+  scope that is not complete confirms nothing: evaluation identity stays
+  `doi_confirmed` or `source_only`, never `cross_source_confirmed`.
+- **Authority:** instruction §9.4, §9.6, §9.7.
+
+## D-038: Group cells, blocking statuses and deduplication by earliest event
+
+- **Date:** 2026-10-20
+- **Status:** decided (user ruling, 2026-10-20: option (b) accepted with amendments)
+- decided_by: researcher
+- **Question:** How are class and configuration cells formed when a member
+  row cannot contribute, and to which row is a work shared by several rows
+  attributed in the deduplicated tables?
+- **Options:** (a) sum the available rows and footnote the gap; (b) blank
+  the group cell when a member row blocks it; attribute a shared work to the
+  row holding its earliest counting event.
+- **Decision:** (b), amended. A group cell is blank only if a member row
+  whose eligible range covers the year carries `unknown_scope` or
+  `pending_run` (source observability) or `partial_coverage` (coverage) for
+  that year, or if that member's extraction is not complete (an incomplete
+  or failed scope never contributes to any output, §9.4). `not_applicable`
+  and `observed_zero` members never block the sum. Every group table carries
+  a `blocking_rows` column (`row_id:status; …`) and its Markdown twin lists
+  each blank cell with the blocking row and status as a footnote.
+  Deduplicated tables attribute a shared work to the row holding its
+  earliest counting event (ties: earlier interval start, then `row_id`); the
+  all-rows table also publishes the per-class attribution used by Figure 3.
+  Access Microbiology: until the first local run its years from launch
+  onwards are `pending_run`, not `unknown_scope`; after a complete run the
+  observed first counting year becomes `model_since` / the coverage start
+  (to be written into the register, with the run recorded in the
+  data-quality log) and earlier years become `not_applicable`. A complete
+  run without any qualifying event leaves the row `unknown_scope`.
+- **Tests:** `tests/test_total_equals_sum_of_years.py` (sum rule, blocking
+  vocabulary, `not_applicable` members never blank a group,
+  `partial_coverage` member blanks and is named in the footnote).
+- **Authority:** instruction §6, §8.3, §9.4; user ruling, 2026-10-20.
+
+## D-039: Vocabulary additions, including the transient `pending_run`
+
+- **Date:** 2026-10-20
+- **Status:** decided (user ruling, 2026-10-20: accepted, `pending_run` added)
+- decided_by: researcher
+- **Question:** What do `extraction_status` and `source_observability_status`
+  say for register-only rows, for a complete scope whose coverage start is
+  unresolved, and for a run-deferred coverage start before the first run?
+- **Decision:** `extraction_status = not_applicable` for rows without any
+  primary scope; `source_observability_status = unknown_scope` for complete
+  scopes with an unresolved start and `pending_run` before the first
+  complete run of such a row; `observation_status` keeps `register_only` and
+  `not_applicable` as distinct values. Figure 4 draws `register_only` as its
+  own category. `pending_run` is transient: the release test
+  `tests/test_release_no_pending_run.py` asserts that it is absent from every
+  file under `reports/tables/`.
+- **Authority:** instruction §8.3, §9.4; docs/data_dictionary.md §6;
+  user ruling, 2026-10-20.
+
+## D-040: Data-quality log — single file, preset rows immutable, run rows identified
+
+- **Date:** 2026-10-20
+- **Status:** decided (user ruling, 2026-10-20: accepted with amendments)
+- decided_by: researcher
+- **Question:** How do observed counts reach `data_quality_log.csv`?
+- **Decision:** one file. Preset rows (`origin = preset`) are never
+  overwritten by a run. The analysis stage appends one row per observed
+  (`row_id`, `issue_type`) with `origin = run`, the `run_id`, the selected
+  `walk_id`(s) of the row's primary scopes, `status = observed` and
+  `issue_id = DQ-<run_id>-<nnn>`; rows of the same `run_id` are replaced on
+  re-run, rows of other runs are kept. Measured issue types:
+  `placeholder_relation`, `withdrawn_record`, `missing_event_date`,
+  `ambiguous_cutoff_date`, `retrospective_deposit`, Copernicus
+  `partial_source_coverage`, and `other` for a coverage start resolved from
+  the run. OpenAlex-based diagnostics (Q-4 / D-041) may only appear here.
+- **Tests:** `tests/test_data_quality_log_single_file.py`.
+- **Authority:** instruction §5.1, §8.10; user ruling, 2026-10-20.
+
+## D-041: Overlap correspondence basis and the Gates / VeriXiv pair
+
+- **Date:** 2026-10-20
+- **Status:** decided (user ruling, 2026-10-20 on Q-4: option (a), implemented
+  after VeriXiv deposit confirmation and before release freeze)
+- decided_by: researcher
+- **Question:** On what basis does `cross_platform_overlap.csv` establish
+  that two rows count the same work?
+- **Decision:** `canonical_work_id` equality now, recorded in the
+  `correspondence_basis` column. After VeriXiv deposit confirmation and before release freeze the Gates Open Research /
+  VeriXiv pairs are resolved from both sides — `is-preprint-of` on the
+  VeriXiv record and `has-preprint` on the Gates Open Research record —
+  because reciprocal relations were partially missing from the Crossref REST
+  API between November 2025 and March 2026; a pair established from either
+  side counts, and the side(s) observed are recorded in
+  `correspondence_basis`. OpenAlex may be used only as a diagnostic in the
+  data-quality log, never as a source for `cross_platform_overlap.csv`.
+- **Authority:** D-013; docs/data_dictionary.md §6; user ruling, 2026-10-20.
+
+## Q-4: Cross-DOI work correspondence for Gates Open Research / VeriXiv
+
+- **Date:** 2026-10-20
+- **Status:** method decided by user ruling, 2026-10-20 (option (a), both sides);
+  implementation pending until the VeriXiv
+  review deposit is confirmed; resolved before release freeze — see D-041
+- decided_by: researcher
+- **Question:** Which relation types and which source (Crossref `relation`
+  on the article, on the preprint, or both) establish the correspondence,
+  and is the overlap reported per work pair or per year?
+- **Options:** (a) `is-preprint-of`/`has-preprint` resolved from both
+  records, pair level; (b) additionally OpenAlex linkage; (c) defer until
+  the VeriXiv selector is confirmed.
+- **Ruling:** (a). OpenAlex only as a diagnostic in the data-quality log.
+
+D-042: Repository history starts at the first published commit; the preparatory working history was not published and is retained in a private archive. decided_by: researcher.

@@ -1,0 +1,2817 @@
+# Platform register — source of truth for PRC Platform Dataset 1.4.0
+#
+# Rows are observation series, not organisations. One organisation may own
+# several rows (linked by organisation_id) when different counting events are
+# observed. Series are comparable over time within a row, never between rows.
+#
+# This file is the only hand-edited register file. config/platforms.csv is
+# regenerated from it with `python -m src.common.register --export`.
+#
+# Controlled vocabularies are defined in config/classification_scheme.md and
+# docs/data_dictionary.md. `null` for coverage_end_year means "open series,
+# ends at analysis_cutoff_date". `unknown` is permitted for evidence fields;
+# invented values are not.
+#
+# Evidence limitations are stated per row. A recorded user ruling resolves
+# classification without turning secondary evidence into primary evidence.
+
+register_meta:
+  verified_on_default: "2026-10-20"
+  initiation_classes: [author_initiated, community_initiated, mixed]
+  prc_configurations: [core_publish_first, approval_threshold, hybrid_public_discussion, review_or_curation_service]
+  prc_roles: [integrated_platform, review_service, curation_service, overlay_journal]
+  data_sources: [crossref, sciety, both, none]
+  register_statuses: [quantified, register_only]
+  data_statuses: [machine_readable, not_machine_readable, defunct, partial_coverage]
+  statuses: [active, dormant, closed]
+  confidences: [high, medium, low]
+  arrangements: [platform_own, external_preprint_server, partner_journal, none, unknown]
+  output_types: [reviewed_preprint, version_of_record, recommendation, review_report, approval_status, assessment_statement, highlight]
+  reviewer_identity_values: [always, optional, never, unknown]
+  review_to_object_relations: [crossref_is_review_of, sciety_docmap, both, none, unknown]
+  discipline_scopes: [life_sciences, physical_sciences, social_sciences, metaresearch, multidisciplinary]
+
+platforms:
+
+  # ---------------------------------------------------------------- eLife
+  - row_id: elife_reviewed_preprints
+    row_label: "eLife — Reviewed Preprints"
+    organisation_id: elife
+    organisation_name: "eLife Sciences Publications Ltd"
+    prc_role: integrated_platform
+    status: active
+    launch_year: 2012
+    model_since: 2023
+    model_note: null
+    coverage_start_year: 2023
+    coverage_end_year: null
+    discipline_scope: life_sciences
+    country_of_operator: "United Kingdom"
+    initiation_class: author_initiated
+    classification_confidence: high
+    classification_note: >-
+      Works enter evaluation only by author submission (direct or transfer of a
+      bioRxiv/medRxiv preprint); eLife selects a subset of submissions for
+      review and invites reviewers. No route by which the service selects
+      works that were not submitted.
+    prc_configuration: core_publish_first
+    configuration_confidence: high
+    configuration_note: >-
+      No accept/reject decision after peer review: every reviewed article is
+      published as a Reviewed Preprint with Public Reviews and an eLife
+      Assessment; authors may later request a Version of Record. Public
+      Reviews are signed by eLife, not by individual reviewers.
+    provisional: false
+    publish_arrangement: external_preprint_server
+    review_arrangement: platform_own
+    curation_arrangement: platform_own
+    output_types: [reviewed_preprint, review_report, assessment_statement, version_of_record]
+    public_review_reports: true
+    approval_status_public: false
+    summary_assessment: true
+    reviewer_identity_disclosed: never
+    version_linked_review: true
+    review_to_object_relation: both
+    public_author_response: true
+    review_has_doi: true
+    data_source: both
+    register_status: quantified
+    data_status: machine_readable
+    doi_prefix: "10.7554"
+    doi_pattern: "^10\\.7554/elife\\.\\d+"
+    doi_version_pattern: "^(10\\.7554/elife\\.\\d+)(?:\\.\\d+)?(?:\\.sa\\d+)?$"
+    sciety_group_slug: elife
+    extraction_selector:
+      crossref:
+        prefix: "10.7554"
+        record_types: [posted-content, peer-review, journal-article]
+        doi_regex: "^10\\.7554/elife\\.\\d+(\\.\\d+)?(\\.sa\\d+)?$"
+        notes: >-
+          Reviewed Preprints are expected as posted-content with version
+          suffixes; Public Reviews and Assessments as peer-review records with
+          is-review-of relations. Record types to be confirmed by the first
+          local run.
+      sciety:
+        group_slug: elife
+        group_id: b560187e-f2fb-4ff9-a861-a204f3fc0fb0
+        group_page_url: https://sciety.org/groups/elife
+        role: cross_check
+    eligibility_events:
+      - first public posting of a Reviewed Preprint (posted-content, version 1)
+    counting_event: first_public_posting
+    counting_event_date_field: "posted -> issued"
+    evidence_url:
+      - https://elifesciences.org/about/peer-review
+      - https://elifesciences.org/about/submit-your-research
+      - https://elifesciences.org/inside-elife/54d63486/elife-s-new-model-changing-the-way-you-share-your-research
+      - https://reviewer.elifesciences.org/reviewer-guide/review-process
+    verified_on: "2026-10-20"
+
+  # ----------------------------------------------------- F1000 platforms
+  - row_id: f1000research
+    row_label: "F1000Research"
+    organisation_id: f1000
+    organisation_name: "F1000 Research Ltd (Taylor & Francis)"
+    prc_role: integrated_platform
+    status: active
+    launch_year: 2013
+    model_since: 2013
+    model_note: null
+    coverage_start_year: 2013
+    coverage_end_year: null
+    discipline_scope: multidisciplinary
+    country_of_operator: "United Kingdom"
+    initiation_class: author_initiated
+    classification_confidence: high
+    classification_note: >-
+      Authors submit; after prepublication checks the article is published
+      with status "Awaiting Peer Review" and reviewers are invited for the
+      submitted article only.
+    prc_configuration: approval_threshold
+    configuration_confidence: high
+    configuration_note: >-
+      Reviewers assign Approved / Approved with Reservations / Not Approved;
+      indexing follows two Approved statuses or one Approved plus two Approved
+      with Reservations. Reviewer names and affiliations are published.
+    provisional: false
+    publish_arrangement: platform_own
+    review_arrangement: platform_own
+    curation_arrangement: platform_own
+    output_types: [version_of_record, review_report, approval_status]
+    public_review_reports: true
+    approval_status_public: true
+    summary_assessment: false
+    reviewer_identity_disclosed: always
+    version_linked_review: true
+    review_to_object_relation: crossref_is_review_of
+    public_author_response: true
+    review_has_doi: true
+    data_source: crossref
+    register_status: quantified
+    data_status: machine_readable
+    doi_prefix: "10.12688"
+    doi_pattern: "^10\\.12688/f1000research\\."
+    doi_version_pattern: "^(10\\.12688/f1000research\\.\\d+)\\.\\d+$"
+    sciety_group_slug: null
+    extraction_selector:
+      crossref:
+        prefix: "10.12688"
+        record_types: [journal-article, peer-review]
+        doi_regex: "^10\\.12688/f1000research\\.\\d+\\.\\d+$"
+        review_doi_prefix: "10.21956"
+        notes: >-
+          Prefix 10.12688 is shared by all F1000-operated venues; rows are
+          separated by DOI stem. Peer-review reports carry DOIs under 10.21956
+          (stem f1000research); whether they are deposited as Crossref
+          peer-review records with is-review-of relations is confirmed by the
+          first local run.
+    eligibility_events:
+      - first public posting of version 1 of an article (journal-article)
+    counting_event: first_public_posting
+    counting_event_date_field: issued
+    evidence_url:
+      - https://f1000research.com/about
+    verified_on: "2026-10-20"
+
+  - row_id: wellcome_open_research
+    row_label: "Wellcome Open Research"
+    organisation_id: f1000
+    organisation_name: "F1000 Research Ltd for Wellcome"
+    prc_role: integrated_platform
+    status: active
+    launch_year: 2016
+    model_since: 2016
+    model_note: null
+    coverage_start_year: 2016
+    coverage_end_year: null
+    discipline_scope: life_sciences
+    country_of_operator: "United Kingdom"
+    initiation_class: author_initiated
+    classification_confidence: high
+    classification_note: >-
+      Funder platform operated with the F1000 model: author submission,
+      publication before invited open peer review. Own website could not be
+      parsed on verified_on; the model is stated on the operator's venue page.
+    prc_configuration: approval_threshold
+    configuration_confidence: high
+    configuration_note: >-
+      F1000 approval statuses and indexing threshold apply.
+    provisional: false
+    publish_arrangement: platform_own
+    review_arrangement: platform_own
+    curation_arrangement: platform_own
+    output_types: [version_of_record, review_report, approval_status]
+    public_review_reports: true
+    approval_status_public: true
+    summary_assessment: false
+    reviewer_identity_disclosed: always
+    version_linked_review: true
+    review_to_object_relation: crossref_is_review_of
+    public_author_response: true
+    review_has_doi: true
+    data_source: crossref
+    register_status: quantified
+    data_status: machine_readable
+    doi_prefix: "10.12688"
+    doi_pattern: "^10\\.12688/wellcomeopenres\\."
+    doi_version_pattern: "^(10\\.12688/wellcomeopenres\\.\\d+)\\.\\d+$"
+    sciety_group_slug: null
+    extraction_selector:
+      crossref:
+        prefix: "10.12688"
+        record_types: [journal-article, peer-review]
+        doi_regex: "^10\\.12688/wellcomeopenres\\.\\d+\\.\\d+$"
+        review_doi_prefix: "10.21956"
+    eligibility_events:
+      - first public posting of version 1 of an article (journal-article)
+    counting_event: first_public_posting
+    counting_event_date_field: issued
+    evidence_url:
+      - https://wellcomeopenresearch.org/about
+      - https://www.f1000.com/resources-for-researchers/where-to-publish-your-research/f1000-publishing-venues/
+    verified_on: "2026-10-20"
+
+  - row_id: gates_open_research
+    row_label: "Gates Open Research"
+    organisation_id: gates_f1000
+    organisation_name: "F1000 Research Ltd for the Gates Foundation"
+    prc_role: integrated_platform
+    status: active
+    launch_year: 2017
+    model_since: 2017
+    model_note: >-
+      D-013 separates the Gates Open Research v1-publication series (ending
+      2024) from the VeriXiv reviewed-preprint series (starting 2024).
+      Gates Open Research may host a Version of Record linked to a VeriXiv
+      preprint; confirmed cross-series overlap is expected and reported.
+    coverage_start_year: 2017
+    coverage_end_year: 2024
+    discipline_scope: life_sciences
+    country_of_operator: "United Kingdom"
+    initiation_class: author_initiated
+    classification_confidence: high
+    classification_note: >-
+      Author submission; publication before invited open peer review.
+    prc_configuration: approval_threshold
+    configuration_confidence: medium
+    configuration_note: >-
+      Public approval statuses and an indexing threshold characterise this
+      v1-publication series. Its coverage ends in 2024 under D-013; this is
+      a series boundary, not a claim that the site closed.
+    provisional: false
+    publish_arrangement: platform_own
+    review_arrangement: platform_own
+    curation_arrangement: platform_own
+    output_types: [reviewed_preprint, version_of_record, review_report, approval_status]
+    public_review_reports: true
+    approval_status_public: true
+    summary_assessment: false
+    reviewer_identity_disclosed: always
+    version_linked_review: true
+    review_to_object_relation: crossref_is_review_of
+    public_author_response: true
+    review_has_doi: true
+    data_source: crossref
+    register_status: quantified
+    data_status: partial_coverage
+    doi_prefix: "10.12688"
+    doi_pattern: "^10\\.12688/gatesopenres\\."
+    doi_version_pattern: "^(10\\.12688/gatesopenres\\.\\d+)\\.\\d+$"
+    sciety_group_slug: null
+    extraction_selector:
+      crossref:
+        prefix: "10.12688"
+        record_types: [journal-article, peer-review]
+        doi_regex: "^10\\.12688/gatesopenres\\.\\d+\\.\\d+$"
+        review_doi_prefix: "10.21956"
+    eligibility_events:
+      - publication of version 1 of a Gates Open Research article, within the series ending in 2024
+    counting_event: first_public_posting
+    counting_event_date_field: issued
+    evidence_url:
+      - https://gatesopenresearch.org/about
+    verified_on: "2026-10-20"
+
+  - row_id: verixiv
+    row_label: "VeriXiv preprints with public review"
+    organisation_id: gates_f1000
+    organisation_name: "F1000 Research Ltd for the Gates Foundation"
+    prc_role: integrated_platform
+    status: active
+    launch_year: 2024
+    model_since: 2024
+    model_note: >-
+      D-013: distinct reviewed-preprint series from 2024. A Version of Record
+      on Gates Open Research may correspond to the same preprint.
+      Report confirmed overlap; do not apply the Qeios disjointness rule.
+    coverage_start_year: 2024
+    coverage_end_year: null
+    discipline_scope: life_sciences
+    country_of_operator: "United Kingdom"
+    initiation_class: author_initiated
+    classification_confidence: high
+    classification_note: "Authors submit preprints; invited public review follows posting."
+    prc_configuration: approval_threshold
+    configuration_confidence: medium
+    configuration_note: >-
+      The Gates Open Research workflow describes a passed-peer-review
+      threshold on VeriXiv followed by a Version of Record on Gates Open
+      Research. The preprint remains the counted object.
+    provisional: true
+    publish_arrangement: platform_own
+    review_arrangement: platform_own
+    curation_arrangement: partner_journal
+    output_types: [reviewed_preprint, review_report, approval_status]
+    public_review_reports: true
+    approval_status_public: true
+    summary_assessment: unknown
+    reviewer_identity_disclosed: always
+    version_linked_review: true
+    review_to_object_relation: unknown
+    public_author_response: unknown
+    review_has_doi: unknown
+    data_source: crossref
+    register_status: register_only
+    data_status: partial_coverage
+    doi_prefix: "10.12688"
+    doi_pattern: "^10\\.12688/verixiv\\."
+    doi_version_pattern: "^(10\\.12688/verixiv\\.\\d+)\\.\\d+$"
+    sciety_group_slug: null
+    extraction_selector:
+      crossref:
+        prefix: "10.12688"
+        record_types: [posted-content, journal-article, peer-review]
+        doi_regex: "^10\\.12688/verixiv\\.\\d+\\.\\d+$"
+        selector_status: pending_deposit_confirmation
+        notes: >-
+          Candidate work DOI pattern; confirm record types and public review
+          deposits in the local run. Do not assume review DOIs share the work
+          prefix. Quantitative values remain blank until the review selector
+          and is-review-of relations are confirmed.
+    eligibility_events:
+      - first public preprint posting dated on or before the analysis cutoff
+      - at least one qualifying public review dated on or before the cutoff and present in the completed retrieval
+    counting_event: first_public_posting
+    counting_event_date_field: "posted -> issued"
+    evidence_url:
+      - https://gatesopenresearch.org/about
+    verified_on: "2026-10-20"
+
+  - row_id: open_research_europe
+    row_label: "Open Research Europe"
+    organisation_id: f1000
+    organisation_name: "F1000 Research Ltd for the European Commission"
+    prc_role: integrated_platform
+    status: active
+    launch_year: 2021
+    model_since: 2021
+    model_note: null
+    coverage_start_year: 2021
+    coverage_end_year: null
+    discipline_scope: multidisciplinary
+    country_of_operator: "United Kingdom"
+    initiation_class: author_initiated
+    classification_confidence: high
+    classification_note: >-
+      Funder platform operated with the F1000 model. Own website could not be
+      parsed on verified_on; the model is stated on the operator's venue page.
+    prc_configuration: approval_threshold
+    configuration_confidence: high
+    configuration_note: F1000 approval statuses and indexing threshold apply.
+    provisional: false
+    publish_arrangement: platform_own
+    review_arrangement: platform_own
+    curation_arrangement: platform_own
+    output_types: [version_of_record, review_report, approval_status]
+    public_review_reports: true
+    approval_status_public: true
+    summary_assessment: false
+    reviewer_identity_disclosed: always
+    version_linked_review: true
+    review_to_object_relation: crossref_is_review_of
+    public_author_response: true
+    review_has_doi: true
+    data_source: crossref
+    register_status: quantified
+    data_status: machine_readable
+    doi_prefix: "10.12688"
+    doi_pattern: "^10\\.12688/openreseurope\\."
+    doi_version_pattern: "^(10\\.12688/openreseurope\\.\\d+)\\.\\d+$"
+    sciety_group_slug: null
+    extraction_selector:
+      crossref:
+        prefix: "10.12688"
+        record_types: [journal-article, peer-review]
+        doi_regex: "^10\\.12688/openreseurope\\.\\d+\\.\\d+$"
+        review_doi_prefix: "10.21956"
+    eligibility_events:
+      - first public posting of version 1 of an article (journal-article)
+    counting_event: first_public_posting
+    counting_event_date_field: issued
+    evidence_url:
+      - https://open-research-europe.ec.europa.eu/about
+      - https://www.f1000.com/resources-for-researchers/where-to-publish-your-research/f1000-publishing-venues/
+    verified_on: "2026-10-20"
+
+  - row_id: hrb_open_research
+    row_label: "HRB Open Research"
+    organisation_id: f1000
+    organisation_name: "F1000 Research Ltd for the Health Research Board (Ireland)"
+    prc_role: integrated_platform
+    status: active
+    launch_year: 2018
+    model_since: 2018
+    model_note: null
+    coverage_start_year: 2018
+    coverage_end_year: null
+    discipline_scope: life_sciences
+    country_of_operator: "United Kingdom"
+    initiation_class: author_initiated
+    classification_confidence: high
+    classification_note: "Author submission; invited peer review takes place openly after publication."
+    prc_configuration: approval_threshold
+    configuration_confidence: high
+    configuration_note: "Articles that pass peer review are indexed; F1000 approval statuses apply."
+    provisional: false
+    publish_arrangement: platform_own
+    review_arrangement: platform_own
+    curation_arrangement: platform_own
+    output_types: [version_of_record, review_report, approval_status]
+    public_review_reports: true
+    approval_status_public: true
+    summary_assessment: false
+    reviewer_identity_disclosed: always
+    version_linked_review: true
+    review_to_object_relation: crossref_is_review_of
+    public_author_response: true
+    review_has_doi: true
+    data_source: crossref
+    register_status: quantified
+    data_status: machine_readable
+    doi_prefix: "10.12688"
+    doi_pattern: "^10\\.12688/hrbopenres\\."
+    doi_version_pattern: "^(10\\.12688/hrbopenres\\.\\d+)\\.\\d+$"
+    sciety_group_slug: null
+    extraction_selector:
+      crossref:
+        prefix: "10.12688"
+        record_types: [journal-article, peer-review]
+        doi_regex: "^10\\.12688/hrbopenres\\.\\d+\\.\\d+$"
+        review_doi_prefix: "10.21956"
+    eligibility_events:
+      - first public posting of version 1 of an article (journal-article)
+    counting_event: first_public_posting
+    counting_event_date_field: issued
+    evidence_url:
+      - https://hrbopenresearch.org/about
+    verified_on: "2026-10-20"
+
+  - row_id: nihr_open_research
+    row_label: "NIHR Open Research"
+    organisation_id: f1000
+    organisation_name: "F1000 Research Ltd for the National Institute for Health and Care Research"
+    prc_role: integrated_platform
+    status: active
+    launch_year: 2021
+    model_since: 2021
+    model_note: null
+    coverage_start_year: 2021
+    coverage_end_year: null
+    discipline_scope: life_sciences
+    country_of_operator: "United Kingdom"
+    initiation_class: author_initiated
+    classification_confidence: high
+    classification_note: "Articles are published before peer review; expert reviewers are invited after publication."
+    prc_configuration: approval_threshold
+    configuration_confidence: high
+    configuration_note: "Reviewers select Approved / Approved with Reservations / Not Approved; names and affiliations published."
+    provisional: false
+    publish_arrangement: platform_own
+    review_arrangement: platform_own
+    curation_arrangement: platform_own
+    output_types: [version_of_record, review_report, approval_status]
+    public_review_reports: true
+    approval_status_public: true
+    summary_assessment: false
+    reviewer_identity_disclosed: always
+    version_linked_review: true
+    review_to_object_relation: crossref_is_review_of
+    public_author_response: true
+    review_has_doi: true
+    data_source: crossref
+    register_status: quantified
+    data_status: machine_readable
+    doi_prefix: "10.12688"
+    doi_pattern: "^10\\.12688/nihropenres\\."
+    doi_version_pattern: "^(10\\.12688/nihropenres\\.\\d+)\\.\\d+$"
+    sciety_group_slug: null
+    extraction_selector:
+      crossref:
+        prefix: "10.12688"
+        record_types: [journal-article, peer-review]
+        doi_regex: "^10\\.12688/nihropenres\\.\\d+\\.\\d+$"
+        review_doi_prefix: "10.21956"
+    eligibility_events:
+      - first public posting of version 1 of an article (journal-article)
+    counting_event: first_public_posting
+    counting_event_date_field: issued
+    evidence_url:
+      - https://openresearch.nihr.ac.uk/about
+    verified_on: "2026-10-20"
+
+  - row_id: health_open_research
+    row_label: "Health Open Research (including AMRC Open Research)"
+    organisation_id: f1000
+    organisation_name: "F1000 Research Ltd with the Association of Medical Research Charities"
+    prc_role: integrated_platform
+    status: active
+    launch_year: 2019
+    model_since: 2019
+    model_note: >-
+      Launched as AMRC Open Research in 2019; renamed Health Open Research in
+      November 2022. D-012 keeps one series, covering both DOI stems.
+    coverage_start_year: 2019
+    coverage_end_year: null
+    discipline_scope: life_sciences
+    country_of_operator: "United Kingdom"
+    initiation_class: author_initiated
+    classification_confidence: high
+    classification_note: >-
+      F1000 model: author submission followed by public peer review.
+    prc_configuration: approval_threshold
+    configuration_confidence: high
+    configuration_note: F1000 approval statuses and indexing threshold apply.
+    provisional: false
+    publish_arrangement: platform_own
+    review_arrangement: platform_own
+    curation_arrangement: platform_own
+    output_types: [version_of_record, review_report, approval_status]
+    public_review_reports: true
+    approval_status_public: true
+    summary_assessment: false
+    reviewer_identity_disclosed: always
+    version_linked_review: true
+    review_to_object_relation: crossref_is_review_of
+    public_author_response: true
+    review_has_doi: true
+    data_source: crossref
+    register_status: quantified
+    data_status: machine_readable
+    doi_prefix: "10.12688"
+    doi_pattern: "^10\\.12688/(healthopenres|amrcopenres)\\."
+    doi_version_pattern: "^(10\\.12688/(?:healthopenres|amrcopenres)\\.\\d+)\\.\\d+$"
+    sciety_group_slug: null
+    extraction_selector:
+      crossref:
+        prefix: "10.12688"
+        record_types: [journal-article, peer-review]
+        doi_regex: "^10\\.12688/(healthopenres|amrcopenres)\\.\\d+\\.\\d+$"
+        review_doi_prefix: "10.21956"
+    eligibility_events:
+      - first public posting of version 1 of an article (journal-article)
+    counting_event: first_public_posting
+    counting_event_date_field: issued
+    evidence_url:
+      - https://www.f1000.com/health-open-research-accelerating-medical-research/
+      - https://think.f1000.com/health-open-research/
+    verified_on: "2026-10-20"
+
+  - row_id: open_research_africa
+    row_label: "Open Research Africa (including AAS Open Research)"
+    organisation_id: f1000
+    organisation_name: "F1000 Research Ltd with the Science for Africa Foundation"
+    prc_role: integrated_platform
+    status: active
+    launch_year: 2018
+    model_since: 2018
+    model_note: >-
+      Launched as AAS Open Research in 2018; renamed Open Research Africa in
+      March 2022; eligibility widened to all authors based in Africa in March
+      2025. D-012 keeps one series, covering both DOI stems.
+    coverage_start_year: 2018
+    coverage_end_year: null
+    discipline_scope: multidisciplinary
+    country_of_operator: "United Kingdom"
+    initiation_class: author_initiated
+    classification_confidence: high
+    classification_note: >-
+      F1000 model: author submission followed by public peer review.
+    prc_configuration: approval_threshold
+    configuration_confidence: high
+    configuration_note: F1000 approval statuses and indexing threshold apply.
+    provisional: false
+    publish_arrangement: platform_own
+    review_arrangement: platform_own
+    curation_arrangement: platform_own
+    output_types: [version_of_record, review_report, approval_status]
+    public_review_reports: true
+    approval_status_public: true
+    summary_assessment: false
+    reviewer_identity_disclosed: always
+    version_linked_review: true
+    review_to_object_relation: crossref_is_review_of
+    public_author_response: true
+    review_has_doi: true
+    data_source: crossref
+    register_status: quantified
+    data_status: machine_readable
+    doi_prefix: "10.12688"
+    doi_pattern: "^10\\.12688/(openresafrica|aasopenres)\\."
+    doi_version_pattern: "^(10\\.12688/(?:openresafrica|aasopenres)\\.\\d+)\\.\\d+$"
+    sciety_group_slug: null
+    extraction_selector:
+      crossref:
+        prefix: "10.12688"
+        record_types: [journal-article, peer-review]
+        doi_regex: "^10\\.12688/(openresafrica|aasopenres)\\.\\d+\\.\\d+$"
+        review_doi_prefix: "10.21956"
+    eligibility_events:
+      - first public posting of version 1 of an article (journal-article)
+    counting_event: first_public_posting
+    counting_event_date_field: issued
+    evidence_url:
+      - https://www.f1000.com/f1000-extends-open-research-africa-to-all-authors-in-africa/
+      - https://think.f1000.com/open-research-africa/
+    verified_on: "2026-10-20"
+
+  - row_id: routledge_open_research
+    row_label: "Routledge Open Research"
+    organisation_id: f1000
+    organisation_name: "F1000 Research Ltd / Routledge (Taylor & Francis)"
+    prc_role: integrated_platform
+    status: active
+    launch_year: 2021
+    model_since: 2021
+    model_note: null
+    coverage_start_year: 2021
+    coverage_end_year: null
+    discipline_scope: multidisciplinary
+    country_of_operator: "United Kingdom"
+    initiation_class: author_initiated
+    classification_confidence: medium
+    classification_note: >-
+      F1000 model for humanities and social sciences, listed among F1000
+      publishing venues. Own website could not be parsed on verified_on; the
+      classification rests on the operator's venue page and is to be confirmed.
+    prc_configuration: approval_threshold
+    configuration_confidence: medium
+    configuration_note: F1000 approval statuses assumed from the operator's description; to be confirmed on the platform site.
+    provisional: false
+    publish_arrangement: platform_own
+    review_arrangement: platform_own
+    curation_arrangement: platform_own
+    output_types: [version_of_record, review_report, approval_status]
+    public_review_reports: true
+    approval_status_public: true
+    summary_assessment: false
+    reviewer_identity_disclosed: always
+    version_linked_review: true
+    review_to_object_relation: crossref_is_review_of
+    public_author_response: true
+    review_has_doi: true
+    data_source: crossref
+    register_status: quantified
+    data_status: machine_readable
+    doi_prefix: "10.12688"
+    doi_pattern: "^10\\.12688/routledgeopenres\\."
+    doi_version_pattern: "^(10\\.12688/routledgeopenres\\.\\d+)\\.\\d+$"
+    sciety_group_slug: null
+    extraction_selector:
+      crossref:
+        prefix: "10.12688"
+        record_types: [journal-article, peer-review]
+        doi_regex: "^10\\.12688/routledgeopenres\\.\\d+\\.\\d+$"
+        review_doi_prefix: "10.21956"
+    eligibility_events:
+      - first public posting of version 1 of an article (journal-article)
+    counting_event: first_public_posting
+    counting_event_date_field: issued
+    evidence_url:
+      - https://www.f1000.com/resources-for-researchers/where-to-publish-your-research/f1000-publishing-venues/
+      - https://routledgeopenresearch.org/about
+    verified_on: "2026-10-20"
+
+  # ----------------------------------------------------- MedEd Publish
+  - row_id: meded_publish
+    row_label: "MedEdPublish"
+    organisation_id: amee
+    organisation_name: "Association for Medical Education in Europe (AMEE); platform operated by F1000 since 2021"
+    prc_role: integrated_platform
+    status: active
+    launch_year: 2016
+    model_since: 2016
+    model_note: null
+    coverage_start_year: 2016
+    coverage_end_year: null
+    discipline_scope: life_sciences
+    country_of_operator: "United Kingdom"
+    initiation_class: author_initiated
+    classification_confidence: high
+    classification_note: >-
+      Authors submit; all in-scope articles meeting formal criteria are
+      published and then reviewed openly post-publication (AMEE platform
+      2016-2021; F1000 platform from November 2021).
+    prc_configuration: approval_threshold
+    configuration_confidence: high
+    configuration_note: >-
+      Articles receiving good ratings / recommended status from reviewers are
+      indexed; on the F1000 platform the standard approval statuses apply.
+      Reviews are published with reviewer names.
+    provisional: false
+    publish_arrangement: platform_own
+    review_arrangement: platform_own
+    curation_arrangement: platform_own
+    output_types: [version_of_record, review_report, approval_status]
+    public_review_reports: true
+    approval_status_public: true
+    summary_assessment: false
+    reviewer_identity_disclosed: always
+    version_linked_review: true
+    review_to_object_relation: unknown
+    public_author_response: true
+    review_has_doi: true
+    data_source: crossref
+    register_status: quantified
+    data_status: partial_coverage
+    doi_prefix: "10.15694"
+    doi_pattern: "^10\\.(15694|12688)/mep\\."
+    doi_version_pattern: "^(10\\.(?:15694|12688)/mep\\.[0-9.]*?\\d)(?:\\.\\d+)?$"
+    sciety_group_slug: null
+    extraction_selector:
+      crossref:
+        prefix: ["10.15694", "10.12688"]
+        record_types: [journal-article, posted-content, peer-review]
+        doi_regex: "^10\\.(15694|12688)/mep\\."
+        review_doi_prefix: "10.21956"
+        notes: >-
+          Three DOI regimes: 10.15694/mep.<year>.<vol>.<art> and
+          10.15694/mep.<year>.<art> (base records without version suffix),
+          10.15694/mep.<...>.1 (versioned, AMEE platform), and
+          10.12688/mep.<id>.1 (F1000 platform). Counting uses version-1 or
+          base records deduplicated on the base identifier; withdrawn records
+          and later versions are excluded. Reviews on the AMEE platform had no
+          DOI-level records; F1000-era review DOIs under 10.21956 are checked
+          in the first local run.
+    eligibility_events:
+      - eligible version-1 or base posting of an article
+    counting_event: first_public_posting
+    counting_event_date_field: issued
+    evidence_url:
+      - https://www.f1000.com/resources-for-researchers/where-to-publish-your-research/f1000-publishing-venues/
+      - https://think.f1000research.com/mededpublish/
+      - https://mededpublish.org/articles/11-1
+    verified_on: "2026-10-20"
+
+  # --------------------------------------------------- Emerald Open Research
+  - row_id: emerald_open_research
+    row_label: "Emerald Open Research"
+    organisation_id: emerald
+    organisation_name: "Emerald Publishing (platform operated by F1000)"
+    prc_role: integrated_platform
+    status: closed
+    launch_year: 2019
+    model_since: 2019
+    model_note: null
+    coverage_start_year: 2019
+    coverage_end_year: 2023
+    discipline_scope: social_sciences
+    country_of_operator: "United Kingdom"
+    initiation_class: author_initiated
+    classification_confidence: high
+    classification_note: >-
+      F1000 model for social sciences (publish-first, invited open peer
+      review after publication). Launched February 2019.
+    prc_configuration: approval_threshold
+    configuration_confidence: medium
+    configuration_note: >-
+      The platform site describes invited open post-publication review but
+      no longer lists approval statuses; the F1000 approval mechanism is
+      assumed from the operating model. Content was re-hosted on Emerald
+      Insight as volume 1 (2023) and the platform is treated as closed to new
+      submissions from 2023; the closure date is not stated on the platform
+      site. D-014 fixes status closed and the series end at 2023.
+    provisional: false
+    publish_arrangement: platform_own
+    review_arrangement: platform_own
+    curation_arrangement: platform_own
+    output_types: [version_of_record, review_report, approval_status]
+    public_review_reports: true
+    approval_status_public: true
+    summary_assessment: false
+    reviewer_identity_disclosed: always
+    version_linked_review: true
+    review_to_object_relation: unknown
+    public_author_response: true
+    review_has_doi: unknown
+    data_source: crossref
+    register_status: quantified
+    data_status: defunct
+    doi_prefix: "10.35241"
+    doi_pattern: "^10\\.35241/emeraldopenres\\."
+    doi_version_pattern: "^(10\\.35241/emeraldopenres\\.\\d+)\\.\\d+$"
+    sciety_group_slug: null
+    extraction_selector:
+      crossref:
+        prefix: "10.35241"
+        record_types: [journal-article, peer-review]
+        doi_regex: "^10\\.35241/emeraldopenres\\.\\d+\\.\\d+$"
+    eligibility_events:
+      - first public posting of version 1 of an article (journal-article)
+    counting_event: first_public_posting
+    counting_event_date_field: issued
+    evidence_url:
+      - https://emeraldopenresearch.com/about
+      - https://www.emerald.com/insight/publication/issn/2631-3952
+      - https://www.emeraldgrouppublishing.com/news-and-press-releases/emerald-publishing-becomes-first-publisher-adopt-f1000s-open-research
+    verified_on: "2026-10-20"
+
+  # ---------------------------------------------------------------- MetaROR
+  - row_id: metaror
+    row_label: "MetaROR (MetaResearch Open Review)"
+    organisation_id: metaror
+    organisation_name: "Research on Research Institute (RoRI) and AIMOS"
+    prc_role: review_service
+    status: active
+    launch_year: 2024
+    model_since: 2024
+    model_note: null
+    coverage_start_year: 2024
+    coverage_end_year: null
+    discipline_scope: metaresearch
+    country_of_operator: "United Kingdom / Australia"
+    initiation_class: author_initiated
+    classification_confidence: high
+    classification_note: >-
+      Authors submit work that is already public on a preprint server or
+      repository; the platform organises open review and posts an editorial
+      assessment. No documented route by which editors select unsolicited
+      works.
+    prc_configuration: core_publish_first
+    configuration_confidence: high
+    configuration_note: >-
+      Open review reports are posted alongside the work; editors post an
+      editorial assessment summarising strengths and weaknesses instead of a
+      binary accept/reject decision. Partner journals may reuse the reports.
+    provisional: false
+    publish_arrangement: external_preprint_server
+    review_arrangement: platform_own
+    curation_arrangement: platform_own
+    output_types: [review_report, assessment_statement]
+    public_review_reports: true
+    approval_status_public: false
+    summary_assessment: true
+    reviewer_identity_disclosed: optional
+    version_linked_review: true
+    review_to_object_relation: sciety_docmap
+    public_author_response: true
+    review_has_doi: unknown
+    data_source: sciety
+    register_status: quantified
+    data_status: machine_readable
+    doi_prefix: null
+    doi_pattern: null
+    doi_version_pattern: null
+    sciety_group_slug: metaror
+    extraction_selector:
+      sciety:
+        group_slug: metaror
+        group_id: cc4c8e79-402f-40e7-80fd-1062145d24ec
+        group_page_url: https://sciety.org/groups/metaror
+        role: primary
+    eligibility_events:
+      - qualifying docmap evaluation output (review report or editorial assessment) for an already-public work
+    counting_event: earliest_qualifying_evaluation
+    counting_event_date_field: "evaluation published"
+    evidence_url:
+      - https://metaror.org/
+      - https://sciety.org/groups/metaror/about
+    verified_on: "2026-10-20"
+
+  # ------------------------------------------------------ Peer Community In
+  - row_id: pci_recommendations
+    row_label: "Peer Community In — recommendations (all thematic PCIs incl. PCI Registered Reports)"
+    organisation_id: pci
+    organisation_name: "Peer Community In (non-profit association)"
+    prc_role: review_service
+    status: active
+    launch_year: 2017
+    model_since: 2017
+    model_note: null
+    coverage_start_year: 2017
+    coverage_end_year: null
+    discipline_scope: multidisciplinary
+    country_of_operator: "France"
+    initiation_class: author_initiated
+    classification_confidence: high
+    classification_note: >-
+      Authors submit preprints to a thematic PCI and suggest recommenders;
+      recommenders handle submitted preprints only.
+    prc_configuration: review_or_curation_service
+    configuration_confidence: high
+    configuration_note: >-
+      Service operating on preprints hosted elsewhere. For recommended
+      preprints the recommendation (with DOI), reviews, decisions and author
+      replies are published; reviews of rejected preprints are not published.
+      Reviewers may remain anonymous.
+    provisional: false
+    publish_arrangement: external_preprint_server
+    review_arrangement: platform_own
+    curation_arrangement: platform_own
+    output_types: [recommendation, review_report]
+    public_review_reports: true
+    approval_status_public: true
+    summary_assessment: true
+    reviewer_identity_disclosed: optional
+    version_linked_review: true
+    review_to_object_relation: both
+    public_author_response: true
+    review_has_doi: true
+    data_source: both
+    register_status: quantified
+    data_status: machine_readable
+    doi_prefix: "10.24072"
+    doi_pattern: "^10\\.24072/pci\\."
+    doi_version_pattern: null
+    sciety_group_slug: null
+    extraction_selector:
+      crossref:
+        prefix: "10.24072"
+        record_types: [peer-review, journal-article, posted-content]
+        doi_regex: "^10\\.24072/pci\\."
+        notes: >-
+          Recommendation DOIs follow 10.24072/pci.<community>.<number>; the
+          Crossref record type and the presence of is-review-of relations are
+          confirmed in the first local run. Peer Community Journal articles
+          (10.24072/pcjournal.*) are excluded from this row.
+      sciety:
+        group_slugs: [peer-community-in-archaeology, peer-community-in-ecology, peer-community-in-paleontology, peer-community-in-evolutionary-biology, peer-community-in-animal-science, peer-community-in-zoology, peer-community-in-neuroscience]
+        role: cross_check
+    eligibility_events:
+      - public recommendation of an already-public preprint (recommendation record with is-review-of relation)
+    counting_event: earliest_qualifying_evaluation
+    counting_event_date_field: issued
+    evidence_url:
+      - https://peercommunityin.org/
+      - https://peercommunityin.org/faq/
+    verified_on: "2026-10-20"
+
+  # ---------------------------------------------------------------- SciPost
+  - row_id: scipost
+    row_label: "SciPost"
+    organisation_id: scipost
+    organisation_name: "SciPost Foundation"
+    prc_role: integrated_platform
+    status: active
+    launch_year: 2016
+    model_since: 2016
+    model_note: null
+    coverage_start_year: 2016
+    coverage_end_year: null
+    discipline_scope: physical_sciences
+    country_of_operator: "Netherlands"
+    initiation_class: author_initiated
+    classification_confidence: high
+    classification_note: >-
+      Authors submit (preprint on arXiv or another repository); after an
+      Editor-in-charge is assigned a public Submission Page opens for invited
+      and contributed reports, comments and author replies. Authors' ability
+      to suggest or exclude referees is a variation of author submission.
+    prc_configuration: hybrid_public_discussion
+    configuration_confidence: high
+    configuration_note: >-
+      Public refereeing followed by a binding publish-or-reject vote of the
+      Editorial College. Differences from Copernicus: the Submission Page may
+      be removed from public view after rejection or withdrawal unless the
+      authors ask to keep it, and the editorial recommendation itself is not
+      public. Rejected submissions are not deposited, so the series measures
+      published works that underwent public refereeing, not all submissions.
+    provisional: false
+    publish_arrangement: external_preprint_server
+    review_arrangement: platform_own
+    curation_arrangement: platform_own
+    output_types: [version_of_record, review_report]
+    public_review_reports: true
+    approval_status_public: false
+    summary_assessment: false
+    reviewer_identity_disclosed: optional
+    version_linked_review: true
+    review_to_object_relation: unknown
+    public_author_response: true
+    review_has_doi: true
+    data_source: crossref
+    register_status: quantified
+    data_status: machine_readable
+    doi_prefix: "10.21468"
+    doi_pattern: "^10\\.21468/scipost"
+    doi_version_pattern: null
+    sciety_group_slug: null
+    extraction_selector:
+      crossref:
+        prefix: "10.21468"
+        record_types: [journal-article]
+        doi_regex: "^10\\.21468/scipost(?!\\.report\\.)"
+        exclude_doi_regex: "^10\\.21468/scipost\\.report\\."
+    eligibility_events:
+      - published work (journal-article under 10.21468, excluding 10.21468/scipost.report.*) that underwent the public-refereeing workflow
+    counting_event: final_article
+    counting_event_date_field: issued
+    evidence_url:
+      - https://scipost.org/submissions/editorial_procedure
+      - https://scipost.org/submissions/editorial_workflow
+      - https://scipost.org/EdCol_by-laws
+    verified_on: "2026-10-20"
+
+  # ------------------------------------------------------------- Copernicus
+  - row_id: copernicus_interactive_public_peer_review
+    row_label: "Copernicus Publications — journals with Interactive Public Peer Review (incl. EGUsphere)"
+    organisation_id: copernicus
+    organisation_name: "Copernicus Publications (Copernicus GmbH)"
+    prc_role: integrated_platform
+    status: active
+    launch_year: 2001
+    model_since: 2001
+    model_note: >-
+      Two-stage process since 2001: discussion paper in a journal-specific
+      Discussions forum (DOI regime "<stem>d-<volume>-<page>-<year>", later
+      "<stem>-<year>-<number>"), then the final revised paper. EGUsphere
+      (launched 2022) hosts the discussion preprints of EGU journals, for all
+      EGU journals from 1 January 2025, under the DOI regime
+      "egusphere-<year>-<number>"; journals of other owners keep their own
+      stems. D-027 (2026-10-20): 29 journals hand-verified as operating
+      interactive public peer review, 10 Copernicus journals verified as
+      conventional review and excluded (listed in the selector).
+    coverage_start_year: 2001
+    coverage_end_year: null
+    discipline_scope: physical_sciences
+    country_of_operator: "Germany"
+    initiation_class: author_initiated
+    classification_confidence: high
+    classification_note: >-
+      Authors submit to a journal; after an access review the manuscript is
+      posted as a discussion preprint (journal discussion forum before 2025,
+      EGUsphere for all EGU journals from 1 January 2025) and undergoes
+      interactive public discussion.
+    prc_configuration: hybrid_public_discussion
+    configuration_confidence: high
+    configuration_note: >-
+      Referee comments (anonymous or attributed), community comments and
+      author replies are posted publicly; peer review is then completed and,
+      if accepted, the final revised paper is published. Discussion preprints
+      receive DOIs and remain accessible after rejection. D-015 counts entry
+      into public discussion through the discussion preprint, unlike SciPost,
+      whose series counts final articles. A hand-verified journal list with
+      per-journal evidence_url is required; a publisher index alone does not
+      establish interactive review for each journal.
+    provisional: false
+    publish_arrangement: platform_own
+    review_arrangement: platform_own
+    curation_arrangement: platform_own
+    output_types: [reviewed_preprint, version_of_record, review_report]
+    public_review_reports: true
+    approval_status_public: false
+    summary_assessment: false
+    reviewer_identity_disclosed: optional
+    version_linked_review: true
+    review_to_object_relation: none
+    public_author_response: true
+    review_has_doi: false
+    data_source: crossref
+    register_status: quantified
+    data_status: machine_readable
+    doi_prefix: "10.5194"
+    doi_pattern: "^10\\.5194/"
+    doi_version_pattern: null
+    sciety_group_slug: null
+    extraction_selector:
+      crossref:
+        prefix: "10.5194"
+        record_types: [journal-article, posted-content, peer-review]
+        doi_regex: "^10\\.5194/(?:egusphere-\\d{4}-\\d+|[a-z]+d-\\d+-\\d+-\\d{4}|[a-z]+-\\d{4}-\\d+)$"
+        doi_regex_role: >-
+          Coarse retrieval filter over the three discussion-preprint DOI
+          regimes; it may still admit final articles of journals whose stem
+          ends in "d". Inclusion is decided only by the per-journal
+          journal_specific_doi_regex entries and the EGUsphere attribution
+          rule below.
+        selector_status: verified_journal_list
+        selection_rule: >-
+          A record is a discussion preprint of a verified journal when its DOI
+          matches one of that journal's journal_specific_doi_regex entries
+          (the "<stem>d-<volume>-<page>-<year>" regime of the former
+          Discussions journals and the "<stem>-<year>-<number>" regime of the
+          journal discussion forums) or when it matches the EGUsphere regime
+          and is attributed to a verified journal under egusphere_attribution.
+          Final articles ("<stem>-<volume>-<page>-<year>") never match the
+          journal_specific_doi_regex entries. Record type is not relied upon:
+          the former Discussions journals registered discussion papers as
+          journal-article, later regimes as posted-content.
+        egusphere_regime:
+          doi_regex: "^10\\.5194/egusphere-\\d{4}-\\d+$"
+          attribution_rule: >-
+            EGUsphere hosts both journal-related preprints (interactive public
+            peer review for an EGU journal) and stand-alone preprints that
+            receive community comments only. An EGUsphere preprint counts for
+            this row when any of these signals is observed: is-preprint-of
+            resolving to a verified-journal article; a verified journal title
+            in container-title / group-title; a Crossref peer-review record
+            with is-review-of targeting the preprint. Store every observed
+            signal in attribution_basis per record. Unattributed preprints
+            stay in interim with included=false and
+            exclusion_reason=no_journal_attribution. Yearly coverage_matrix
+            records partial_known_scope and the lower-bound limitation.
+            Pre-EGUsphere discussion DOIs are attributed by DOI pattern.
+            Use register_only only if none of the three EGUsphere signals
+            appears in the completed local run (D-032).
+          attribution_status: pending_run_confirmation
+          since: "journal-dependent; all EGU journals from 2025-01-01 (EGUsphere FAQ)"
+        journals_not_using_interactive_review:
+          - {title: "Archives Animal Breeding", evidence_url: https://www.archives-animal-breeding.net/peer_review/review_process.html}
+          - {title: "Advances in Statistical Climatology, Meteorology and Oceanography", evidence_url: https://www.advances-statistical-climatology-meteorology-oceanography.net/peer_review/review_process.html}
+          - {title: "E&G Quaternary Science Journal", evidence_url: https://www.eg-quaternary-science-journal.net/peer_review/review_process.html}
+          - {title: "European Journal of Mineralogy", evidence_url: https://www.european-journal-of-mineralogy.net/peer_review/review_process.html}
+          - {title: "Geographica Helvetica", evidence_url: https://www.geographica-helvetica.net/peer_review/review_process.html}
+          - {title: "Journal of Bone and Joint Infection", evidence_url: https://www.journal-of-bone-and-joint-infection.net/peer_review/review_process.html}
+          - {title: "Journal of Micropalaeontology", evidence_url: https://www.journal-of-micropalaeontology.net/peer_review/review_process.html}
+          - {title: "Journal of Sensors and Sensor Systems", evidence_url: https://www.journal-of-sensors-and-sensor-systems.net/peer_review/review_process.html}
+          - {title: "Scientific Drilling", evidence_url: https://www.scientific-drilling.net/peer_review/review_process.html}
+          - {title: "Web Ecology", evidence_url: https://www.web-ecology.net/peer_review/review_process.html}
+        journals:
+          - journal_id: ar
+            title: "Aerosol Research"
+            home_url: https://www.aerosol-research.net
+            evidence_url: https://www.aerosol-research.net/peer_review/interactive_review_process.html
+            preprint_listing_url: https://ar.copernicus.org/preprints/preprints.html
+            verified_on: "2026-10-20"
+            interactive_public_peer_review: true
+            discussion_selector:
+              journal_specific_doi_regex:
+                - "^10\\.5194/ard-\\d+-\\d+-\\d{4}$"
+                - "^10\\.5194/ar-\\d{4}-\\d+$"
+              egusphere_regime: false
+            doi_stems_observed_in_listing: [ar]
+          - journal_id: angeo
+            title: "Annales Geophysicae"
+            home_url: https://www.annales-geophysicae.net
+            evidence_url: https://www.annales-geophysicae.net/peer_review/interactive_review_process.html
+            preprint_listing_url: https://angeo.copernicus.org/preprints/
+            verified_on: "2026-10-20"
+            interactive_public_peer_review: true
+            discussion_selector:
+              journal_specific_doi_regex:
+                - "^10\\.5194/angeod-\\d+-\\d+-\\d{4}$"
+                - "^10\\.5194/angeo-\\d{4}-\\d+$"
+              egusphere_regime: true
+            doi_stems_observed_in_listing: [egusphere, angeo]
+          - journal_id: acp
+            title: "Atmospheric Chemistry and Physics"
+            home_url: https://www.atmospheric-chemistry-and-physics.net
+            evidence_url: https://www.atmospheric-chemistry-and-physics.net/peer_review/interactive_review_process.html
+            preprint_listing_url: https://acp.copernicus.org/preprints/
+            verified_on: "2026-10-20"
+            interactive_public_peer_review: true
+            discussion_selector:
+              journal_specific_doi_regex:
+                - "^10\\.5194/acpd-\\d+-\\d+-\\d{4}$"
+                - "^10\\.5194/acp-\\d{4}-\\d+$"
+              egusphere_regime: true
+            doi_stems_observed_in_listing: [egusphere]
+          - journal_id: amt
+            title: "Atmospheric Measurement Techniques"
+            home_url: https://www.atmospheric-measurement-techniques.net
+            evidence_url: https://www.atmospheric-measurement-techniques.net/peer_review/interactive_review_process.html
+            preprint_listing_url: https://amt.copernicus.org/preprints/
+            verified_on: "2026-10-20"
+            interactive_public_peer_review: true
+            discussion_selector:
+              journal_specific_doi_regex:
+                - "^10\\.5194/amtd-\\d+-\\d+-\\d{4}$"
+                - "^10\\.5194/amt-\\d{4}-\\d+$"
+              egusphere_regime: true
+            doi_stems_observed_in_listing: [egusphere]
+          - journal_id: bg
+            title: "Biogeosciences"
+            home_url: https://www.biogeosciences.net
+            evidence_url: https://www.biogeosciences.net/peer_review/interactive_review_process.html
+            preprint_listing_url: https://bg.copernicus.org/preprints/
+            verified_on: "2026-10-20"
+            interactive_public_peer_review: true
+            discussion_selector:
+              journal_specific_doi_regex:
+                - "^10\\.5194/bgd-\\d+-\\d+-\\d{4}$"
+                - "^10\\.5194/bg-\\d{4}-\\d+$"
+              egusphere_regime: true
+            doi_stems_observed_in_listing: [egusphere]
+          - journal_id: cp
+            title: "Climate of the Past"
+            home_url: https://www.climate-of-the-past.net
+            evidence_url: https://www.climate-of-the-past.net/peer_review/interactive_review_process.html
+            preprint_listing_url: https://cp.copernicus.org/preprints/
+            verified_on: "2026-10-20"
+            interactive_public_peer_review: true
+            discussion_selector:
+              journal_specific_doi_regex:
+                - "^10\\.5194/cpd-\\d+-\\d+-\\d{4}$"
+                - "^10\\.5194/cp-\\d{4}-\\d+$"
+              egusphere_regime: true
+            doi_stems_observed_in_listing: [egusphere, cp]
+          - journal_id: eo
+            title: "Earth Observation"
+            home_url: https://www.earth-observation.net
+            evidence_url: https://www.earth-observation.net/peer_review/interactive_review_process.html
+            preprint_listing_url: https://eo.copernicus.org/preprints/
+            verified_on: "2026-10-20"
+            interactive_public_peer_review: true
+            discussion_selector:
+              journal_specific_doi_regex:
+                - "^10\\.5194/eod-\\d+-\\d+-\\d{4}$"
+                - "^10\\.5194/eo-\\d{4}-\\d+$"
+              egusphere_regime: true
+            doi_stems_observed_in_listing: []
+          - journal_id: esurf
+            title: "Earth Surface Dynamics"
+            home_url: https://www.earth-surface-dynamics.net
+            evidence_url: https://www.earth-surface-dynamics.net/peer_review/interactive_review_process.html
+            preprint_listing_url: https://esurf.copernicus.org/preprints/
+            verified_on: "2026-10-20"
+            interactive_public_peer_review: true
+            discussion_selector:
+              journal_specific_doi_regex:
+                - "^10\\.5194/esurfd-\\d+-\\d+-\\d{4}$"
+                - "^10\\.5194/esurf-\\d{4}-\\d+$"
+              egusphere_regime: true
+            doi_stems_observed_in_listing: [egusphere, esurf, esurfd]
+          - journal_id: esd
+            title: "Earth System Dynamics"
+            home_url: https://www.earth-system-dynamics.net
+            evidence_url: https://www.earth-system-dynamics.net/peer_review/interactive_review_process.html
+            preprint_listing_url: https://esd.copernicus.org/preprints/
+            verified_on: "2026-10-20"
+            interactive_public_peer_review: true
+            discussion_selector:
+              journal_specific_doi_regex:
+                - "^10\\.5194/esdd-\\d+-\\d+-\\d{4}$"
+                - "^10\\.5194/esd-\\d{4}-\\d+$"
+              egusphere_regime: true
+            doi_stems_observed_in_listing: [egusphere, esd]
+          - journal_id: essd
+            title: "Earth System Science Data"
+            home_url: https://www.earth-system-science-data.net
+            evidence_url: https://www.earth-system-science-data.net/peer_review/interactive_review_process.html
+            preprint_listing_url: https://essd.copernicus.org/preprints/
+            verified_on: "2026-10-20"
+            interactive_public_peer_review: true
+            discussion_selector:
+              journal_specific_doi_regex:
+                - "^10\\.5194/essdd-\\d+-\\d+-\\d{4}$"
+                - "^10\\.5194/essd-\\d{4}-\\d+$"
+              egusphere_regime: false
+            doi_stems_observed_in_listing: [essd]
+          - journal_id: gchron
+            title: "Geochronology"
+            home_url: https://www.geochronology.net
+            evidence_url: https://www.geochronology.net/peer_review/interactive_review_process.html
+            preprint_listing_url: https://gchron.copernicus.org/preprints/
+            verified_on: "2026-10-20"
+            interactive_public_peer_review: true
+            discussion_selector:
+              journal_specific_doi_regex:
+                - "^10\\.5194/gchrond-\\d+-\\d+-\\d{4}$"
+                - "^10\\.5194/gchron-\\d{4}-\\d+$"
+              egusphere_regime: true
+            doi_stems_observed_in_listing: [egusphere, gchron]
+          - journal_id: gc
+            title: "Geoscience Communication"
+            home_url: https://www.geoscience-communication.net
+            evidence_url: https://www.geoscience-communication.net/peer_review/interactive_review_process.html
+            preprint_listing_url: https://gc.copernicus.org/preprints/
+            verified_on: "2026-10-20"
+            interactive_public_peer_review: true
+            discussion_selector:
+              journal_specific_doi_regex:
+                - "^10\\.5194/gcd-\\d+-\\d+-\\d{4}$"
+                - "^10\\.5194/gc-\\d{4}-\\d+$"
+              egusphere_regime: true
+            doi_stems_observed_in_listing: [egusphere, gc]
+          - journal_id: gi
+            title: "Geoscientific Instrumentation, Methods and Data Systems"
+            home_url: https://www.geoscientific-instrumentation-methods-and-data-systems.net
+            evidence_url: https://www.geoscientific-instrumentation-methods-and-data-systems.net/peer_review/interactive_review_process.html
+            preprint_listing_url: https://gi.copernicus.org/preprints/
+            verified_on: "2026-10-20"
+            interactive_public_peer_review: true
+            discussion_selector:
+              journal_specific_doi_regex:
+                - "^10\\.5194/gid-\\d+-\\d+-\\d{4}$"
+                - "^10\\.5194/gi-\\d{4}-\\d+$"
+              egusphere_regime: true
+            doi_stems_observed_in_listing: [gi, egusphere, gid]
+          - journal_id: gmd
+            title: "Geoscientific Model Development"
+            home_url: https://www.geoscientific-model-development.net
+            evidence_url: https://www.geoscientific-model-development.net/peer_review/interactive_review_process.html
+            preprint_listing_url: https://gmd.copernicus.org/preprints/
+            verified_on: "2026-10-20"
+            interactive_public_peer_review: true
+            discussion_selector:
+              journal_specific_doi_regex:
+                - "^10\\.5194/gmdd-\\d+-\\d+-\\d{4}$"
+                - "^10\\.5194/gmd-\\d{4}-\\d+$"
+              egusphere_regime: true
+            doi_stems_observed_in_listing: [egusphere]
+          - journal_id: hgss
+            title: "History of Geo- and Space Sciences"
+            home_url: https://www.history-of-geo-and-space-sciences.net
+            evidence_url: https://www.history-of-geo-and-space-sciences.net/peer_review/interactive_review_process.html
+            preprint_listing_url: https://hgss.copernicus.org/preprints/
+            verified_on: "2026-10-20"
+            interactive_public_peer_review: true
+            discussion_selector:
+              journal_specific_doi_regex:
+                - "^10\\.5194/hgssd-\\d+-\\d+-\\d{4}$"
+                - "^10\\.5194/hgss-\\d{4}-\\d+$"
+              egusphere_regime: false
+            doi_stems_observed_in_listing: [hgss]
+          - journal_id: hess
+            title: "Hydrology and Earth System Sciences"
+            home_url: https://www.hydrology-and-earth-system-sciences.net
+            evidence_url: https://www.hydrology-and-earth-system-sciences.net/peer_review/interactive_review_process.html
+            preprint_listing_url: https://hess.copernicus.org/preprints/
+            verified_on: "2026-10-20"
+            interactive_public_peer_review: true
+            discussion_selector:
+              journal_specific_doi_regex:
+                - "^10\\.5194/hessd-\\d+-\\d+-\\d{4}$"
+                - "^10\\.5194/hess-\\d{4}-\\d+$"
+              egusphere_regime: true
+            doi_stems_observed_in_listing: [egusphere]
+          - journal_id: ls
+            title: "Land Systems"
+            home_url: https://www.land-systems.net
+            evidence_url: https://www.land-systems.net/peer_review/interactive_review_process.html
+            preprint_listing_url: https://ls.copernicus.org/preprints/
+            verified_on: "2026-10-20"
+            interactive_public_peer_review: true
+            discussion_selector:
+              journal_specific_doi_regex:
+                - "^10\\.5194/lsd-\\d+-\\d+-\\d{4}$"
+                - "^10\\.5194/ls-\\d{4}-\\d+$"
+              egusphere_regime: false
+            doi_stems_observed_in_listing: [ls]
+          - journal_id: mr
+            title: "Magnetic Resonance"
+            home_url: https://www.magnetic-resonance-ampere.net
+            evidence_url: https://www.magnetic-resonance-ampere.net/peer_review/interactive_review_process.html
+            preprint_listing_url: https://mr.copernicus.org/preprints/
+            verified_on: "2026-10-20"
+            interactive_public_peer_review: true
+            discussion_selector:
+              journal_specific_doi_regex:
+                - "^10\\.5194/mrd-\\d+-\\d+-\\d{4}$"
+                - "^10\\.5194/mr-\\d{4}-\\d+$"
+              egusphere_regime: false
+            doi_stems_observed_in_listing: [mr]
+          - journal_id: ms
+            title: "Mechanical Sciences"
+            home_url: https://www.mechanical-sciences.net
+            evidence_url: https://www.mechanical-sciences.net/peer_review/interactive_review_process.html
+            preprint_listing_url: https://ms.copernicus.org/preprints
+            verified_on: "2026-10-20"
+            interactive_public_peer_review: true
+            discussion_selector:
+              journal_specific_doi_regex:
+                - "^10\\.5194/msd-\\d+-\\d+-\\d{4}$"
+                - "^10\\.5194/ms-\\d{4}-\\d+$"
+              egusphere_regime: false
+            doi_stems_observed_in_listing: [ms]
+          - journal_id: nhess
+            title: "Natural Hazards and Earth System Sciences"
+            home_url: https://www.natural-hazards-and-earth-system-sciences.net
+            evidence_url: https://www.natural-hazards-and-earth-system-sciences.net/peer_review/interactive_review_process.html
+            preprint_listing_url: https://nhess.copernicus.org/preprints/
+            verified_on: "2026-10-20"
+            interactive_public_peer_review: true
+            discussion_selector:
+              journal_specific_doi_regex:
+                - "^10\\.5194/nhessd-\\d+-\\d+-\\d{4}$"
+                - "^10\\.5194/nhess-\\d{4}-\\d+$"
+              egusphere_regime: true
+            doi_stems_observed_in_listing: [egusphere]
+          - journal_id: npg
+            title: "Nonlinear Processes in Geophysics"
+            home_url: https://www.nonlinear-processes-in-geophysics.net
+            evidence_url: https://www.nonlinear-processes-in-geophysics.net/peer_review/interactive_review_process.html
+            preprint_listing_url: https://npg.copernicus.org/preprints/
+            verified_on: "2026-10-20"
+            interactive_public_peer_review: true
+            discussion_selector:
+              journal_specific_doi_regex:
+                - "^10\\.5194/npgd-\\d+-\\d+-\\d{4}$"
+                - "^10\\.5194/npg-\\d{4}-\\d+$"
+              egusphere_regime: true
+            doi_stems_observed_in_listing: [npg, egusphere, npgd]
+          - journal_id: os
+            title: "Ocean Science"
+            home_url: https://www.ocean-science.net
+            evidence_url: https://www.ocean-science.net/peer_review/interactive_review_process.html
+            preprint_listing_url: https://os.copernicus.org/preprints/
+            verified_on: "2026-10-20"
+            interactive_public_peer_review: true
+            discussion_selector:
+              journal_specific_doi_regex:
+                - "^10\\.5194/osd-\\d+-\\d+-\\d{4}$"
+                - "^10\\.5194/os-\\d{4}-\\d+$"
+              egusphere_regime: true
+            doi_stems_observed_in_listing: [egusphere]
+          - journal_id: sand
+            title: "Safety of Nuclear Waste Disposal"
+            home_url: https://www.safety-of-nuclear-waste-disposal.net
+            evidence_url: https://www.safety-of-nuclear-waste-disposal.net/peer_review/interactive_review_process.html
+            preprint_listing_url: https://sand.copernicus.org/preprints/
+            verified_on: "2026-10-20"
+            interactive_public_peer_review: true
+            discussion_selector:
+              journal_specific_doi_regex:
+                - "^10\\.5194/sandd-\\d+-\\d+-\\d{4}$"
+                - "^10\\.5194/sand-\\d{4}-\\d+$"
+              egusphere_regime: false
+            doi_stems_observed_in_listing: [sand]
+          - journal_id: soil
+            title: "SOIL"
+            home_url: https://www.soil-journal.net
+            evidence_url: https://www.soil-journal.net/peer_review/interactive_review_process.html
+            preprint_listing_url: https://soil.copernicus.org/preprints/
+            verified_on: "2026-10-20"
+            interactive_public_peer_review: true
+            discussion_selector:
+              journal_specific_doi_regex:
+                - "^10\\.5194/soild-\\d+-\\d+-\\d{4}$"
+                - "^10\\.5194/soil-\\d{4}-\\d+$"
+              egusphere_regime: true
+            doi_stems_observed_in_listing: [egusphere, soil]
+          - journal_id: se
+            title: "Solid Earth"
+            home_url: https://www.solid-earth.net
+            evidence_url: https://www.solid-earth.net/peer_review/interactive_review_process.html
+            preprint_listing_url: https://se.copernicus.org/preprints/
+            verified_on: "2026-10-20"
+            interactive_public_peer_review: true
+            discussion_selector:
+              journal_specific_doi_regex:
+                - "^10\\.5194/sed-\\d+-\\d+-\\d{4}$"
+                - "^10\\.5194/se-\\d{4}-\\d+$"
+              egusphere_regime: true
+            doi_stems_observed_in_listing: [se, egusphere]
+          - journal_id: sp
+            title: "State of the Planet"
+            home_url: https://www.state-of-the-planet.net
+            evidence_url: https://www.state-of-the-planet.net/peer_review/interactive_review_process.html
+            preprint_listing_url: https://sp.copernicus.org/preprints/
+            verified_on: "2026-10-20"
+            interactive_public_peer_review: true
+            discussion_selector:
+              journal_specific_doi_regex:
+                - "^10\\.5194/spd-\\d+-\\d+-\\d{4}$"
+                - "^10\\.5194/sp-\\d{4}-\\d+$"
+              egusphere_regime: false
+            doi_stems_observed_in_listing: [sp]
+          - journal_id: tc
+            title: "The Cryosphere"
+            home_url: https://www.the-cryosphere.net
+            evidence_url: https://www.the-cryosphere.net/peer_review/interactive_review_process.html
+            preprint_listing_url: https://tc.copernicus.org/preprints/
+            verified_on: "2026-10-20"
+            interactive_public_peer_review: true
+            discussion_selector:
+              journal_specific_doi_regex:
+                - "^10\\.5194/tcd-\\d+-\\d+-\\d{4}$"
+                - "^10\\.5194/tc-\\d{4}-\\d+$"
+              egusphere_regime: true
+            doi_stems_observed_in_listing: [egusphere]
+          - journal_id: wcd
+            title: "Weather and Climate Dynamics"
+            home_url: https://www.weather-climate-dynamics.net
+            evidence_url: https://www.weather-climate-dynamics.net/peer_review/interactive_review_process.html
+            preprint_listing_url: https://wcd.copernicus.org/preprints/
+            verified_on: "2026-10-20"
+            interactive_public_peer_review: true
+            discussion_selector:
+              journal_specific_doi_regex:
+                - "^10\\.5194/wcdd-\\d+-\\d+-\\d{4}$"
+                - "^10\\.5194/wcd-\\d{4}-\\d+$"
+              egusphere_regime: true
+            doi_stems_observed_in_listing: [egusphere, wcd]
+          - journal_id: wes
+            title: "Wind Energy Science"
+            home_url: https://www.wind-energy-science.net
+            evidence_url: https://www.wind-energy-science.net/peer_review/interactive_review_process.html
+            preprint_listing_url: https://wes.copernicus.org/preprints/
+            verified_on: "2026-10-20"
+            interactive_public_peer_review: true
+            discussion_selector:
+              journal_specific_doi_regex:
+                - "^10\\.5194/wesd-\\d+-\\d+-\\d{4}$"
+                - "^10\\.5194/wes-\\d{4}-\\d+$"
+              egusphere_regime: false
+            doi_stems_observed_in_listing: [wes]
+        notes: >-
+          Journal list hand-verified on each journal's own peer-review page
+          (D-027). doi_stems_observed_in_listing records the DOI stems seen on
+          the journal's preprint listing page on the verification date; it is
+          descriptive, not a selector. Conference-proceedings and
+          non-interactive journals under prefix 10.5194 are excluded by the
+          journal_specific_doi_regex entries. Any DOI under 10.5194 that
+          matches no verified-journal regex and is not an attributed EGUsphere
+          preprint is out of the series.
+    eligibility_events:
+      - discussion preprint entering public discussion for a hand-verified journal
+    counting_event: first_public_posting
+    counting_event_date_field: "posted -> issued (discussion preprint only)"
+    evidence_url:
+      - https://publications.copernicus.org/services/public_peer_review.html
+      - https://www.egusphere.net/about/faqs.html
+      - https://www.egusphere.net/preprints/
+      - https://publications.copernicus.org/open-access_journals/journals_by_subject.html
+    verified_on: "2026-10-20"
+
+  # -------------------------------------------------------------- JMIRx Med
+  - row_id: jmirx_med
+    row_label: "JMIRx Med"
+    organisation_id: jmir
+    organisation_name: "JMIR Publications"
+    prc_role: overlay_journal
+    status: active
+    launch_year: 2020
+    model_since: 2020
+    model_note: null
+    coverage_start_year: 2020
+    coverage_end_year: null
+    discipline_scope: life_sciences
+    country_of_operator: "Canada"
+    initiation_class: mixed
+    classification_confidence: medium
+    classification_note: >-
+      Two documented entry routes: editors and community reviewers prospect
+      preprints on medRxiv and extend conditional offers ("editorial
+      prospecting"), and authors self-nominate existing preprints through a
+      submission form. The relative share of the two routes is not published,
+      hence medium confidence.
+    prc_configuration: core_publish_first
+    configuration_confidence: medium
+    configuration_note: >-
+      Overlay journal on medRxiv and JMIR Preprints: the preprint is public
+      before review, peer-review reports and author responses are published
+      with the accepted Version of Record, and acceptance is a conventional
+      editorial decision. Reports are not public during the review, which
+      distinguishes it from Copernicus and SciPost. D-016 assigns
+      core_publish_first (medium) as an explicit overlay-journal ruling:
+      no public discussion precedes the decision. This assignment does not
+      imply absence of an editorial acceptance decision.
+    provisional: false
+    publish_arrangement: external_preprint_server
+    review_arrangement: platform_own
+    curation_arrangement: platform_own
+    output_types: [version_of_record, review_report]
+    public_review_reports: true
+    approval_status_public: false
+    summary_assessment: false
+    reviewer_identity_disclosed: optional
+    version_linked_review: false
+    review_to_object_relation: unknown
+    public_author_response: true
+    review_has_doi: true
+    data_source: crossref
+    register_status: quantified
+    data_status: machine_readable
+    doi_prefix: "10.2196"
+    doi_pattern: "^10\\.2196/"
+    doi_version_pattern: null
+    sciety_group_slug: null
+    extraction_selector:
+      crossref:
+        prefix: "10.2196"
+        record_types: [journal-article, peer-review]
+        container_titles: ["JMIRx Med"]
+        notes: >-
+          Prefix 10.2196 covers all JMIR journals; selection is by
+          container-title. Peer-review reports are published as companion
+          items with their own DOIs; their Crossref record type is confirmed in
+          the first local run.
+    eligibility_events:
+      - published Version of Record (journal-article, container-title JMIRx Med) of a reviewed preprint
+    counting_event: final_article
+    counting_event_date_field: issued
+    evidence_url:
+      - https://xmed.jmir.org/
+      - https://support.jmir.org/hc/en-us/articles/360034752692-What-is-JMIRx
+    verified_on: "2026-10-20"
+
+  # ----------------------------------------------------- Access Microbiology
+  - row_id: access_microbiology
+    row_label: "Access Microbiology (open research platform)"
+    organisation_id: microbiology_society
+    organisation_name: "Microbiology Society"
+    prc_role: integrated_platform
+    status: active
+    launch_year: 2019
+    model_since: null
+    model_note: >-
+      D-017: determine the series start from qualifying events in the completed
+      local run, not from an assumed 2023 start. The journal's 2019 launch is
+      not the start of the open-platform observation series.
+    coverage_start_year: null
+    coverage_end_year: null
+    discipline_scope: life_sciences
+    country_of_operator: "United Kingdom"
+    initiation_class: author_initiated
+    classification_confidence: high
+    classification_note: >-
+      Authors submit; after automated checks the article is posted publicly
+      as a preprint with a DOI and then assigned to an editor for transparent
+      peer review.
+    prc_configuration: hybrid_public_discussion
+    configuration_confidence: medium
+    configuration_note: >-
+      Preprint posted before review; reviewer reports, editor decision and
+      author responses are posted with their own DOIs; the editor takes a
+      conventional Accept decision leading to a Version of Record. Reports
+      appear after the decision rather than during an open discussion, hence
+      medium confidence. The classification is approved; series start awaits
+      the local run and remains unset rather than being inferred.
+    provisional: false
+    publish_arrangement: platform_own
+    review_arrangement: platform_own
+    curation_arrangement: platform_own
+    output_types: [reviewed_preprint, version_of_record, review_report]
+    public_review_reports: true
+    approval_status_public: true
+    summary_assessment: false
+    reviewer_identity_disclosed: optional
+    version_linked_review: true
+    review_to_object_relation: both
+    public_author_response: true
+    review_has_doi: true
+    data_source: both
+    register_status: quantified
+    data_status: machine_readable
+    doi_prefix: "10.1099"
+    doi_pattern: "^10\\.1099/acmi\\."
+    doi_version_pattern: "^(10\\.1099/acmi\\.0\\.\\d+)(?:\\.v\\d+)?(?:\\.\\d+)?$"
+    sciety_group_slug: access-microbiology
+    extraction_selector:
+      coverage_start_policy: first_qualifying_event_year_from_completed_run
+      crossref:
+        prefix: "10.1099"
+        record_types: [posted-content, journal-article, peer-review]
+        doi_regex: "^10\\.1099/acmi\\."
+        container_titles: ["Access Microbiology"]
+        notes: >-
+          Prefix 10.1099 covers all Microbiology Society journals; selection is
+          by DOI stem acmi and container-title. Preprint and review DOI
+          patterns are confirmed in the first local run.
+      sciety:
+        group_slug: access-microbiology
+        group_id: 4d6a8908-22a9-45c8-bd56-3c7140647709
+        group_page_url: https://sciety.org/groups/access-microbiology
+        role: cross_check
+    eligibility_events:
+      - first public posting of the preprint version of a submitted article
+    counting_event: first_public_posting
+    counting_event_date_field: "posted -> issued"
+    evidence_url:
+      - https://sciety.org/groups/access-microbiology/about
+      - https://www.microbiologyresearch.org/content/journal/acmi/about
+    verified_on: "2026-10-20"
+
+  # ---------------------------------------------------------- Review Commons
+  - row_id: review_commons
+    row_label: "Review Commons"
+    organisation_id: review_commons
+    organisation_name: "Review Commons (EMBO and ASAPbio)"
+    prc_role: review_service
+    status: active
+    launch_year: 2019
+    model_since: 2019
+    model_note: null
+    coverage_start_year: 2019
+    coverage_end_year: null
+    discipline_scope: life_sciences
+    country_of_operator: "Germany"
+    initiation_class: author_initiated
+    classification_confidence: high
+    classification_note: >-
+      Authors submit manuscripts (preprint on bioRxiv/medRxiv required since
+      1 July 2023); professional editors invite reviewers. No selection route
+      for unsolicited works.
+    prc_configuration: review_or_curation_service
+    configuration_confidence: high
+    configuration_note: >-
+      Journal-independent review of preprints hosted elsewhere; reviews and
+      author response are posted on bioRxiv/medRxiv and Sciety when the
+      authors transfer to an affiliate journal; reports anonymous unless
+      signed.
+    provisional: false
+    publish_arrangement: external_preprint_server
+    review_arrangement: platform_own
+    curation_arrangement: partner_journal
+    output_types: [review_report]
+    public_review_reports: true
+    approval_status_public: false
+    summary_assessment: false
+    reviewer_identity_disclosed: optional
+    version_linked_review: true
+    review_to_object_relation: sciety_docmap
+    public_author_response: true
+    review_has_doi: false
+    data_source: sciety
+    register_status: quantified
+    data_status: machine_readable
+    doi_prefix: null
+    doi_pattern: null
+    doi_version_pattern: null
+    sciety_group_slug: review-commons
+    extraction_selector:
+      sciety:
+        group_slug: review-commons
+        group_id: 316db7d9-88cc-4c26-b386-f067e0f56334
+        group_page_url: https://sciety.org/groups/review-commons
+        role: primary
+    eligibility_events:
+      - qualifying docmap evaluation output for an already-public preprint
+    counting_event: earliest_qualifying_evaluation
+    counting_event_date_field: "evaluation published"
+    evidence_url:
+      - https://www.reviewcommons.org/authors/
+      - https://sciety.org/groups/review-commons/about
+    verified_on: "2026-10-20"
+
+  # ---------------------------------------------------------------- PeerRef
+  - row_id: peerref
+    row_label: "PeerRef"
+    organisation_id: peerref
+    organisation_name: "PeerRef"
+    prc_role: review_service
+    status: dormant
+    launch_year: 2021
+    model_since: 2021
+    model_note: null
+    coverage_start_year: 2022
+    coverage_end_year: null
+    discipline_scope: multidisciplinary
+    country_of_operator: "United Kingdom"
+    initiation_class: author_initiated
+    classification_confidence: high
+    classification_note: >-
+      Authors seek journal-independent peer review of their outputs; the
+      platform organises review and publishes reports.
+    prc_configuration: review_or_curation_service
+    configuration_confidence: high
+    configuration_note: >-
+      Service on preprints hosted elsewhere. The website is online without a
+      closure notice, but the most recent Sciety activity dates from 2023,
+      hence status dormant with medium certainty.
+    provisional: false
+    publish_arrangement: external_preprint_server
+    review_arrangement: platform_own
+    curation_arrangement: none
+    output_types: [review_report]
+    public_review_reports: true
+    approval_status_public: false
+    summary_assessment: false
+    reviewer_identity_disclosed: unknown
+    version_linked_review: true
+    review_to_object_relation: sciety_docmap
+    public_author_response: unknown
+    review_has_doi: unknown
+    data_source: sciety
+    register_status: quantified
+    data_status: partial_coverage
+    doi_prefix: null
+    doi_pattern: null
+    doi_version_pattern: null
+    sciety_group_slug: peerref
+    extraction_selector:
+      sciety:
+        group_slug: peerref
+        group_id: b5f31635-d32b-4df9-92a5-0325a1524343
+        group_page_url: https://sciety.org/groups/peerref
+        role: primary
+    eligibility_events:
+      - qualifying docmap evaluation output for an already-public preprint
+    counting_event: earliest_qualifying_evaluation
+    counting_event_date_field: "evaluation published"
+    evidence_url:
+      - https://www.peerref.com/
+      - https://sciety.org/groups/peerref
+    verified_on: "2026-10-20"
+
+  # ------------------------------------------------------- Biophysics Colab
+  - row_id: biophysics_colab
+    row_label: "Biophysics Colab"
+    organisation_id: science_colab
+    organisation_name: "Science Colab"
+    prc_role: review_service
+    status: active
+    launch_year: 2021
+    model_since: 2021
+    model_note: null
+    coverage_start_year: 2021
+    coverage_end_year: null
+    discipline_scope: life_sciences
+    country_of_operator: "United Kingdom"
+    initiation_class: mixed
+    classification_confidence: low
+    classification_note: >-
+      The site states that curators consider published preprints in scope
+      and engage reviewers with the authors' consent, and that authors may
+      contact the service for advice on their preprint. Author consent is a
+      prerequisite, which departs from pure community initiation; the share of
+      author-requested versus curator-identified preprints is not documented.
+    prc_configuration: review_or_curation_service
+    configuration_confidence: high
+    configuration_note: >-
+      Consolidated reports and endorsements are appended to preprints hosted
+      elsewhere; no rejection; some preprints receive an endorsement.
+    provisional: false
+    publish_arrangement: external_preprint_server
+    review_arrangement: platform_own
+    curation_arrangement: platform_own
+    output_types: [review_report, assessment_statement]
+    public_review_reports: true
+    approval_status_public: true
+    summary_assessment: true
+    reviewer_identity_disclosed: optional
+    version_linked_review: true
+    review_to_object_relation: sciety_docmap
+    public_author_response: true
+    review_has_doi: unknown
+    data_source: sciety
+    register_status: quantified
+    data_status: machine_readable
+    doi_prefix: null
+    doi_pattern: null
+    doi_version_pattern: null
+    sciety_group_slug: biophysics-colab
+    extraction_selector:
+      sciety:
+        group_slug: biophysics-colab
+        group_id: 4bbf0c12-629b-4bb8-91d6-974f4df8efb2
+        group_page_url: https://sciety.org/groups/biophysics-colab
+        role: primary
+    eligibility_events:
+      - qualifying docmap evaluation output for an already-public preprint
+    counting_event: earliest_qualifying_evaluation
+    counting_event_date_field: "evaluation published"
+    evidence_url:
+      - https://www.sciencecolab.org/biophysics-colab
+      - https://sciety.org/groups/biophysics-colab/about
+    verified_on: "2026-10-20"
+
+  # ------------------------------------------------------------------ Qeios
+  - row_id: qeios_hosted_works
+    row_label: "Qeios — hosted works"
+    organisation_id: qeios
+    organisation_name: "Qeios Ltd"
+    prc_role: integrated_platform
+    status: active
+    launch_year: 2019
+    model_since: 2019
+    model_note: null
+    coverage_start_year: 2019
+    coverage_end_year: null
+    discipline_scope: multidisciplinary
+    country_of_operator: "United Kingdom"
+    initiation_class: author_initiated
+    classification_confidence: medium
+    classification_note: >-
+      Evaluation is triggered by the authors' act of posting on the platform;
+      the platform then invites reviewers (including automated invitation) and
+      admits volunteered reviews. Spontaneous reviewers do not make the class
+      mixed.
+    prc_configuration: approval_threshold
+    configuration_confidence: medium
+    configuration_note: >-
+      The optional Version-of-Record step requires at least 4 reviews with
+      average ratings of 3 out of 5 or higher (overall, clarity, impact) and
+      2.5 or higher (novelty); the step is optional and author-triggered.
+      Reviews are always signed.
+    provisional: false
+    publish_arrangement: platform_own
+    review_arrangement: platform_own
+    curation_arrangement: platform_own
+    output_types: [reviewed_preprint, version_of_record, review_report, approval_status]
+    public_review_reports: true
+    approval_status_public: true
+    summary_assessment: false
+    reviewer_identity_disclosed: always
+    version_linked_review: true
+    review_to_object_relation: crossref_is_review_of
+    public_author_response: true
+    review_has_doi: true
+    data_source: crossref
+    register_status: quantified
+    data_status: partial_coverage
+    doi_prefix: "10.32388"
+    doi_pattern: "^10\\.32388/"
+    doi_version_pattern: "^(10\\.32388/[a-z0-9]+)(?:\\.\\d+)?$"
+    sciety_group_slug: null
+    extraction_selector:
+      crossref:
+        prefix: "10.32388"
+        record_types: [journal-article, posted-content, peer-review]
+        exclude_title_regex: "^WITHDRAWN$"
+        notes: >-
+          A hosted work qualifies only if at least one Crossref peer-review
+          record carries an is-review-of relation pointing to it. Metadata
+          deposition is discontinuous after 2024 (partial_coverage).
+    eligibility_events:
+      - first public posting of a hosted work
+      - at least one qualifying public review (peer-review record with is-review-of relation to the work) dated on or before analysis_cutoff_date
+    counting_event: first_public_posting
+    counting_event_date_field: "posted -> issued"
+    evidence_url:
+      - https://www.qeios.com/publishing-policy
+      - https://www.qeios.com/about
+      - https://www.qeios.com/plans
+    verified_on: "2026-10-20"
+
+  - row_id: qeios_external_works
+    row_label: "Qeios — evaluations of external works"
+    organisation_id: qeios
+    organisation_name: "Qeios Ltd"
+    prc_role: review_service
+    status: dormant
+    launch_year: 2019
+    model_since: 2021
+    model_note: null
+    coverage_start_year: 2020
+    coverage_end_year: null
+    discipline_scope: multidisciplinary
+    country_of_operator: "United Kingdom"
+    initiation_class: community_initiated
+    classification_confidence: medium
+    classification_note: >-
+      Reviewed articles and preprints were never submitted to the platform
+      and were selected by the platform or its reviewers; the selection
+      mechanism is not documented on the current website. Activity is
+      concentrated in 2021-2022.
+    prc_configuration: review_or_curation_service
+    configuration_confidence: high
+    configuration_note: >-
+      Public reviews of works hosted outside 10.32388 (preprints on bioRxiv,
+      medRxiv, Research Square, Preprints.org and published journal articles),
+      i.e. reviewed works in general, not only preprints. Registration of
+      external reviews in Crossref largely ceased after 2022
+      (partial_coverage).
+    provisional: false
+    publish_arrangement: external_preprint_server
+    review_arrangement: platform_own
+    curation_arrangement: none
+    output_types: [review_report]
+    public_review_reports: true
+    approval_status_public: false
+    summary_assessment: false
+    reviewer_identity_disclosed: always
+    version_linked_review: false
+    review_to_object_relation: crossref_is_review_of
+    public_author_response: false
+    review_has_doi: true
+    data_source: crossref
+    register_status: quantified
+    data_status: partial_coverage
+    doi_prefix: "10.32388"
+    doi_pattern: "^10\\.32388/"
+    doi_version_pattern: null
+    sciety_group_slug: null
+    extraction_selector:
+      crossref:
+        prefix: "10.32388"
+        record_types: [peer-review]
+        target_filter: "is-review-of targets whose normalised DOI does not start with 10.32388/"
+        notes: >-
+          Targets are kept as registered (lower-cased) in reviewed_work_id; one
+          work counts once at its earliest Qeios review.
+    eligibility_events:
+      - qualifying public Qeios review (peer-review record) of a work hosted outside 10.32388
+    counting_event: earliest_qualifying_evaluation
+    counting_event_date_field: issued
+    evidence_url:
+      - https://www.qeios.com/publishing-policy
+    verified_on: "2026-10-20"
+
+  # -------------------------------------------------------------- PREreview
+  - row_id: prereview
+    row_label: "PREreview"
+    organisation_id: prereview
+    organisation_name: "PREreview (fiscally sponsored by Code for Science & Society)"
+    prc_role: review_service
+    status: active
+    launch_year: 2017
+    model_since: 2017
+    model_note: null
+    coverage_start_year: 2019
+    coverage_end_year: null
+    discipline_scope: multidisciplinary
+    country_of_operator: "United States"
+    initiation_class: community_initiated
+    classification_confidence: medium
+    classification_note: >-
+      Any registered researcher may review any preprint; the platform also
+      offers a documented "request a PREreview" route open to anyone,
+      including authors. A request does not commission a review (reviewers
+      still self-select), so initiation remains with the community; the
+      existence of the request route lowers confidence to medium.
+      D-018 confirms community_initiated.
+    prc_configuration: review_or_curation_service
+    configuration_confidence: high
+    configuration_note: >-
+      Community reviews of preprints hosted elsewhere, archived in a Zenodo
+      community with DOIs; reviewers may use a pseudonym.
+    provisional: false
+    publish_arrangement: external_preprint_server
+    review_arrangement: platform_own
+    curation_arrangement: none
+    output_types: [review_report]
+    public_review_reports: true
+    approval_status_public: false
+    summary_assessment: false
+    reviewer_identity_disclosed: optional
+    version_linked_review: true
+    review_to_object_relation: sciety_docmap
+    public_author_response: true
+    review_has_doi: true
+    data_source: sciety
+    register_status: quantified
+    data_status: partial_coverage
+    doi_prefix: null
+    doi_pattern: null
+    doi_version_pattern: null
+    sciety_group_slug: prereview
+    extraction_selector:
+      sciety:
+        group_slug: prereview
+        group_id: 10360d97-bf52-4aef-b2fa-2f60d319edd7
+        group_page_url: https://sciety.org/groups/prereview
+        role: primary
+        notes: >-
+          Unique works with at least one PREreview evaluation, dated by the
+          evaluation output date, deduplicated on the reviewed-work DOI,
+          irrespective of preprint server. Activity before the group joined
+          Sciety is not covered (partial_coverage).
+    eligibility_events:
+      - qualifying docmap evaluation output for an already-public preprint
+    counting_event: earliest_qualifying_evaluation
+    counting_event_date_field: "evaluation published"
+    evidence_url:
+      - https://prereview.org/
+      - https://prereview.org/request-a-prereview
+      - https://sciety.org/groups/prereview/about
+    verified_on: "2026-10-20"
+
+  # -------------------------------------------------------------- preLights
+  - row_id: prelights
+    row_label: "preLights"
+    organisation_id: company_of_biologists
+    organisation_name: "The Company of Biologists"
+    prc_role: curation_service
+    status: active
+    launch_year: 2018
+    model_since: 2018
+    model_note: null
+    coverage_start_year: 2018
+    coverage_end_year: null
+    discipline_scope: life_sciences
+    country_of_operator: "United Kingdom"
+    initiation_class: community_initiated
+    classification_confidence: high
+    classification_note: >-
+      A community of early-career researchers (preLighters) selects,
+      highlights and comments on preprints of interest; no author submission
+      route is documented.
+    prc_configuration: review_or_curation_service
+    configuration_confidence: high
+    configuration_note: >-
+      Highlight posts (summary, reasons for selection, significance) on
+      preprints hosted elsewhere, with optional author comments; curation
+      rather than peer review.
+    provisional: false
+    publish_arrangement: external_preprint_server
+    review_arrangement: none
+    curation_arrangement: platform_own
+    output_types: [highlight]
+    public_review_reports: true
+    approval_status_public: false
+    summary_assessment: false
+    reviewer_identity_disclosed: always
+    version_linked_review: false
+    review_to_object_relation: sciety_docmap
+    public_author_response: true
+    review_has_doi: false
+    data_source: sciety
+    register_status: quantified
+    data_status: partial_coverage
+    doi_prefix: null
+    doi_pattern: null
+    doi_version_pattern: null
+    sciety_group_slug: prelights
+    extraction_selector:
+      sciety:
+        group_slug: prelights
+        group_id: f97bd177-5cb6-4296-8573-078318755bf2
+        group_page_url: https://sciety.org/groups/prelights
+        role: primary
+    eligibility_events:
+      - qualifying docmap curation output (highlight) for an already-public preprint
+    counting_event: earliest_qualifying_evaluation
+    counting_event_date_field: "evaluation published"
+    evidence_url:
+      - https://prelights.biologists.com/about-us/
+      - https://sciety.org/groups/prelights/about
+    verified_on: "2026-10-20"
+
+  # -------------------------------------- Rapid Reviews\Infectious Diseases
+  - row_id: rapid_reviews_infectious_diseases
+    row_label: "Rapid Reviews\\Infectious Diseases (formerly Rapid Reviews: COVID-19)"
+    organisation_id: mit_press
+    organisation_name: "MIT Press"
+    prc_role: overlay_journal
+    status: active
+    launch_year: 2020
+    model_since: 2020
+    model_note: null
+    coverage_start_year: 2020
+    coverage_end_year: null
+    discipline_scope: life_sciences
+    country_of_operator: "United States"
+    initiation_class: community_initiated
+    classification_confidence: high
+    classification_note: >-
+      Editors and a graduate-student network, supported by machine learning,
+      identify time-sensitive preprints on medRxiv, bioRxiv, SSRN and other
+      servers and solicit rapid reviews; no author submission route is
+      documented.
+    prc_configuration: review_or_curation_service
+    configuration_confidence: high
+    configuration_note: >-
+      Reviews with a Strength of Evidence rating are published online and
+      linked to the preprint; "curate, review, publish" overlay model.
+    provisional: false
+    publish_arrangement: external_preprint_server
+    review_arrangement: platform_own
+    curation_arrangement: platform_own
+    output_types: [review_report, assessment_statement]
+    public_review_reports: true
+    approval_status_public: true
+    summary_assessment: true
+    reviewer_identity_disclosed: optional
+    version_linked_review: false
+    review_to_object_relation: both
+    public_author_response: false
+    review_has_doi: true
+    data_source: both
+    register_status: quantified
+    data_status: machine_readable
+    doi_prefix: "10.1162"
+    doi_pattern: "^10\\.1162/"
+    doi_version_pattern: null
+    sciety_group_slug: rapid-reviews-covid-19
+    extraction_selector:
+      sciety:
+        group_slug: rapid-reviews-covid-19
+        group_id: 5142a5bc-6b18-42b1-9a8d-7342d7d17e94
+        group_page_url: https://sciety.org/groups/rapid-reviews-covid-19
+        role: primary
+      crossref:
+        prefix: "10.1162"
+        record_types: [journal-article, peer-review]
+        container_titles: ["Rapid Reviews: COVID-19", "Rapid Reviews Infectious Diseases", "Rapid Reviews\\Infectious Diseases"]
+        role: cross_check
+        notes: >-
+          Prefix 10.1162 covers all MIT Press journals; selection is by
+          container-title. Whether review records carry is-review-of relations
+          is confirmed in the first local run.
+    eligibility_events:
+      - qualifying docmap evaluation output for an already-public preprint
+    counting_event: earliest_qualifying_evaluation
+    counting_event_date_field: "evaluation published"
+    evidence_url:
+      - https://rrid.mitpress.mit.edu/
+      - https://rrid.mitpress.mit.edu/reviewapproach
+    verified_on: "2026-10-20"
+
+  # -------------------------------------------------------- Arcadia Science
+  - row_id: arcadia_science
+    row_label: "Arcadia Science — public comments on preprints"
+    organisation_id: arcadia_science
+    organisation_name: "Arcadia Science"
+    prc_role: review_service
+    status: active
+    launch_year: 2022
+    model_since: 2022
+    model_note: >-
+      D-023 ruling: the "ceased 2025" hypothesis is refuted. Only the
+      publishing venue moved in December 2025; the service remains active.
+    coverage_start_year: 2022
+    coverage_end_year: null
+    discipline_scope: life_sciences
+    country_of_operator: "United States"
+    initiation_class: community_initiated
+    classification_confidence: high
+    classification_note: >-
+      Company scientists annotate public preprints of other groups with
+      modular comments; reviewers are self-nominated and reviews are
+      requested by non-authors. Sciety shows evaluation activity through
+      October 2026, so the service is recorded as active.
+    prc_configuration: review_or_curation_service
+    configuration_confidence: high
+    configuration_note: "Public, signed comments on preprints hosted elsewhere; no decision or rating."
+    provisional: false
+    publish_arrangement: external_preprint_server
+    review_arrangement: platform_own
+    curation_arrangement: none
+    output_types: [review_report]
+    public_review_reports: true
+    approval_status_public: false
+    summary_assessment: false
+    reviewer_identity_disclosed: always
+    version_linked_review: false
+    review_to_object_relation: sciety_docmap
+    public_author_response: true
+    review_has_doi: unknown
+    data_source: sciety
+    register_status: quantified
+    data_status: machine_readable
+    doi_prefix: null
+    doi_pattern: null
+    doi_version_pattern: null
+    sciety_group_slug: arcadia-science
+    extraction_selector:
+      sciety:
+        group_slug: arcadia-science
+        group_id: bc1f956b-12e8-4f5c-aadc-70f91347bd18
+        group_page_url: https://sciety.org/groups/arcadia-science
+        role: primary
+    eligibility_events:
+      - qualifying docmap evaluation output for an already-public preprint
+    counting_event: earliest_qualifying_evaluation
+    counting_event_date_field: "evaluation published"
+    evidence_url:
+      - https://sciety.org/groups/arcadia-science/about
+      - https://research.arcadiascience.com/
+    verified_on: "2026-10-20"
+
+  # ---------------------------------------------------- ASAPbio crowd review
+  - row_id: asapbio_crowd_review
+    row_label: "ASAPbio crowd preprint review"
+    organisation_id: asapbio
+    organisation_name: "ASAPbio"
+    prc_role: review_service
+    status: dormant
+    launch_year: 2021
+    model_since: 2021
+    model_note: null
+    coverage_start_year: 2021
+    coverage_end_year: null
+    discipline_scope: life_sciences
+    country_of_operator: "United States"
+    initiation_class: community_initiated
+    classification_confidence: medium
+    classification_note: >-
+      Crowd organisers select preprints and circulate them to crowd members;
+      reviews are requested by non-authors. Whether author consent was sought
+      before posting is not stated on the programme page, hence medium
+      confidence. From 2024 the activity was handed to independently run
+      crowd leads; current status is recorded as dormant pending confirmation.
+    prc_configuration: review_or_curation_service
+    configuration_confidence: high
+    configuration_note: >-
+      Synthesised crowd reviews posted publicly on PREreview (so the same
+      evaluations may also appear in the PREreview row; overlap is reported,
+      never summed); no rating or recommendation.
+    provisional: false
+    publish_arrangement: external_preprint_server
+    review_arrangement: platform_own
+    curation_arrangement: none
+    output_types: [review_report]
+    public_review_reports: true
+    approval_status_public: false
+    summary_assessment: false
+    reviewer_identity_disclosed: optional
+    version_linked_review: false
+    review_to_object_relation: sciety_docmap
+    public_author_response: false
+    review_has_doi: true
+    data_source: sciety
+    register_status: quantified
+    data_status: machine_readable
+    doi_prefix: null
+    doi_pattern: null
+    doi_version_pattern: null
+    sciety_group_slug: asapbio-crowd-review
+    extraction_selector:
+      sciety:
+        group_slug: asapbio-crowd-review
+        group_id: 50401e46-b764-47b7-8557-6bb35444b7c8
+        group_page_url: https://sciety.org/groups/asapbio-crowd-review
+        role: primary
+    eligibility_events:
+      - qualifying docmap evaluation output for an already-public preprint
+    counting_event: earliest_qualifying_evaluation
+    counting_event_date_field: "evaluation published"
+    evidence_url:
+      - https://asapbio.org/crowd-preprint-review
+      - https://sciety.org/groups/asapbio-crowd-review/about
+    verified_on: "2026-10-20"
+
+  - row_id: asapbio_scielo_crowd_review
+    row_label: "ASAPbio-SciELO Preprint crowd review"
+    organisation_id: asapbio
+    organisation_name: "ASAPbio with SciELO Preprints"
+    prc_role: review_service
+    status: dormant
+    launch_year: 2022
+    model_since: 2022
+    model_note: null
+    coverage_start_year: 2022
+    coverage_end_year: null
+    discipline_scope: life_sciences
+    country_of_operator: "United States / Brazil"
+    initiation_class: community_initiated
+    classification_confidence: medium
+    classification_note: >-
+      Portuguese-language crowd review of infectious-disease preprints on
+      SciELO Preprints, organised in the same way as the ASAPbio crowd review;
+      separate Sciety group, therefore a separate observation series.
+    prc_configuration: review_or_curation_service
+    configuration_confidence: high
+    configuration_note: "Synthesised crowd reviews of preprints hosted on SciELO Preprints."
+    provisional: false
+    publish_arrangement: external_preprint_server
+    review_arrangement: platform_own
+    curation_arrangement: none
+    output_types: [review_report]
+    public_review_reports: true
+    approval_status_public: false
+    summary_assessment: false
+    reviewer_identity_disclosed: optional
+    version_linked_review: false
+    review_to_object_relation: sciety_docmap
+    public_author_response: false
+    review_has_doi: unknown
+    data_source: sciety
+    register_status: quantified
+    data_status: machine_readable
+    doi_prefix: null
+    doi_pattern: null
+    doi_version_pattern: null
+    sciety_group_slug: asapbio-scielo-preprint-crowd-review
+    extraction_selector:
+      sciety:
+        group_slug: asapbio-scielo-preprint-crowd-review
+        group_id: 36fbf532-ed07-4573-87fd-b0e22ee49827
+        group_page_url: https://sciety.org/groups/asapbio-scielo-preprint-crowd-review
+        role: primary
+        notes: "Group slug to be confirmed from the docmaps index in the first local run."
+    eligibility_events:
+      - qualifying docmap evaluation output for an already-public preprint
+    counting_event: earliest_qualifying_evaluation
+    counting_event_date_field: "evaluation published"
+    evidence_url:
+      - https://asapbio.org/crowd-preprint-review
+      - https://sciety.org/groups
+    verified_on: "2026-10-20"
+
+  # ------------------------------------------------------------------- NCRC
+  - row_id: ncrc
+    row_label: "Novel Coronavirus Research Compendium (NCRC)"
+    organisation_id: jhsph
+    organisation_name: "Johns Hopkins Bloomberg School of Public Health"
+    prc_role: curation_service
+    status: dormant
+    launch_year: 2020
+    model_since: 2020
+    model_note: null
+    coverage_start_year: 2020
+    coverage_end_year: 2022
+    discipline_scope: life_sciences
+    country_of_operator: "United States"
+    initiation_class: community_initiated
+    classification_confidence: high
+    classification_note: >-
+      Expert teams curated and assessed emerging SARS-CoV-2 research
+      (preprints and papers) selected for public-health relevance and
+      attention; no author route. Weekly updates stopped on 7 January 2022.
+    prc_configuration: review_or_curation_service
+    configuration_confidence: high
+    configuration_note: "Curated evidence summaries and assessments of works hosted elsewhere."
+    provisional: false
+    publish_arrangement: external_preprint_server
+    review_arrangement: platform_own
+    curation_arrangement: platform_own
+    output_types: [assessment_statement]
+    public_review_reports: true
+    approval_status_public: false
+    summary_assessment: true
+    reviewer_identity_disclosed: always
+    version_linked_review: false
+    review_to_object_relation: sciety_docmap
+    public_author_response: false
+    review_has_doi: false
+    data_source: sciety
+    register_status: quantified
+    data_status: defunct
+    doi_prefix: null
+    doi_pattern: null
+    doi_version_pattern: null
+    sciety_group_slug: ncrc
+    extraction_selector:
+      sciety:
+        group_slug: ncrc
+        group_id: 62f9b0d0-8d43-4766-a52a-ce02af61bc6a
+        group_page_url: https://sciety.org/groups/ncrc
+        role: primary
+    eligibility_events:
+      - qualifying docmap curation output for an already-public work
+    counting_event: earliest_qualifying_evaluation
+    counting_event_date_field: "evaluation published"
+    evidence_url:
+      - https://ncrc.jhsph.edu/
+    verified_on: "2026-10-20"
+
+  # ------------------------------------------- Life Science Editors Foundation
+  - row_id: life_science_editors_foundation
+    row_label: "Life Science Editors Foundation — preprint reviews"
+    organisation_id: life_science_editors_foundation
+    organisation_name: "Life Science Editors Foundation"
+    prc_role: review_service
+    status: active
+    launch_year: 2022
+    model_since: 2022
+    model_note: null
+    coverage_start_year: 2022
+    coverage_end_year: null
+    discipline_scope: life_sciences
+    country_of_operator: "United States"
+    initiation_class: mixed
+    classification_confidence: low
+    classification_note: >-
+      Volunteers review preprints authored by scientists from
+      under-represented groups; Sciety's description lists reviews requested
+      by both authors and non-authors and reviewer selection by author,
+      self-nomination or the service. The foundation's own site could not be
+      read (robots restriction), so the classification rests on secondary
+      evidence. D-020 approves inclusion and mixed (low).
+    prc_configuration: review_or_curation_service
+    configuration_confidence: medium
+    configuration_note: "Signed editorial-style assessments of preprints hosted elsewhere; no decision."
+    provisional: false
+    publish_arrangement: external_preprint_server
+    review_arrangement: platform_own
+    curation_arrangement: none
+    output_types: [review_report]
+    public_review_reports: true
+    approval_status_public: false
+    summary_assessment: false
+    reviewer_identity_disclosed: always
+    version_linked_review: false
+    review_to_object_relation: sciety_docmap
+    public_author_response: true
+    review_has_doi: unknown
+    data_source: sciety
+    register_status: quantified
+    data_status: machine_readable
+    doi_prefix: null
+    doi_pattern: null
+    doi_version_pattern: null
+    sciety_group_slug: life-science-editors-foundation
+    extraction_selector:
+      sciety:
+        group_slug: life-science-editors-foundation
+        group_id: f2c9eafa-6e24-4549-819c-09179e642b08
+        group_page_url: https://sciety.org/groups/life-science-editors-foundation
+        role: primary
+    eligibility_events:
+      - qualifying docmap evaluation output for an already-public preprint
+    counting_event: earliest_qualifying_evaluation
+    counting_event_date_field: "evaluation published"
+    evidence_url:
+      - https://sciety.org/groups/life-science-editors-foundation/about
+      - https://www.lifescienceeditors.org/foundation
+    verified_on: "2026-10-20"
+
+  - row_id: life_science_editors
+    row_label: "Life Science Editors — editorial assessments of preprints"
+    organisation_id: life_science_editors
+    organisation_name: "Life Science Editors"
+    prc_role: review_service
+    status: active
+    launch_year: 2022
+    model_since: 2022
+    model_note: null
+    coverage_start_year: 2022
+    coverage_end_year: null
+    discipline_scope: life_sciences
+    country_of_operator: "United States"
+    initiation_class: mixed
+    classification_confidence: low
+    classification_note: >-
+      Editorial assessments of preprints by a group of former journal
+      editors; Sciety lists reviews requested by authors and non-authors.
+      Whether assessments are a paid author service or community-selected is
+      not stated; D-020 approves inclusion and mixed (low).
+    prc_configuration: review_or_curation_service
+    configuration_confidence: medium
+    configuration_note: "Signed editorial assessments of preprints hosted elsewhere; no decision."
+    provisional: false
+    publish_arrangement: external_preprint_server
+    review_arrangement: platform_own
+    curation_arrangement: none
+    output_types: [review_report]
+    public_review_reports: true
+    approval_status_public: false
+    summary_assessment: false
+    reviewer_identity_disclosed: always
+    version_linked_review: false
+    review_to_object_relation: sciety_docmap
+    public_author_response: true
+    review_has_doi: unknown
+    data_source: sciety
+    register_status: quantified
+    data_status: machine_readable
+    doi_prefix: null
+    doi_pattern: null
+    doi_version_pattern: null
+    sciety_group_slug: life-science-editors
+    extraction_selector:
+      sciety:
+        group_slug: life-science-editors
+        group_id: 1480d2dd-463f-4834-8e81-d89c8ae2b86f
+        group_page_url: https://sciety.org/groups/life-science-editors
+        role: primary
+    eligibility_events:
+      - qualifying docmap evaluation output for an already-public preprint
+    counting_event: earliest_qualifying_evaluation
+    counting_event_date_field: "evaluation published"
+    evidence_url:
+      - https://sciety.org/groups/life-science-editors/about
+    verified_on: "2026-10-20"
+
+  # ---------------------------------------------------------- The Unjournal
+  - row_id: the_unjournal
+    row_label: "The Unjournal"
+    organisation_id: unjournal
+    organisation_name: "The Unjournal"
+    prc_role: review_service
+    status: active
+    launch_year: 2022
+    model_since: 2022
+    model_note: null
+    coverage_start_year: 2023
+    coverage_end_year: null
+    discipline_scope: social_sciences
+    country_of_operator: "United States"
+    initiation_class: mixed
+    classification_confidence: medium
+    classification_note: >-
+      The service identifies and solicits research hosted on any open
+      platform and also accepts suggestions and submissions of authors' own
+      work through documented forms; both routes are described, the share of
+      each is not published.
+    prc_configuration: review_or_curation_service
+    configuration_confidence: high
+    configuration_note: >-
+      Paid, journal-independent public evaluations with quantitative ratings,
+      an evaluation-manager summary and author responses, published on PubPub
+      and Sciety; evaluators may sign or stay anonymous.
+    provisional: false
+    publish_arrangement: external_preprint_server
+    review_arrangement: platform_own
+    curation_arrangement: platform_own
+    output_types: [review_report, assessment_statement]
+    public_review_reports: true
+    approval_status_public: false
+    summary_assessment: true
+    reviewer_identity_disclosed: optional
+    version_linked_review: false
+    review_to_object_relation: sciety_docmap
+    public_author_response: true
+    review_has_doi: true
+    data_source: sciety
+    register_status: quantified
+    data_status: machine_readable
+    doi_prefix: null
+    doi_pattern: null
+    doi_version_pattern: null
+    sciety_group_slug: the-unjournal
+    extraction_selector:
+      sciety:
+        group_slug: the-unjournal
+        group_id: 1e6f6b49-2a9b-417e-831b-8cee5af033bd
+        group_page_url: https://sciety.org/groups/the-unjournal
+        role: primary
+    eligibility_events:
+      - qualifying docmap evaluation output for an already-public work
+    counting_event: earliest_qualifying_evaluation
+    counting_event_date_field: "evaluation published"
+    evidence_url:
+      - https://www.unjournal.org/about
+      - https://sciety.org/groups/the-unjournal/about
+    verified_on: "2026-10-20"
+
+  # ------------------------------------------------- Register-only rows (D-028)
+  # Candidates verified on 2026-10-20 as satisfying inclusion criteria 1-3 but
+  # without an adequate selector in the two permitted sources.
+
+  - row_id: scienceopen_reviews
+    row_label: "ScienceOpen — post-publication reviews"
+    organisation_id: scienceopen
+    organisation_name: "ScienceOpen GmbH"
+    prc_role: review_service
+    status: active
+    launch_year: 2014
+    model_since: 2014
+    model_note: >-
+      Research and publishing network launched in May 2014; public
+      post-publication reviews and ratings of records indexed on the
+      platform by members with at least five ORCID-linked publications.
+    coverage_start_year: 2014
+    coverage_end_year: null
+    discipline_scope: multidisciplinary
+    country_of_operator: Germany
+    initiation_class: mixed
+    classification_confidence: medium
+    classification_note: >-
+      Members, editors of collections and the platform may review any indexed
+      article (community route); authors may also invite reviewers for their
+      own manuscripts without limit (documented author route). The share of
+      each route is not published.
+    prc_configuration: review_or_curation_service
+    configuration_confidence: medium
+    configuration_note: >-
+      Reviews and ratings refer to already-published articles and preprints
+      indexed by the platform and are published under the reviewer's name
+      and ORCID; no publication decision is taken. Hosting of some content
+      under the platform's own imprint is not the evaluated object of this
+      row.
+    provisional: false
+    publish_arrangement: external_preprint_server
+    review_arrangement: platform_own
+    curation_arrangement: platform_own
+    output_types: [review_report]
+    public_review_reports: true
+    approval_status_public: false
+    summary_assessment: false
+    reviewer_identity_disclosed: always
+    version_linked_review: unknown
+    review_to_object_relation: unknown
+    public_author_response: unknown
+    review_has_doi: unknown
+    data_source: none
+    register_status: register_only
+    data_status: not_machine_readable
+    doi_prefix: null
+    doi_pattern: null
+    doi_version_pattern: null
+    sciety_group_slug: null
+    extraction_selector:
+      none:
+        reason: >-
+          No Sciety group; whether reviews are deposited with Crossref as
+          peer-review records under a platform prefix was not verified on the
+          platform's own pages in this pass. A Crossref selector may be added
+          after confirmation in a later pass; counts stay blank until then.
+    eligibility_events:
+      - public review of an already-public work posted on the platform
+    counting_event: earliest_qualifying_evaluation
+    counting_event_date_field: "not applicable (register_only)"
+    evidence_url:
+      - https://about.scienceopen.com/peer-review-guidelines/
+      - https://about.scienceopen.com/wp-content/uploads/2014/12/141124_SO_EuroScientist.pdf
+    verified_on: "2026-10-20"
+
+  - row_id: octopus
+    row_label: "Octopus — open post-publication peer review"
+    organisation_id: octopus
+    organisation_name: "Octopus Publishing CIC with Jisc"
+    prc_role: integrated_platform
+    status: active
+    launch_year: 2022
+    model_since: 2022
+    model_note: >-
+      Launched in mid-2022 as a publish-first research record with eight
+      linked publication types, one of which is Peer Review; reviews are open
+      and post-publication. Publications receive DataCite DOIs.
+    coverage_start_year: 2022
+    coverage_end_year: null
+    discipline_scope: multidisciplinary
+    country_of_operator: United Kingdom
+    initiation_class: author_initiated
+    classification_confidence: high
+    classification_note: >-
+      Authors publish their own units on the platform; reviews are written by
+      other users after publication. Entry of the work is by author
+      publication only.
+    prc_configuration: core_publish_first
+    configuration_confidence: medium
+    configuration_note: >-
+      Publication is immediate, reviews are public and linked, and no
+      accept/reject decision follows. No separate summary curation output is
+      issued beyond the linked reviews; medium confidence for that reason.
+    provisional: false
+    publish_arrangement: platform_own
+    review_arrangement: platform_own
+    curation_arrangement: none
+    output_types: [review_report]
+    public_review_reports: true
+    approval_status_public: false
+    summary_assessment: false
+    reviewer_identity_disclosed: always
+    version_linked_review: true
+    review_to_object_relation: none
+    public_author_response: unknown
+    review_has_doi: true
+    data_source: none
+    register_status: register_only
+    data_status: not_machine_readable
+    doi_prefix: null
+    doi_pattern: null
+    doi_version_pattern: null
+    sciety_group_slug: null
+    extraction_selector:
+      none:
+        reason: >-
+          DOIs are minted through DataCite, which is outside the two permitted
+          counting sources (Crossref, Sciety); no Sciety group exists.
+    eligibility_events:
+      - publication on the platform with at least one public Peer Review publication linked to it
+    counting_event: first_public_posting
+    counting_event_date_field: "not applicable (register_only)"
+    evidence_url:
+      - https://www.octopus.ac/about
+      - https://www.octopus.ac/faq
+      - https://www.jisc.ac.uk/get-involved/octopus-user-community
+    verified_on: "2026-10-20"
+
+  - row_id: peeriodicals
+    row_label: "Peeriodicals — editor-curated virtual journals"
+    organisation_id: pubpeer_foundation
+    organisation_name: "The PubPeer Foundation"
+    prc_role: curation_service
+    status: active
+    launch_year: 2018
+    model_since: 2018
+    model_note: >-
+      Launched in June 2018; editors select existing preprints and papers,
+      may solicit reviews, and publish accept/reject decisions with
+      justification. The listing page showed collections updated in 2025 on
+      the verification date. The same operator's PubPeer commenting site is
+      excluded separately (criterion 2).
+    coverage_start_year: 2018
+    coverage_end_year: null
+    discipline_scope: multidisciplinary
+    country_of_operator: United States
+    initiation_class: community_initiated
+    classification_confidence: medium
+    classification_note: >-
+      Editors select works hosted elsewhere, spontaneously or from
+      suggestions by other researchers including the authors; the suggestion
+      route is not documented as a distinct evaluation-producing submission
+      route, so the class stays community_initiated below high confidence.
+    prc_configuration: review_or_curation_service
+    configuration_confidence: high
+    configuration_note: >-
+      Selection, solicited public reviews (signed or anonymous) and published
+      editorial decisions refer to external objects; the service does not
+      publish the works.
+    provisional: false
+    publish_arrangement: external_preprint_server
+    review_arrangement: platform_own
+    curation_arrangement: platform_own
+    output_types: [review_report, assessment_statement, highlight]
+    public_review_reports: true
+    approval_status_public: true
+    summary_assessment: false
+    reviewer_identity_disclosed: optional
+    version_linked_review: unknown
+    review_to_object_relation: none
+    public_author_response: unknown
+    review_has_doi: false
+    data_source: none
+    register_status: register_only
+    data_status: not_machine_readable
+    doi_prefix: null
+    doi_pattern: null
+    doi_version_pattern: null
+    sciety_group_slug: null
+    extraction_selector:
+      none:
+        reason: >-
+          No DOIs for reviews or decisions and no Sciety group; reviews are
+          mirrored to PubPeer, which is not a permitted counting source.
+    eligibility_events:
+      - selection of an already-public work with a published review or editorial decision
+    counting_event: earliest_qualifying_evaluation
+    counting_event_date_field: "not applicable (register_only)"
+    evidence_url:
+      - https://peeriodicals.com/about
+      - https://peeriodicals.com/
+    verified_on: "2026-10-20"

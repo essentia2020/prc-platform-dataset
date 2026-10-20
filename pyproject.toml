@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "prc-platform-dataset"
+version = "1.4.0"
+description = "Open, reproducible dataset of research works flowing through Publish-Review-Curate platforms"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [{name = "Dmitry Kochetkov"}]
+dependencies = [
+  "requests>=2.31",
+  "PyYAML>=6.0",
+  "pandas>=2.0",
+  "matplotlib>=3.8",
+  "seaborn>=0.13",
+]
+
+[project.optional-dependencies]
+test = ["pytest>=8.0"]
+
+[tool.setuptools]
+packages = ["src", "src.common", "src.extract", "src.normalise", "src.analyse", "src.report", "tools"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+addopts = "-q"

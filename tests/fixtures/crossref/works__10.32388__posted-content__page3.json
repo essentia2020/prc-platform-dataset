@@ -1,0 +1,9 @@
+{
+ "status": "ok",
+ "message-type": "work-list",
+ "message": {
+  "items": [],
+  "next-cursor": "CURSOR-QPC-END",
+  "total-results": 0
+ }
+}

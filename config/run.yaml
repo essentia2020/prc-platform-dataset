@@ -1,0 +1,37 @@
+# Run parameters — single declaration point (loaded by src/common/config.py,
+# which fails if any required field is missing).
+#
+# This file states the INTENTION of a run.  Facts about the retrieval that
+# actually happened (retrieval_started_at, retrieval_finished_at, selected
+# walk per scope and the selection reason) are written by the pipeline to
+# data/manifests/<run_id>.json and are never merged into this file.
+#
+# Set run_id to a new value for every local run; raw responses and manifests
+# are keyed by it and are never overwritten.
+
+run_id: run_20261020_01
+
+# Last calendar day whose events are counted.  Every qualifying event must be
+# dated on or before this day and be present in the completed retrieval.
+# A cutoff other than 31 December makes the cutoff year a partial year
+# (`year_to_date`).
+analysis_cutoff_date: 2026-09-30
+
+# Address sent in the Crossref polite-pool `mailto` parameter and in the
+# User-Agent header of every request.
+mailto: kochetkovdm@hotmail.com
+
+# How the analysis selects among completed cursor walks within the run:
+# the completed walk with the greatest completed_at; ties resolved by the
+# lexicographically smallest walk_id; the choice and reason are recorded in
+# the run-level manifest.
+selected_walk_policy: latest_completed_then_smallest_walk_id
+
+# Label used in the User-Agent string (followed by the release identifier).
+user_agent_label: prc-platform-dataset
+
+# Optional overrides of defaults declared in config/sources.yaml.
+http:
+  timeout_seconds: 60
+  max_attempts_per_page: 5
+  backoff_seconds: [2, 5, 15, 45, 120]

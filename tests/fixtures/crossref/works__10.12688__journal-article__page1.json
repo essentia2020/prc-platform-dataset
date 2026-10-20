@@ -1,0 +1,130 @@
+{
+ "status": "ok",
+ "message-type": "work-list",
+ "message": {
+  "items": [
+   {
+    "DOI": "10.12688/f1000research.1001.1",
+    "type": "journal-article",
+    "prefix": "10.12688",
+    "member": "0",
+    "title": [
+     "Synthetic record"
+    ],
+    "container-title": [
+     "F1000Research"
+    ],
+    "created": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "deposited": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "indexed": {
+     "date-time": "2026-01-06T00:00:00Z"
+    },
+    "issued": {
+     "date-parts": [
+      [
+       2022,
+       5,
+       5
+      ]
+     ]
+    }
+   },
+   {
+    "DOI": "10.12688/f1000research.1001.2",
+    "type": "journal-article",
+    "prefix": "10.12688",
+    "member": "0",
+    "title": [
+     "Synthetic record"
+    ],
+    "container-title": [
+     "F1000Research"
+    ],
+    "created": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "deposited": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "indexed": {
+     "date-time": "2026-01-06T00:00:00Z"
+    },
+    "issued": {
+     "date-parts": [
+      [
+       2022,
+       9,
+       9
+      ]
+     ]
+    }
+   },
+   {
+    "DOI": "10.12688/wellcomeopenres.2002.1",
+    "type": "journal-article",
+    "prefix": "10.12688",
+    "member": "0",
+    "title": [
+     "Synthetic record"
+    ],
+    "container-title": [
+     "Wellcome Open Research"
+    ],
+    "created": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "deposited": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "indexed": {
+     "date-time": "2026-01-06T00:00:00Z"
+    },
+    "issued": {
+     "date-parts": [
+      [
+       2023,
+       1,
+       1
+      ]
+     ]
+    }
+   },
+   {
+    "DOI": "10.12688/gatesopenres.3003.1",
+    "type": "journal-article",
+    "prefix": "10.12688",
+    "member": "0",
+    "title": [
+     "Synthetic record"
+    ],
+    "container-title": [
+     "Gates Open Research"
+    ],
+    "created": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "deposited": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "indexed": {
+     "date-time": "2026-01-06T00:00:00Z"
+    },
+    "issued": {
+     "date-parts": [
+      [
+       2024,
+       1,
+       1
+      ]
+     ]
+    }
+   }
+  ],
+  "next-cursor": null,
+  "total-results": 4
+ }
+}

@@ -1,0 +1,94 @@
+# Data sources — endpoints, query templates, rate limits and terms of use.
+#
+# Only the two sources below are used for counting.  Responses stored under
+# data/raw/ are subject to the terms recorded here (see README "Licensing").
+
+sources:
+
+  crossref:
+    name: Crossref REST API
+    base_url: https://api.crossref.org
+    endpoints:
+      works: /works
+    query_templates:
+      works_by_prefix_and_type: >-
+        /works?filter=prefix:{doi_prefix},type:{record_type}&rows={rows}&cursor={cursor}&mailto={mailto}
+      works_by_prefix_type_and_date: >-
+        /works?filter=prefix:{doi_prefix},type:{record_type},from-created-date:{from_date},until-created-date:{until_date}&rows={rows}&cursor={cursor}&mailto={mailto}
+    pagination:
+      mode: cursor
+      initial_cursor: "*"
+      rows: 1000
+      total_tolerance: 0
+      tolerance_reason: ""
+      select_fields: [DOI, type, title, prefix, member, container-title, group-title, created, deposited, issued, posted, published-online, published-print, indexed, relation, subtype]
+    record_types: [journal-article, posted-content, peer-review]
+    rate_limit:
+      pool: polite
+      note: >-
+        Polite pool requires mailto in the query string or User-Agent; honour
+        X-Rate-Limit-Limit / X-Rate-Limit-Interval headers and any Retry-After
+        header; back off on HTTP 429 and 5xx.
+      max_requests_per_second: 1
+    licence: >-
+      Crossref metadata is made available without restriction (Crossref REST
+      API terms of use; metadata is not copyrightable facts, with CC0 waiver
+      for the aggregated metadata where applicable). Abstracts and references
+      may carry publisher terms; this dataset stores neither.
+    licence_url: https://www.crossref.org/documentation/retrieve-metadata/rest-api/rest-api-metadata-license-information/
+    terms_url: https://api.crossref.org/swagger-ui/index.html
+    coverage_limits: >-
+      Only DOIs registered with Crossref; peer-review records only where the
+      member deposits type peer-review with relation.is-review-of; dates are
+      member-supplied and may carry year or month precision only.
+    reproducibility: >-
+      The API returns the current state of the index; retrospective deposits,
+      corrections and relinking change results between retrievals. The
+      immutable raw store and manifests make a given run reproducible from
+      its stored responses.
+
+  sciety:
+    name: Sciety docmaps
+    retrieval_mode: per_group  # full_index is an explicit fallback, never automatic
+    base_url: https://sciety.org
+    endpoints:
+      docmaps_index: /docmaps/v1/index
+      docmaps_by_doi: /docmaps/v1/articles/{doi}/docmap.json
+      group_page: /groups/{group_slug}
+    query_templates:
+      docmaps_index: /docmaps/v1/index
+      docmaps_by_publisher: /docmaps/v1/index?publisheraccount={group_id}
+    pagination:
+      mode: paginated_group
+      next_paths: [next, links.next]
+      completion_rule: exhausted_continuation
+      note: >-
+        Follow same-endpoint continuation URLs, preserving publisheraccount.
+        Complete only after validated articles arrays and absent/null next
+        links; empty pages with a continuation are not terminal. Cycles,
+        malformed pages or has_more without a continuation fail. The local
+        run must confirm these response-field paths. Full-index retrieval
+        with explicit partitioning is a fallback, not an automatic retry.
+    rate_limit:
+      max_requests_per_second: 1
+      note: Unauthenticated public endpoint; one request per pagination page.
+    licence: >-
+      Sciety docmaps are published openly; evaluation texts belong to the
+      evaluating groups and are not stored by this dataset (only identifiers,
+      dates and types).
+    licence_url: https://sciety.org/about
+    terms_url: https://sciety.org/legal
+    coverage_limits: >-
+      Only groups that have joined Sciety and only evaluations ingested from
+      the join date onwards; evaluations are keyed to preprint DOIs.
+    reproducibility: >-
+      The index reflects the current state of Sciety; groups may be added,
+      renamed or re-ingested. Each run stores the full index response
+      immutably.
+
+http_defaults:
+  user_agent_template: "{label}/1.4.0 (mailto:{mailto})"
+  timeout_seconds: 60
+  max_attempts_per_page: 5
+  backoff_seconds: [2, 5, 15, 45, 120]
+  accept: application/json

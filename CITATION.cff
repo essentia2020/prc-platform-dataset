@@ -1,0 +1,61 @@
+cff-version: 1.2.0
+message: "If you use this dataset or its code, please cite it using the metadata below."
+type: dataset
+title: "PRC Platform Dataset 1.4.0"
+version: "1.4.0"
+authors:
+  - family-names: Kochetkov
+    given-names: Dmitry
+    orcid: "https://orcid.org/0000-0001-7890-7532"
+    affiliation: "Centre for Science and Technology Studies (CWTS), Leiden University"
+license: "CC-BY-4.0"
+license-url: "https://creativecommons.org/licenses/by/4.0/"
+abstract: >-
+  An open, reproducible dataset of research works flowing through
+  Publish-Review-Curate (PRC) platforms. Platforms are classified on two
+  independent axes (who initiates the evaluation; workflow configuration) and
+  described by a register of evidence fields. Counts are derived from the
+  Crossref REST API and Sciety docmaps and are organised as observation
+  series per register row and year.
+keywords:
+  - publish-review-curate
+  - preprint review
+  - open peer review
+  - scholarly communication
+  - Crossref
+  - Sciety
+references:
+  - type: article
+    title: "Understanding the Publish-Review-Curate (PRC) Model of Scholarly Communication"
+    authors:
+      - family-names: Corker
+        given-names: Katherine S.
+      - family-names: Waltman
+        given-names: Ludo
+      - family-names: Coates
+        given-names: Jonny
+    year: 2024
+    doi: "10.31222/osf.io/h7swt"
+    url: "https://doi.org/10.31222/osf.io/h7swt"
+    notes: "Conceptual source for the definition of the PRC model."
+  - type: article
+    title: "Peer Review at the Crossroads"
+    authors:
+      - family-names: Kochetkov
+        given-names: Dmitry
+    year: 2026
+    journal: "Learned Publishing"
+    volume: 39
+    issue: 2
+    doi: "10.1002/leap.2046"
+    url: "https://doi.org/10.1002/leap.2046"
+    notes: "Conceptual source for the workflow-configuration axis."
+  - type: generic
+    title: "Crossing the Chasm: The Publish-Review-Curate Model and the Future of Peer Review"
+    authors:
+      - family-names: Kochetkov
+        given-names: Dmitry
+    year: 2026
+    doi: "10.5281/zenodo.22787722"
+    url: "https://doi.org/10.5281/zenodo.22787722"
+    notes: "Presentation, Peer Review Week 2026, 18 September 2026; this dataset is a supplement to it."

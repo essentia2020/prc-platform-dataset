@@ -1,0 +1,130 @@
+{
+ "status": "ok",
+ "message-type": "work-list",
+ "message": {
+  "items": [
+   {
+    "DOI": "10.5194/acpd-15-1-2015",
+    "type": "journal-article",
+    "prefix": "10.5194",
+    "member": "0",
+    "title": [
+     "Synthetic record"
+    ],
+    "container-title": [
+     "Atmospheric Chemistry and Physics Discussions"
+    ],
+    "created": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "deposited": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "indexed": {
+     "date-time": "2026-01-06T00:00:00Z"
+    },
+    "issued": {
+     "date-parts": [
+      [
+       2015,
+       1,
+       1
+      ]
+     ]
+    }
+   },
+   {
+    "DOI": "10.5194/acp-25-1-2025",
+    "type": "journal-article",
+    "prefix": "10.5194",
+    "member": "0",
+    "title": [
+     "Synthetic record"
+    ],
+    "container-title": [
+     "Atmospheric Chemistry and Physics"
+    ],
+    "created": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "deposited": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "indexed": {
+     "date-time": "2026-01-06T00:00:00Z"
+    },
+    "issued": {
+     "date-parts": [
+      [
+       2025,
+       8,
+       8
+      ]
+     ]
+    }
+   },
+   {
+    "DOI": "10.5194/esd-12-1-2021",
+    "type": "journal-article",
+    "prefix": "10.5194",
+    "member": "0",
+    "title": [
+     "Synthetic record"
+    ],
+    "container-title": [
+     "Earth System Dynamics"
+    ],
+    "created": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "deposited": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "indexed": {
+     "date-time": "2026-01-06T00:00:00Z"
+    },
+    "issued": {
+     "date-parts": [
+      [
+       2021,
+       8,
+       8
+      ]
+     ]
+    }
+   },
+   {
+    "DOI": "10.5194/aab-60-1-2017",
+    "type": "journal-article",
+    "prefix": "10.5194",
+    "member": "0",
+    "title": [
+     "Synthetic record"
+    ],
+    "container-title": [
+     "Archives Animal Breeding"
+    ],
+    "created": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "deposited": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "indexed": {
+     "date-time": "2026-01-06T00:00:00Z"
+    },
+    "issued": {
+     "date-parts": [
+      [
+       2017,
+       8,
+       8
+      ]
+     ]
+    }
+   }
+  ],
+  "next-cursor": null,
+  "total-results": 4
+ }
+}

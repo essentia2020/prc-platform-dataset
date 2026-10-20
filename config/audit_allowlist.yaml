@@ -1,0 +1,96 @@
+# Structured allow-list for tools/audit_text.py.
+#
+# Each entry has rule_id (R2, R3 or R4 — R1 is never exempted), file (path
+# relative to the repository root) and exactly one of:
+#   literal   — the exact text span that is exempt under rule_id in that file
+#   yaml_path — a path expression (key.sub[*].leaf) whose scalar values are
+#               exempt under rule_id in that YAML file
+# An entry exempts only the matched span under the named rule.
+
+allowlist:
+
+  # ---- R3: permitted citation contexts -----------------------------------
+  # Source 1: PRC definition (README "Definition", classification scheme).
+  - rule_id: R3
+    file: README.md
+    literal: "Corker, Waltman and\nCoates (2024)"
+  - rule_id: R3
+    file: README.md
+    literal: "Corker, Waltman and Coates (2024)"
+  - rule_id: R3
+    file: config/classification_scheme.md
+    literal: "Corker, Waltman and Coates (2024)"
+  - rule_id: R3
+    file: config/classification_scheme.md
+    literal: "Corker, K. S., Waltman, L., & Coates, J. (2024). Understanding the\nPublish-Review-Curate (PRC) Model of Scholarly Communication. MetaArXiv.\nhttps://doi.org/10.31222/osf.io/h7swt"
+
+  # Source 2: workflow-configuration axis (README "Related publications",
+  # classification scheme axis 2 rationale); first-person or neutral voice.
+  - rule_id: R3
+    file: README.md
+    literal: "Kochetkov (2026),\nLearned Publishing, 39(2), e2046, https://doi.org/10.1002/leap.2046"
+  - rule_id: R3
+    file: config/classification_scheme.md
+    literal: "Kochetkov (2026)"
+  - rule_id: R3
+    file: config/classification_scheme.md
+    literal: "Kochetkov, D. (2026). Peer Review at the Crossroads. Learned Publishing,\n39(2), e2046. https://doi.org/10.1002/leap.2046"
+
+  # Source 3: conference presentation (CITATION.cff references only).
+  - rule_id: R3
+    file: docs/decisions.md
+    literal: "https://doi.org/10.5281/zenodo.22787722"
+
+  # CITATION.cff: exact bibliographic entries under references.
+  - rule_id: R3
+    file: CITATION.cff
+    yaml_path: references[*].title
+  - rule_id: R3
+    file: CITATION.cff
+    yaml_path: references[*].authors[*].family-names
+  - rule_id: R3
+    file: CITATION.cff
+    yaml_path: references[*].journal
+  - rule_id: R3
+    file: CITATION.cff
+    yaml_path: references[*].doi
+  - rule_id: R3
+    file: CITATION.cff
+    yaml_path: references[*].url
+
+  # This file lists the permitted strings themselves.
+  - rule_id: R3
+    file: config/audit_allowlist.yaml
+    yaml_path: allowlist[*].literal
+
+  # ---- R2: licence identifiers that contain a version-like string --------
+  - rule_id: R2
+    file: CITATION.cff
+    literal: "CC-BY-4.0"
+  - rule_id: R2
+    file: CITATION.cff
+    literal: "https://creativecommons.org/licenses/by/4.0/"
+  - rule_id: R2
+    file: LICENSE-DATA
+    literal: "Attribution 4.0 International"
+  - rule_id: R2
+    file: LICENSE-DATA
+    literal: "CC BY 4.0"
+  - rule_id: R2
+    file: LICENSE-DATA
+    literal: "CC-BY-4.0"
+  - rule_id: R2
+    file: LICENSE-DATA
+    literal: "https://creativecommons.org/licenses/by/4.0/"
+  - rule_id: R2
+    file: README.md
+    literal: "Creative Commons Attribution 4.0 International (CC BY 4.0)"
+  - rule_id: R2
+    file: README.md
+    literal: "CC BY 4.0"
+  - rule_id: R2
+    file: docs/decisions.md
+    literal: "CC BY 4.0"
+  - rule_id: R2
+    file: docs/decisions.md
+    literal: "https://creativecommons.org/licenses/by/4.0/"

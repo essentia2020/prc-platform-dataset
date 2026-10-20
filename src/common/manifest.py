@@ -1,0 +1,265 @@
+"""Accepted-page manifests and the run-level manifest.
+
+Walk manifest: ``data/manifests/<run_id>/<source>__<scope>__<walk_id>.manifest.jsonl``
+(one JSON object per line, append-only; schema in docs/data_dictionary.md §3.2).
+
+Run manifest: ``data/manifests/<run_id>/<run_id>.json`` (schema §3.3).
+
+Only *complete* walks are ever selected for downstream use.  A walk whose
+terminal state is ``incomplete_restarted`` or ``failed`` — or which has no
+terminal line at all — contributes nothing to any count.
+"""
+
+from __future__ import annotations
+
+import json
+import os
+from dataclasses import dataclass, field
+from datetime import datetime, timezone
+from pathlib import Path
+
+WALK_STATES = ("in_progress", "complete", "incomplete_restarted", "failed")
+TERMINAL_STATES = ("complete", "incomplete_restarted", "failed")
+SELECTED_WALK_POLICIES = ("latest_completed_then_smallest_walk_id",)
+DEFAULT_MANIFEST_ROOT = Path("data") / "manifests"
+
+
+class ManifestError(RuntimeError):
+    """Raised on malformed or inconsistent manifests."""
+
+
+def utc_now() -> str:
+    return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+
+
+def walk_manifest_path(manifest_root: Path, run_id: str, source: str, scope: str,
+                       walk_id: str) -> Path:
+    return manifest_root / run_id / f"{source}__{scope}__{walk_id}.manifest.jsonl"
+
+
+def run_manifest_path(manifest_root: Path, run_id: str) -> Path:
+    return manifest_root / run_id / f"{run_id}.json"
+
+
+# --------------------------------------------------------------------- walks
+@dataclass
+class PageEntry:
+    page: int
+    accepted_attempt: int
+    response_path: str
+    sha256: str
+    bytes: int
+    http_status: int
+    cursor_in: str
+    cursor_out: str
+    items_in_page: int
+    accepted_at_utc: str
+
+
+@dataclass
+class WalkRecord:
+    run_id: str
+    walk_id: str
+    source: str
+    scope: str
+    pages: list[PageEntry] = field(default_factory=list)
+    state: str = "in_progress"
+    started_at_utc: str = ""
+    ended_at_utc: str = ""
+    reason: str = ""
+    completion: dict = field(default_factory=dict)
+    anomalies: list[dict] = field(default_factory=list)
+
+    @property
+    def items_total(self) -> int:
+        return sum(p.items_in_page for p in self.pages)
+
+    @property
+    def is_complete(self) -> bool:
+        return self.state == "complete"
+
+
+class WalkManifestWriter:
+    """Append-only writer; one instance per walk."""
+
+    def __init__(self, path: Path, run_id: str, source: str, scope: str, walk_id: str,
+                 now=utc_now) -> None:
+        self.path = path
+        self.identity = {"run_id": run_id, "walk_id": walk_id, "source": source, "scope": scope}
+        self._now = now
+        self._closed = False
+        if path.exists() and path.stat().st_size > 0:
+            raise ManifestError(f"walk manifest already exists: {path}; walks are never resumed "
+                                "in place — allocate a new walk_id")
+        path.parent.mkdir(parents=True, exist_ok=True)
+        self._append({"record": "walk_header", "started_at_utc": self._now(),
+                      "walk_state": "in_progress"})
+
+    def _append(self, payload: dict) -> None:
+        if self._closed:
+            raise ManifestError("walk manifest is closed")
+        with self.path.open("a", encoding="utf-8") as handle:
+            handle.write(json.dumps({**self.identity, **payload}, ensure_ascii=False,
+                                    sort_keys=True) + "\n")
+
+    def accept_page(self, entry: PageEntry) -> None:
+        self._append({"record": "page", "walk_state": "in_progress", **entry.__dict__})
+
+    def reject_attempt(self, page: int, attempt: int, http_status: int | None,
+                       reason: str, response_path: str | None, sha256: str | None) -> None:
+        self._append({"record": "rejected_attempt", "walk_state": "in_progress", "page": page,
+                      "attempt": attempt, "http_status": http_status, "reason": reason,
+                      "response_path": response_path, "sha256": sha256})
+
+    def anomaly(self, code: str, **details) -> None:
+        self._append({"record": "anomaly", "code": code, **details})
+
+    def close(self, state: str, reason: str = "", pages_accepted: int = 0,
+              items_total: int = 0, completion: dict | None = None) -> None:
+        if state not in TERMINAL_STATES:
+            raise ManifestError(f"not a terminal walk state: {state}")
+        self._append({"record": "walk_end", "walk_state": state, "reason": reason,
+                      "pages_accepted": pages_accepted, "items_total": items_total,
+                      "ended_at_utc": self._now(), "completion": completion or {}})
+        self._closed = True
+
+
+def read_walk_manifest(path: Path) -> WalkRecord:
+    """Parse a walk manifest.  Missing terminal line -> state ``in_progress``."""
+    record: WalkRecord | None = None
+    for line_no, line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
+        if not line.strip():
+            continue
+        try:
+            obj = json.loads(line)
+        except json.JSONDecodeError as exc:
+            raise ManifestError(f"{path}:{line_no}: invalid JSON") from exc
+        if record is None:
+            try:
+                record = WalkRecord(obj["run_id"], obj["walk_id"], obj["source"], obj["scope"])
+            except KeyError as exc:
+                raise ManifestError(f"{path}:{line_no}: missing identity field {exc}") from exc
+        kind = obj.get("record")
+        if kind == "walk_header":
+            record.started_at_utc = obj.get("started_at_utc", "")
+        elif kind == "page":
+            record.pages.append(PageEntry(
+                page=int(obj["page"]), accepted_attempt=int(obj["accepted_attempt"]),
+                response_path=obj["response_path"], sha256=obj["sha256"],
+                bytes=int(obj["bytes"]), http_status=int(obj["http_status"]),
+                cursor_in=obj.get("cursor_in", ""), cursor_out=obj.get("cursor_out", ""),
+                items_in_page=int(obj["items_in_page"]),
+                accepted_at_utc=obj.get("accepted_at_utc", "")))
+        elif kind == "walk_end":
+            state = obj.get("walk_state")
+            if state not in TERMINAL_STATES:
+                raise ManifestError(f"{path}:{line_no}: invalid terminal state {state!r}")
+            record.state = state
+            record.ended_at_utc = obj.get("ended_at_utc", "")
+            record.reason = obj.get("reason", "")
+            record.completion = obj.get("completion", {})
+        elif kind == "anomaly":
+            record.anomalies.append(obj)
+        elif kind == "rejected_attempt":
+            continue
+        else:
+            raise ManifestError(f"{path}:{line_no}: unknown record kind {kind!r}")
+    if record is None:
+        raise ManifestError(f"{path}: empty manifest")
+    pages = [p.page for p in record.pages]
+    if record.state == "complete" and pages != list(range(1, len(pages) + 1)):
+        raise ManifestError(f"{path}: complete walk with non-contiguous pages {pages}")
+    return record
+
+
+def list_walks(manifest_root: Path, run_id: str, source: str, scope: str) -> list[WalkRecord]:
+    folder = manifest_root / run_id
+    if not folder.is_dir():
+        return []
+    prefix = f"{source}__{scope}__"
+    walks = [read_walk_manifest(p) for p in sorted(folder.glob(f"{prefix}w*.manifest.jsonl"))]
+    return sorted(walks, key=lambda w: w.walk_id)
+
+
+# ----------------------------------------------------------------- selection
+def select_walk(walks: list[WalkRecord], policy: str) -> tuple[WalkRecord | None, str]:
+    """Return ``(selected_walk, reason)``; ``None`` when no complete walk exists."""
+    if policy not in SELECTED_WALK_POLICIES:
+        raise ManifestError(f"unknown selected_walk_policy {policy!r}")
+    complete = [w for w in walks if w.is_complete]
+    if not complete:
+        states = ", ".join(f"{w.walk_id}={w.state}" for w in walks) or "no walks"
+        return None, f"no complete walk ({states})"
+    latest = max(w.ended_at_utc for w in complete)
+    candidates = sorted((w for w in complete if w.ended_at_utc == latest), key=lambda w: w.walk_id)
+    chosen = candidates[0]
+    reason = f"complete walk with latest ended_at_utc {latest}"
+    if len(candidates) > 1:
+        reason += f"; tie among {[w.walk_id for w in candidates]} resolved by smallest walk_id"
+    return chosen, reason
+
+
+# ------------------------------------------------------------- run manifest
+def load_run_manifest(path: Path) -> dict:
+    if not path.exists():
+        return {}
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def write_run_manifest(path: Path, payload: dict) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_suffix(path.suffix + ".tmp")
+    tmp.write_text(json.dumps(payload, ensure_ascii=False, indent=1, sort_keys=True) + "\n",
+                   encoding="utf-8")
+    os.replace(tmp, path)
+
+
+def update_run_manifest_scope(path: Path, *, run_id: str, cutoff: str, policy: str,
+                              source: str, scope: str, walks: list[WalkRecord],
+                              software: dict | None = None, now=utc_now) -> dict:
+    """Record all walks of one scope and the selected walk under the policy."""
+    payload = load_run_manifest(path) or {
+        "run_id": run_id, "analysis_cutoff_date": cutoff, "selected_walk_policy": policy,
+        "retrieval_started_at": now(), "retrieval_finished_at": "", "scopes": {},
+        "software": software or {}}
+    if payload.get("run_id") != run_id:
+        raise ManifestError(f"run manifest {path} belongs to run {payload.get('run_id')!r}")
+    selected, reason = select_walk(walks, policy)
+    if selected is not None:
+        status = "complete"
+    elif any(w.state == "failed" for w in walks) and not any(w.state == "in_progress" for w in walks):
+        status = "failed"
+    else:
+        status = "incomplete"
+    payload["scopes"][f"{source}/{scope}"] = {
+        "source": source, "scope": scope,
+        "walk_ids": [w.walk_id for w in walks],
+        "walk_states": {w.walk_id: w.state for w in walks},
+        "selected_walk_id": selected.walk_id if selected else None,
+        "selection_reason": reason,
+        "extraction_status": status,
+        "completed_at": selected.ended_at_utc if selected else None,
+        "pages": len(selected.pages) if selected else None,
+        "items": selected.items_total if selected else None,
+        "completion": selected.completion if selected else None,
+        "anomalies": selected.anomalies if selected else [],
+    }
+    payload["retrieval_finished_at"] = now()
+    write_run_manifest(path, payload)
+    return payload
+
+
+def verify_walk_against_store(walk: WalkRecord, raw_root: Path) -> list[str]:
+    """Return a list of mismatches between manifest digests and stored bytes."""
+    from .raw_store import sha256_of_file  # local import keeps modules decoupled
+
+    problems = []
+    for page in walk.pages:
+        target = raw_root / page.response_path
+        if not target.is_file():
+            problems.append(f"{walk.walk_id} page {page.page}: missing {page.response_path}")
+            continue
+        actual = sha256_of_file(target)
+        if actual != page.sha256:
+            problems.append(f"{walk.walk_id} page {page.page}: sha256 mismatch")
+    return problems

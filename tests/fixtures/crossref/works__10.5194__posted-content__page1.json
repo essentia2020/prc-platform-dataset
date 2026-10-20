@@ -1,0 +1,170 @@
+{
+ "status": "ok",
+ "message-type": "work-list",
+ "message": {
+  "items": [
+   {
+    "DOI": "10.5194/acp-2021-123",
+    "type": "posted-content",
+    "prefix": "10.5194",
+    "member": "0",
+    "title": [
+     "Synthetic record"
+    ],
+    "container-title": [],
+    "created": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "deposited": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "indexed": {
+     "date-time": "2026-01-06T00:00:00Z"
+    },
+    "subtype": "preprint",
+    "posted": {
+     "date-parts": [
+      [
+       2021,
+       3,
+       3
+      ]
+     ]
+    },
+    "issued": {
+     "date-parts": [
+      [
+       2021,
+       3,
+       3
+      ]
+     ]
+    }
+   },
+   {
+    "DOI": "10.5194/egusphere-2025-77",
+    "type": "posted-content",
+    "prefix": "10.5194",
+    "member": "0",
+    "title": [
+     "Synthetic record"
+    ],
+    "container-title": [],
+    "created": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "deposited": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "indexed": {
+     "date-time": "2026-01-06T00:00:00Z"
+    },
+    "subtype": "preprint",
+    "posted": {
+     "date-parts": [
+      [
+       2025,
+       4,
+       4
+      ]
+     ]
+    },
+    "issued": {
+     "date-parts": [
+      [
+       2025,
+       4,
+       4
+      ]
+     ]
+    },
+    "relation": {
+     "is-preprint-of": [
+      {
+       "id": "10.5194/acp-25-1-2025",
+       "id-type": "doi"
+      }
+     ]
+    }
+   },
+   {
+    "DOI": "10.5194/egusphere-2025-78",
+    "type": "posted-content",
+    "prefix": "10.5194",
+    "member": "0",
+    "title": [
+     "Synthetic record"
+    ],
+    "container-title": [],
+    "created": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "deposited": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "indexed": {
+     "date-time": "2026-01-06T00:00:00Z"
+    },
+    "subtype": "preprint",
+    "posted": {
+     "date-parts": [
+      [
+       2025,
+       4,
+       5
+      ]
+     ]
+    },
+    "issued": {
+     "date-parts": [
+      [
+       2025,
+       4,
+       5
+      ]
+     ]
+    }
+   },
+   {
+    "DOI": "10.5194/mr-2025-9",
+    "type": "posted-content",
+    "prefix": "10.5194",
+    "member": "0",
+    "title": [
+     "Synthetic record"
+    ],
+    "container-title": [],
+    "created": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "deposited": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "indexed": {
+     "date-time": "2026-01-06T00:00:00Z"
+    },
+    "subtype": "preprint",
+    "posted": {
+     "date-parts": [
+      [
+       2025,
+       5,
+       5
+      ]
+     ]
+    },
+    "issued": {
+     "date-parts": [
+      [
+       2025,
+       5,
+       5
+      ]
+     ]
+    }
+   }
+  ],
+  "next-cursor": null,
+  "total-results": 4
+ }
+}

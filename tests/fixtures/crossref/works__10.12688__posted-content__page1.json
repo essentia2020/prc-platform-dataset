@@ -1,0 +1,50 @@
+{
+ "status": "ok",
+ "message-type": "work-list",
+ "message": {
+  "items": [
+   {
+    "DOI": "10.12688/verixiv.44.1",
+    "type": "posted-content",
+    "prefix": "10.12688",
+    "member": "0",
+    "title": [
+     "Synthetic record"
+    ],
+    "container-title": [
+     "VeriXiv"
+    ],
+    "created": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "deposited": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "indexed": {
+     "date-time": "2026-01-06T00:00:00Z"
+    },
+    "subtype": "preprint",
+    "posted": {
+     "date-parts": [
+      [
+       2025,
+       1,
+       1
+      ]
+     ]
+    },
+    "issued": {
+     "date-parts": [
+      [
+       2025,
+       1,
+       1
+      ]
+     ]
+    }
+   }
+  ],
+  "next-cursor": null,
+  "total-results": 1
+ }
+}

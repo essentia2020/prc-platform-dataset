@@ -1,0 +1,9 @@
+{
+ "status": "ok",
+ "message-type": "work-list",
+ "message": {
+  "items": [],
+  "next-cursor": null,
+  "total-results": 0
+ }
+}

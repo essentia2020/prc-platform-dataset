@@ -1,0 +1,26 @@
+# Raw HTTP responses are kept outside version control (checksums live in data/manifests/)
+data/raw/*
+!data/raw/.gitkeep
+data/interim/*
+!data/interim/.gitkeep
+logs/*
+!logs/.gitkeep
+
+# Private audit token lists are never committed
+.audit_tokens.txt
+*.audit_tokens*
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.venv/
+venv/
+build/
+dist/
+
+# Editors and OS
+.vscode/
+.idea/
+.DS_Store

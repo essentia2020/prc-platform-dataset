@@ -1,0 +1,116 @@
+{
+ "status": "ok",
+ "message-type": "work-list",
+ "message": {
+  "items": [
+   {
+    "DOI": "10.32388/DDDD44",
+    "type": "posted-content",
+    "prefix": "10.32388",
+    "member": "0",
+    "title": [
+     "Synthetic record"
+    ],
+    "container-title": [],
+    "created": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "deposited": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "indexed": {
+     "date-time": "2026-01-06T00:00:00Z"
+    },
+    "subtype": "preprint",
+    "posted": {
+     "date-parts": [
+      [
+       2024
+      ]
+     ]
+    },
+    "issued": {
+     "date-parts": [
+      [
+       2024
+      ]
+     ]
+    }
+   },
+   {
+    "DOI": "10.32388/EEEE55",
+    "type": "posted-content",
+    "prefix": "10.32388",
+    "member": "0",
+    "title": [
+     "Synthetic record"
+    ],
+    "container-title": [],
+    "created": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "deposited": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "indexed": {
+     "date-time": "2026-01-06T00:00:00Z"
+    },
+    "subtype": "preprint",
+    "posted": {
+     "date-parts": [
+      [
+       2026,
+       10,
+       2
+      ]
+     ]
+    },
+    "issued": {
+     "date-parts": [
+      [
+       2026,
+       10,
+       2
+      ]
+     ]
+    }
+   },
+   {
+    "DOI": "10.32388/FFFF66",
+    "type": "posted-content",
+    "prefix": "10.32388",
+    "member": "0",
+    "title": [
+     "Synthetic record"
+    ],
+    "container-title": [],
+    "created": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "deposited": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "indexed": {
+     "date-time": "2026-01-06T00:00:00Z"
+    },
+    "subtype": "preprint",
+    "posted": {
+     "date-parts": [
+      [
+       2026
+      ]
+     ]
+    },
+    "issued": {
+     "date-parts": [
+      [
+       2026
+      ]
+     ]
+    }
+   }
+  ],
+  "next-cursor": "CURSOR-QPC-3",
+  "total-results": 3
+ }
+}
