@@ -265,8 +265,8 @@ def run_crossref(run_config: RunConfig, sources_config: Mapping[str, Any], platf
             dependents = [s for s in selectors if scope.prefix in s.review_prefixes()
                           and REVIEW_RECORD_TYPE in s.record_types]
         else:
-            dependents = [s for s in selectors if scope.key in s.work_keys()
-                          and scope.record_type in s.record_types]
+            dependents = [s for s in selectors if scope.record_type in s.record_types
+                          and scope.key in s.work_keys(scope.record_type)]
         if not walk.is_complete:
             outcome.blocked_rows = [s.row_id for s in dependents]
             blocked.update(outcome.blocked_rows)

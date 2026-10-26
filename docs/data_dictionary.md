@@ -59,7 +59,7 @@ One line per register row (observation series). Lists are joined with `; `;
 | `doi_pattern` | regex or empty | selects the row's DOIs | `^10\.32388/` |
 | `doi_version_pattern` | regex or empty | group 1 = canonical stem | `^(10\.32388/[a-z0-9]+)(?:\.\d+)?$` |
 | `sciety_group_slug` | string or empty | slug in `https://sciety.org/groups/<slug>` | `prereview` |
-| `extraction_selector` | JSON | keys `crossref` and/or `sciety`; `crossref` holds `prefix` (owner prefix or list) and/or `issn` (journal ISSN; requires `doi_regex`), `record_types`, `doi_regex`, optional `review_doi_prefix`, `journals`, `target_filter`, `notes` | `{"crossref":{…}}` |
+| `extraction_selector` | JSON | keys `crossref` and/or `sciety`; `crossref` holds `prefix` (owner prefix or list) and/or `issn` (journal ISSN; requires `doi_regex` or `container_titles`), `record_types`, optional `scope_keys` (record type → `prefix`/`issn`, required when both keys are declared; peer-review scopes are always prefix-based), `doi_regex`, `container_titles`, `review_doi_prefix`, `journals`, `target_filter`, `notes` | `{"crossref":{…}}` |
 | `eligibility_events` | list | free text per event | `first public posting; ≥1 qualifying review` |
 | `counting_event` | enum | `first_public_posting`, `earliest_qualifying_evaluation`, `final_article` | `first_public_posting` |
 | `counting_event_date_field` | string | source field priority | `posted -> issued` |
@@ -141,14 +141,23 @@ Every line carries the identity fields and a `record` kind: `walk_header`
 `rejected_attempt` (`page`, `attempt`, `http_status`, `reason`,
 `response_path`, `sha256` of the stored rejected response) and `walk_end`
 (terminal line: `walk_state`, `reason`, `pages_accepted`, `items_total`,
-`ended_at_utc`, `completion`). An `anomaly` line records `code` and `page`.
-Crossref `completion` records `rule`, `terminal_evidence`,
+`ended_at_utc`, `completion`). An `anomaly` line records `code` and `page`
+(`short_page` additionally `items_in_page` and `rows`; `missing_next_cursor`
+when a page carries no continuation).
+Crossref `completion` records `rule`, `terminal_evidence` (`empty_page` or
+`no_next_cursor`; a short non-empty page is never terminal — the walk
+follows its continuation and counts it in `short_pages`),
 `first_page_total_results`, `last_page_total_results`,
 `total_results_moved_during_walk` (true when `total-results` took more than
 one value across the accepted pages, i.e. the index changed while the walk
 ran), `accepted_items_total`, `total_delta`, `total_tolerance`,
 `tolerance_reason` (the source-wide values from `config/sources.yaml`, or
-the scope's entry in `total_tolerance_overrides`). Sciety uses
+the scope's entry in `total_tolerance_overrides`), `short_pages`. A walk
+that keeps returning pages beyond `2 * ceil(total-results / rows) + 5`
+without reaching terminal evidence fails with `page budget exceeded`.
+Every cursor request repeats the full query (filter, rows, select, mailto)
+with the `next-cursor` of the immediately preceding page; page lines tie
+`cursor_in` of page N+1 to `cursor_out` of page N. Sciety uses
 `rule=sciety_continuation_exhausted` without a Crossref total requirement.
 A manifest without a `walk_end` line is `in_progress` and
 is closed as `incomplete_restarted` by the next invocation.

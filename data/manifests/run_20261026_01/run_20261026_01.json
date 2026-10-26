@@ -1,0 +1,491 @@
+{
+ "analysis_cutoff_date": "2026-09-30",
+ "retrieval_finished_at": "2026-10-26T17:09:33Z",
+ "retrieval_started_at": "2026-10-26T14:55:56Z",
+ "run_id": "run_20261026_01",
+ "scopes": {
+  "crossref/works__10.1099__journal-article": {
+   "anomalies": [],
+   "completed_at": "2026-10-26T16:40:18Z",
+   "completion": {
+    "accepted_items_total": 71761,
+    "first_page_total_results": 71761,
+    "last_page_total_results": 71761,
+    "rule": "crossref_total_checked",
+    "terminal_evidence": "short_page",
+    "tolerance_reason": "",
+    "total_delta": 0,
+    "total_results_moved_during_walk": false,
+    "total_tolerance": 0
+   },
+   "extraction_status": "complete",
+   "items": 71761,
+   "pages": 72,
+   "scope": "works__10.1099__journal-article",
+   "selected_walk_id": "w03",
+   "selection_reason": "complete walk with latest ended_at_utc 2026-10-26T16:40:18Z",
+   "source": "crossref",
+   "walk_ids": [
+    "w01",
+    "w02",
+    "w03"
+   ],
+   "walk_states": {
+    "w01": "failed",
+    "w02": "failed",
+    "w03": "complete"
+   }
+  },
+  "crossref/works__10.1099__posted-content": {
+   "anomalies": [],
+   "completed_at": "2026-10-26T14:56:11Z",
+   "completion": {
+    "accepted_items_total": 1795,
+    "first_page_total_results": 1795,
+    "last_page_total_results": 1795,
+    "rule": "crossref_total_checked",
+    "terminal_evidence": "short_page",
+    "tolerance_reason": "",
+    "total_delta": 0,
+    "total_results_moved_during_walk": false,
+    "total_tolerance": 0
+   },
+   "extraction_status": "complete",
+   "items": 1795,
+   "pages": 2,
+   "scope": "works__10.1099__posted-content",
+   "selected_walk_id": "w01",
+   "selection_reason": "complete walk with latest ended_at_utc 2026-10-26T14:56:11Z",
+   "source": "crossref",
+   "walk_ids": [
+    "w01"
+   ],
+   "walk_states": {
+    "w01": "complete"
+   }
+  },
+  "crossref/works__10.1162__journal-article": {
+   "anomalies": [],
+   "completed_at": "2026-10-26T16:44:22Z",
+   "completion": {
+    "accepted_items_total": 56184,
+    "first_page_total_results": 56184,
+    "last_page_total_results": 56184,
+    "rule": "crossref_total_checked",
+    "terminal_evidence": "short_page",
+    "tolerance_reason": "",
+    "total_delta": 0,
+    "total_results_moved_during_walk": false,
+    "total_tolerance": 0
+   },
+   "extraction_status": "complete",
+   "items": 56184,
+   "pages": 57,
+   "scope": "works__10.1162__journal-article",
+   "selected_walk_id": "w03",
+   "selection_reason": "complete walk with latest ended_at_utc 2026-10-26T16:44:22Z",
+   "source": "crossref",
+   "walk_ids": [
+    "w01",
+    "w02",
+    "w03"
+   ],
+   "walk_states": {
+    "w01": "incomplete_restarted",
+    "w02": "failed",
+    "w03": "complete"
+   }
+  },
+  "crossref/works__10.12688__journal-article": {
+   "anomalies": [],
+   "completed_at": "2026-10-26T16:46:50Z",
+   "completion": {
+    "accepted_items_total": 30184,
+    "first_page_total_results": 30184,
+    "last_page_total_results": 30184,
+    "rule": "crossref_total_checked",
+    "terminal_evidence": "short_page",
+    "tolerance_reason": "Result set is not stable during cursor walks on the Crossref REST API since the Crossref search backend change of 24 August 2026; deposits registered during the walk move total-results. Observed delta -21 of 30,184 on 2026-10-26. Difference recorded per walk; DOIs are de-duplicated at normalisation.",
+    "total_delta": 0,
+    "total_results_moved_during_walk": false,
+    "total_tolerance": 50
+   },
+   "extraction_status": "complete",
+   "items": 30184,
+   "pages": 31,
+   "scope": "works__10.12688__journal-article",
+   "selected_walk_id": "w02",
+   "selection_reason": "complete walk with latest ended_at_utc 2026-10-26T16:46:50Z",
+   "source": "crossref",
+   "walk_ids": [
+    "w01",
+    "w02"
+   ],
+   "walk_states": {
+    "w01": "failed",
+    "w02": "complete"
+   }
+  },
+  "crossref/works__10.12688__posted-content": {
+   "anomalies": [],
+   "completed_at": "2026-10-26T15:14:25Z",
+   "completion": {
+    "accepted_items_total": 922,
+    "first_page_total_results": 922,
+    "last_page_total_results": 922,
+    "rule": "crossref_total_checked",
+    "terminal_evidence": "short_page",
+    "tolerance_reason": "",
+    "total_delta": 0,
+    "total_results_moved_during_walk": false,
+    "total_tolerance": 0
+   },
+   "extraction_status": "complete",
+   "items": 922,
+   "pages": 1,
+   "scope": "works__10.12688__posted-content",
+   "selected_walk_id": "w01",
+   "selection_reason": "complete walk with latest ended_at_utc 2026-10-26T15:14:25Z",
+   "source": "crossref",
+   "walk_ids": [
+    "w01"
+   ],
+   "walk_states": {
+    "w01": "complete"
+   }
+  },
+  "crossref/works__10.21468__journal-article": {
+   "anomalies": [],
+   "completed_at": "2026-10-26T15:15:03Z",
+   "completion": {
+    "accepted_items_total": 4165,
+    "first_page_total_results": 4165,
+    "last_page_total_results": 4165,
+    "rule": "crossref_total_checked",
+    "terminal_evidence": "short_page",
+    "tolerance_reason": "",
+    "total_delta": 0,
+    "total_results_moved_during_walk": false,
+    "total_tolerance": 0
+   },
+   "extraction_status": "complete",
+   "items": 4165,
+   "pages": 5,
+   "scope": "works__10.21468__journal-article",
+   "selected_walk_id": "w01",
+   "selection_reason": "complete walk with latest ended_at_utc 2026-10-26T15:15:03Z",
+   "source": "crossref",
+   "walk_ids": [
+    "w01"
+   ],
+   "walk_states": {
+    "w01": "complete"
+   }
+  },
+  "crossref/works__10.2196__journal-article": {
+   "anomalies": [],
+   "completed_at": "2026-10-26T16:50:48Z",
+   "completion": {
+    "accepted_items_total": 43236,
+    "first_page_total_results": 43236,
+    "last_page_total_results": 43236,
+    "rule": "crossref_total_checked",
+    "terminal_evidence": "short_page",
+    "tolerance_reason": "",
+    "total_delta": 0,
+    "total_results_moved_during_walk": false,
+    "total_tolerance": 0
+   },
+   "extraction_status": "complete",
+   "items": 43236,
+   "pages": 44,
+   "scope": "works__10.2196__journal-article",
+   "selected_walk_id": "w03",
+   "selection_reason": "complete walk with latest ended_at_utc 2026-10-26T16:50:48Z",
+   "source": "crossref",
+   "walk_ids": [
+    "w01",
+    "w02",
+    "w03"
+   ],
+   "walk_states": {
+    "w01": "incomplete_restarted",
+    "w02": "failed",
+    "w03": "complete"
+   }
+  },
+  "crossref/works__10.24072__journal-article": {
+   "anomalies": [],
+   "completed_at": "2026-10-26T15:22:01Z",
+   "completion": {
+    "accepted_items_total": 4367,
+    "first_page_total_results": 4367,
+    "last_page_total_results": 4367,
+    "rule": "crossref_total_checked",
+    "terminal_evidence": "short_page",
+    "tolerance_reason": "",
+    "total_delta": 0,
+    "total_results_moved_during_walk": false,
+    "total_tolerance": 0
+   },
+   "extraction_status": "complete",
+   "items": 4367,
+   "pages": 5,
+   "scope": "works__10.24072__journal-article",
+   "selected_walk_id": "w01",
+   "selection_reason": "complete walk with latest ended_at_utc 2026-10-26T15:22:01Z",
+   "source": "crossref",
+   "walk_ids": [
+    "w01"
+   ],
+   "walk_states": {
+    "w01": "complete"
+   }
+  },
+  "crossref/works__10.24072__posted-content": {
+   "anomalies": [
+    {
+     "code": "missing_next_cursor",
+     "page": 1,
+     "record": "anomaly",
+     "run_id": "run_20261026_01",
+     "scope": "works__10.24072__posted-content",
+     "source": "crossref",
+     "walk_id": "w01"
+    }
+   ],
+   "completed_at": "2026-10-26T15:22:05Z",
+   "completion": {
+    "accepted_items_total": 0,
+    "first_page_total_results": 0,
+    "last_page_total_results": 0,
+    "rule": "crossref_total_checked",
+    "terminal_evidence": "empty_page",
+    "tolerance_reason": "",
+    "total_delta": 0,
+    "total_results_moved_during_walk": false,
+    "total_tolerance": 0
+   },
+   "extraction_status": "complete",
+   "items": 0,
+   "pages": 1,
+   "scope": "works__10.24072__posted-content",
+   "selected_walk_id": "w01",
+   "selection_reason": "complete walk with latest ended_at_utc 2026-10-26T15:22:05Z",
+   "source": "crossref",
+   "walk_ids": [
+    "w01"
+   ],
+   "walk_states": {
+    "w01": "complete"
+   }
+  },
+  "crossref/works__10.32388__journal-article": {
+   "anomalies": [],
+   "completed_at": "2026-10-26T15:24:13Z",
+   "completion": {
+    "accepted_items_total": 2002,
+    "first_page_total_results": 2002,
+    "last_page_total_results": 2002,
+    "rule": "crossref_total_checked",
+    "terminal_evidence": "short_page",
+    "tolerance_reason": "",
+    "total_delta": 0,
+    "total_results_moved_during_walk": false,
+    "total_tolerance": 0
+   },
+   "extraction_status": "complete",
+   "items": 2002,
+   "pages": 3,
+   "scope": "works__10.32388__journal-article",
+   "selected_walk_id": "w01",
+   "selection_reason": "complete walk with latest ended_at_utc 2026-10-26T15:24:13Z",
+   "source": "crossref",
+   "walk_ids": [
+    "w01"
+   ],
+   "walk_states": {
+    "w01": "complete"
+   }
+  },
+  "crossref/works__10.32388__posted-content": {
+   "anomalies": [],
+   "completed_at": "2026-10-26T15:24:45Z",
+   "completion": {
+    "accepted_items_total": 6218,
+    "first_page_total_results": 6218,
+    "last_page_total_results": 6218,
+    "rule": "crossref_total_checked",
+    "terminal_evidence": "short_page",
+    "tolerance_reason": "",
+    "total_delta": 0,
+    "total_results_moved_during_walk": false,
+    "total_tolerance": 0
+   },
+   "extraction_status": "complete",
+   "items": 6218,
+   "pages": 7,
+   "scope": "works__10.32388__posted-content",
+   "selected_walk_id": "w01",
+   "selection_reason": "complete walk with latest ended_at_utc 2026-10-26T15:24:45Z",
+   "source": "crossref",
+   "walk_ids": [
+    "w01"
+   ],
+   "walk_states": {
+    "w01": "complete"
+   }
+  },
+  "crossref/works__10.5194__journal-article": {
+   "anomalies": [],
+   "completed_at": "2026-10-26T15:31:49Z",
+   "completion": {
+    "accepted_items_total": 105643,
+    "first_page_total_results": 105643,
+    "last_page_total_results": 105643,
+    "rule": "crossref_total_checked",
+    "terminal_evidence": "short_page",
+    "tolerance_reason": "",
+    "total_delta": 0,
+    "total_results_moved_during_walk": false,
+    "total_tolerance": 0
+   },
+   "extraction_status": "complete",
+   "items": 105643,
+   "pages": 106,
+   "scope": "works__10.5194__journal-article",
+   "selected_walk_id": "w01",
+   "selection_reason": "complete walk with latest ended_at_utc 2026-10-26T15:31:49Z",
+   "source": "crossref",
+   "walk_ids": [
+    "w01"
+   ],
+   "walk_states": {
+    "w01": "complete"
+   }
+  },
+  "crossref/works__10.5194__posted-content": {
+   "anomalies": [],
+   "completed_at": "2026-10-26T17:09:25Z",
+   "completion": {
+    "accepted_items_total": 238425,
+    "first_page_total_results": 238425,
+    "last_page_total_results": 238425,
+    "rule": "crossref_total_checked",
+    "terminal_evidence": "short_page",
+    "tolerance_reason": "Same cause; EGUsphere registers preprints continuously. Observed delta +4 of 238,421 on 2026-10-26.",
+    "total_delta": 0,
+    "total_results_moved_during_walk": false,
+    "total_tolerance": 25
+   },
+   "extraction_status": "complete",
+   "items": 238425,
+   "pages": 239,
+   "scope": "works__10.5194__posted-content",
+   "selected_walk_id": "w02",
+   "selection_reason": "complete walk with latest ended_at_utc 2026-10-26T17:09:25Z",
+   "source": "crossref",
+   "walk_ids": [
+    "w01",
+    "w02"
+   ],
+   "walk_states": {
+    "w01": "failed",
+    "w02": "complete"
+   }
+  },
+  "crossref/works__10.7554__journal-article": {
+   "anomalies": [],
+   "completed_at": "2026-10-26T15:49:30Z",
+   "completion": {
+    "accepted_items_total": 23192,
+    "first_page_total_results": 23192,
+    "last_page_total_results": 23192,
+    "rule": "crossref_total_checked",
+    "terminal_evidence": "short_page",
+    "tolerance_reason": "",
+    "total_delta": 0,
+    "total_results_moved_during_walk": false,
+    "total_tolerance": 0
+   },
+   "extraction_status": "complete",
+   "items": 23192,
+   "pages": 24,
+   "scope": "works__10.7554__journal-article",
+   "selected_walk_id": "w01",
+   "selection_reason": "complete walk with latest ended_at_utc 2026-10-26T15:49:30Z",
+   "source": "crossref",
+   "walk_ids": [
+    "w01"
+   ],
+   "walk_states": {
+    "w01": "complete"
+   }
+  },
+  "crossref/works__10.7554__posted-content": {
+   "anomalies": [],
+   "completed_at": "2026-10-26T15:50:31Z",
+   "completion": {
+    "accepted_items_total": 10711,
+    "first_page_total_results": 10711,
+    "last_page_total_results": 10711,
+    "rule": "crossref_total_checked",
+    "terminal_evidence": "short_page",
+    "tolerance_reason": "",
+    "total_delta": 0,
+    "total_results_moved_during_walk": false,
+    "total_tolerance": 0
+   },
+   "extraction_status": "complete",
+   "items": 10711,
+   "pages": 11,
+   "scope": "works__10.7554__posted-content",
+   "selected_walk_id": "w01",
+   "selection_reason": "complete walk with latest ended_at_utc 2026-10-26T15:50:31Z",
+   "source": "crossref",
+   "walk_ids": [
+    "w01"
+   ],
+   "walk_states": {
+    "w01": "complete"
+   }
+  },
+  "crossref/works__issn_2631-3952__journal-article": {
+   "anomalies": [],
+   "completed_at": "2026-10-26T15:50:34Z",
+   "completion": {
+    "accepted_items_total": 151,
+    "first_page_total_results": 151,
+    "last_page_total_results": 151,
+    "rule": "crossref_total_checked",
+    "terminal_evidence": "short_page",
+    "tolerance_reason": "",
+    "total_delta": 0,
+    "total_results_moved_during_walk": false,
+    "total_tolerance": 0
+   },
+   "extraction_status": "complete",
+   "items": 151,
+   "pages": 1,
+   "scope": "works__issn_2631-3952__journal-article",
+   "selected_walk_id": "w01",
+   "selection_reason": "complete walk with latest ended_at_utc 2026-10-26T15:50:34Z",
+   "source": "crossref",
+   "walk_ids": [
+    "w01"
+   ],
+   "walk_states": {
+    "w01": "complete"
+   }
+  }
+ },
+ "selected_walk_policy": "latest_completed_then_smallest_walk_id",
+ "software": {
+  "executable": "C:\\Projects\\prc-platform-dataset\\.venv\\Scripts\\python.exe",
+  "git_commit": "a3cfb8ecff3249ca365c6074ee2f56d3a4b1a85e",
+  "git_worktree": "clean",
+  "implementation": "CPython",
+  "platform": "Windows-11-10.0.26300-SP0",
+  "python": "3.14.3"
+ }
+}

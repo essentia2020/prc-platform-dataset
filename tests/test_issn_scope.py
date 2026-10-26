@@ -79,7 +79,28 @@ def test_issn_selector_requires_doi_regex_and_valid_issn():
     ok = {**base, "extraction_selector": {"crossref": {"issn": "2631-3952", "record_types": ["journal-article"],
                                                          "doi_regex": "^10\\.1108/eor-"}}}
     sel = compile_crossref_selector(ok)
-    assert sel.issns == ["2631-3952"] and sel.work_keys() == ["issn:2631-3952"]
+    assert sel.issns == ["2631-3952"] and sel.work_keys("journal-article") == ["issn:2631-3952"]
+
+
+def test_prefix_and_issn_together_need_scope_keys_per_record_type():
+    block = {"prefix": "10.1099", "issn": "2516-8290", "record_types": ["posted-content", "journal-article", "peer-review"],
+             "doi_regex": "^10\\.1099/acmi\\."}
+    row = {"row_id": "x", "register_status": "quantified", "data_source": "crossref",
+           "extraction_selector": {"crossref": dict(block)}}
+    with pytest.raises(SelectorError, match="scope_keys"):
+        compile_crossref_selector(row)
+    row["extraction_selector"]["crossref"]["scope_keys"] = {"journal-article": "issn", "posted-content": "prefix"}
+    sel = compile_crossref_selector(row)
+    assert sel.work_keys("journal-article") == ["issn:2516-8290"]
+    assert sel.work_keys("posted-content") == ["10.1099"]
+    assert sel.review_prefixes() == ["10.1099"]
+    ids = [s.scope_id for s in crossref_scopes([sel])]
+    assert ids == ["works__10.1099__peer-review", "works__10.1099__posted-content",
+                   "works__issn_2516-8290__journal-article"]
+    row["extraction_selector"]["crossref"]["scope_keys"] = {"journal-article": "issn", "posted-content": "prefix",
+                                                            "peer-review": "issn"}
+    with pytest.raises(SelectorError, match="peer-review"):
+        compile_crossref_selector(row)
 
 
 def _interim(roots, name):

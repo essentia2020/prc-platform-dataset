@@ -16,6 +16,9 @@ sources:
       # `prefix` filters by the current owner prefix (title transfers move
       # ownership without changing the DOI string); `issn` is owner-independent
       # and is used for rows whose records live under a shared owner prefix.
+      # Both templates carry the full query on every page: since 24 August
+      # 2026 a cursor returns correct results only when all original
+      # parameters are repeated, and the cursor changes on every page.
       works_by_issn_and_type: >-
         /works?filter=issn:{issn},type:{record_type}&rows={rows}&cursor={cursor}&mailto={mailto}
       works_by_prefix_type_and_date: >-
@@ -34,13 +37,7 @@ sources:
       #     works__10.5194__journal-article:
       #       total_tolerance: 2
       #       reason: "deposits land during the walk; total-results moves by a few records"
-      total_tolerance_overrides:
-        works__10.12688__journal-article:
-          total_tolerance: 50
-          reason: "Result set is not stable during cursor walks on the Crossref REST API since the Crossref search backend change of 24 August 2026; deposits registered during the walk move total-results. Observed delta -21 of 30,184 on 2026-10-26. Difference recorded per walk; DOIs are de-duplicated at normalisation."
-        works__10.5194__posted-content:
-          total_tolerance: 25
-          reason: "Same cause; EGUsphere registers preprints continuously. Observed delta +4 of 238,421 on 2026-10-26."
+      total_tolerance_overrides: {}
       # Only the elements that the Crossref REST API enumerates as selectable
       # may appear here; any other name makes /works answer HTTP 400 for the
       # whole page (the enumeration is returned by the API itself on an
