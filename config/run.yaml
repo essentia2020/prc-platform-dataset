@@ -9,7 +9,7 @@
 # Set run_id to a new value for every local run; raw responses and manifests
 # are keyed by it and are never overwritten.
 
-run_id: run_20261020_01
+run_id: run_20261026_01
 
 # Last calendar day whose events are counted.  Every qualifying event must be
 # dated on or before this day and be present in the completed retrieval.
