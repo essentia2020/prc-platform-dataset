@@ -85,8 +85,8 @@ in D-013. Candidates audited but not included are in
 | `health_open_research` | F1000 Research Ltd with the Association of Medical Research Charities | `author_initiated` (high) | `approval_threshold` (high) | crossref | first_public_posting | 2019–cutoff | machine_readable |
 | `open_research_africa` | F1000 Research Ltd with the Science for Africa Foundation | `author_initiated` (high) | `approval_threshold` (high) | crossref | first_public_posting | 2018–cutoff | machine_readable |
 | `routledge_open_research` | F1000 Research Ltd / Routledge (Taylor & Francis) | `author_initiated` (medium) | `approval_threshold` (medium) | crossref | first_public_posting | 2021–cutoff | machine_readable |
-| `meded_publish` | Association for Medical Education in Europe (AMEE); platform operated by F1000 since 2021 | `author_initiated` (high) | `approval_threshold` (high) | crossref | first_public_posting | 2016–cutoff | partial_coverage |
-| `emerald_open_research` | Emerald Publishing (platform operated by F1000) | `author_initiated` (high) | `approval_threshold` (medium) | crossref | first_public_posting | 2019–2023 | defunct |
+| `meded_publish` | Association for Medical Education in Europe (AMEE); platform operated by F1000 since 2021 | `author_initiated` (high) | `approval_threshold` (high) | crossref | first_public_posting | 2016–cutoff | machine_readable |
+| `emerald_open_research` | Emerald Publishing (platform operated by F1000) | `author_initiated` (high) | `approval_threshold` (medium) | crossref | first_public_posting | 2019–2023 | machine_readable |
 | `metaror` | Research on Research Institute (RoRI) and AIMOS | `author_initiated` (high) | `core_publish_first` (high) | sciety | earliest_qualifying_evaluation | 2024–cutoff | machine_readable |
 | `pci_recommendations` | Peer Community In (non-profit association) | `author_initiated` (high) | `review_or_curation_service` (high) | both | earliest_qualifying_evaluation | 2017–cutoff | machine_readable |
 | `scipost` | SciPost Foundation | `author_initiated` (high) | `hybrid_public_discussion` (high) | crossref | final_article | 2016–cutoff | machine_readable |
@@ -144,7 +144,7 @@ python tools/audit_text.py --tokens <path outside the repository> --history
 
 Stage order, fixed in `src/run_pipeline.py`:
 
-1. `extract_crossref_works` — one cursor walk per `works__<prefix>__<type>` scope (journal-article, posted-content) → `data/raw/crossref/<scope>/…`, split per row by DOI regex into `data/interim/crossref_works__<row_id>.csv`
+1. `extract_crossref_works` — one cursor walk per `works__<prefix>__<type>` or `works__issn_<issn>__<type>` scope (journal-article, posted-content) → `data/raw/crossref/<scope>/…`, split per row by DOI regex into `data/interim/crossref_works__<row_id>.csv`
 2. `extract_crossref_peer_reviews` — one walk per `works__<prefix>__peer-review` scope, including separate review prefixes → `data/interim/crossref_peer_reviews__<row_id>.csv` (one line per review DOI and `is-review-of` target) and `crossref_peer_reviews__unattributed__<prefix>.csv`
 3. `extract_sciety_evaluations` — one paginated walk per group (`index?publisheraccount=<group page URL>`) → `data/raw/sciety/evaluations__<group_slug>/…`, `data/interim/sciety_evaluations__<group_slug>.csv`; publisher-account mismatch hard-fails normalisation
 4. `normalise` — `src/normalise/clean_and_normalise.py`: record-level layer `data/processed/records_<row_id>.csv` (work, evaluation and relation lines; canonical identifiers; evaluation identity; source-precision dates) plus `normalisation_summary.json`; rows with a blocked scope get no file

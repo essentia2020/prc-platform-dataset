@@ -97,10 +97,19 @@ with specific methodology:
   `10.15694/mep.<year>.<art>` base records; `10.15694/mep.<…>.1` versioned
   records; `10.12688/mep.<id>.1` current records), deduplicated on the base
   identifier; withdrawn records and later versions excluded; date = `issued`
-  of the version-1 or base record. No DOI-level review records exist, so a
-  "reviewed works" series cannot be reconstructed. Because 10.12688 is shared
-  with other F1000-platform stems, selection uses a DOI-pattern selector,
-  never a bare prefix filter.
+  of the version-1 or base record. All three regimes are retrieved through
+  the owner prefix 10.12688, to which the 10.15694 records passed with the
+  title (the Crossref `prefix` filter selects by current owner). No
+  DOI-level review records exist for the AMEE years, so a "reviewed works"
+  series cannot be reconstructed; the posted-works series is complete.
+  Because 10.12688 is shared with other F1000-platform stems, selection
+  uses a DOI-pattern selector, never a bare prefix filter.
+- **Emerald Open Research.** Articles retrieved by journal ISSN
+  (`2631-3952`, type `journal-article`), selected by `^10\.1108/eor-`: on
+  re-hosting the articles were re-registered as 10.1108/eor-* primaries
+  that keep the original `issued` dates, and the former
+  `10.35241/emeraldopenres.*` DOIs are Crossref aliases of those primaries,
+  so each article is returned once. Date = `issued` of the primary.
 - **PREreview.** Unique works with at least one PREreview evaluation in
   Sciety docmaps, dated by the evaluation `published` date, deduplicated on
   the reviewed-work DOI, independent of preprint server.

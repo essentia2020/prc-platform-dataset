@@ -13,6 +13,11 @@ sources:
     query_templates:
       works_by_prefix_and_type: >-
         /works?filter=prefix:{doi_prefix},type:{record_type}&rows={rows}&cursor={cursor}&mailto={mailto}
+      # `prefix` filters by the current owner prefix (title transfers move
+      # ownership without changing the DOI string); `issn` is owner-independent
+      # and is used for rows whose records live under a shared owner prefix.
+      works_by_issn_and_type: >-
+        /works?filter=issn:{issn},type:{record_type}&rows={rows}&cursor={cursor}&mailto={mailto}
       works_by_prefix_type_and_date: >-
         /works?filter=prefix:{doi_prefix},type:{record_type},from-created-date:{from_date},until-created-date:{until_date}&rows={rows}&cursor={cursor}&mailto={mailto}
     pagination:
@@ -21,6 +26,15 @@ sources:
       rows: 1000
       total_tolerance: 0
       tolerance_reason: ""
+      # Per-scope exceptions to the total-results check, keyed by scope id.
+      # Each entry needs `total_tolerance` and a non-empty `reason`; the
+      # values are recorded in the walk manifest. Empty by default.
+      # Example:
+      #   total_tolerance_overrides:
+      #     works__10.5194__journal-article:
+      #       total_tolerance: 2
+      #       reason: "deposits land during the walk; total-results moves by a few records"
+      total_tolerance_overrides: {}
       # Only the elements that the Crossref REST API enumerates as selectable
       # may appear here; any other name makes /works answer HTTP 400 for the
       # whole page (the enumeration is returned by the API itself on an

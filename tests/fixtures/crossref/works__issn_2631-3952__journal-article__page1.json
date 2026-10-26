@@ -1,0 +1,243 @@
+{
+ "status": "ok",
+ "message-type": "work-list",
+ "message": {
+  "items": [
+   {
+    "DOI": "10.1108/eor-01-2023-0001",
+    "type": "journal-article",
+    "prefix": "10.1108",
+    "member": "0",
+    "title": [
+     "Synthetic article A"
+    ],
+    "container-title": [
+     "Emerald Open Research"
+    ],
+    "created": {
+     "date-time": "2024-01-17T10:00:00Z"
+    },
+    "deposited": {
+     "date-time": "2024-01-17T10:00:00Z"
+    },
+    "indexed": {
+     "date-time": "2024-01-18T00:00:00Z"
+    },
+    "issued": {
+     "date-parts": [
+      [
+       2019,
+       2,
+       4
+      ]
+     ]
+    },
+    "published-online": {
+     "date-parts": [
+      [
+       2019,
+       2,
+       4
+      ]
+     ]
+    }
+   },
+   {
+    "DOI": "10.1108/eor-02-2023-0002",
+    "type": "journal-article",
+    "prefix": "10.1108",
+    "member": "0",
+    "title": [
+     "Synthetic article B"
+    ],
+    "container-title": [
+     "Emerald Open Research"
+    ],
+    "created": {
+     "date-time": "2024-01-17T10:00:00Z"
+    },
+    "deposited": {
+     "date-time": "2024-01-17T10:00:00Z"
+    },
+    "indexed": {
+     "date-time": "2024-01-18T00:00:00Z"
+    },
+    "issued": {
+     "date-parts": [
+      [
+       2019,
+       11,
+       20
+      ]
+     ]
+    },
+    "published-online": {
+     "date-parts": [
+      [
+       2019,
+       11,
+       20
+      ]
+     ]
+    }
+   },
+   {
+    "DOI": "10.1108/eor-03-2023-0018",
+    "type": "journal-article",
+    "prefix": "10.1108",
+    "member": "0",
+    "title": [
+     "Synthetic article C"
+    ],
+    "container-title": [
+     "Emerald Open Research"
+    ],
+    "created": {
+     "date-time": "2024-01-17T10:00:00Z"
+    },
+    "deposited": {
+     "date-time": "2024-01-17T10:00:00Z"
+    },
+    "indexed": {
+     "date-time": "2024-01-18T00:00:00Z"
+    },
+    "issued": {
+     "date-parts": [
+      [
+       2022,
+       11,
+       3
+      ]
+     ]
+    },
+    "published-online": {
+     "date-parts": [
+      [
+       2022,
+       11,
+       3
+      ]
+     ]
+    }
+   },
+   {
+    "DOI": "10.1108/eor-05-2023-0007",
+    "type": "journal-article",
+    "prefix": "10.1108",
+    "member": "0",
+    "title": [
+     "Synthetic article D"
+    ],
+    "container-title": [
+     "Emerald Open Research"
+    ],
+    "created": {
+     "date-time": "2024-01-17T10:00:00Z"
+    },
+    "deposited": {
+     "date-time": "2024-01-17T10:00:00Z"
+    },
+    "indexed": {
+     "date-time": "2024-01-18T00:00:00Z"
+    },
+    "issued": {
+     "date-parts": [
+      [
+       2021,
+       6,
+       1
+      ]
+     ]
+    },
+    "published-online": {
+     "date-parts": [
+      [
+       2021,
+       6,
+       1
+      ]
+     ]
+    }
+   },
+   {
+    "DOI": "10.1108/eor-06-2023-0009",
+    "type": "journal-article",
+    "prefix": "10.1108",
+    "member": "0",
+    "title": [
+     "Synthetic article E"
+    ],
+    "container-title": [
+     "Emerald Open Research"
+    ],
+    "created": {
+     "date-time": "2024-01-17T10:00:00Z"
+    },
+    "deposited": {
+     "date-time": "2024-01-17T10:00:00Z"
+    },
+    "indexed": {
+     "date-time": "2024-01-18T00:00:00Z"
+    },
+    "issued": {
+     "date-parts": [
+      [
+       2023,
+       3,
+       9
+      ]
+     ]
+    },
+    "published-online": {
+     "date-parts": [
+      [
+       2023,
+       3,
+       9
+      ]
+     ]
+    }
+   },
+   {
+    "DOI": "10.1108/other-2023-0001",
+    "type": "journal-article",
+    "prefix": "10.1108",
+    "member": "0",
+    "title": [
+     "Synthetic stray"
+    ],
+    "container-title": [
+     "Emerald Open Research"
+    ],
+    "created": {
+     "date-time": "2024-01-17T10:00:00Z"
+    },
+    "deposited": {
+     "date-time": "2024-01-17T10:00:00Z"
+    },
+    "indexed": {
+     "date-time": "2024-01-18T00:00:00Z"
+    },
+    "issued": {
+     "date-parts": [
+      [
+       2022,
+       1,
+       1
+      ]
+     ]
+    },
+    "published-online": {
+     "date-parts": [
+      [
+       2022,
+       1,
+       1
+      ]
+     ]
+    }
+   }
+  ],
+  "total-results": 6
+ }
+}

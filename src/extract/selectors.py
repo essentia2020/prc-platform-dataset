@@ -4,10 +4,17 @@ Every rule that decides whether a source record belongs to a register row
 lives here, so the extraction stage (interim CSVs) and the normalisation
 stage (record-level files) apply identical logic.
 
-Crossref retrieval is organised in *scopes* ``works__<prefix>__<type>``:
-one cursor walk per (DOI prefix, record type), shared by every row that
-declares that prefix.  Shared prefixes (for example 10.12688) are therefore
-retrieved once and split per row by DOI regex — never by bare prefix.
+Crossref retrieval is organised in *scopes*: one cursor walk per
+(selector key, record type).  The key is a DOI owner prefix
+(``works__<prefix>__<type>``) or a journal ISSN
+(``works__issn_<issn>__<type>``).  Shared keys (for example 10.12688) are
+retrieved once and split per row by DOI regex — never by bare key.
+
+The Crossref ``prefix`` filter selects by the *current owner* prefix, so
+records acquired through a title transfer keep their old DOI prefix but are
+retrieved under the acquiring member's prefix.  Rows whose records are
+owned by a large shared prefix, or whose original DOIs were aliased to new
+primaries, declare an ``issn`` selector instead, which is owner-independent.
 """
 
 from __future__ import annotations
@@ -56,11 +63,15 @@ class JournalRule:
     egusphere_regime: bool
 
 
+ISSN_RE = re.compile(r"^\d{4}-\d{3}[\dXx]$")
+
+
 @dataclass
 class CrossrefSelector:
     row_id: str
     prefixes: list[str]
     record_types: list[str]
+    issns: list[str] = field(default_factory=list)
     doi_regex: re.Pattern | None = None
     exclude_doi_regex: re.Pattern | None = None
     container_titles: list[str] = field(default_factory=list)
@@ -80,6 +91,10 @@ class CrossrefSelector:
 
     def work_prefixes(self) -> list[str]:
         return list(self.prefixes)
+
+    def work_keys(self) -> list[str]:
+        """Scope keys for work record types: owner prefixes and ``issn:<issn>``."""
+        return list(self.prefixes) + [f"issn:{i}" for i in self.issns]
 
     def review_prefixes(self) -> list[str]:
         out = list(self.prefixes)
@@ -262,10 +277,21 @@ def compile_crossref_selector(row: Mapping[str, Any]) -> CrossrefSelector | None
     target_filter = None
     if "target_filter" in block:
         target_filter = "external"
+    issns = [i.strip().upper() for i in _as_list(block.get("issn")) if i and i.strip()]
+    for issn in issns:
+        if not ISSN_RE.match(issn):
+            raise SelectorError(f"row {row.get('row_id')}: invalid ISSN selector {issn!r}")
+    if issns and not block.get("doi_regex"):
+        raise SelectorError(f"row {row.get('row_id')}: an issn selector requires doi_regex "
+                            "(an ISSN walk is not restricted to one DOI prefix)")
+    prefixes = [p for p in _as_list(block.get("prefix")) if p]
+    if not prefixes and not issns and not block.get("journals"):
+        raise SelectorError(f"row {row.get('row_id')}: crossref selector needs prefix or issn")
     return CrossrefSelector(
         row_id=str(row["row_id"]),
-        prefixes=[p for p in _as_list(block.get("prefix")) if p],
+        prefixes=prefixes,
         record_types=_as_list(block.get("record_types")),
+        issns=issns,
         doi_regex=_compile(block.get("doi_regex")),
         exclude_doi_regex=_compile(block.get("exclude_doi_regex")),
         container_titles=_as_list(block.get("container_titles")),
@@ -297,16 +323,36 @@ def crossref_selectors(rows: Iterable[Mapping[str, Any]], include_pending: bool 
 
 @dataclass(frozen=True)
 class CrossrefScope:
-    prefix: str
+    """One retrieval unit: ``key`` is an owner prefix (``10.12688``) or ``issn:<issn>``."""
+    key: str
     record_type: str
 
     @property
+    def kind(self) -> str:
+        return "issn" if self.key.startswith("issn:") else "prefix"
+
+    @property
+    def prefix(self) -> str:
+        """Owner prefix for prefix scopes; empty for ISSN scopes."""
+        return "" if self.kind == "issn" else self.key
+
+    @property
+    def issn(self) -> str:
+        return self.key.split(":", 1)[1] if self.kind == "issn" else ""
+
+    @property
     def scope_id(self) -> str:
-        return f"works__{self.prefix}__{self.record_type}"
+        if self.kind == "issn":
+            return f"works__issn_{self.issn}__{self.record_type}"
+        return f"works__{self.key}__{self.record_type}"
 
 
 def crossref_scopes(selectors: Iterable[CrossrefSelector], kinds: str = "all") -> list[CrossrefScope]:
-    """Distinct (prefix, type) pairs; ``kinds`` = all / works / reviews."""
+    """Distinct (key, type) pairs; ``kinds`` = all / works / reviews.
+
+    Peer-review scopes are prefix-based only: review records are retrieved
+    under the row's prefixes and ``review_doi_prefix``, never by ISSN.
+    """
     scopes: set[CrossrefScope] = set()
     for sel in selectors:
         for record_type in sel.record_types:
@@ -315,9 +361,9 @@ def crossref_scopes(selectors: Iterable[CrossrefSelector], kinds: str = "all") -
                     for prefix in sel.review_prefixes():
                         scopes.add(CrossrefScope(prefix, record_type))
             elif kinds in ("all", "works"):
-                for prefix in sel.work_prefixes():
-                    scopes.add(CrossrefScope(prefix, record_type))
-    return sorted(scopes, key=lambda s: (s.prefix, s.record_type))
+                for key in sel.work_keys():
+                    scopes.add(CrossrefScope(key, record_type))
+    return sorted(scopes, key=lambda s: (s.key, s.record_type))
 
 
 @dataclass(frozen=True)

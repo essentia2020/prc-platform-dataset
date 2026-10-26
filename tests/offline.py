@@ -65,6 +65,8 @@ class FixtureTransport:
     def _crossref(query: dict[str, list[str]]) -> bytes:
         filters = dict(item.split(":", 1) for item in query.get("filter", [""])[0].split(",") if ":" in item)
         prefix, record_type = filters.get("prefix", ""), filters.get("type", "")
+        if not prefix and filters.get("issn"):
+            prefix = f"issn_{filters['issn']}"  # fixture files follow the scope id
         cursor = unquote(query.get("cursor", ["*"])[0])
         page = 1
         match = re.match(r"CURSOR-\w+-(\d+)$", cursor)

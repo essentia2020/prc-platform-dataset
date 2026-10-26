@@ -123,7 +123,7 @@ Each row declares its event map:
 | `eligibility_events` | Event(s) a work must have, dated on or before the cutoff and present in the completed retrieval, to be included. |
 | `counting_event` | `first_public_posting` / `earliest_qualifying_evaluation` / `final_article`. |
 | `counting_event_date_field` | Source date field(s), in priority order, used for the counting event. |
-| `extraction_selector` | Crossref prefix, record types and DOI patterns and/or Sciety group slug used by `src/extract/`. |
+| `extraction_selector` | Crossref owner prefix and/or journal ISSN, record types and DOI patterns and/or Sciety group slug used by `src/extract/`. An `issn` selector is used where the Crossref `prefix` filter (current owner) does not isolate the row; it always comes with a `doi_regex`. |
 | `register_status` | `quantified` (reproducible selector and qualifying records) / `register_only` (eligible, but no adequate machine-readable selector). |
 
 Initial mandatory event rules:

@@ -732,14 +732,14 @@ platforms:
     review_has_doi: true
     data_source: crossref
     register_status: quantified
-    data_status: partial_coverage
+    data_status: machine_readable
     doi_prefix: "10.15694"
     doi_pattern: "^10\\.(15694|12688)/mep\\."
     doi_version_pattern: "^(10\\.(?:15694|12688)/mep\\.[0-9.]*?\\d)(?:\\.\\d+)?$"
     sciety_group_slug: null
     extraction_selector:
       crossref:
-        prefix: ["10.15694", "10.12688"]
+        prefix: ["10.12688"]
         record_types: [journal-article, posted-content, peer-review]
         doi_regex: "^10\\.(15694|12688)/mep\\."
         review_doi_prefix: "10.21956"
@@ -747,11 +747,16 @@ platforms:
           Three DOI regimes: 10.15694/mep.<year>.<vol>.<art> and
           10.15694/mep.<year>.<art> (base records without version suffix),
           10.15694/mep.<...>.1 (versioned, AMEE platform), and
-          10.12688/mep.<id>.1 (F1000 platform). Counting uses version-1 or
-          base records deduplicated on the base identifier; withdrawn records
-          and later versions are excluded. Reviews on the AMEE platform had no
-          DOI-level records; F1000-era review DOIs under 10.21956 are checked
-          in the first local run.
+          10.12688/mep.<id>.1 (F1000 platform). All regimes are retrieved
+          through the single owner prefix 10.12688: the Crossref prefix filter
+          selects by current owner, and the 10.15694 records passed to F1000
+          with the title (a walk on prefix 10.15694 returns no records).
+          The regex keeps both DOI strings. Counting uses version-1 or base
+          records deduplicated on the base identifier; withdrawn records and
+          later versions are excluded. Reviews on the AMEE platform had no
+          DOI-level records; the counting event is the posting, so their
+          absence does not reduce coverage. F1000-era review DOIs under
+          10.21956 are checked in the first local run.
     eligibility_events:
       - eligible version-1 or base posting of an article
     counting_event: first_public_posting
@@ -789,7 +794,10 @@ platforms:
       assumed from the operating model. Content was re-hosted on Emerald
       Insight as volume 1 (2023) and the platform is treated as closed to new
       submissions from 2023; the closure date is not stated on the platform
-      site. D-014 fixes status closed and the series end at 2023.
+      site. D-014 fixes status closed and the series end at 2023. On
+      re-hosting, the articles were re-registered as 10.1108/eor-* primaries
+      that keep the original issued dates; the former 10.35241 DOIs are
+      Crossref aliases of those primaries and resolve to them.
     provisional: false
     publish_arrangement: platform_own
     review_arrangement: platform_own
@@ -805,23 +813,33 @@ platforms:
     review_has_doi: unknown
     data_source: crossref
     register_status: quantified
-    data_status: defunct
-    doi_prefix: "10.35241"
-    doi_pattern: "^10\\.35241/emeraldopenres\\."
-    doi_version_pattern: "^(10\\.35241/emeraldopenres\\.\\d+)\\.\\d+$"
+    data_status: machine_readable
+    doi_prefix: "10.1108"
+    doi_pattern: "^10\\.1108/eor-"
+    doi_version_pattern: null
     sciety_group_slug: null
     extraction_selector:
       crossref:
-        prefix: "10.35241"
-        record_types: [journal-article, peer-review]
-        doi_regex: "^10\\.35241/emeraldopenres\\.\\d+\\.\\d+$"
+        issn: "2631-3952"
+        record_types: [journal-article]
+        doi_regex: "^10\\.1108/eor-"
+        notes: >-
+          Retrieved by journal ISSN, not by prefix: the records are owned by
+          Emerald's shared prefix 10.1108, and the original 10.35241 DOIs are
+          aliases of the 10.1108/eor-* primaries, so an ISSN walk returns
+          each article once with its original issued date. Title-level
+          records (type journal) are outside the journal-article scope. The
+          six objects still owned under 10.35241 are policy, poster and
+          report records, not articles. The primaries carry no version
+          suffix, so the canonical work id is the DOI itself.
     eligibility_events:
-      - first public posting of version 1 of an article (journal-article)
+      - first public posting of an article (journal-article; the 10.1108 primary keeps the original issued date)
     counting_event: first_public_posting
     counting_event_date_field: issued
     evidence_url:
       - https://emeraldopenresearch.com/about
       - https://www.emerald.com/insight/publication/issn/2631-3952
+      - https://api.crossref.org/works/10.35241/emeraldopenres.14791.1
       - https://www.emeraldgrouppublishing.com/news-and-press-releases/emerald-publishing-becomes-first-publisher-adopt-f1000s-open-research
     verified_on: "2026-10-20"
 

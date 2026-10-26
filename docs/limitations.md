@@ -65,7 +65,7 @@ Every blank group cell names the blocking row and status in the
 `blocking_rows` column and in a footnote of the Markdown table. Because
 several community-initiated and author-initiated rows carry
 `partial_coverage` (Qeios, PREreview, preLights, Gates Open Research,
-MedEdPublish, PeerRef), their group series are blank for the years those
+PeerRef), their group series are blank for the years those
 rows are in range; the row-level table and the coverage matrix remain fully
 populated.
 

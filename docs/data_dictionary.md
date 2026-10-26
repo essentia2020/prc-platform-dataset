@@ -59,7 +59,7 @@ One line per register row (observation series). Lists are joined with `; `;
 | `doi_pattern` | regex or empty | selects the row's DOIs | `^10\.32388/` |
 | `doi_version_pattern` | regex or empty | group 1 = canonical stem | `^(10\.32388/[a-z0-9]+)(?:\.\d+)?$` |
 | `sciety_group_slug` | string or empty | slug in `https://sciety.org/groups/<slug>` | `prereview` |
-| `extraction_selector` | JSON | keys `crossref` and/or `sciety` | `{"crossref":{…}}` |
+| `extraction_selector` | JSON | keys `crossref` and/or `sciety`; `crossref` holds `prefix` (owner prefix or list) and/or `issn` (journal ISSN; requires `doi_regex`), `record_types`, `doi_regex`, optional `review_doi_prefix`, `journals`, `target_filter`, `notes` | `{"crossref":{…}}` |
 | `eligibility_events` | list | free text per event | `first public posting; ≥1 qualifying review` |
 | `counting_event` | enum | `first_public_posting`, `earliest_qualifying_evaluation`, `final_article` | `first_public_posting` |
 | `counting_event_date_field` | string | source field priority | `posted -> issued` |
@@ -106,9 +106,16 @@ data/manifests/<run_id>/<run_id>.json                                   # run-le
 data/manifests/<run_id>/<source>__<scope>__<walk_id>.manifest.jsonl     # walk manifest
 ```
 
-`scope` = `works__<prefix>__<record_type>` (Crossref; one walk per DOI
+`scope` = `works__<prefix>__<record_type>` (Crossref; one walk per owner
 prefix and record type, shared by every row declaring that prefix) or
-`evaluations__<group_slug>` (Sciety; one paginated walk per group).
+`works__issn_<issn>__<record_type>` (Crossref; one walk per journal ISSN
+and record type, for rows whose records are owned by a shared prefix or
+whose original DOIs are aliases of re-registered primaries) or
+`evaluations__<group_slug>` (Sciety; one paginated walk per group). The
+Crossref `prefix` filter selects by current owner prefix, so records that
+changed owner with a title transfer appear under the acquiring member's
+prefix while keeping their DOI string; the row's `doi_regex` decides
+membership, never the bare prefix.
 Nothing under `data/raw/` is ever overwritten (files are created in
 exclusive mode); retries increment `attempt_<k>`; a rejected cursor or an
 interrupted walk starts a new `walk_id` from the first page.
@@ -136,8 +143,12 @@ Every line carries the identity fields and a `record` kind: `walk_header`
 (terminal line: `walk_state`, `reason`, `pages_accepted`, `items_total`,
 `ended_at_utc`, `completion`). An `anomaly` line records `code` and `page`.
 Crossref `completion` records `rule`, `terminal_evidence`,
-`first_page_total_results`, `accepted_items_total`, `total_delta`,
-`total_tolerance`, `tolerance_reason`. Sciety uses
+`first_page_total_results`, `last_page_total_results`,
+`total_results_moved_during_walk` (true when `total-results` took more than
+one value across the accepted pages, i.e. the index changed while the walk
+ran), `accepted_items_total`, `total_delta`, `total_tolerance`,
+`tolerance_reason` (the source-wide values from `config/sources.yaml`, or
+the scope's entry in `total_tolerance_overrides`). Sciety uses
 `rule=sciety_continuation_exhausted` without a Crossref total requirement.
 A manifest without a `walk_end` line is `in_progress` and
 is closed as `incomplete_restarted` by the next invocation.

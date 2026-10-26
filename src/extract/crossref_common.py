@@ -1,6 +1,7 @@
 """Shared machinery for the two Crossref extraction stages.
 
-Retrieval unit: one cursor walk per scope ``works__<prefix>__<type>``.
+Retrieval unit: one cursor walk per scope ``works__<prefix>__<type>`` or
+``works__issn_<issn>__<type>``.
 Flattening unit: one interim CSV per register row, produced only from a
 complete walk.  Nothing here aggregates or counts.
 """
@@ -74,17 +75,36 @@ def build_client(run_config: RunConfig, sources_config: Mapping[str, Any], *, tr
     return PoliteClient(**kwargs)
 
 
+def scope_tolerance(pagination: Mapping[str, Any], scope_id: str) -> tuple[int, str]:
+    """``(total_tolerance, tolerance_reason)`` for one scope.
+
+    The source-wide values apply unless ``total_tolerance_overrides`` names
+    the scope; an override must carry its own ``reason``.  Both values are
+    written to the walk manifest's completion block, so a tolerated
+    difference is always visible next to the totals it tolerated.
+    """
+    overrides = pagination.get("total_tolerance_overrides") or {}
+    if scope_id in overrides:
+        entry = overrides[scope_id] or {}
+        if not isinstance(entry, Mapping) or "total_tolerance" not in entry:
+            raise ExtractionIncomplete(f"total_tolerance_overrides[{scope_id}] needs total_tolerance and reason")
+        return int(entry["total_tolerance"]), str(entry.get("reason") or "")
+    return int(pagination.get("total_tolerance", 0) or 0), str(pagination.get("tolerance_reason") or "")
+
+
 def url_builder(run_config: RunConfig, sources_config: Mapping[str, Any], scope: CrossrefScope
                 ) -> Callable[[str], str]:
     source = sources_config["sources"][SOURCE]
-    template = source["query_templates"]["works_by_prefix_and_type"].strip()
+    templates = source["query_templates"]
+    template_key = "works_by_issn_and_type" if scope.kind == "issn" else "works_by_prefix_and_type"
+    template = templates[template_key].strip()
     pagination = source.get("pagination") or {}
     rows = int(pagination.get("rows") or 1000)
     select = pagination.get("select_fields") or []
     base = source["base_url"].rstrip("/")
 
     def build(cursor: str) -> str:
-        path = template.format(doi_prefix=scope.prefix, record_type=scope.record_type, rows=rows,
+        path = template.format(doi_prefix=scope.prefix, issn=scope.issn, record_type=scope.record_type, rows=rows,
                                cursor=quote(cursor or "*", safe=""), mailto=quote(run_config.mailto, safe="@"))
         if select:
             path += "&select=" + ",".join(select)
@@ -225,10 +245,10 @@ def run_crossref(run_config: RunConfig, sources_config: Mapping[str, Any], platf
     blocked: set[str] = set()
     for scope in scopes:
         pagination = sources_config["sources"][SOURCE]["pagination"]
+        tolerance, tolerance_reason = scope_tolerance(pagination, scope.scope_id)
         walker = CursorWalker(client=client, store=store, manifest_root=manifest_root, run_id=run_config.run_id,
                               source=SOURCE, scope=scope.scope_id, logger=logger,
-                              total_tolerance=pagination.get("total_tolerance", 0),
-                              tolerance_reason=pagination.get("tolerance_reason", ""))
+                              total_tolerance=tolerance, tolerance_reason=tolerance_reason)
         walk = walker.run(build_url=url_builder(run_config, sources_config, scope),
                           parse_page=parse_crossref_page, initial_cursor=initial_cursor(sources_config),
                           force_new_walk=force_new_walk)
@@ -245,7 +265,7 @@ def run_crossref(run_config: RunConfig, sources_config: Mapping[str, Any], platf
             dependents = [s for s in selectors if scope.prefix in s.review_prefixes()
                           and REVIEW_RECORD_TYPE in s.record_types]
         else:
-            dependents = [s for s in selectors if scope.prefix in s.work_prefixes()
+            dependents = [s for s in selectors if scope.key in s.work_keys()
                           and scope.record_type in s.record_types]
         if not walk.is_complete:
             outcome.blocked_rows = [s.row_id for s in dependents]

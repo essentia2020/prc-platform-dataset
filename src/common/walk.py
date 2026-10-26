@@ -167,6 +167,8 @@ class CursorWalker:
         pages_accepted = 0
         items_total = 0
         first_total = None
+        last_total = None
+        totals_seen: set[int] = set()
         seen_urls: set[str] = set()
         completion = {"rule": "crossref_total_checked" if self.source == "crossref" else "sciety_continuation_exhausted",
                       "total_tolerance": self.total_tolerance, "tolerance_reason": self.tolerance_reason}
@@ -174,7 +176,13 @@ class CursorWalker:
         def finish(state, reason):
             writer.close(state, reason=reason, pages_accepted=pages_accepted,
                          items_total=items_total, completion={**completion,
-                         "first_page_total_results": first_total, "accepted_items_total": items_total})
+                         "first_page_total_results": first_total, "accepted_items_total": items_total,
+                         "last_page_total_results": last_total,
+                         "total_results_moved_during_walk": len(totals_seen) > 1})
+            # Every terminal outcome is also in the run log, so the log alone
+            # explains why a walk ended.
+            self._log("walk_failed" if state == "failed" else f"walk_{state}", walk_id=walk_id,
+                      page=page, reason=reason, pages_accepted=pages_accepted, items_total=items_total)
             return read_walk_manifest(path)
 
         try:
@@ -234,6 +242,9 @@ class CursorWalker:
                         first_total = parsed.total_results
                     if first_total is None:
                         return finish("failed", "missing or invalid first-page total-results")
+                    if parsed.total_results is not None:
+                        last_total = parsed.total_results
+                        totals_seen.add(parsed.total_results)
                     if not parsed.next_cursor:
                         writer.anomaly("missing_next_cursor", page=page)
                         self._log("missing_next_cursor", walk_id=walk_id, page=page)
@@ -246,7 +257,12 @@ class CursorWalker:
                         delta = items_total - first_total
                         completion["total_delta"] = delta
                         if abs(delta) > self.total_tolerance:
-                            return finish("failed", "accepted item total differs from first-page total-results")
+                            moved = (f"; total-results moved during the walk ({sorted(totals_seen)})"
+                                     if len(totals_seen) > 1 else "; total-results stable during the walk")
+                            return finish("failed",
+                                          f"accepted item total {items_total} differs from first-page "
+                                          f"total-results {first_total} (delta {delta:+d}, tolerance "
+                                          f"{self.total_tolerance}){moved}")
                         return finish("complete", "terminal page and item-total check satisfied")
                     if not parsed.next_cursor:
                         return finish("failed", "missing next-cursor without terminal evidence")
