@@ -3,13 +3,13 @@
 Numbered record of every design, classification and process decision.
 Each entry states the date, the question, the options considered, the
 decision, the evidence URL(s) and who decided. Every entry, D-001 through
-D-041 and Q-1 through Q-4, carries `decided_by: researcher`. D-027 through
+D-044 and Q-1 through Q-4, carries `decided_by: researcher`. D-027 through
 D-031 document preparation choices; D-032 through D-035 record the
 decisions on extraction, 2026-10-20, and govern their implementation;
 D-036 through D-041 record the decisions on normalisation, analysis and
-reporting, 2026-10-20. Confidence
+reporting, 2026-10-20. 2026-10-20; D-042 records the decision on repository history, 2026-10-20; D-043 and D-044 record the decisions of 2026-10-26 on two register rows whose Crossref records changed owner or primary identifier. Confidence
 and decision status are independent: a decided classification may retain
-medium or low confidence without being provisional.
+medium or low confidence without being provisional. 
 
 Decision entries in this log are identified by decision number, date and subject.
 
@@ -941,6 +941,36 @@ completion of its evidence checks; outstanding checks are stated explicitly.
   data-quality log, never as a source for `cross_platform_overlap.csv`.
 - **Authority:** D-013; docs/data_dictionary.md §6; user ruling, 2026-10-20.
 
+[## D-042: Repository history starts at the first published commit
+
+- **Date**: 2026-10-20
+- **Status:** decided
+- decided_by: researcher
+- **Question:** Does the published repository history include the preparatory working commits made before the first local data run?
+- **Options considered:** (a) publish the full working history; (b) start the published history at one consolidated initial commit and keep the working history in a private archive.
+- **Decision:** b. The published history begins at the initial commit. The preparatory working history is not published and is retained outside the repository. This complements D-004: the history audit covers every published commit from the initial commit onward.
+- **Evidence:** not applicable (process decision).
+
+## D-043 — MedEdPublish: records under the former prefix are retrieved through the owner prefix
+
+- **Date:** 2026-10-26
+- **Status:** decided
+- decided_by: researcher
+- **Question:** Works posted on the AMEE platform (2016 to November 2021) carry DOIs under 10.15694, and a Crossref query filtered by prefix 10.15694 returns no records. Are these years observable, and how is the row configured?
+- **Options considered:** (a) register_only for the row; (b) coverage_start_year 2021; (c) no coverage change, because the Crossref prefix filter selects by current owner and the 10.15694 records are already retrieved within the 10.12688 scope.
+- **Decision:** c. The local run holds 1,573 records under 10.15694/ within the completed works__10.12688 scopes, issued 2013–2021 (2016:166, 2017:227, 2018:302, 2019:258, 2020:332, 2021:194), and the ISSN 2312-7996 count of 2,127 is consistent with these plus the 10.12688/mep.* records. launch_year, model_since and coverage_start_year remain 2016; the 94 records of 2013–2015 predate the publish-first open-review model (2016 relaunch) and are not_applicable. The 10.15694 prefix scope is removed from the row's extraction selector as always empty; the DOI regex is unchanged. data_status is reviewed: posting records are complete for 2016 onward, so partial_coverage is replaced by machine_readable unless a reason other than the absence of AMEE-era review records is documented; the absence of review records 2016–2021 stays in the data-quality log and limitations.
+- **Evidence:** https://www.crossref.org/documentation/retrieve-metadata/rest-api/rest-api-filters/ (prefix = DOI owner prefix); https://www.crossref.org/blog/what-can-often-change-but-always-stays-the-same/ (DOIs keep their prefix after title transfer); https://mededpublish.org/articles/11-1 (2016 relaunch, transfer to F1000 in November 2021); local interim counts and ISSN count as stated.
+
+## D-044 — Emerald Open Research: quantified through an ISSN-based scope
+
+- **Date:** 2026-10-26
+- **Status:** decided; de-duplication rule and scope implementation pending
+- decided_by: researcher
+- **Question:** The platform's DOIs under 10.35241 are aliased in Crossref to primaries under 10.1108/EOR-*, registered in 2024 after re-hosting on Emerald Insight. Do the primaries preserve the original publication dates, and can the row be quantified?
+- **Options considered:** (a) register_only, data_status not_machine_readable; (b) quantify through the 10.1108 primaries retrieved by ISSN, with the issued date as counting event.
+- **Decision:** b. A request for an aliased 10.35241 DOI returns the 10.1108 primary; the primary keeps the original dates (example: 10.1108/eor-03-2023-0018, issued 2022-11-03, published-online 2022-11-03, created 2024-01-17 — created is diagnostic only). The ISSN 2631-3952 query returns 154 records: 151 journal-article and 3 title-level journal records; journal-article records are issued 2019:19, 2020:53, 2021:30, 2022:32, 2023:17. The row is quantified through an ISSN-based scope (filter issn:2631-3952, type journal-article) with selector ^10\.1108/eor-; counting event is the issued date of the primary record; coverage 2019–2023; status closed and coverage_end_year 2023 as in D-014; data_status machine_readable. Aliasing removes the 10.35241 duplicates by construction. Two duplicated titles are to be inspected; if they are version pairs, one work is counted at its earliest issued date. No 10.12688/emeraldopenres.* record is present in the local interim.
+- **Evidence:** https://community.crossref.org/t/adding-redirects-for-aliased-dois-in-the-rest-api/13138 (aliased DOI resolves to the prime record); https://www.emerald.com/eor (closure); https://api.crossref.org/works/10.35241/emeraldopenres.14791.1 and https://api.crossref.org/works?filter=issn:2631-3952&rows=0 (results as stated, retrieved 2026-10-26).
+
 ## Q-4: Cross-DOI work correspondence for Gates Open Research / VeriXiv
 
 - **Date:** 2026-10-20
@@ -956,4 +986,3 @@ completion of its evidence checks; outstanding checks are stated explicitly.
   the VeriXiv selector is confirmed.
 - **Ruling:** (a). OpenAlex only as a diagnostic in the data-quality log.
 
-D-042: Repository history starts at the first published commit; the preparatory working history was not published and is retained in a private archive. decided_by: researcher.
