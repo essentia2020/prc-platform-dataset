@@ -50,7 +50,11 @@ class JsonlLogger:
         outcome: str,
         **extra: Any,
     ) -> Mapping[str, Any]:
-        """Log one HTTP attempt (``outcome``: accepted / retry / failed / restart)."""
+        """Log one HTTP attempt (``outcome``: accepted / retry / rejected / failed / restart).
+
+        ``rejected`` marks a definitive answer from the source (HTTP 4xx other
+        than 429) that is not retried.
+        """
         return self.event(
             "http_attempt",
             scope=scope,

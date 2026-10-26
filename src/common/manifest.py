@@ -14,6 +14,9 @@ from __future__ import annotations
 
 import json
 import os
+import platform
+import subprocess
+import sys
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
@@ -214,6 +217,31 @@ def write_run_manifest(path: Path, payload: dict) -> None:
     os.replace(tmp, path)
 
 
+def software_record(repo_root: Path | None = None) -> dict:
+    """Interpreter, platform and repository commit for the run manifest.
+
+    The commit is read from ``git rev-parse HEAD`` when a repository is
+    available; otherwise the field says so instead of being left blank.
+    """
+    record = {"python": platform.python_version(), "implementation": platform.python_implementation(),
+              "platform": platform.platform(), "executable": sys.executable}
+    root = Path(repo_root) if repo_root else Path(__file__).resolve().parents[2]
+    try:
+        proc = subprocess.run(["git", "-C", str(root), "rev-parse", "HEAD"], capture_output=True,
+                              text=True, timeout=10, check=False)
+        commit = proc.stdout.strip() if proc.returncode == 0 else ""
+        dirty = ""
+        if commit:
+            status = subprocess.run(["git", "-C", str(root), "status", "--porcelain", "--untracked-files=no"],
+                                    capture_output=True, text=True, timeout=10, check=False)
+            dirty = "dirty" if status.returncode == 0 and status.stdout.strip() else "clean"
+    except (OSError, subprocess.SubprocessError):
+        commit, dirty = "", ""
+    record["git_commit"] = commit or "unavailable"
+    record["git_worktree"] = dirty or "unavailable"
+    return record
+
+
 def update_run_manifest_scope(path: Path, *, run_id: str, cutoff: str, policy: str,
                               source: str, scope: str, walks: list[WalkRecord],
                               software: dict | None = None, now=utc_now) -> dict:
@@ -221,7 +249,7 @@ def update_run_manifest_scope(path: Path, *, run_id: str, cutoff: str, policy: s
     payload = load_run_manifest(path) or {
         "run_id": run_id, "analysis_cutoff_date": cutoff, "selected_walk_policy": policy,
         "retrieval_started_at": now(), "retrieval_finished_at": "", "scopes": {},
-        "software": software or {}}
+        "software": software if software is not None else software_record()}
     if payload.get("run_id") != run_id:
         raise ManifestError(f"run manifest {path} belongs to run {payload.get('run_id')!r}")
     selected, reason = select_walk(walks, policy)

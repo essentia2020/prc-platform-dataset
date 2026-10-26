@@ -21,7 +21,12 @@ sources:
       rows: 1000
       total_tolerance: 0
       tolerance_reason: ""
-      select_fields: [DOI, type, title, prefix, member, container-title, group-title, created, deposited, issued, posted, published-online, published-print, indexed, relation, subtype]
+      # Only the elements that the Crossref REST API enumerates as selectable
+      # may appear here; any other name makes /works answer HTTP 400 for the
+      # whole page (the enumeration is returned by the API itself on an
+      # invalid select value and is pinned in tests/test_request_rejection.py).
+      # `subtype` is not selectable and is therefore not retrieved.
+      select_fields: [DOI, type, title, prefix, member, container-title, group-title, created, deposited, issued, posted, published-online, published-print, indexed, relation]
     record_types: [journal-article, posted-content, peer-review]
     rate_limit:
       pool: polite

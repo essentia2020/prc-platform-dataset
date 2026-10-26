@@ -170,7 +170,7 @@ without a complete walk have `extraction_status` `incomplete` or `failed`.
 | `retrieval_started_at`, `retrieval_finished_at` | timestamp | actual retrieval window |
 | `selected_walk_policy` | string | from `config/run.yaml` |
 | `scopes` | object | keyed `<source>/<scope>`; per scope: `walk_ids` (all), `walk_states`, `selected_walk_id`, `selection_reason`, `extraction_status` (`complete` / `incomplete` / `failed`), `completed_at`, `pages`, `items` |
-| `software` | object | package label, Python interpreter and dependency pins as recorded at run start |
+| `software` | object | recorded at run start: `python`, `implementation`, `platform`, `executable`, `git_commit` and `git_worktree` (`clean` / `dirty`; `unavailable` when the working copy is not a Git repository) |
 
 ## 4. Interim layer (`data/interim/`, outside Git)
 
@@ -181,7 +181,6 @@ without a complete walk have `extraction_status` `incomplete` or `failed`.
 | `doi` | string | `DOI`, lowercased | `10.32388/abc123.2` |
 | `doi_original` | string | `DOI` as returned | `10.32388/ABC123.2` |
 | `type` | string | `type` | `posted-content` |
-| `subtype` | string or empty | `subtype` | `preprint` |
 | `title` | string | `title[0]` | — |
 | `prefix` | string | `prefix` | `10.32388` |
 | `member` | string | `member` | `19384` |

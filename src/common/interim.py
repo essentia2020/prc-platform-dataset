@@ -15,7 +15,7 @@ DEFAULT_INTERIM_ROOT = Path("data") / "interim"
 INTERIM_ROOT_ENV = "PRC_INTERIM_ROOT"
 
 CROSSREF_WORK_COLUMNS = [
-    "doi", "doi_original", "type", "subtype", "title", "prefix", "member", "container_title",
+    "doi", "doi_original", "type", "title", "prefix", "member", "container_title",
     "created", "deposited", "indexed", "issued", "posted", "published_online", "published_print",
     "relation_is_review_of", "retrieved_at_utc", "platform_id", "walk_id", "page", "accepted_attempt",
     "attribution_basis", "included", "exclusion_reason",

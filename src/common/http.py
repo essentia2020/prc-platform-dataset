@@ -43,6 +43,7 @@ class Attempt:
     error: str = ""
     accepted: bool = False
     rejection_reason: str = ""
+    retryable: bool = True
     stored_response_rel: str = ""
     stored_sha256: str = ""
 
@@ -170,8 +171,12 @@ class PoliteClient:
                     attempt.rejection_reason = reason
             elif attempt.status is None:
                 attempt.rejection_reason = attempt.error
-            else:
+            elif attempt.status in RETRYABLE_STATUSES:
                 attempt.rejection_reason = f"http {attempt.status}"
+            else:
+                attempt.rejection_reason = f"http {attempt.status} (definitive, not retried)"
+            attempt.retryable = bool(attempt.status is None or attempt.status in RETRYABLE_STATUSES
+                                     or (attempt.status == 200 and attempt.rejection_reason))
             result.attempts.append(attempt)
             if on_attempt:
                 on_attempt(attempt)
@@ -180,9 +185,7 @@ class PoliteClient:
                                    accepted=attempt.accepted, reason=attempt.rejection_reason)
             if attempt.accepted:
                 return result
-            retryable = attempt.status is None or attempt.status in RETRYABLE_STATUSES \
-                or (attempt.status == 200 and attempt.rejection_reason)
-            if not retryable:
+            if not attempt.retryable:
                 break
             if number < self.max_attempts:
                 self._sleep(self._backoff_for(number, attempt.headers))

@@ -127,7 +127,8 @@ class CursorWalker:
             if self.logger is not None:
                 self.logger.attempt(scope=self.scope, walk_id=walk_id, page=page, attempt=attempt.number,
                                     status=attempt.status,
-                                    outcome="accepted" if attempt.accepted else "retry",
+                                    outcome=("accepted" if attempt.accepted
+                                             else "retry" if attempt.retryable else "rejected"),
                                     reason=attempt.rejection_reason)
         return on_attempt
 
@@ -195,7 +196,14 @@ class CursorWalker:
                                      reason=f"pagination state rejected with http {status} on page {page}",
                                      pages_accepted=pages_accepted, items_total=items_total)
                         return read_walk_manifest(path)
-                    reason = f"attempt budget exhausted on page {page}: {last.rejection_reason if last else 'no attempt'}"
+                    if last is not None and not last.retryable:
+                        # The source answered definitively (for example HTTP 400
+                        # for a malformed request): one attempt, no retry, and
+                        # the response body is kept in the raw store for review.
+                        reason = (f"request rejected on page {page} with "
+                                  f"{last.rejection_reason}; response stored at {last.stored_response_rel}")
+                    else:
+                        reason = f"attempt budget exhausted on page {page}: {last.rejection_reason if last else 'no attempt'}"
                     writer.close("failed", reason=reason, pages_accepted=pages_accepted,
                                  items_total=items_total)
                     self._log("walk_failed", walk_id=walk_id, page=page, reason=reason)
