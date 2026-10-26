@@ -181,10 +181,20 @@ def test_scope_tolerance_defaults_and_overrides():
                         "works__10.5194__journal-article")
 
 
-def test_shipped_config_has_no_tolerance():
+PINNED_TOLERANCE_OVERRIDES = {
+    "works__10.12688__journal-article": 50,
+    "works__10.5194__posted-content": 25,
+}
+
+
+def test_shipped_config_tolerance_overrides_are_pinned():
     pagination = load_sources_config()["sources"]["crossref"]["pagination"]
     assert pagination["total_tolerance"] == 0
-    assert pagination.get("total_tolerance_overrides") == {}
+    overrides = pagination.get("total_tolerance_overrides") or {}
+    assert set(overrides) == set(PINNED_TOLERANCE_OVERRIDES)
+    for scope_id, entry in overrides.items():
+        assert entry["total_tolerance"] == PINNED_TOLERANCE_OVERRIDES[scope_id]
+        assert entry["reason"].strip(), scope_id
 
 
 def test_override_is_applied_to_the_named_scope_only(tmp_path: Path):
