@@ -501,7 +501,7 @@ platforms:
     launch_year: 2021
     model_since: 2021
     model_note: >-
-      D-052: journal with a 40-year record moved to the F1000 platform in 2021; only platform-period records (10.12688/stomiedintrelat.*) are counted. Status and coverage start to be confirmed by the maintainer.
+      D-052: journal with a 40-year record moved to the F1000 platform in 2021; only platform-period records (10.12688/stomiedintrelat.*) are counted. Active: listed on the F1000 venues page; status and coverage start confirmed against Crossref and the venue site on 2026-10-27.
     coverage_start_year: 2021
     coverage_end_year: null
     discipline_scope: social_sciences
@@ -615,7 +615,7 @@ platforms:
     launch_year: 2021
     model_since: 2021
     model_note: >-
-      D-052: F1000-hosted venue 2021–2025 (52 records 10.12688/digitaltwin.*, last issued 2025-07-18); from 2025 the title continues as a conventional Taylor & Francis journal (10.1080/27525783.*, received/accepted dates) and is outside the row. Part of the 10.12688 records is now owned under prefix 10.1080, so the selector is the ISSN scope with a DOI regex; 79 of the 10.21956/digitaltwin review records are likewise owned under 10.1080 (member 301), so 10.1080 is walked as a second review prefix. Closure year to be confirmed by the maintainer.
+      D-052: F1000-hosted venue 2021–2025, closed; about 90 platform-period records 10.12688/digitaltwin.* (52 still owned under 10.12688, 38 transferred to 10.1080; last issued 2025-07-18). From 2025 the title continues as a conventional Taylor & Francis journal (10.1080/27525783.*, received/accepted dates; 106 articles to 2026-10-20), outside the row. Because part of the platform-period records changed owner, the selector is the ISSN scope with a DOI regex, which keeps all 90 regardless of owner; 79 of the 10.21956/digitaltwin review records are likewise owned under 10.1080 (member 301), so 10.1080 is walked as a second review prefix. Platform period and closure confirmed against Crossref and the venue site on 2026-10-27.
     coverage_start_year: 2021
     coverage_end_year: 2025
     discipline_scope: physical_sciences
@@ -673,7 +673,7 @@ platforms:
     launch_year: 2022
     model_since: 2022
     model_note: >-
-      D-052: F1000-hosted venue; 44 journal-article records 2022–2025 (last issued 2025-06-17); not listed on the F1000 venues page on 2026-10-27. Operating status to be confirmed by the maintainer.
+      D-052: F1000-hosted venue; 44 journal-article records 2022–2025 (last new submission 2025-01-27, last issued 2025-06-17). Dormant: not listed on the F1000 venues page and no Taylor & Francis continuation (no 10.1080-owned record under ISSN 2752-8286); confirmed against Crossref and the venue site on 2026-10-27.
     coverage_start_year: 2022
     coverage_end_year: null
     discipline_scope: life_sciences
@@ -726,11 +726,11 @@ platforms:
     organisation_name: "F1000 Research Ltd (Taylor & Francis)"
     prc_role: integrated_platform
     status: dormant
-    launch_year: 2022
-    model_since: 2022
+    launch_year: 2021
+    model_since: 2021
     model_note: >-
-      D-052: F1000-hosted venue; 29 journal-article records 2022–2024 (last issued 2024-06-03); not listed on the F1000 venues page on 2026-10-27. Operating status to be confirmed by the maintainer.
-    coverage_start_year: 2022
+      D-052: F1000-hosted venue announced on 2021-09-29 and open for submissions from November 2021 (launch 2021); 29 journal-article records 2022–2024 (first articles 2022, last new submission and last issued 2024-06-03). Dormant: not listed on the F1000 venues page and no Taylor & Francis continuation (no 10.1080-owned record under ISSN 2754-7531); confirmed against Crossref and the venue site on 2026-10-27.
+    coverage_start_year: 2021
     coverage_end_year: null
     discipline_scope: physical_sciences
     country_of_operator: "United Kingdom"
@@ -774,6 +774,8 @@ platforms:
     counting_event_date_field: issued
     evidence_url:
       - https://api.crossref.org/works?filter=issn:2754-7531,type:journal-article&rows=0
+      - https://newsroom.taylorandfrancisgroup.com/taylor-francis-launches-first-open-research-publishing-platform-with-f1000/
+      - https://think.f1000research.com/materialsopenresearch/
     verified_on: "2026-10-27"
 
   - row_id: cobot
@@ -785,7 +787,7 @@ platforms:
     launch_year: 2022
     model_since: 2022
     model_note: >-
-      D-052: F1000-hosted venue; 42 journal-article records 2022–2025 (last issued 2025-04-10), all still owned under 10.12688; not listed on the F1000 venues page on 2026-10-27. 28 of the 10.21956/cobot review records are owned under prefix 10.1080 (member 301) and 28 further peer-review records exist under 10.1080/27525813.*, so 10.1080 is walked as a second review prefix and a Taylor & Francis continuation is to be confirmed by the maintainer.
+      D-052: F1000-hosted venue; 42 journal-article records 2022–2025 (last new submission 2024-11-18, last issued 2025-04-10), all still owned under 10.12688. Dormant: not listed on the F1000 venues page and no Taylor & Francis continuation (no 10.1080-owned journal-article record under ISSN 2752-5813); confirmed against Crossref and the venue site on 2026-10-27. 28 of the 10.21956/cobot review records are owned under prefix 10.1080 (member 301; confirmed on 10.21956/cobot.18994.r28390) and 28 further peer-review records exist under 10.1080/27525813.*; 10.1080 owns 215 peer-review records in total, so it is walked as a second review prefix.
     coverage_start_year: 2022
     coverage_end_year: null
     discipline_scope: physical_sciences

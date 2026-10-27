@@ -120,13 +120,17 @@ list is completed before the release freeze.
   the complete 10.12688 / 10.21956 walks (D-052): Stosunki Międzynarodowe –
   International Relations, Nuclear Science and Technology Open Research,
   Digital Twin, Molecular Psychology, Materials Open Research, Cobot and
-  Bioethics Open Research. Their workflow pages were only partly readable at
-  verification; the platform-period and status fields rest on the F1000
-  venue list and on the deposited records and are marked for confirmation.
-  Digital Twin continues since 2025 as a conventional Taylor & Francis
-  journal under 10.1080 with a closed platform period (2021–2025); only the
-  platform period is counted and the row is selected by ISSN because part of
-  its 10.12688 DOIs are now owned by the continuing journal.
+  Bioethics Open Research. Statuses were confirmed against Crossref and the
+  venue sites on 2026-10-27: three active, Digital Twin closed (2021–2025),
+  Molecular Psychology, Cobot and Materials Open Research dormant (last new
+  submission 2025-01-27, 2024-11-18, 2024-06-03; no Taylor & Francis
+  continuation). Materials Open Research opened for submissions in November
+  2021 and published its first articles in 2022, so its 2021 cell is an
+  observed zero. Digital Twin continues since 2025 as a conventional Taylor
+  & Francis journal under 10.1080; only the platform period (about 90
+  records, 38 of them now owned by the continuing journal) is counted and
+  the row is selected by ISSN because part of its 10.12688 DOIs changed
+  owner. The rows stay provisional until their first flattening.
 - Some platform websites could not be read automatically at verification
   (robots restrictions or parsing failures); for those rows the notes name
   the secondary evidence used (operator pages, Sciety group descriptions)
