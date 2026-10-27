@@ -1,11 +1,6 @@
 # Decision log — PRC Platform Dataset 1.4.0
 
-Numbered record of every design, classification and process decision.
-Each entry states the date, the question, the options considered, the
-decision, the evidence URL(s) and who decided. Every entry, D-001 through D-045 and Q-1 through Q-4, carries decided_by: researcher. D-027 through D-031 document preparation choices; D-032 through D-035 record the decisions on extraction, 2026-10-20, and govern their implementation; D-036 through D-041 record the decisions on normalisation, analysis and reporting, 2026-10-20; D-042 records the decision on repository history, 2026-10-20; D-043 and D-044 record the decisions of 2026-10-26 on two register rows whose Crossref records changed owner or primary identifier; D-045 records the decision of 2026-10-26 on Crossref walk completion and per-scope tolerance. Confidence
-and decision status are independent: a decided classification may retain
-medium or low confidence without being provisional. 
-
+Numbered record of every design, classification and process decision. Each entry states the date, the question, the options considered, the decision, the evidence URL(s) and who decided. Every entry, D-001 through D-056 and Q-1 through Q-4, carries decided_by: researcher. D-027 through D-031 document preparation choices; D-032 through D-035 record the decisions on extraction, 2026-10-20, and govern their implementation; D-036 through D-041 record the decisions on normalisation, analysis and reporting, 2026-10-20; D-042 records the decision on repository history, 2026-10-20; D-043 and D-044 record the decisions of 2026-10-26 on two register rows whose Crossref records changed owner or primary identifier; D-045 records the decision of 2026-10-26 on Crossref walk completion and per-scope tolerance; D-046 through D-054 record the decisions of 2026-10-27 on the structural findings of run_20261026_01 (withdrawn review records, owner prefixes and the selector_no_match guard, evaluation records deposited under work types, companion items, VeriXiv, seven provisional F1000-infrastructure rows, repeated-slash DOIs, the Rapid Reviews cross-check); D-055 and D-056 record the decisions of 2026-10-27 on the audit boundary for harvested text and on keeping harvested records outside the repository. Confidence and decision status are independent: a decided classification may retain medium or low confidence without being provisional.
 Decision entries in this log are identified by decision number, date and subject.
 
 ---
@@ -977,6 +972,180 @@ completion of its evidence checks; outstanding checks are stated explicitly.
 - **Options considered:** (a) treat a short page as terminal and raise the tolerance for every scope; (b) a short non-empty page is not terminal — follow next-cursor until an empty items list or an absent next-cursor — and set tolerances only for scopes whose total-results demonstrably moved; (c) split large scopes into created-date windows.
 - **Decision:** b. This makes the "including an empty following page" clause of D-035 explicit and is not a change of rule. Terminal evidence is an empty items list or an absent next-cursor; short pages are recorded as page-level anomalies and counted in short_pages. Every cursor request repeats the full query with the next-cursor of the immediately preceding page. total_tolerance stays 0 by default; config/sources.yaml carries total_tolerance_overrides for works__10.12688__journal-article (50) and works__10.5194__posted-content (25), each with a reason stating that the result set is not stable during multi-minute cursor walks on the current Crossref REST API; tests/test_request_rejection.py pins exactly this set of overrides and requires a non-empty reason. The three short-page scopes completed on re-walk with delta 0 (71,761; 56,184; 43,236 records). Option c is kept in reserve for scopes that fail the total check repeatedly.
 - **Evidence:** walk_end lines in data/manifests/run_20261026_01 for the five scopes named; https://community.crossref.org/t/changes-to-cursors-filtering-and-sorting-in-the-rest-api/16246 (cursor behaviour since 24 August 2026); https://www.crossref.org/documentation/retrieve-metadata/rest-api/tips-for-using-the-crossref-rest-api/ (no next-cursor at the end of a result set).
+
+## D-046: Emerald Open Research review records withdrawn at source
+**Context:** run_20261026_01 found 150 works and 0 evaluation records for
+`emerald_open_research`. The known review handle
+10.21956/emeraldopenres.14208.r26506 now carries HS_ALIAS to
+10.1108/EOR-03-2023-0005 (set 2025-11-19), the article's own primary DOI;
+Crossref REST returns 404, `issn:2631-3952,type:peer-review` = 0, DataCite
+404, and none of the 22,612 10.21956 review records carries the
+`emeraldopenres` stem. 
+**Decision:** the evaluation count of the row is 0 by
+observation and the row carries the preset `no_review_records` entry
+(DQ-013). The alias is not resolved as `has-review`: that would equate an
+evaluation identifier with a work identifier. No additional scope is
+declared. Limitations name the case beside MedEd Publish; the analysis-plan
+rule on Emerald review attribution is qualified accordingly.
+
+## D-047: NIHR Open Research owner prefix 10.3310; selector_no_match guard
+**Context:** the row selected 10.12688/nihropenres; 10.12688/nihropenres.14023.1
+returns 404. NIHR Open Research is registered under 10.3310 (ISSN 2633-4402:
+522 journal-articles, 956 peer-review records), a prefix shared with the
+NIHR Journals Library (3,513 journal-articles). The run published
+`observed_zero` for 2021–2026 and `unique_works_to_cutoff = 0`. 
+**Decision:**
+(a) the selector moves to 10.3310 with a stem regex for works and reviews,
+scopes `works__10.3310__journal-article` and `works__10.3310__peer-review`;
+(b) a quantified row whose selector matches zero records across all its
+complete scopes yields `not_observable` with
+`source_observability_status = selector_no_match` and a data-quality entry,
+never `observed_zero`; the row blocks every group it belongs to. The zeros
+of run_20261026_01 for this row are not observations and are not committed.
+Open Research Europe showed the same condition (0 work records) and is
+covered by D-048.
+
+## D-048: Review and work scopes by owner prefix: F1000Research 10.5256, Open Research Europe 10.68336 
+**Context:** F1000Research review records are
+deposited under 10.5256 (member 2560; 30,184 records) and were not walked.
+Open Research Europe records — works 10.12688/openreseurope.* and reviews
+10.21956/openreseurope.* — are owned by prefix 10.68336 (member 13904;
+2,596 journal-articles, 5,198 peer-review records) and are invisible to the
+10.12688 / 10.21956 owner-prefix walks; the run produced 0 works and 0
+reviews for the row. 
+**Decision:** the Crossref `prefix` filter selects by
+current owner, not by DOI string; every row declares the owner prefixes
+that hold its records. F1000Research adds `review_doi_prefix 10.5256`;
+Open Research Europe uses `prefix 10.68336` for works and reviews. Review
+attribution remains relation-based. The equality of 30,184 (10.5256
+peer-review) and 30,184 (10.12688 journal-article in the run; 30,185 live
+on 2026-10-27) is a coincidence of two unrelated populations. Rows with
+ownership split across prefixes (Digital Twin, Cobot: part of the 10.21956
+review records owned by 10.1080) declare every owning prefix with a stem
+regex.
+
+## D-049: Peer Community In evaluation records are journal-article records
+**Context:** the 10.24072 peer-review walk is complete with 0 items.
+PCI deposits recommendations, reviewer reports and decisions as
+`journal-article` records in "Peer Community in …" containers
+(10.24072/pci.<community>.<id>, .revNN, .dN, .arN); 3,725 of 4,374 carry
+`is-review-of`. 
+**Decision:** recommendation records selected by
+`evaluation_doi_regex ^10\.24072/pci\.[a-z]+\.\d+$` are the row's
+evaluation records; the works are their external targets. Reviewer
+reports, decisions and Peer Community Journal articles are neither works
+nor evaluations of the row. Evaluation records deposited under a work type
+are a general selector facility (`evaluation_record_types`,
+`evaluation_doi_regex`).
+
+## D-050: JMIRx Med: no review records; companion items excluded
+**Context:** `prefix:10.2196,type:peer-review` is complete with 0 items. Of the
+622 journal-article records under ISSN 2563-6316, 316 are titled "Peer
+Review of …" and 104 "Authors' Response to Peer Reviews of …"; the run
+counted 618 works where the article population is about 202. 
+**Decision:** the
+row declares `no_review_records` (DQ-014) and no peer-review scope;
+work-type records matching `companion_title_regex` are excluded as
+`companion_item` and logged as `companion_record`. Final-article counting
+is unchanged (D-016).
+
+## D-051: VeriXiv deposit confirmed; selector enabled; D-041 scheduled
+**Context:** run_20261026_01 found 314 unique 10.21956/verixiv.* review records
+targeting 185 unique 10.12688/verixiv.*.n preprints, all valid, reviews
+issued 2024–2026; the preprints are `posted-content` without
+container-title and `works__10.12688__posted-content` is complete (922
+items). 
+**Decision:** D-013's condition is met. `pending_deposit_confirmation`
+is lifted; the row is `quantified`, `machine_readable`, with a
+stem-regex-only selector over `posted-content` and `peer-review`;
+`provisional: true` remains until the first VeriXiv flattening. Review
+stems differ from preprint stems, so attribution is relation-based. D-041
+(Gates Open Research / VeriXiv correspondence) is scheduled before the
+release freeze.
+
+## D-052: Seven F1000-infrastructure venues enter the register as provisional rows
+**Context:** 927 unattributed 10.21956 reviews target
+stems absent from the register (stomiedintrelat 360, nuclscitechnolopenres
+206, digitaltwin 125, molpsychol 95, materialsopenres 53, cobot 50,
+bioethopenres 38); their works are in the complete 10.12688 walk,
+unassigned. 
+**Decision:** Stosunki Międzynarodowe – International Relations,
+Nuclear Science and Technology Open Research, Digital Twin, Molecular
+Psychology, Materials Open Research, Cobot and Bioethics Open Research are
+added as `author_initiated` / `approval_threshold` rows with
+`provisional: true`, stem regex selectors, declared review prefixes and
+sample DOIs. Digital Twin is closed as a platform (2021–2025) and
+continues as a conventional Taylor & Francis journal under 10.1080, which
+is outside the row; because part of its records changed owner, it is
+selected by ISSN scope. Venues not on the F1000 venues page (Digital Twin,
+Molecular Psychology, Materials Open Research, Cobot) carry status fields
+marked for confirmation. The rows leave provisional status at their first
+flattening or move to `excluded_candidates` if criteria 1–3 fail on
+inspection.
+
+## D-053: Repeated slashes in deposited DOIs 
+**Context:** three MedEd
+Publish reviews 10.21956//mep.18871.r26923–r26925 target
+10.15694//mep.2021.000035.1; both strings carry a double slash in
+Crossref. `target_flag` was empty and the article was absent from the
+interim; one 2021 work was missing. 
+**Decision:** the validator flags runs of
+slashes (`repeated_slash`); canonical identifiers use the collapsed form
+while `source_record_id`, `work_id`, `doi_original` and `target_id_raw`
+keep the deposited string; the condition is logged as `malformed_doi`
+(DQ-015) and is non-blocking.
+
+## D-054: Rapid Reviews cross-check selects reviews by DOI regex and external target
+**Context:** the register prefix check found that the venue
+deposits peer-review records 10.1162/2e3983f5.<hash> with `is-review-of`
+→ external preprints and no container-title, while the same reports also
+appear as journal-article records in "Rapid Reviews COVID-19". A
+container-title selector cannot be tested on a bare target DOI; the former
+prefix fallback would have claimed the review and decision records of
+every other MIT Press journal (e.g. 10.1162/qss.a.493/v3/review1) and
+rejected the venue's own. 
+**Decision:** `record_types: [peer-review]`,
+`review_doi_regex ^10\.1162/2e3983f5\.`, `target_filter: external`;
+container-title selectors never fall back to a prefix test on target DOIs.
+The Crossref role of the row stays `cross_check`; Sciety remains primary.
+
+## D-055 — Audit scope excludes harvested text
+
+- **Date:** 2026-10-27
+- **Status:** decided
+- decided_by: researcher
+- **Question:** On the populated tree `tools/audit_text.py` reported 3,725 hits
+  (R1=192, R2=2,063, R3=3, R4=1,467), all inside
+  `data/processed/records_*.csv`, in titles and abstracts of harvested works;
+  zero hits elsewhere; the run took 9.9 minutes. How is harvested third-party
+  text treated by the audit?
+- **Options considered:** (a) allow-list the affected spans; (b) a path-level
+  boundary excluding harvested files; (c) leave the audit as is.
+- **Decision:** b. Harvested content is third-party text that cannot be edited and
+  is not the repository's own voice. `is_text_candidate` skips
+  `data/processed/records_*.csv` and `data/manifests/*` (`SKIP_GLOBS`), for the
+  working-tree and the history scan alike; this is a path-level boundary of
+  the same kind as `data/raw` and `data/interim`, not an exemption. R1 has no
+  exemptions; the private token list is reviewed so that it carries
+  identifiers only, not dictionary words.
+- **Evidence:** audit log of 2026-10-27 (3,725 hits before the change, 0 after);
+  commit dbb648e.
+
+## D-056: Harvested records leave the repository; a release archive per run
+**Context:** `data/processed/records_*.csv`, `works_included.csv`,
+`analysis_manifest.json` and `normalisation_summary.json` were never
+tracked; `git add -A` after the structural fixes would have committed them.
+They are third-party content of tens of megabytes per run, not the
+repository's own text, and D-005 already keeps raw responses outside Git.
+**Decision:** tracked: `config/`, `docs/`, `data/processed/data_quality_log.csv`
+(presets and run rows), `data/manifests/` (page digests), `reports/tables/`,
+`reports/figures/`, the checksums file. Release archive, one per run,
+deposited on Zenodo and linked to the release: `data/processed/records_*.csv`,
+`works_included.csv`, `normalisation_summary.json`, `analysis_manifest.json`,
+`data/interim/*` and a copy of `data/manifests/<run_id>/`; the archive DOI
+and the SHA-256 of every file go into README (Data availability) and the
+checksums file. `.gitignore` lists the four processed-layer families. No
+history rewrite is involved (D-004, D-042): the files were never committed.
 
 ## Q-4: Cross-DOI work correspondence for Gates Open Research / VeriXiv
 
