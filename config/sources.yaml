@@ -49,6 +49,10 @@ sources:
         works__10.5194__posted-content:
           total_tolerance: 25
           reason: "Same cause; EGUsphere registers preprints continuously. Observed delta +4 of 238,421 on 2026-10-26."
+        works__10.7554__peer-review:
+          total_tolerance: 25
+          reason: "eLife deposits peer-review records continuously during working hours. 
+          Observed delta +11 of 84,253 on 2026-10-27: total-results rose monotonically from 84,253 to 84,264 during the 86-page walk and the accepted item total equals the final total-results, so no record was lost."
       # Scopes walked in date windows instead of one cursor walk (D-045
       # option c, D-057). Each window is its own cursor walk at tolerance 0;
       # the scope is complete only when every window is complete and the
