@@ -162,6 +162,7 @@ def flatten_item(item: Mapping[str, Any], *, platform_id: str, walk: WalkRecord,
         "published_online": format_partial_date(parse_crossref_date(item.get("published-online"))),
         "published_print": format_partial_date(parse_crossref_date(item.get("published-print"))),
         "relation_is_review_of": joined,
+        "relation_json": json.dumps(relation, sort_keys=True, separators=(",", ":")),
         "retrieved_at_utc": retrieved_at_utc,
         "platform_id": platform_id,
         "walk_id": walk.walk_id,
@@ -199,7 +200,8 @@ def flatten_works(store: RawStore, walk: WalkRecord, selectors: list[CrossrefSel
     return out
 
 
-def flatten_reviews(store: RawStore, walk: WalkRecord, selectors: list[CrossrefSelector], prefix: str
+def flatten_reviews(store: RawStore, walk: WalkRecord, selectors: list[CrossrefSelector], prefix: str,
+                    inverse_targets=None
                     ) -> dict[str, list[dict[str, Any]]]:
     """Split a peer-review walk into per-row interim rows (§4.2).
 
@@ -214,6 +216,11 @@ def flatten_reviews(store: RawStore, walk: WalkRecord, selectors: list[CrossrefS
         if item.get("type") != REVIEW_RECORD_TYPE:
             continue
         targets = review_targets(item)
+        inverse = (inverse_targets or {}).get(normalise_doi(item.get("DOI", "")), [])
+        if inverse:
+            targets = [t for t in targets if t.flag != "missing"]
+            known = {t.doi for t in targets if t.doi and not t.flag}
+            targets.extend(t for t in inverse if t.doi not in known)
         claimants = [s for s in selectors if s.claims_review(item, targets)]
         keys = [s.row_id for s in claimants] or [unattributed]
         for key in keys:
@@ -221,7 +228,7 @@ def flatten_reviews(store: RawStore, walk: WalkRecord, selectors: list[CrossrefS
                                 accepted_attempt=page.accepted_attempt, retrieved_at_utc=page.accepted_at_utc)
             for target in targets:
                 out[key].append({**base, "target_id_raw": target.raw, "target_id_type": target.id_type,
-                                 "target_flag": target.flag})
+                                 "target_flag": target.flag, "target_relation_type": target.relation_type})
     return out
 
 
@@ -265,8 +272,8 @@ def run_crossref(run_config: RunConfig, sources_config: Mapping[str, Any], platf
             dependents = [s for s in selectors if scope.prefix in s.review_prefixes()
                           and REVIEW_RECORD_TYPE in s.record_types]
         else:
-            dependents = [s for s in selectors if scope.record_type in s.record_types
-                          and scope.key in s.work_keys(scope.record_type)]
+            dependents = [s for s in selectors if scope.key in s.work_keys()
+                          and scope.record_type in s.record_types]
         if not walk.is_complete:
             outcome.blocked_rows = [s.row_id for s in dependents]
             blocked.update(outcome.blocked_rows)
@@ -276,7 +283,8 @@ def run_crossref(run_config: RunConfig, sources_config: Mapping[str, Any], platf
             outcomes.append(outcome)
             continue
         if scope.record_type == REVIEW_RECORD_TYPE:
-            tables = flatten_reviews(store, walk, dependents, scope.prefix)
+            inverse = inverse_review_targets(run_config, dependents, store, manifest_root)
+            tables = flatten_reviews(store, walk, dependents, scope.prefix, inverse)
         else:
             tables = flatten_works(store, walk, dependents)
         for key, rows in tables.items():
@@ -303,6 +311,46 @@ def run_crossref(run_config: RunConfig, sources_config: Mapping[str, Any], platf
                            for o in incomplete)
         raise ExtractionIncomplete(f"{len(incomplete)} Crossref scope(s) not complete — {detail}")
     return outcomes
+
+
+def inverse_review_targets(run_config, selectors, store, manifest_root):
+    """Use has-review only from selected complete work walks of opted-in rows.
+
+    No network calls, no review/article stem matching and no invented review
+    record: an inverse target is used only when its review DOI is retrieved.
+    """
+    from .selectors import ReviewTarget
+
+    out = {}
+    for sel in selectors:
+        if not sel.work_correspondences:
+            continue
+        selected = []
+        for scope in crossref_scopes([sel], "works"):
+            walk, _ = select_walk(list_walks(manifest_root, run_config.run_id, SOURCE, scope.scope_id),
+                                  run_config.selected_walk_policy)
+            if walk is None:
+                break
+            selected.append(walk)
+        else:
+            for walk in selected:
+                for item, _ in iter_walk_items(store, walk):
+                    if not sel.matches_work(item):
+                        continue
+                    work = normalise_doi(item["DOI"])
+                    for relation in (item.get("relation") or {}).get("has-review") or []:
+                        if not isinstance(relation, Mapping) or relation.get("id-type") != "doi":
+                            continue
+                        try:
+                            review = normalise_doi(relation.get("id", ""))
+                        except ValueError:
+                            continue
+                        if review == work:
+                            continue
+                        target = ReviewTarget(work, "doi", work, "", "has-review")
+                        if target not in out.setdefault(review, []):
+                            out[review].append(target)
+    return out
 
 
 def refresh_journal_attribution(run_config, selectors, store, manifest_root, interim):

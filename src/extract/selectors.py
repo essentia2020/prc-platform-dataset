@@ -24,6 +24,7 @@ from dataclasses import dataclass, field
 from typing import Any, Iterable, Mapping
 
 from ..common.identifiers import is_doi_like, normalise_doi
+from ..common.correspondence import correspondence_index
 
 PLACEHOLDER_TARGET_RE = re.compile(
     r"^(?:10\.\d{4,9}/(?:x+|placeholder|tbd|na|n/a|none|0+|example|test)\b.*|10\.x+/.*|10\.1234/.*)$",
@@ -72,9 +73,6 @@ class CrossrefSelector:
     prefixes: list[str]
     record_types: list[str]
     issns: list[str] = field(default_factory=list)
-    # record type -> "prefix" | "issn": which key builds that type's work scope
-    # when a row declares both. Peer-review scopes are always prefix-based.
-    scope_keys: dict[str, str] = field(default_factory=dict)
     doi_regex: re.Pattern | None = None
     exclude_doi_regex: re.Pattern | None = None
     container_titles: list[str] = field(default_factory=list)
@@ -86,6 +84,7 @@ class CrossrefSelector:
     egusphere_regex: re.Pattern | None = None
     selector_status: str = ""
     register_status: str = ""
+    work_correspondences: dict[str, tuple[str, str]] = field(default_factory=dict)
 
     # ------------------------------------------------------------ scopes
     @property
@@ -95,18 +94,9 @@ class CrossrefSelector:
     def work_prefixes(self) -> list[str]:
         return list(self.prefixes)
 
-    def work_keys(self, record_type: str | None = None) -> list[str]:
-        """Scope keys for one work record type: owner prefixes or ``issn:<issn>``.
-
-        With only one kind declared, that kind is used. With both, the row's
-        ``scope_keys`` names the kind per record type; ``record_type=None``
-        returns the union (diagnostics only).
-        """
-        issn_keys = [f"issn:{i}" for i in self.issns]
-        if record_type is None:
-            return list(self.prefixes) + issn_keys
-        kind = self.scope_keys.get(record_type) or ("issn" if self.issns and not self.prefixes else "prefix")
-        return issn_keys if kind == "issn" else list(self.prefixes)
+    def work_keys(self) -> list[str]:
+        """Scope keys for work record types: owner prefixes and ``issn:<issn>``."""
+        return list(self.prefixes) + [f"issn:{i}" for i in self.issns]
 
     def review_prefixes(self) -> list[str]:
         out = list(self.prefixes)
@@ -117,6 +107,8 @@ class CrossrefSelector:
     # ------------------------------------------------------------- works
     def doi_in_scope(self, doi: str) -> bool:
         """DOI-level test used for works and for review targets."""
+        if doi in self.work_correspondences:
+            doi = self.work_correspondences[doi][0]
         if self.journals:
             if any(rx.match(doi) for j in self.journals for rx in j.regexes):
                 return True
@@ -232,6 +224,7 @@ class ReviewTarget:
     id_type: str
     doi: str          # normalised DOI when id_type is doi-like, else ""
     flag: str         # "", "placeholder", "malformed", "self_reference", "missing"
+    relation_type: str = "is-review-of"
 
 
 def review_targets(item: Mapping[str, Any]) -> list[ReviewTarget]:
@@ -293,33 +286,17 @@ def compile_crossref_selector(row: Mapping[str, Any]) -> CrossrefSelector | None
     for issn in issns:
         if not ISSN_RE.match(issn):
             raise SelectorError(f"row {row.get('row_id')}: invalid ISSN selector {issn!r}")
-    if issns and not (block.get("doi_regex") or block.get("container_titles")):
-        raise SelectorError(f"row {row.get('row_id')}: an issn selector requires doi_regex or "
-                            "container_titles (an ISSN walk is not restricted to one DOI prefix)")
+    if issns and not block.get("doi_regex"):
+        raise SelectorError(f"row {row.get('row_id')}: an issn selector requires doi_regex "
+                            "(an ISSN walk is not restricted to one DOI prefix)")
     prefixes = [p for p in _as_list(block.get("prefix")) if p]
     if not prefixes and not issns and not block.get("journals"):
         raise SelectorError(f"row {row.get('row_id')}: crossref selector needs prefix or issn")
-    scope_keys = {str(k): str(v) for k, v in (block.get("scope_keys") or {}).items()}
-    for record_type, kind in scope_keys.items():
-        if kind not in ("prefix", "issn"):
-            raise SelectorError(f"row {row.get('row_id')}: scope_keys[{record_type}] must be prefix or issn")
-        if record_type == REVIEW_RECORD_TYPE:
-            raise SelectorError(f"row {row.get('row_id')}: peer-review scopes are always prefix-based")
-        if (kind == "issn" and not issns) or (kind == "prefix" and not prefixes):
-            raise SelectorError(f"row {row.get('row_id')}: scope_keys[{record_type}] = {kind} "
-                                f"but the selector declares no {kind}")
-    if prefixes and issns:
-        uncovered = [t for t in _as_list(block.get("record_types"))
-                     if t != REVIEW_RECORD_TYPE and t not in scope_keys]
-        if uncovered:
-            raise SelectorError(f"row {row.get('row_id')}: prefix and issn both declared; scope_keys "
-                                f"must name the key for {uncovered}")
     return CrossrefSelector(
         row_id=str(row["row_id"]),
         prefixes=prefixes,
         record_types=_as_list(block.get("record_types")),
         issns=issns,
-        scope_keys=scope_keys,
         doi_regex=_compile(block.get("doi_regex")),
         exclude_doi_regex=_compile(block.get("exclude_doi_regex")),
         container_titles=_as_list(block.get("container_titles")),
@@ -331,6 +308,7 @@ def compile_crossref_selector(row: Mapping[str, Any]) -> CrossrefSelector | None
         egusphere_regex=egusphere,
         selector_status=str(block.get("selector_status") or ""),
         register_status=str(row.get("register_status") or ""),
+        work_correspondences=correspondence_index(row),
     )
 
 
@@ -389,7 +367,7 @@ def crossref_scopes(selectors: Iterable[CrossrefSelector], kinds: str = "all") -
                     for prefix in sel.review_prefixes():
                         scopes.add(CrossrefScope(prefix, record_type))
             elif kinds in ("all", "works"):
-                for key in sel.work_keys(record_type):
+                for key in sel.work_keys():
                     scopes.add(CrossrefScope(key, record_type))
     return sorted(scopes, key=lambda s: (s.key, s.record_type))
 

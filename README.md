@@ -165,15 +165,15 @@ throughput; the F1000-platform and Copernicus scopes are the largest cursor
 walks. Extraction scripts are run only locally by the maintainer; nothing in
 this repository contacts an API during tests.
 
-Crossref completion requires terminal evidence — an empty items list, or a
-page without `next-cursor` — and an accepted item total matching first-page
-`total-results` (D-035). A short non-empty page is not terminal on the
-current Crossref API: the walk follows its `next-cursor` and records the
-page as a `short_page` anomaly. Every request repeats the full query with
-the cursor of the immediately preceding page. Missing `next-cursor` is an
-anomaly, not completion evidence by itself; tolerances default to zero,
-require a documented reason, and may be set per scope
-(`total_tolerance_overrides`). Sciety follows continuation links
+Crossref completion requires an empty items list or an absent `next-cursor`,
+and an accepted item total matching first-page `total-results` within the
+configured tolerance (D-035). A short non-empty page with a continuation
+is followed and logged as a page-level `short_page` anomaly. Missing
+`next-cursor` remains an anomaly and cannot override the item-total check.
+Every request repeats the original query parameters with the `next-cursor`
+from the immediately preceding response. The default tolerance is zero;
+scope-specific overrides and their reasons are in `config/sources.yaml`.
+Sciety follows continuation links
 until exhaustion, independently of Crossref's total check (D-034).
 
 Stages 4–6 read only local files (interim CSVs, run manifest, register).

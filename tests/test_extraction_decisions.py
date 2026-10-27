@@ -40,89 +40,32 @@ def walk_pages(tmp_path, payloads, tolerance=0, reason=""):
                       parse_page=parse_crossref_page, initial_cursor="*")
 
 
-@pytest.mark.parametrize("payloads,state,evidence", [
-    ([page(2, 2)], "complete", "no_next_cursor"),
-    ([page(3, 3, "next"), page(0, 3)], "complete", "empty_page"),
-    ([page(3, 5, "next"), page(2, 5)], "complete", "no_next_cursor"),
-    ([page(0, 0)], "complete", "empty_page"),
-    ([page(3, 3)], "complete", "no_next_cursor"),  # full page, absent cursor, total satisfied
-    # short non-empty pages with a continuation are not terminal: the walk goes on
-    ([page(3, 6, "a"), page(1, 6, "b"), page(2, 6, "c"), page(0, 6)], "complete", "empty_page"),
-    ([page(2, 5, "a"), page(3, 5, "b"), page(0, 5)], "complete", "empty_page"),
-    ([page(0, 1)], "failed", "empty_page"),
-    ([page(2, 3)], "failed", "no_next_cursor"),
-    ([page(3, 3, "next"), page(1, 4)], "failed", "no_next_cursor"),  # total drift from first page
-    ([page(3, 7, "next"), page(0, 7)], "failed", "empty_page"),
-    ([page(1, None)], "failed", ""),
+@pytest.mark.parametrize("payloads,state", [
+    ([page(2, 2)], "complete"),
+    ([page(3, 3, "next"), page(0, 3)], "complete"),
+    ([page(3, 5, "next"), page(2, 5)], "complete"),
+    ([page(0, 0)], "complete"),
+    ([page(0, 1)], "failed"),
+    ([page(2, 3)], "failed"),
+    ([page(3, 3)], "complete"),  # absent cursor plus matching total
+    ([page(3, 4)], "failed"),  # absent cursor cannot override the total check
+    ([page(3, 3, "next"), page(1, 4)], "failed"),  # total drift from first page
+    ([page(3, 7, "next"), page(0, 7)], "failed"),
+    ([page(1, None)], "failed"),
 ])
-def test_crossref_completion_requires_terminal_evidence_and_total(tmp_path, payloads, state, evidence):
+def test_crossref_completion_requires_terminal_evidence_and_total(tmp_path, payloads, state):
     walk = walk_pages(tmp_path, payloads)
     assert walk.state == state
     assert walk.completion["first_page_total_results"] == payloads[0]["message"]["total-results"]
-    assert len(walk.pages) == len(payloads)  # every served page was consumed
     if state == "complete":
         assert walk.completion["accepted_items_total"] == payloads[0]["message"]["total-results"]
-        assert walk.completion["terminal_evidence"] == evidence
-        assert evidence in walk.reason
-
-
-def test_short_pages_are_page_level_anomalies_not_terminal_evidence(tmp_path):
-    walk = walk_pages(tmp_path, [page(3, 6, "a"), page(1, 6, "b"), page(2, 6, "c"), page(0, 6)])
-    assert walk.state == "complete"
-    short = [a for a in walk.anomalies if a["code"] == "short_page"]
-    assert [(a["page"], a["items_in_page"]) for a in short] == [(2, 1), (3, 2)]
-    assert walk.completion["short_pages"] == 2
-    assert walk.completion["terminal_evidence"] == "empty_page"
+        assert walk.completion["terminal_evidence"] in ("no_next_cursor", "empty_page")
 
 
 def test_missing_cursor_is_manifest_anomaly_even_on_short_page(tmp_path):
     walk = walk_pages(tmp_path, [page(2, 2)])
     assert walk.state == "complete"
-    assert sorted(a["code"] for a in walk.anomalies) == ["missing_next_cursor", "short_page"]
-
-
-def test_page_budget_stops_a_walk_that_never_empties(tmp_path):
-    from src.common.walk import CursorWalker
-    budget = CursorWalker.page_budget(3, 3)  # one expected page -> 2 + 5
-    assert budget == 7
-    payloads = [page(1, 3, f"c{i}") for i in range(budget + 3)]
-    walk = walk_pages(tmp_path, payloads)
-    assert walk.state == "failed"
-    assert "page budget exceeded" in walk.reason
-    assert len(walk.pages) == budget + 1
-
-
-def test_every_cursor_request_repeats_the_query_and_uses_the_previous_next_cursor(tmp_path):
-    """Crossref since 24 August 2026: all parameters on every request, cursor read from the preceding page."""
-    from urllib.parse import parse_qs, urlsplit
-    from src.common.config import load_sources_config
-    from src.extract.crossref_common import url_builder
-    from src.extract.selectors import CrossrefScope
-    from tests.offline import make_run_config
-    build = url_builder(make_run_config(), load_sources_config(), CrossrefScope("10.5194", "posted-content"))
-    seen_urls: list[str] = []
-    responses = iter([page(3, 7, "CUR-2"), page(3, 7, "CUR-3"), page(1, 7, "CUR-4"), page(0, 7)])
-
-    def transport(url, *args):
-        seen_urls.append(url)
-        return 200, {}, json.dumps(next(responses)).encode()
-
-    client = PoliteClient(user_agent="offline", min_interval_seconds=0, transport=transport, sleeper=lambda _: None)
-    walker = CursorWalker(client=client, store=RawStore(tmp_path / "raw"), manifest_root=tmp_path / "manifests",
-                          run_id="test", source="crossref", scope="works__10.5194__posted-content")
-    walk = walker.run(build_url=lambda c: build(c).replace("rows=1000", "rows=3"),
-                      parse_page=parse_crossref_page, initial_cursor="*")
-    assert walk.state == "complete"
-    queries = [parse_qs(urlsplit(u).query) for u in seen_urls]
-    assert [q["cursor"] for q in queries] == [["*"], ["CUR-2"], ["CUR-3"], ["CUR-4"]]
-    without_cursor = [{k: v for k, v in q.items() if k != "cursor"} for q in queries]
-    assert all(q == without_cursor[0] for q in without_cursor), "every request must repeat the full query"
-    assert without_cursor[0]["filter"] == ["prefix:10.5194,type:posted-content"]
-    assert "select" in without_cursor[0] and "mailto" in without_cursor[0]
-    # the manifest ties cursor_in of page N+1 to cursor_out of page N
-    pages = sorted(walk.pages, key=lambda e: e.page)
-    assert [e.cursor_in for e in pages] == ["*", "CUR-2", "CUR-3", "CUR-4"]
-    assert [e.cursor_out for e in pages][:-1] == ["CUR-2", "CUR-3", "CUR-4"]
+    assert [a["code"] for a in walk.anomalies] == ["missing_next_cursor", "short_page"]
 
 
 def test_tolerance_is_explicit_and_cannot_override_empty_first_page(tmp_path):

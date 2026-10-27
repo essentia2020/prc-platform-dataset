@@ -2,12 +2,7 @@
 
 Numbered record of every design, classification and process decision.
 Each entry states the date, the question, the options considered, the
-decision, the evidence URL(s) and who decided. Every entry, D-001 through
-D-044 and Q-1 through Q-4, carries `decided_by: researcher`. D-027 through
-D-031 document preparation choices; D-032 through D-035 record the
-decisions on extraction, 2026-10-20, and govern their implementation;
-D-036 through D-041 record the decisions on normalisation, analysis and
-reporting, 2026-10-20. 2026-10-20; D-042 records the decision on repository history, 2026-10-20; D-043 and D-044 record the decisions of 2026-10-26 on two register rows whose Crossref records changed owner or primary identifier. Confidence
+decision, the evidence URL(s) and who decided. Every entry, D-001 through D-045 and Q-1 through Q-4, carries decided_by: researcher. D-027 through D-031 document preparation choices; D-032 through D-035 record the decisions on extraction, 2026-10-20, and govern their implementation; D-036 through D-041 record the decisions on normalisation, analysis and reporting, 2026-10-20; D-042 records the decision on repository history, 2026-10-20; D-043 and D-044 record the decisions of 2026-10-26 on two register rows whose Crossref records changed owner or primary identifier; D-045 records the decision of 2026-10-26 on Crossref walk completion and per-scope tolerance. Confidence
 and decision status are independent: a decided classification may retain
 medium or low confidence without being provisional. 
 
@@ -941,7 +936,7 @@ completion of its evidence checks; outstanding checks are stated explicitly.
   data-quality log, never as a source for `cross_platform_overlap.csv`.
 - **Authority:** D-013; docs/data_dictionary.md §6; user ruling, 2026-10-20.
 
-[## D-042: Repository history starts at the first published commit
+## D-042: Repository history starts at the first published commit
 
 - **Date**: 2026-10-20
 - **Status:** decided
@@ -951,7 +946,7 @@ completion of its evidence checks; outstanding checks are stated explicitly.
 - **Decision:** b. The published history begins at the initial commit. The preparatory working history is not published and is retained outside the repository. This complements D-004: the history audit covers every published commit from the initial commit onward.
 - **Evidence:** not applicable (process decision).
 
-## D-043 — MedEdPublish: records under the former prefix are retrieved through the owner prefix
+## D-043: MedEdPublish: records under the former prefix are retrieved through the owner prefix
 
 - **Date:** 2026-10-26
 - **Status:** decided
@@ -961,15 +956,27 @@ completion of its evidence checks; outstanding checks are stated explicitly.
 - **Decision:** c. The local run holds 1,573 records under 10.15694/ within the completed works__10.12688 scopes, issued 2013–2021 (2016:166, 2017:227, 2018:302, 2019:258, 2020:332, 2021:194), and the ISSN 2312-7996 count of 2,127 is consistent with these plus the 10.12688/mep.* records. launch_year, model_since and coverage_start_year remain 2016; the 94 records of 2013–2015 predate the publish-first open-review model (2016 relaunch) and are not_applicable. The 10.15694 prefix scope is removed from the row's extraction selector as always empty; the DOI regex is unchanged. data_status is reviewed: posting records are complete for 2016 onward, so partial_coverage is replaced by machine_readable unless a reason other than the absence of AMEE-era review records is documented; the absence of review records 2016–2021 stays in the data-quality log and limitations.
 - **Evidence:** https://www.crossref.org/documentation/retrieve-metadata/rest-api/rest-api-filters/ (prefix = DOI owner prefix); https://www.crossref.org/blog/what-can-often-change-but-always-stays-the-same/ (DOIs keep their prefix after title transfer); https://mededpublish.org/articles/11-1 (2016 relaunch, transfer to F1000 in November 2021); local interim counts and ISSN count as stated.
 
-## D-044 — Emerald Open Research: quantified through an ISSN-based scope
+## D-044: Emerald Open Research: quantified through an ISSN-based scope
 
 - **Date:** 2026-10-26
-- **Status:** decided; de-duplication rule and scope implementation pending
+- **Status:** decided; implementation of the version-correspondence rule for the 10.12688 launch record pending.
 - decided_by: researcher
 - **Question:** The platform's DOIs under 10.35241 are aliased in Crossref to primaries under 10.1108/EOR-*, registered in 2024 after re-hosting on Emerald Insight. Do the primaries preserve the original publication dates, and can the row be quantified?
 - **Options considered:** (a) register_only, data_status not_machine_readable; (b) quantify through the 10.1108 primaries retrieved by ISSN, with the issued date as counting event.
-- **Decision:** b. A request for an aliased 10.35241 DOI returns the 10.1108 primary; the primary keeps the original dates (example: 10.1108/eor-03-2023-0018, issued 2022-11-03, published-online 2022-11-03, created 2024-01-17 — created is diagnostic only). The ISSN 2631-3952 query returns 154 records: 151 journal-article and 3 title-level journal records; journal-article records are issued 2019:19, 2020:53, 2021:30, 2022:32, 2023:17. The row is quantified through an ISSN-based scope (filter issn:2631-3952, type journal-article) with selector ^10\.1108/eor-; counting event is the issued date of the primary record; coverage 2019–2023; status closed and coverage_end_year 2023 as in D-014; data_status machine_readable. Aliasing removes the 10.35241 duplicates by construction. Two duplicated titles are to be inspected; if they are version pairs, one work is counted at its earliest issued date. No 10.12688/emeraldopenres.* record is present in the local interim.
-- **Evidence:** https://community.crossref.org/t/adding-redirects-for-aliased-dois-in-the-rest-api/13138 (aliased DOI resolves to the prime record); https://www.emerald.com/eor (closure); https://api.crossref.org/works/10.35241/emeraldopenres.14791.1 and https://api.crossref.org/works?filter=issn:2631-3952&rows=0 (results as stated, retrieved 2026-10-26).
+- **Decision:** Decision: b. A request for an aliased 10.35241 DOI returns the 10.1108 primary; the primary keeps the original dates (example 10.1108/eor-03-2023-0018, issued 2022-11-03, created 2024-01-17; created is diagnostic only). The ISSN 2631-3952 query returns 154 records: 151 journal-article (issued 2019:19, 2020:53, 2021:30, 2022:32, 2023:17) and 3 title-level journal records, excluded by type. The row is quantified through an ISSN-based scope (issn:2631-3952, type journal-article) with selector 10.1108/eor-; coverage 2019–2023, status closed (D-014), data_status machine_readable. Counting event: the earliest issued date among the work's retrieved records (§5.1 rule); other records of the work carry record_flag later_version. One work has two records: 10.12688/emeraldopenres.13140.1 (issued 2019-06-07, relation.new_version → 10.35241/emeraldopenres.13140.2, which Crossref resolves to 10.1108/eor-03-2023-0005, issued 2019-12-09). It is counted once, at 2019-06-07, with canonical_work_id 10.1108/eor-03-2023-0005 and correspondence_basis version_stem+alias+relation; the row holds 150 unique works. For every other primary no other record is retrievable, so its own issued date is the counting event. Because a primary carries the issued date of the last original version, a work whose versions span calendar years is counted in the later year; titles carry no version tag, so the share of such works is not recoverable — recorded as a date_semantics row in the data-quality log. The title-duplicate check returned exactly one pair, the 13140 case above; no unresolved pairs remain.
+
+ 
+- **Evidence:** https://community.crossref.org/t/adding-redirects-for-aliased-dois-in-the-rest-api/13138 (aliased DOI resolves to the prime record); https://www.emerald.com/eor (closure); https://api.crossref.org/works/10.35241/emeraldopenres.14791.1 and https://api.crossref.org/works?filter=issn:2631-3952&rows=0 (results as stated, retrieved 2026-10-26); https://api.crossref.org/works/10.12688/emeraldopenres.13140.1; https://api.crossref.org/works/10.35241/emeraldopenres.13140.2 (resolves to 10.1108/eor-03-2023-0005).
+
+## D-045: Crossref completion: terminal evidence and per-scope total tolerance
+
+- **Date:** 2026-10-26
+- **Status:** decided
+- decided_by: researcher
+- **Question:** The first local run closed five scopes as failed. Three ended on a short non-empty page far below total-results with the total stable (10.1099 journal-article at pages 13 and 29 of 72; 10.2196 journal-article at page 20 of 44; 10.1162 journal-article at page 31 of 57). Two ended with a small total mismatch while total-results moved during the walk (10.12688 journal-article: −21 of 30,184; 10.5194 posted-content: +4 of 238,421). How are the two situations handled under D-035?
+- **Options considered:** (a) treat a short page as terminal and raise the tolerance for every scope; (b) a short non-empty page is not terminal — follow next-cursor until an empty items list or an absent next-cursor — and set tolerances only for scopes whose total-results demonstrably moved; (c) split large scopes into created-date windows.
+- **Decision:** b. This makes the "including an empty following page" clause of D-035 explicit and is not a change of rule. Terminal evidence is an empty items list or an absent next-cursor; short pages are recorded as page-level anomalies and counted in short_pages. Every cursor request repeats the full query with the next-cursor of the immediately preceding page. total_tolerance stays 0 by default; config/sources.yaml carries total_tolerance_overrides for works__10.12688__journal-article (50) and works__10.5194__posted-content (25), each with a reason stating that the result set is not stable during multi-minute cursor walks on the current Crossref REST API; tests/test_request_rejection.py pins exactly this set of overrides and requires a non-empty reason. The three short-page scopes completed on re-walk with delta 0 (71,761; 56,184; 43,236 records). Option c is kept in reserve for scopes that fail the total check repeatedly.
+- **Evidence:** walk_end lines in data/manifests/run_20261026_01 for the five scopes named; https://community.crossref.org/t/changes-to-cursors-filtering-and-sorting-in-the-rest-api/16246 (cursor behaviour since 24 August 2026); https://www.crossref.org/documentation/retrieve-metadata/rest-api/tips-for-using-the-crossref-rest-api/ (no next-cursor at the end of a result set).
 
 ## Q-4: Cross-DOI work correspondence for Gates Open Research / VeriXiv
 

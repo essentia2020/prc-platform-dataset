@@ -45,6 +45,7 @@ from pathlib import Path
 from typing import Any, Mapping
 
 from ..common.config import RunConfig
+from ..common.correspondence import canonical_work_doi
 from ..common.dates import DateError, parse_partial_date
 from ..common.eligibility import canonical_evaluation_id, evaluation_identity_status, unresolved_relations
 from ..common.identifiers import IdentifierError, bare_doi, canonical_doi, canonicalise_url, normalise_doi
@@ -58,12 +59,12 @@ DEFAULT_PROCESSED_ROOT = Path("data/processed")
 RECORD_COLUMNS = [
     "row_id", "row_entity_type", "source", "source_record_id", "source_container_id", "source_record_type",
     "review_record_id", "relation_type", "reviewed_work_id", "reviewed_canonical_work_id", "reviewed_work_doi",
-    "work_id", "canonical_work_id", "work_doi",
+    "work_id", "canonical_work_id", "work_doi", "correspondence_basis",
     "source_evaluation_id", "evaluation_doi", "evaluation_url", "canonical_evaluation_id",
     "evaluation_identity_status",
     "event_kind", "event_date_raw", "event_date_precision", "event_interval_start", "event_interval_end",
     "created", "deposited", "indexed", "issued", "posted",
-    "title", "container_title", "record_flag", "attribution_basis", "exclusion_reason",
+    "title", "container_title", "relation_json", "record_flag", "attribution_basis", "exclusion_reason",
     "retrieved_at_utc", "walk_id", "page",
 ]
 WORK_TYPES = ("posted-content", "journal-article")
@@ -138,7 +139,7 @@ def work_records(row: Mapping[str, Any], interim_rows: list[Mapping[str, str]]) 
         if r.get("type") not in WORK_TYPES:
             continue
         doi = normalise_doi(r["doi"])
-        canonical = canonical_doi(doi, pattern)
+        canonical, basis = canonical_work_doi(row, doi)
         rec = _blank_record(row_id, "work_record", "crossref")
         # The event kind follows the row's counting event, not the Crossref
         # type: an F1000-style version-1 article and a Copernicus discussion
@@ -148,6 +149,7 @@ def work_records(row: Mapping[str, Any], interim_rows: list[Mapping[str, str]]) 
         rec.update(
             source_record_id=doi, source_record_type=r.get("type", ""),
             work_id=_doi_id(doi), canonical_work_id=_doi_id(canonical), work_doi=canonical,
+            correspondence_basis=basis, relation_json=r.get("relation_json", ""),
             event_kind=kind,
             created=r.get("created", ""), deposited=r.get("deposited", ""), indexed=r.get("indexed", ""),
             issued=r.get("issued", ""), posted=r.get("posted", ""),
@@ -227,12 +229,17 @@ def review_records(row: Mapping[str, Any], interim_rows: list[Mapping[str, str]]
             out.append(rec)
         rel = _blank_record(row_id, "evaluation_relation", "crossref")
         wid, cwid, flag = _target_identifier(r, pattern)
+        basis = ""
+        if not flag and wid.startswith("doi:"):
+            canonical, basis = canonical_work_doi(row, bare_doi(wid))
+            cwid = _doi_id(canonical)
         rel.update(
             source_record_id=doi, source_record_type="peer-review", review_record_id=doi,
             source_evaluation_id=doi, evaluation_doi=doi,
             canonical_evaluation_id=canonical_evaluation_id(source="crossref", source_evaluation_id=doi,
                                                             evaluation_doi=doi),
-            relation_type="is-review-of", reviewed_work_id=wid, reviewed_canonical_work_id=cwid,
+            relation_type=r.get("target_relation_type") or "is-review-of",
+            reviewed_work_id=wid, reviewed_canonical_work_id=cwid, correspondence_basis=basis,
             reviewed_work_doi=bare_doi(cwid),
             record_flag=flag, retrieved_at_utc=r.get("retrieved_at_utc", ""), walk_id=r.get("walk_id", ""),
             page=r.get("page", ""),

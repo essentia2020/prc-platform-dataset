@@ -66,7 +66,7 @@ WORKS_COLUMNS = [
     "posting_interval_precision", "eligibility_review_interval_precision", "counting_interval_precision",
     "contributing_record_ids", "counting_year", "date_order_ambiguous", "tie_break_source",
     "n_evaluation_records", "n_relations_flagged", "attribution_basis",
-    "counting_record_created", "counting_record_deposited",
+    "counting_record_created", "counting_record_deposited", "correspondence_basis",
 ]
 CELL_COLUMNS = ["year", "year_label", "count", "partial_year", "extraction_status", "source_observability_status",
                 "observation_status", "coverage", "temporal_coverage_status", "additivity"]
@@ -105,6 +105,7 @@ class WorkAnalysis:
     attribution_basis: str
     created: str = ""
     deposited: str = ""
+    correspondence_basis: str = ""
 
     @property
     def included(self) -> bool:
@@ -288,7 +289,9 @@ def analyse_row(row: Mapping[str, Any], state: RowState, records: list[Mapping[s
         analysis.works.append(WorkAnalysis(
             row_id=str(row["row_id"]), canonical_work_id=cwid, work_doi=work_doi, decision=decision, posting=posting,
             eligibility_review=review, counting_record=counting_rec, n_relations_flagged=flagged_by_target.get(cwid, 0),
-            attribution_basis=";".join(bases), created=created, deposited=deposited))
+            attribution_basis=";".join(bases), created=created, deposited=deposited,
+            correspondence_basis=";".join(sorted({r["correspondence_basis"] for r in work_recs
+                                                  if r.get("correspondence_basis")}))))
     for reason in EXCLUSION_REASONS:
         analysis.diagnostics[f"excluded_{reason}"] = sum(
             1 for w in analysis.works if not w.included and w.decision.exclusion_reason == reason)
@@ -327,6 +330,7 @@ def _works_row(w: WorkAnalysis) -> dict[str, Any]:
         "tie_break_source": d.tie_break_source, "n_evaluation_records": d.n_evaluation_records,
         "n_relations_flagged": w.n_relations_flagged, "attribution_basis": w.attribution_basis,
         "counting_record_created": w.created, "counting_record_deposited": w.deposited,
+        "correspondence_basis": w.correspondence_basis,
     }
     return {c: out.get(c, "") for c in WORKS_COLUMNS}
 

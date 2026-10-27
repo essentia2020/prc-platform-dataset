@@ -105,11 +105,18 @@ with specific methodology:
   Because 10.12688 is shared with other F1000-platform stems, selection
   uses a DOI-pattern selector, never a bare prefix filter.
 - **Emerald Open Research.** Articles retrieved by journal ISSN
-  (`2631-3952`, type `journal-article`), selected by `^10\.1108/eor-`: on
-  re-hosting the articles were re-registered as 10.1108/eor-* primaries
-  that keep the original `issued` dates, and the former
-  `10.35241/emeraldopenres.*` DOIs are Crossref aliases of those primaries,
-  so each article is returned once. Date = `issued` of the primary.
+  (`2631-3952`, type `journal-article`), selected by
+  `^10\.(1108/eor-|12688/emeraldopenres\.)`. The counting event is the
+  earliest `issued` among retrieved records of the work, not its
+  registration date. The documented 13140 correspondence joins
+  `10.12688/emeraldopenres.13140.1` through its `new_version` relation
+  to `10.35241/emeraldopenres.13140.2`, an alias of
+  `10.1108/eor-03-2023-0005`; the primary supplies the canonical identifier,
+  not a privileged event date. The v1 record supplies 2019-06-07 when
+  retrieved; the primary retains 2019-12-09 and carries `later_version`.
+  A primary with no other retrieved record supplies its own `issued`.
+  Titles never establish correspondence. Reviews are attributed through
+  `is-review-of` or inverse `has-review` evidence, never shared DOI stems.
 - **PREreview.** Unique works with at least one PREreview evaluation in
   Sciety docmaps, dated by the evaluation `published` date, deduplicated on
   the reviewed-work DOI, independent of preprint server.

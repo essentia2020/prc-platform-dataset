@@ -59,7 +59,7 @@ One line per register row (observation series). Lists are joined with `; `;
 | `doi_pattern` | regex or empty | selects the row's DOIs | `^10\.32388/` |
 | `doi_version_pattern` | regex or empty | group 1 = canonical stem | `^(10\.32388/[a-z0-9]+)(?:\.\d+)?$` |
 | `sciety_group_slug` | string or empty | slug in `https://sciety.org/groups/<slug>` | `prereview` |
-| `extraction_selector` | JSON | keys `crossref` and/or `sciety`; `crossref` holds `prefix` (owner prefix or list) and/or `issn` (journal ISSN; requires `doi_regex` or `container_titles`), `record_types`, optional `scope_keys` (record type → `prefix`/`issn`, required when both keys are declared; peer-review scopes are always prefix-based), `doi_regex`, `container_titles`, `review_doi_prefix`, `journals`, `target_filter`, `notes` | `{"crossref":{…}}` |
+| `extraction_selector` | JSON | keys `crossref` and/or `sciety`; `crossref` holds `prefix` (owner prefix or list) and/or `issn` (journal ISSN; requires `doi_regex`), `record_types`, `doi_regex`, optional `review_doi_prefix`, `journals`, `target_filter`, `notes` | `{"crossref":{…}}` |
 | `eligibility_events` | list | free text per event | `first public posting; ≥1 qualifying review` |
 | `counting_event` | enum | `first_public_posting`, `earliest_qualifying_evaluation`, `final_article` | `first_public_posting` |
 | `counting_event_date_field` | string | source field priority | `posted -> issued` |
@@ -78,6 +78,14 @@ For Copernicus, `extraction_selector.crossref.journals` is the hand-verified
 list: each entry must contain `evidence_url`, `verified_on`, and
 `discussion_selector`. `candidate_journal_titles` is not an executable
 filter. A review-deposit confirmation is still required for VeriXiv.
+
+`extraction_selector.crossref.work_correspondences` holds explicit
+record-level correspondences: `primary_doi`, `alias_doi`, `version_stem`,
+`version_relation` (`from_doi`, `to_doi`, `type`, `asserted_by`),
+`correspondence_basis` and `evidence_urls`. Each entry documents a
+version-relation edge to an aliased DOI and its primary; only those
+explicitly listed identifiers map to that primary. No title matching,
+network lookup or event-date imputation is performed by this mapping.
 
 ### 2.2 `config/excluded_candidates.yaml` → `config/excluded_candidates.csv`
 
@@ -141,23 +149,24 @@ Every line carries the identity fields and a `record` kind: `walk_header`
 `rejected_attempt` (`page`, `attempt`, `http_status`, `reason`,
 `response_path`, `sha256` of the stored rejected response) and `walk_end`
 (terminal line: `walk_state`, `reason`, `pages_accepted`, `items_total`,
-`ended_at_utc`, `completion`). An `anomaly` line records `code` and `page`
-(`short_page` additionally `items_in_page` and `rows`; `missing_next_cursor`
-when a page carries no continuation).
+`ended_at_utc`, `completion`). An `anomaly` line records `code` and `page`.
+For Crossref, `short_page` records each non-empty page with fewer items than
+requested, including `items_in_page` and `rows`; it is also logged as a
+`short_page` event. A continuation on such a page is followed regardless of
+whether the running item total already matches. `missing_next_cursor`
+remains an anomaly, including on a terminal page.
 Crossref `completion` records `rule`, `terminal_evidence` (`empty_page` or
-`no_next_cursor`; a short non-empty page is never terminal — the walk
-follows its continuation and counts it in `short_pages`),
+`no_next_cursor`; neither bypasses the item-total check),
 `first_page_total_results`, `last_page_total_results`,
 `total_results_moved_during_walk` (true when `total-results` took more than
 one value across the accepted pages, i.e. the index changed while the walk
 ran), `accepted_items_total`, `total_delta`, `total_tolerance`,
 `tolerance_reason` (the source-wide values from `config/sources.yaml`, or
-the scope's entry in `total_tolerance_overrides`), `short_pages`. A walk
-that keeps returning pages beyond `2 * ceil(total-results / rows) + 5`
-without reaching terminal evidence fails with `page budget exceeded`.
-Every cursor request repeats the full query (filter, rows, select, mailto)
-with the `next-cursor` of the immediately preceding page; page lines tie
-`cursor_in` of page N+1 to `cursor_out` of page N. Sciety uses
+the scope's entry in `total_tolerance_overrides`). Each cursor request
+repeats the original filter, rows, select and mailto parameters and uses
+the `next-cursor` of the immediately preceding response, as required by the
+[Crossref cursor notice](https://community.crossref.org/t/changes-to-cursors-filtering-and-sorting-in-the-rest-api/16246).
+Sciety uses
 `rule=sciety_continuation_exhausted` without a Crossref total requirement.
 A manifest without a `walk_end` line is `in_progress` and
 is closed as `incomplete_restarted` by the next invocation.
@@ -208,6 +217,7 @@ without a complete walk have `extraction_status` `incomplete` or `failed`.
 | `created`, `deposited`, `indexed` | timestamp | `*.date-time` | diagnostics only |
 | `issued`, `posted`, `published_online`, `published_print` | partial date | `*.date-parts[0]` as `YYYY`, `YYYY-MM` or `YYYY-MM-DD` | `2023-05` |
 | `relation_is_review_of` | string | `relation.is-review-of[*].id` joined by `; ` | — |
+| `relation_json` | JSON string | complete Crossref `relation` object, preserving version and has-review evidence | `{}` |
 | `retrieved_at_utc` | timestamp | manifest `accepted_at_utc` | — |
 | `platform_id` | string | `row_id` | `qeios_hosted_works` |
 | `walk_id`, `page`, `accepted_attempt` | provenance | manifest | — |
@@ -237,15 +247,22 @@ Same columns as 4.1 plus one line per (review DOI, target):
 
 | Column | Type | Meaning |
 |---|---|---|
-| `target_id_raw` | string | `relation.is-review-of[i].id` as asserted |
-| `target_id_type` | string | `relation.is-review-of[i].id-type` (`doi`, `url`, …) |
-| `target_flag` | enum or empty | `placeholder`, `malformed`, `self_reference`, `missing` (no `is-review-of` relation at all); empty when valid |
+| `target_id_raw` | string | `relation.is-review-of[i].id` as asserted, or the work DOI of an inverse `has-review` edge |
+| `target_id_type` | string | `relation.is-review-of[i].id-type` (`doi`, `url`, …), or `doi` for inverse work-side evidence |
+| `target_flag` | enum or empty | `placeholder`, `malformed`, `self_reference`, `missing` (neither review-side nor usable work-side target evidence); empty when valid |
+| `target_relation_type` | enum | `is-review-of` or `has-review`; the latter identifies inverse work-side evidence |
 
 A review record is attributed to a row by its valid targets (DOI matching
 the row's work selector), by an explicit `review_doi_regex`, by
 `container-title`, or — for `qeios_external_works` — by targets outside the
 row prefix. Records claimed by no row are written to
 `crossref_peer_reviews__unattributed__<prefix>.csv` with the same columns.
+
+For rows with documented work correspondences, inverse `has-review` edges
+are read from selected complete work walks and used only for retrieved
+review records. For Emerald, targets may name v1, the aliased v2, or the
+primary; the same documented correspondence supplies the canonical target.
+Review and article stems need not match and are never used for attribution.
 
 Sciety publisher validation runs before any docmap flattening, including
 docmaps with no outputs. A mismatch or missing account hard-fails
@@ -289,11 +306,12 @@ gets no file and an older file is removed). Column order is fixed by
 | `source_container_id` | string or empty | docmap id for Sciety; empty when no container applies |
 | `source_record_type` | string | Crossref `type` (`posted-content`, `journal-article`, `peer-review`) or Sciety output `type` |
 | `review_record_id` | string or empty | review DOI or `sciety:<docmap_id>:<index>` |
-| `relation_type` | enum or empty | `is-review-of`, `docmap-input`; empty when no relation applies |
+| `relation_type` | enum or empty | `is-review-of`, `has-review` (inverse work-side evidence), `docmap-input`; empty when no relation applies |
 | `reviewed_work_id` | string or empty | asserted target, namespaced (`doi:10.32388/abc.2`, `url:…`, `id:crossref:<raw>` for flagged targets) |
 | `reviewed_canonical_work_id` | string or empty | canonical target (`doi:10.32388/abc`) |
 | `reviewed_work_doi` | string or empty | bare lowercased canonical DOI of the target; empty for `url:`/`id:` targets |
 | `work_id`, `canonical_work_id`, `work_doi` | string | for `work_record` rows; `work_id` keeps the DOI as asserted |
+| `correspondence_basis` | string or empty | `version_stem+alias+relation` for an explicitly documented primary correspondence; empty otherwise; also applies to evaluation targets |
 | `source_evaluation_id`, `evaluation_doi`, `canonical_evaluation_id` | string or empty | evaluation identity (`doi:` when a DOI exists, otherwise `id:sciety:…`) |
 | `evaluation_url` | string or empty | Sciety output URL; never a counting key |
 | `evaluation_identity_status` | enum | `source_only`, `doi_confirmed`, `cross_source_confirmed`, `unresolved` |
@@ -303,6 +321,7 @@ gets no file and an older file is removed). Column order is fixed by
 | `event_interval_start`, `event_interval_end` | date or empty | closed calendar interval; empty when no date is asserted |
 | `created`, `deposited`, `indexed`, `issued`, `posted` | string or empty | Crossref diagnostics, as asserted |
 | `title`, `container_title` | string or empty | `title` is needed for the WITHDRAWN rule |
+| `relation_json` | JSON string or empty | full source relation object retained on Crossref work records |
 | `record_flag` | enum or empty | `withdrawn`, `placeholder_target`, `malformed_target`, `self_reference_target`, `missing_target`, `later_version` |
 | `attribution_basis` | string or empty | Copernicus: `; `-joined signals (see 4.1) |
 | `exclusion_reason` | enum or empty | record-level reason carried from extraction (`no_journal_attribution`) |
@@ -311,6 +330,14 @@ gets no file and an older file is removed). Column order is fixed by
 `later_version` is informational: a work with several version records keeps
 every record and the earliest-dated record carries the counting event.
 Flagged relation lines (`*_target`) never join to a work.
+
+Emerald's 13140 work uses `doi:10.1108/eor-03-2023-0005` as canonical
+identifier, while v1 `10.12688/emeraldopenres.13140.1` supplies the
+2019-06-07 event when retrieved and the primary retains its 2019-12-09
+date with `record_flag=later_version`. A primary retrieved alone supplies
+its own `issued` date by the same earliest-retrieved-record rule; the
+mapping does not manufacture a v1 record or its date. Titles never merge
+otherwise unlinked works. DQ-012 records the qualitative date limitation.
 
 De-duplication keys: `work_record` → (`source`, `source_record_id`,
 `row_entity_type`); `evaluation_record` → (`source`, `review_record_id`,
@@ -329,6 +356,7 @@ counts.
 |---|---|---|
 | `row_id` | string | — |
 | `canonical_work_id`, `work_doi` | string | — |
+| `correspondence_basis` | string or empty | documented record-level correspondence basis carried from contributing work records |
 | `included` | boolean | — |
 | `exclusion_reason` | enum or empty | `missing_event_date`, `ambiguous_cutoff_date`, `future_event`, `no_qualifying_review`, `withdrawn`, `later_version`, `register_only`, `no_journal_attribution` |
 | `posting_event_date_raw`, `posting_event_date_precision`, `posting_event_interval_start`, `posting_event_interval_end` | see 5.1 | posting event group |
@@ -445,6 +473,6 @@ disjointness requirement to every pair sharing an organisation.
 
 `extraction_<run_id>.jsonl`: one JSON object per event with `ts_utc`,
 `run_id`, `event` (`pipeline_start`, `stage_start`, `http_attempt`,
-`stage_end`, `stage_skipped`, `pipeline_end`), and for `http_attempt`:
+`stage_end`, `stage_failed`, `stage_skipped`, `pipeline_end`), and for `http_attempt`:
 `scope`, `walk_id`, `page`, `attempt`, `http_status`, `outcome`
 (`accepted` / `retry` / `failed` / `restart`).

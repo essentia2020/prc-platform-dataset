@@ -46,6 +46,7 @@
   are retained but not counted.
 - The cutoff year is a partial year (`year_to_date`) unless the cutoff is
   31 December; a lower value in that year is never evidence of decline.
+- Emerald Open Research is observed through records re-registered under 10.1108/EOR-* after the platform closed; the original 10.35241 DOIs are Crossref aliases of these primaries and are returned once. A primary carries the issued date of the last original version, so a work whose versions span two calendar years is counted in the later year; titles carry no version tag and the share of such works cannot be determined from the permitted sources (data-quality log, date_semantics). Three title-level journal records returned by the ISSN query are excluded by record type.
 
 ## Register coverage versus quantitative coverage
 

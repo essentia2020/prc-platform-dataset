@@ -99,17 +99,6 @@ class CursorWalker:
         self.tolerance_reason = tolerance_reason
 
     # ------------------------------------------------------------------ util
-    @staticmethod
-    def page_budget(first_total: int, rows: int) -> int:
-        """Upper bound on accepted pages before a walk is abandoned.
-
-        Short pages mean a result set may need more pages than
-        ``ceil(total / rows)``; twice that number plus a fixed margin leaves
-        room for them while stopping a walk that never reaches an empty page.
-        """
-        expected = -(-max(first_total, 0) // max(rows, 1))
-        return 2 * expected + 5
-
     def _log(self, kind: str, **payload) -> None:
         if self.logger is not None:
             self.logger.event(kind, source=self.source, scope=self.scope, **payload)
@@ -180,7 +169,6 @@ class CursorWalker:
         first_total = None
         last_total = None
         totals_seen: set[int] = set()
-        short_pages = 0
         seen_urls: set[str] = set()
         completion = {"rule": "crossref_total_checked" if self.source == "crossref" else "sciety_continuation_exhausted",
                       "total_tolerance": self.total_tolerance, "tolerance_reason": self.tolerance_reason}
@@ -190,8 +178,7 @@ class CursorWalker:
                          items_total=items_total, completion={**completion,
                          "first_page_total_results": first_total, "accepted_items_total": items_total,
                          "last_page_total_results": last_total,
-                         "total_results_moved_during_walk": len(totals_seen) > 1,
-                         "short_pages": short_pages})
+                         "total_results_moved_during_walk": len(totals_seen) > 1})
             # Every terminal outcome is also in the run log, so the log alone
             # explains why a walk ended.
             self._log("walk_failed" if state == "failed" else f"walk_{state}", walk_id=walk_id,
@@ -262,25 +249,18 @@ class CursorWalker:
                         writer.anomaly("missing_next_cursor", page=page)
                         self._log("missing_next_cursor", walk_id=walk_id, page=page)
                     if 0 < parsed.items_in_page < rows:
-                        # A short non-empty page is not the end of the result
-                        # set on the current Crossref API: the walk goes on
-                        # while a continuation exists, and the page is recorded.
-                        short_pages += 1
-                        writer.anomaly("short_page", page=page, items_in_page=parsed.items_in_page, rows=rows)
-                        self._log("short_page", walk_id=walk_id, page=page, items_in_page=parsed.items_in_page,
-                                  rows=rows)
-                    # Terminal evidence: an empty items list, or no continuation
-                    # to follow. Neither completes the walk by itself — the
-                    # item-total check below still has to hold.
+                        writer.anomaly("short_page", page=page,
+                                       items_in_page=parsed.items_in_page, rows=rows)
+                        self._log("short_page", walk_id=walk_id, page=page,
+                                  items_in_page=parsed.items_in_page, rows=rows)
+                    # Non-empty short pages can occur within a result set.
+                    # Follow their continuation even if the item total already
+                    # matches; only exhaustion permits the total check.
                     terminal = parsed.items_in_page == 0 or not parsed.next_cursor
-                    completion["terminal_evidence"] = (("empty_page" if parsed.items_in_page == 0
-                                                        else "no_next_cursor") if terminal else "")
+                    completion["terminal_evidence"] = ("empty_page" if parsed.items_in_page == 0
+                                                       else "no_next_cursor") if terminal else ""
                     if page == 1 and parsed.items_in_page == 0 and first_total != 0:
                         return finish("failed", "empty first page with nonzero total-results")
-                    if not terminal and pages_accepted > self.page_budget(first_total, rows):
-                        return finish("failed",
-                                      f"page budget exceeded: {pages_accepted} pages accepted for "
-                                      f"first-page total-results {first_total} at {rows} rows per page")
                     if terminal:
                         delta = items_total - first_total
                         completion["total_delta"] = delta
@@ -291,7 +271,7 @@ class CursorWalker:
                                           f"accepted item total {items_total} differs from first-page "
                                           f"total-results {first_total} (delta {delta:+d}, tolerance "
                                           f"{self.total_tolerance}){moved}")
-                        return finish("complete", f"{completion['terminal_evidence']} and item-total check satisfied")
+                        return finish("complete", "terminal page and item-total check satisfied")
                 elif parsed.terminal:
                     return finish("complete", "Sciety continuation exhausted after validated article pages")
                 elif not parsed.next_cursor:
