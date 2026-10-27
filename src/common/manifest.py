@@ -291,3 +291,71 @@ def verify_walk_against_store(walk: WalkRecord, raw_root: Path) -> list[str]:
         if actual != page.sha256:
             problems.append(f"{walk.walk_id} page {page.page}: sha256 mismatch")
     return problems
+
+
+# --- walk shape -------------------------------------------------------------
+#
+# ``total_delta == 0`` shows that the accepted item total equals the first-page
+# total-results; it is a necessary condition, not a proof that the cursor was
+# never reset.  A reset re-serves pages, so the direct observables are the page
+# sequence itself: a cursor value seen twice, more non-empty pages than the
+# total allows, a short page before the terminal one, or the same record on
+# two pages.  ``walk_shape_issues`` reports these from the walk manifest (and
+# from the raw store when it is available); it never changes a walk state.
+
+def expected_pages(first_total: int | None, rows: int) -> int | None:
+    """Number of non-empty pages a stable result set yields at ``rows`` per page."""
+    if first_total is None or rows <= 0:
+        return None
+    return -(-first_total // rows)
+
+
+def walk_shape_issues(walk: WalkRecord, rows: int, raw_root: Path | None = None) -> list[str]:
+    """Return shape problems of a complete Crossref cursor walk (empty list = consistent).
+
+    Checks, in order: repeated ``cursor_in`` (a reset or a loop), the number
+    of non-empty pages against ``ceil(first_page_total_results / rows)``, at
+    most one trailing empty page, no short page before the last non-empty
+    page, and — when ``raw_root`` is given — no DOI accepted on two pages.
+    Walks of other states are not judged (they contribute nothing anyway).
+    """
+    if walk.state != "complete":
+        return []
+    issues: list[str] = []
+    cursors = [p.cursor_in for p in walk.pages]
+    repeated = sorted({c for c in cursors if c and cursors.count(c) > 1})
+    if repeated:
+        issues.append(f"cursor_in repeated on {len(repeated)} value(s): the walk re-served pages")
+    non_empty = [p for p in walk.pages if p.items_in_page > 0]
+    empty = [p for p in walk.pages if p.items_in_page == 0]
+    first_total = walk.completion.get("first_page_total_results")
+    want = expected_pages(first_total, rows)
+    if want is not None and len(non_empty) != want:
+        issues.append(f"{len(non_empty)} non-empty page(s) for total-results {first_total} at rows={rows} "
+                      f"(expected {want})")
+    if len(empty) > 1 or (empty and empty[-1].page != walk.pages[-1].page):
+        issues.append("empty page before the terminal page")
+    for p in non_empty[:-1]:
+        if p.items_in_page < rows:
+            issues.append(f"short page {p.page} ({p.items_in_page} < {rows}) before the last non-empty page")
+    if raw_root is not None:
+        seen: dict[str, int] = {}
+        duplicates = 0
+        for p in walk.pages:
+            target = raw_root / p.response_path
+            if not target.is_file():
+                continue
+            try:
+                payload = json.loads(target.read_text(encoding="utf-8"))
+            except (OSError, UnicodeDecodeError, json.JSONDecodeError):
+                continue
+            for item in (payload.get("message") or {}).get("items") or []:
+                doi = str(item.get("DOI", "")).lower()
+                if not doi:
+                    continue
+                if doi in seen and seen[doi] != p.page:
+                    duplicates += 1
+                seen.setdefault(doi, p.page)
+        if duplicates:
+            issues.append(f"{duplicates} record(s) accepted on more than one page")
+    return issues

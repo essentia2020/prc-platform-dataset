@@ -7,6 +7,12 @@
   relations. Platforms whose reviews live only on their own site or on
   hypothes.is are invisible or undercounted. MedEd Publish is the documented
   case: posted works only; no reviewed-works series can be reconstructed.
+  Emerald Open Research is the second case: its review records were
+  withdrawn from Crossref at the re-hosting (D-046, DQ-013), so the row has
+  150 works and 0 evaluation records by observation. JMIRx Med deposits its
+  review reports and author responses as `journal-article` companion items
+  rather than `peer-review` records (D-050, DQ-014); they are excluded from
+  the work count and no reviewed-works series is attempted.
 - **Sciety** covers only groups that have joined Sciety and only from their
   joining date; earlier activity of those groups (for example early PREreview
   and preLights activity) is missing.
@@ -18,7 +24,12 @@
   journal-review scope. The EGUsphere-era part of the series is a yearly
   lower bound labelled `partial_known_scope` (DQ-010); an incoming Crossref
   peer-review relation is sufficient even without a journal title or
-  `is-preprint-of` in the preprint record.
+  `is-preprint-of` in the preprint record. The yearly unattributed
+  EGUsphere totals rise sharply in the cutoff year (run_20261026_01:
+  13 / 2 / 5 / 15 / 561 for 2022–2026): a discussion preprint acquires its
+  journal signal only when the final article or its review relations are
+  deposited, so the most recent year is dominated by publication lag rather
+  than by a change in attribution quality.
   JMIRx Med retains final-article counting despite its `core_publish_first`
   classification ruling; Access Microbiology counts preprint posting, with
   its coverage start to be established by the completed local run.
@@ -100,9 +111,22 @@ list is completed before the release freeze.
   it, and the classification applies to the current model.
 - Confidence is separate from ruling status. D-012 through D-026 are
   decided, and medium or low confidence alone does not set `provisional`.
-  VeriXiv remains explicitly provisional pending Crossref review-deposit
-  confirmation. Pending source selectors cannot publish quantitative
-  values even when the classification itself is approved.
+  VeriXiv's review deposit was confirmed in run_20261026_01 (D-051); the
+  row is quantified and remains provisional until its first flattening.
+  Pending source selectors cannot publish quantitative values even when
+  the classification itself is approved.
+- Seven venues on the F1000 infrastructure entered the register as
+  provisional rows after run_20261026_01 found their works and reviews in
+  the complete 10.12688 / 10.21956 walks (D-052): Stosunki Międzynarodowe –
+  International Relations, Nuclear Science and Technology Open Research,
+  Digital Twin, Molecular Psychology, Materials Open Research, Cobot and
+  Bioethics Open Research. Their workflow pages were only partly readable at
+  verification; the platform-period and status fields rest on the F1000
+  venue list and on the deposited records and are marked for confirmation.
+  Digital Twin continues since 2025 as a conventional Taylor & Francis
+  journal under 10.1080 with a closed platform period (2021–2025); only the
+  platform period is counted and the row is selected by ISSN because part of
+  its 10.12688 DOIs are now owned by the continuing journal.
 - Some platform websites could not be read automatically at verification
   (robots restrictions or parsing failures); for those rows the notes name
   the secondary evidence used (operator pages, Sciety group descriptions)
@@ -115,3 +139,23 @@ retrospective deposits, version suffixes, withdrawn records, date-precision
 problems) are logged in `data/processed/data_quality_log.csv` with their
 effect on counts and the handling applied; the log is summarised here at the
 release freeze.
+
+- **Owner prefix versus DOI string.** The Crossref `prefix` filter selects
+  by current owner, not by the string of the DOI. Three rows in
+  run_20261026_01 declared a prefix that owns none of the venue's records
+  (MedEd Publish → 10.12688, Open Research Europe → 10.68336, NIHR Open
+  Research → 10.3310) and would have published zeros. A quantified row whose
+  complete scopes match no record now yields `not_observable` /
+  `selector_no_match` (D-047), and `tools/check_register_prefixes.py`
+  resolves one known work DOI and one known review DOI per row before an
+  extraction to compare owner prefix and member with the declared scopes.
+- **Repeated slashes in deposited DOIs.** MedEd Publish deposited one 2021
+  article as `10.15694//mep.2021.000035.1` with three reviews targeting the
+  same double-slash string (D-053, DQ-015). Canonical identifiers use the
+  collapsed form; the deposited string is kept in `work_id` /
+  `source_record_id` and flagged `repeated_slash`.
+- **Duplicate relation assertions.** Crossref returns most `is-review-of`
+  relations twice (asserted by subject and by object). The review interim
+  keeps both lines with an `asserted_by` column; normalisation collapses
+  them to one relation per (review, target), so relation line counts in the
+  interim are roughly twice the number of unique pairs.

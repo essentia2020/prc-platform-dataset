@@ -41,8 +41,11 @@ def test_works_stage_splits_shared_prefix_by_stem(tmp_path: Path):
     assert _dois(f1000) == ["10.12688/f1000research.1001.1", "10.12688/f1000research.1001.2"]
     assert _dois(wellcome) == ["10.12688/wellcomeopenres.2002.1"]
     assert _dois(gates) == ["10.12688/gatesopenres.3003.1"]
-    # the pending VeriXiv selector is not extracted: no interim file for it
-    assert not (interim / "crossref_works__verixiv.csv").exists()
+    # VeriXiv preprints are posted-content of the same prefix (D-051): the works stage
+    # keeps them apart from the F1000 journal-article rows by stem
+    verixiv = read_csv(interim / "crossref_works__verixiv.csv")
+    assert all(d.startswith("10.12688/verixiv.") for d in _dois(verixiv))
+    assert not {d for d in _dois(verixiv)} & set(_dois(gates))
     # every request carried the polite-pool contact and the select list
     assert all("mailto=" in r["url"] and "select=" in r["url"] for r in transport.requests)
 
@@ -107,14 +110,22 @@ def test_review_stage_attributes_by_target_and_flags(tmp_path: Path):
 def test_review_stage_uses_separate_review_prefixes(tmp_path: Path):
     _, roots, transport = _run(tmp_path, crossref_peer_reviews)
     interim = roots["interim_root"]
-    assert _dois(read_csv(interim / "crossref_peer_reviews__f1000research.csv")) == ["10.21956/f1000research.1001.r5001"]
+    # F1000Research reviews live under the owner prefix 10.5256 (D-048); one interim line per asserted relation
+    assert sorted(set(_dois(read_csv(interim / "crossref_peer_reviews__f1000research.csv")))) == \
+        ["10.5256/f1000research.1001.r5001"]
     assert _dois(read_csv(interim / "crossref_peer_reviews__gates_open_research.csv")) == ["10.21956/gatesopenres.3003.r7001"]
     assert any("prefix:10.21956,type:peer-review" in r["url"] for r in transport.requests)
+    assert any("prefix:10.5256,type:peer-review" in r["url"] for r in transport.requests)
+    assert any("prefix:10.68336,type:peer-review" in r["url"] for r in transport.requests)
+    assert any("prefix:10.3310,type:peer-review" in r["url"] for r in transport.requests)
 
 
-def test_review_stage_requests_only_peer_review_scopes(tmp_path: Path):
+def test_review_stage_requests_only_evaluation_scopes(tmp_path: Path):
     _, _, transport = _run(tmp_path, crossref_peer_reviews)
-    assert all("type:peer-review" in r["url"] for r in transport.requests)
+    # peer-review scopes plus the declared evaluation-record scopes (PCI, D-049: journal-article under 10.24072)
+    assert all("type:peer-review" in r["url"] or "prefix:10.24072,type:journal-article" in r["url"]
+               for r in transport.requests)
+    assert any("type:peer-review" in r["url"] for r in transport.requests)
 
 
 # --------------------------------------------------------------- selectors
@@ -126,5 +137,9 @@ def test_scopes_are_distinct_prefix_type_pairs():
     assert len(ids) == len(set(ids))
     assert ids.count("works__10.12688__journal-article") == 1
     reviews = crossref_scopes(selectors, "reviews")
-    assert "works__10.21956__peer-review" in [s.scope_id for s in reviews]
-    assert all(s.record_type == "peer-review" for s in reviews)
+    review_ids = [s.scope_id for s in reviews]
+    assert len(review_ids) == len(set(review_ids))
+    for scope_id in ("works__10.21956__peer-review", "works__10.5256__peer-review", "works__10.68336__peer-review",
+                     "works__10.3310__peer-review", "works__10.24072__journal-article"):
+        assert scope_id in review_ids
+    assert all(s.record_type == "peer-review" or s.scope_id == "works__10.24072__journal-article" for s in reviews)

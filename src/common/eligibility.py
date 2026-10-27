@@ -21,7 +21,7 @@ from .dates import DateInterval, cutoff_status, intervals_overlap
 
 COUNTING_EVENTS = ("first_public_posting", "earliest_qualifying_evaluation", "final_article")
 EXCLUSION_REASONS = ("missing_event_date", "ambiguous_cutoff_date", "future_event", "no_qualifying_review",
-                     "withdrawn", "later_version", "register_only", "no_journal_attribution")
+                     "withdrawn", "later_version", "register_only", "no_journal_attribution", "companion_item")
 IDENTITY_STATUSES = ("source_only", "doi_confirmed", "cross_source_confirmed", "unresolved")
 WITHDRAWN_TITLE_RE = re.compile(r"^WITHDRAWN$")
 

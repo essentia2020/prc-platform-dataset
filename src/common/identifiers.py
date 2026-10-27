@@ -7,9 +7,10 @@ Identifier syntax (work-level):
     id:<source>:<identifier>
 
 ``normalise_doi`` lowercases and strips resolver prefixes but keeps any
-version suffix (asserted identifier).  ``canonical_doi`` additionally applies
-the platform-specific ``doi_version_pattern`` from ``config/platforms.yaml``
-(canonical identifier).  URL canonicalisation lowercases the host only; the
+version suffix and any repeated slash (asserted identifier).  ``canonical_doi``
+collapses repeated slashes and additionally applies the platform-specific
+``doi_version_pattern`` from ``config/platforms.yaml`` (canonical identifier).
+``identifier_flag`` reports ``repeated_slash`` for the malformed source form.  URL canonicalisation lowercases the host only; the
 scheme, path, query, fragment and trailing slash are preserved.
 """
 
@@ -21,6 +22,8 @@ from urllib.parse import urlsplit, urlunsplit
 _DOI_RESOLVER_RE = re.compile(r"^(?:https?://)?(?:dx\.)?doi\.org/", re.IGNORECASE)
 _DOI_SCHEME_RE = re.compile(r"^doi:", re.IGNORECASE)
 _DOI_SHAPE_RE = re.compile(r"^10\.\d{4,9}/\S+$")
+_REPEATED_SLASH_RE = re.compile(r"/{2,}")
+REPEATED_SLASH_FLAG = "repeated_slash"
 
 
 class IdentifierError(ValueError):
@@ -46,6 +49,30 @@ def normalise_doi(raw: str) -> str:
     return doi
 
 
+def has_repeated_slash(doi: str) -> bool:
+    """True when the DOI string contains ``//`` (or longer runs) anywhere.
+
+    Crossref accepts such strings at deposit (e.g. ``10.15694//mep.2021.000035.1``);
+    they are malformed at source and never equal their single-slash form by
+    string comparison.
+    """
+    return bool(_REPEATED_SLASH_RE.search(doi or ""))
+
+
+def collapse_repeated_slashes(doi: str) -> str:
+    """Return ``doi`` with every run of slashes reduced to one slash.
+
+    Used for the *canonical* identifier only; the raw string is kept beside
+    it (``doi_original`` / ``target_id_raw``) so the source defect stays visible.
+    """
+    return _REPEATED_SLASH_RE.sub("/", doi or "")
+
+
+def identifier_flag(raw: str) -> str:
+    """``repeated_slash`` when the raw DOI string has a run of slashes, else ``""``."""
+    return REPEATED_SLASH_FLAG if has_repeated_slash(raw) else ""
+
+
 def is_doi_like(raw: str) -> bool:
     try:
         normalise_doi(raw)
@@ -61,6 +88,7 @@ def canonical_doi(doi: str, version_pattern: str | None) -> str:
     the canonical stem.  When the pattern is ``None`` or does not match, the
     DOI is returned unchanged (no guessing).
     """
+    doi = collapse_repeated_slashes(doi)
     if not version_pattern:
         return doi
     match = re.match(version_pattern, doi)

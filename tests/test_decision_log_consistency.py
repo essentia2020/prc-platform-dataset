@@ -50,7 +50,10 @@ def test_gates_and_verixiv_are_separate_series(rows):
     assert len(preprint["eligibility_events"]) == 2
     assert "public review" in preprint["eligibility_events"][1]
     assert preprint["provisional"] is True
-    assert preprint["register_status"] == "register_only"
+    # D-051: deposit confirmed in run_20261026_01, selector enabled, row quantified and provisional
+    assert preprint["register_status"] == "quantified"
+    assert preprint["extraction_selector"]["crossref"].get("selector_status", "") == ""
+    assert preprint["extraction_selector"]["crossref"]["record_types"] == ["posted-content", "peer-review"]
 
 
 def test_overlap_contract_is_pair_specific(repo_root):
@@ -72,8 +75,8 @@ def test_pending_selectors_cannot_publish_counts():
     data = yaml.safe_load(register.PLATFORMS_YAML.read_text(encoding="utf-8"))
     changed = copy.deepcopy(data["platforms"])
     for row in changed:
-        if row["row_id"] == "verixiv":
-            row["register_status"] = "quantified"
+        if row["row_id"] == "gates_open_research":      # any quantified Crossref row
+            row["extraction_selector"]["crossref"]["selector_status"] = "pending_confirmation"
     with pytest.raises(register.RegisterError, match="pending selector"):
         register.validate_platforms(changed, data["register_meta"])
 
@@ -108,7 +111,11 @@ def test_other_accepted_rulings(rows):
     assert rows["peerref"]["status"] == "dormant"
     assert rows["peerref"]["coverage_end_year"] is None
     assert rows["metaror"]["data_source"] == "sciety"
-    assert [row_id for row_id, row in rows.items() if row["provisional"]] == ["verixiv"]
+    provisional = {row_id for row_id, row in rows.items() if row["provisional"]}
+    assert provisional == {"verixiv",                                   # D-051
+                           "stosunki_miedzynarodowe", "nuclear_science_technology_open_research", "digital_twin",
+                           "molecular_psychology", "materials_open_research", "cobot",
+                           "bioethics_open_research"}                   # D-052
 
 
 def test_cutoff_and_release_metadata(repo_root):

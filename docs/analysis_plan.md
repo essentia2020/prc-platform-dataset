@@ -116,7 +116,15 @@ with specific methodology:
   retrieved; the primary retains 2019-12-09 and carries `later_version`.
   A primary with no other retrieved record supplies its own `issued`.
   Titles never establish correspondence. Reviews are attributed through
-  `is-review-of` or inverse `has-review` evidence, never shared DOI stems.
+  `is-review-of` or inverse `has-review` evidence, never shared DOI stems. 
+  The rule is qualified by the observed state of the source (D-046): the
+  Emerald review records were withdrawn from Crossref at the re-hosting
+  (REST 404 on the known handle, `issn:2631-3952` + `peer-review` = 0, no
+  `emeraldopenres` stem among the 10.21956 review records), so the row
+  carries the preset `no_review_records` entry (DQ-013) and its evaluation
+  count is 0 by observation. The alias that now redirects the former review
+  handle to the article primary is not resolved as `has-review`: that would
+  equate an evaluation identifier with a work identifier.
 - **PREreview.** Unique works with at least one PREreview evaluation in
   Sciety docmaps, dated by the evaluation `published` date, deduplicated on
   the reviewed-work DOI, independent of preprint server.
@@ -142,8 +150,12 @@ with specific methodology:
 - **Gates Open Research and VeriXiv.** D-013 keeps two rows under
   `organisation_id: gates_f1000`. Gates Open Research counts v1 publication
   through 2024; VeriXiv counts first preprint posting conditional on a public
-  review dated on or before the cutoff. VeriXiv review deposits require
-  confirmation in the completed local run; until then counts remain blank.
+  review dated on or before the cutoff. The review deposit was confirmed
+  in run_20261026_01 (D-051: 314 unique `10.21956/verixiv.*` reviews
+  targeting 185 `10.12688/verixiv.*` preprints); the selector is enabled
+  (`posted-content` and `peer-review` under 10.12688 / 10.21956, stem
+  regex only) and the row stays provisional until its first flattening.
+  Review stems differ from preprint stems, so attribution is relation-based.
   Confirmed Version-of-Record/preprint overlap is expected, reported and
   never a disjointness failure. Preserve both source DOIs and the evidence
   linking them; shared titles alone do not establish work identity.
@@ -153,11 +165,29 @@ with specific methodology:
   no eligible-range zero filling is permitted until the start is resolved.
 - **JMIRx Med.** D-016 assigns `mixed` (medium), `core_publish_first`
   (medium), `overlay_journal`, without changing the final-article counting
-  event. No public discussion precedes the editorial decision.
+  event. No public discussion precedes the editorial decision. The
+  `JMIRx Med` container also carries the peer-review reports and author
+  responses as `journal-article` records with their own DOIs (D-050:
+  316 + 104 of 622 records in run_20261026_01); they are excluded as
+  `companion_item` by title pattern, logged as `companion_record`, and no
+  `peer-review` scope is declared (`no_review_records`, DQ-014).
 - **F1000-platform rows.** Version-1 records (`10.12688/<stem>.<id>.1`)
-  select the work; later versions, review reports (`10.21956/…`) and
-  withdrawn records never add works. Reports are collected as evaluation
-  records where deposited.
+  select the work; later versions, review reports and withdrawn records
+  never add works. Reports are collected as evaluation records where
+  deposited, from every owner prefix the venue uses for them (D-048):
+  10.21956 for most venues, 10.5256 for F1000Research, 10.68336 for Open
+  Research Europe (works and reviews; the 10.21956/10.12688 DOI strings of
+  that venue are owned by member 13904). NIHR Open Research is registered
+  under 10.3310, shared with the NIHR Journals Library, and is selected by
+  stem regex (D-047). Seven further venues on the F1000 infrastructure
+  (D-052) are provisional rows selected by stem or, for Digital Twin, by
+  ISSN after the DOI transfer to the continuing Taylor & Francis journal.
+- **Peer Community In.** Recommendations are deposited as
+  `journal-article` records under `10.24072/pci.<community>.<id>` with
+  `is-review-of` relations (D-049); they are the row's evaluation records
+  and the works are the reviewed preprints they target. Reviewer reports
+  (`.revNN`), decisions (`.dN`, `.arN`) and Peer Community Journal articles
+  (`10.24072/pcjournal.*`) are neither works nor evaluations of the row.
 - **Sciety rows.** One docmap may carry several evaluations; each is a
   distinct `evaluation_record` (`sciety:<docmap_id>:<index>` unless a stable
   evaluation DOI exists). Counting event = earliest qualifying evaluation
@@ -168,7 +198,8 @@ with specific methodology:
 | State | `unique_works_to_cutoff` | Yearly values | Publication rule |
 |---|---:|---:|---|
 | `register_only` | empty | empty | register metadata only |
-| completed extraction, complete empty result | 0 | 0 for the eligible range only | may publish |
+| completed extraction, selector matched no record in any complete scope | empty | empty | blocked: `selector_no_match` plus data-quality row (D-047) |
+| completed extraction, matching records but none in a year of the eligible range | 0 | 0 for that year | may publish |
 | completed extraction, no qualifying works after valid exclusions | 0 | 0 for the eligible range only | may publish with quality-log entry |
 | incomplete or failed extraction | empty | empty | affected outputs blocked |
 | completed extraction with `partial_known_scope` / `unknown_scope` | observed | observed | may publish with coverage limitation |
@@ -178,7 +209,12 @@ otherwise; downstream analysis stops for every affected register row.
 Technical state (`extraction_status`), source observability
 (`source_observability_status`), observation status (`observation_status`),
 `partial_year` and `count` are independent fields; for a completed
-extraction `not_observable` takes priority over `observed_zero`.
+extraction `not_observable` takes priority over `observed_zero`. A
+quantified row whose selector matched zero records across all its complete
+scopes is a selector defect, never an observed zero: its cells are
+`not_observable` / `selector_no_match`, the group series it belongs to stay
+blank for those years, and `tools/check_register_prefixes.py` is run
+before the next extraction.
 
 ## Current partial year
 
@@ -241,6 +277,7 @@ values.
 | Group additivity (D-038 blocking statuses, `blocking_rows`, footnotes), deduplication, no grand total, overlap reporting, Qeios disjointness | `build_aggregates._group_members`, `_group_cells`, `_dedup_cells` | `tests/test_total_equals_sum_of_years.py` |
 | Transient `pending_run` absent from released tables (D-039) | `build_aggregates.row_cells` | `tests/test_release_no_pending_run.py` |
 | Single data-quality log, preset rows immutable, run rows identified (D-040) | `build_aggregates.update_data_quality_log` | `tests/test_data_quality_log_single_file.py` |
+| Walk shape: `total_delta == 0` is necessary, the page sequence is the proof (repeated `cursor_in`, non-empty pages vs `ceil(total-results / rows)`, mid-walk short page, record on two pages) | `src/common/manifest.py::walk_shape_issues` | `tests/test_walk_shape.py` |
 | Deposition diagnostics (Qeios indicators, `created`/`deposited` after cutoff) | `build_aggregates.qeios_indicators` | `tests/test_total_equals_sum_of_years.py` (via tables) |
 | Figures 1–7, hatched partial year, categorical panels, checksums | `src/report/make_reports.py` | `tests/test_report_figures.py` |
 

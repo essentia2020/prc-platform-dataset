@@ -1,0 +1,51 @@
+{
+ "status": "ok",
+ "message": {
+  "items": [
+   {
+    "DOI": "10.21956/openreseurope.14256.r26750",
+    "type": "peer-review",
+    "prefix": "10.68336",
+    "member": "13904",
+    "title": [
+     "Synthetic record"
+    ],
+    "container-title": [],
+    "created": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "deposited": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "indexed": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "issued": {
+     "date-parts": [
+      [
+       2021,
+       5,
+       18
+      ]
+     ]
+    },
+    "relation": {
+     "is-review-of": [
+      {
+       "id": "10.12688/openreseurope.13104.1",
+       "id-type": "doi",
+       "asserted-by": "subject"
+      },
+      {
+       "id": "10.12688/openreseurope.13104.1",
+       "id-type": "doi",
+       "asserted-by": "object"
+      }
+     ]
+    }
+   }
+  ],
+  "total-results": 1,
+  "next-cursor": null
+ }
+}

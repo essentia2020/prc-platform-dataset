@@ -1,0 +1,51 @@
+{
+ "status": "ok",
+ "message": {
+  "items": [
+   {
+    "DOI": "10.3310/nihropenres.15251.r36677",
+    "type": "peer-review",
+    "prefix": "10.3310",
+    "member": "6221",
+    "title": [
+     "Synthetic record"
+    ],
+    "container-title": [],
+    "created": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "deposited": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "indexed": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "issued": {
+     "date-parts": [
+      [
+       2023,
+       6,
+       5
+      ]
+     ]
+    },
+    "relation": {
+     "is-review-of": [
+      {
+       "id": "10.3310/nihropenres.13716.1",
+       "id-type": "doi",
+       "asserted-by": "subject"
+      },
+      {
+       "id": "10.3310/nihropenres.13716.1",
+       "id-type": "doi",
+       "asserted-by": "object"
+      }
+     ]
+    }
+   }
+  ],
+  "total-results": 1,
+  "next-cursor": null
+ }
+}

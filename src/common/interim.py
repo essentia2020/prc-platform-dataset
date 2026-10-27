@@ -18,10 +18,10 @@ CROSSREF_WORK_COLUMNS = [
     "doi", "doi_original", "type", "title", "prefix", "member", "container_title",
     "created", "deposited", "indexed", "issued", "posted", "published_online", "published_print",
     "relation_is_review_of", "relation_json", "retrieved_at_utc", "platform_id", "walk_id", "page", "accepted_attempt",
-    "attribution_basis", "included", "exclusion_reason",
+    "attribution_basis", "included", "exclusion_reason", "doi_flag",
 ]
 CROSSREF_REVIEW_COLUMNS = CROSSREF_WORK_COLUMNS + ["target_id_raw", "target_id_type", "target_flag",
-                                                  "target_relation_type"]
+                                                  "target_relation_type", "asserted_by", "target_doi_flag"]
 SCIETY_EVALUATION_COLUMNS = [
     "group_id", "group_name", "docmap_id", "evaluation_index", "evaluated_work_doi", "evaluation_id",
     "evaluation_url", "evaluation_doi", "evaluation_date", "evaluation_type", "retrieved_at_utc",

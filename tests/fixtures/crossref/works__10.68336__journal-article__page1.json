@@ -1,0 +1,48 @@
+{
+ "status": "ok",
+ "message": {
+  "items": [
+   {
+    "DOI": "10.12688/openreseurope.13104.1",
+    "type": "journal-article",
+    "prefix": "10.68336",
+    "member": "13904",
+    "title": [
+     "Synthetic ORE article"
+    ],
+    "container-title": [
+     "Open Research Europe"
+    ],
+    "created": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "deposited": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "indexed": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "issued": {
+     "date-parts": [
+      [
+       2021,
+       3,
+       24
+      ]
+     ]
+    },
+    "published-online": {
+     "date-parts": [
+      [
+       2021,
+       3,
+       24
+      ]
+     ]
+    }
+   }
+  ],
+  "total-results": 1,
+  "next-cursor": null
+ }
+}

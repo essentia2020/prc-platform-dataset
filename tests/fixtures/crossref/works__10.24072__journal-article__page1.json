@@ -1,0 +1,240 @@
+{
+ "status": "ok",
+ "message": {
+  "items": [
+   {
+    "DOI": "10.24072/pci.evolbiol.100844",
+    "type": "journal-article",
+    "prefix": "10.24072",
+    "member": "10161",
+    "title": [
+     "Synthetic recommendation"
+    ],
+    "container-title": [
+     "Peer Community in Evolutionary Biology"
+    ],
+    "created": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "deposited": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "indexed": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "issued": {
+     "date-parts": [
+      [
+       2025,
+       3,
+       1
+      ]
+     ]
+    },
+    "published-online": {
+     "date-parts": [
+      [
+       2025,
+       3,
+       1
+      ]
+     ]
+    },
+    "relation": {
+     "is-review-of": [
+      {
+       "id": "10.1101/2024.08.08.607164",
+       "id-type": "doi",
+       "asserted-by": "subject"
+      }
+     ]
+    }
+   },
+   {
+    "DOI": "10.24072/pci.evolbiol.100844.rev11",
+    "type": "journal-article",
+    "prefix": "10.24072",
+    "member": "10161",
+    "title": [
+     "Synthetic review"
+    ],
+    "container-title": [
+     "Peer Community in Evolutionary Biology"
+    ],
+    "created": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "deposited": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "indexed": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "issued": {
+     "date-parts": [
+      [
+       2025,
+       1,
+       15
+      ]
+     ]
+    },
+    "published-online": {
+     "date-parts": [
+      [
+       2025,
+       1,
+       15
+      ]
+     ]
+    },
+    "relation": {
+     "is-review-of": [
+      {
+       "id": "10.1101/2024.08.08.607164",
+       "id-type": "doi",
+       "asserted-by": "subject"
+      }
+     ]
+    }
+   },
+   {
+    "DOI": "10.24072/pci.evolbiol.100844.d1",
+    "type": "journal-article",
+    "prefix": "10.24072",
+    "member": "10161",
+    "title": [
+     "Decision Revise: synthetic. Round#1"
+    ],
+    "container-title": [
+     "Peer Community in Evolutionary Biology"
+    ],
+    "created": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "deposited": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "indexed": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "issued": {
+     "date-parts": [
+      [
+       2025,
+       2,
+       7
+      ]
+     ]
+    },
+    "published-online": {
+     "date-parts": [
+      [
+       2025,
+       2,
+       7
+      ]
+     ]
+    },
+    "relation": {
+     "is-review-of": [
+      {
+       "id": "10.1101/2024.08.08.607164",
+       "id-type": "doi",
+       "asserted-by": "subject"
+      }
+     ]
+    }
+   },
+   {
+    "DOI": "10.24072/pci.ecology.100500",
+    "type": "journal-article",
+    "prefix": "10.24072",
+    "member": "10161",
+    "title": [
+     "Synthetic recommendation 2"
+    ],
+    "container-title": [
+     "Peer Community in Ecology"
+    ],
+    "created": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "deposited": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "indexed": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "issued": {
+     "date-parts": [
+      [
+       2024,
+       11,
+       2
+      ]
+     ]
+    },
+    "published-online": {
+     "date-parts": [
+      [
+       2024,
+       11,
+       2
+      ]
+     ]
+    },
+    "relation": {
+     "is-review-of": [
+      {
+       "id": "10.1101/2024.05.05.500000",
+       "id-type": "doi",
+       "asserted-by": "subject"
+      }
+     ]
+    }
+   },
+   {
+    "DOI": "10.24072/pcjournal.400",
+    "type": "journal-article",
+    "prefix": "10.24072",
+    "member": "10161",
+    "title": [
+     "Synthetic Peer Community Journal article"
+    ],
+    "container-title": [
+     "Peer Community Journal"
+    ],
+    "created": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "deposited": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "indexed": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "issued": {
+     "date-parts": [
+      [
+       2024,
+       6,
+       2
+      ]
+     ]
+    },
+    "published-online": {
+     "date-parts": [
+      [
+       2024,
+       6,
+       2
+      ]
+     ]
+    }
+   }
+  ],
+  "total-results": 5,
+  "next-cursor": null
+ }
+}

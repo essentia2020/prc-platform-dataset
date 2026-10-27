@@ -86,6 +86,8 @@ platforms:
         prefix: "10.7554"
         record_types: [posted-content, peer-review, journal-article]
         doi_regex: "^10\\.7554/elife\\.\\d+(\\.\\d+)?(\\.sa\\d+)?$"
+        sample_work_doi: "10.7554/elife.91984"
+        sample_review_doi: "10.7554/elife.112155.1.sa4"
         notes: >-
           Reviewed Preprints are expected as posted-content with version
           suffixes; Public Reviews and Assessments as peer-review records with
@@ -158,13 +160,17 @@ platforms:
         prefix: "10.12688"
         record_types: [journal-article, peer-review]
         doi_regex: "^10\\.12688/f1000research\\.\\d+\\.\\d+$"
-        review_doi_prefix: "10.21956"
+        review_doi_prefix: "10.5256"
+        review_doi_regex: "^10\\.5256/f1000research\\.\\d+\\.r\\d+$"
+        sample_work_doi: "10.12688/f1000research.15931.1"
+        sample_review_doi: "10.5256/f1000research.17815.r38403"
         notes: >-
           Prefix 10.12688 is shared by all F1000-operated venues; rows are
-          separated by DOI stem. Peer-review reports carry DOIs under 10.21956
-          (stem f1000research); whether they are deposited as Crossref
-          peer-review records with is-review-of relations is confirmed by the
-          first local run.
+          separated by DOI stem. F1000Research peer-review reports are
+          registered under the F1000Research owner prefix 10.5256 (member 2560,
+          30,184 peer-review records on 2026-10-27), not under the 10.21956
+          prefix used by the other F1000-hosted venues (D-048). Deposited as
+          Crossref peer-review records with is-review-of relations.
     eligibility_events:
       - first public posting of version 1 of an article (journal-article)
     counting_event: first_public_posting
@@ -222,6 +228,8 @@ platforms:
         record_types: [journal-article, peer-review]
         doi_regex: "^10\\.12688/wellcomeopenres\\.\\d+\\.\\d+$"
         review_doi_prefix: "10.21956"
+        sample_work_doi: "10.12688/wellcomeopenres.22581.1"
+        sample_review_doi: "10.21956/wellcomeopenres.24879.r97112"
     eligibility_events:
       - first public posting of version 1 of an article (journal-article)
     counting_event: first_public_posting
@@ -284,6 +292,8 @@ platforms:
         record_types: [journal-article, peer-review]
         doi_regex: "^10\\.12688/gatesopenres\\.\\d+\\.\\d+$"
         review_doi_prefix: "10.21956"
+        sample_work_doi: "10.12688/gatesopenres.12854.1"
+        sample_review_doi: "10.21956/gatesopenres.13935.r26616"
     eligibility_events:
       - publication of version 1 of a Gates Open Research article, within the series ending in 2024
     counting_event: first_public_posting
@@ -327,27 +337,34 @@ platforms:
     summary_assessment: unknown
     reviewer_identity_disclosed: always
     version_linked_review: true
-    review_to_object_relation: unknown
+    review_to_object_relation: crossref_is_review_of
     public_author_response: unknown
-    review_has_doi: unknown
+    review_has_doi: true
     data_source: crossref
-    register_status: register_only
-    data_status: partial_coverage
+    register_status: quantified
+    data_status: machine_readable
     doi_prefix: "10.12688"
     doi_pattern: "^10\\.12688/verixiv\\."
     doi_version_pattern: "^(10\\.12688/verixiv\\.\\d+)\\.\\d+$"
     sciety_group_slug: null
     extraction_selector:
+      # D-051: deposit confirmed in run_20261026_01 — preprints are
+      # posted-content under 10.12688 (no container-title), reviews are
+      # peer-review records under 10.21956 (stem verixiv) with is-review-of
+      # relations; review stems differ from preprint stems, so attribution is
+      # relation-based only.
       crossref:
         prefix: "10.12688"
-        record_types: [posted-content, journal-article, peer-review]
+        record_types: [posted-content, peer-review]
         doi_regex: "^10\\.12688/verixiv\\.\\d+\\.\\d+$"
-        selector_status: pending_deposit_confirmation
+        review_doi_prefix: "10.21956"
+        review_doi_regex: "^10\\.21956/verixiv\\.\\d+\\.r\\d+$"
+        sample_work_doi: "10.12688/verixiv.989.1"
+        sample_review_doi: "10.21956/verixiv.1007.r1195"
         notes: >-
-          Candidate work DOI pattern; confirm record types and public review
-          deposits in the local run. Do not assume review DOIs share the work
-          prefix. Quantitative values remain blank until the review selector
-          and is-review-of relations are confirmed.
+          Selection by DOI regex only. The row stays provisional until the
+          first VeriXiv flattening has been reviewed (D-051); the Gates /
+          VeriXiv correspondence of D-041 is scheduled after that review.
     eligibility_events:
       - first public preprint posting dated on or before the analysis cutoff
       - at least one qualifying public review dated on or before the cutoff and present in the completed retrieval
@@ -399,11 +416,18 @@ platforms:
     doi_version_pattern: "^(10\\.12688/openreseurope\\.\\d+)\\.\\d+$"
     sciety_group_slug: null
     extraction_selector:
+      # D-048: Open Research Europe articles (10.12688/openreseurope.*) and
+      # reviews (10.21956/openreseurope.*) are both owned by the European
+      # Commission member 13904 under prefix 10.68336; the owner-prefix walks
+      # of 10.12688 and 10.21956 do not return them.
       crossref:
-        prefix: "10.12688"
+        prefix: "10.68336"
         record_types: [journal-article, peer-review]
         doi_regex: "^10\\.12688/openreseurope\\.\\d+\\.\\d+$"
-        review_doi_prefix: "10.21956"
+        review_doi_prefix: "10.68336"
+        review_doi_regex: "^10\\.21956/openreseurope\\.\\d+\\.r\\d+$"
+        sample_work_doi: "10.12688/openreseurope.13104.1"
+        sample_review_doi: "10.21956/openreseurope.14256.r26750"
     eligibility_events:
       - first public posting of version 1 of an article (journal-article)
     counting_event: first_public_posting
@@ -458,6 +482,8 @@ platforms:
         record_types: [journal-article, peer-review]
         doi_regex: "^10\\.12688/hrbopenres\\.\\d+\\.\\d+$"
         review_doi_prefix: "10.21956"
+        sample_work_doi: "10.12688/hrbopenres.13208.1"
+        sample_review_doi: "10.21956/hrbopenres.14360.r28770"
     eligibility_events:
       - first public posting of version 1 of an article (journal-article)
     counting_event: first_public_posting
@@ -465,6 +491,403 @@ platforms:
     evidence_url:
       - https://hrbopenresearch.org/about
     verified_on: "2026-10-20"
+
+  - row_id: stosunki_miedzynarodowe
+    row_label: "Stosunki Międzynarodowe – International Relations"
+    organisation_id: f1000
+    organisation_name: "F1000 Research Ltd for the University of Warsaw (Faculty of Political Science and International Studies)"
+    prc_role: integrated_platform
+    status: active
+    launch_year: 2021
+    model_since: 2021
+    model_note: >-
+      D-052: journal with a 40-year record moved to the F1000 platform in 2021; only platform-period records (10.12688/stomiedintrelat.*) are counted. Status and coverage start to be confirmed by the maintainer.
+    coverage_start_year: 2021
+    coverage_end_year: null
+    discipline_scope: social_sciences
+    country_of_operator: "United Kingdom"
+    initiation_class: author_initiated
+    classification_confidence: high
+    classification_note: "Author submission; invited peer review takes place openly after publication."
+    prc_configuration: approval_threshold
+    configuration_confidence: high
+    configuration_note: "Articles that pass peer review are indexed; F1000 approval statuses apply."
+    provisional: true
+    publish_arrangement: platform_own
+    review_arrangement: platform_own
+    curation_arrangement: platform_own
+    output_types: [version_of_record, review_report, approval_status]
+    public_review_reports: true
+    approval_status_public: true
+    summary_assessment: false
+    reviewer_identity_disclosed: always
+    version_linked_review: true
+    review_to_object_relation: crossref_is_review_of
+    public_author_response: true
+    review_has_doi: true
+    data_source: crossref
+    register_status: quantified
+    data_status: machine_readable
+    doi_prefix: "10.12688"
+    doi_pattern: "^10\\.12688/stomiedintrelat\\."
+    doi_version_pattern: "^(10\\.12688/stomiedintrelat\\.\\d+)\\.\\d+$"
+    sciety_group_slug: null
+    extraction_selector:
+      crossref:
+        prefix: "10.12688"
+        record_types: [journal-article, peer-review]
+        doi_regex: "^10\\.12688/stomiedintrelat\\.\\d+\\.\\d+$"
+        review_doi_prefix: "10.21956"
+        sample_work_doi: "10.12688/stomiedintrelat.18256.2"
+        sample_review_doi: "10.21956/stomiedintrelat.19297.r29490"
+    eligibility_events:
+      - first public posting of version 1 of an article (journal-article)
+    counting_event: first_public_posting
+    counting_event_date_field: issued
+    evidence_url:
+      - https://www.f1000.com/resources-for-researchers/where-to-publish-your-research/f1000-publishing-venues/
+      - https://api.crossref.org/works?filter=issn:2754-2572,type:journal-article&rows=0
+    verified_on: "2026-10-27"
+
+  - row_id: nuclear_science_technology_open_research
+    row_label: "Nuclear Science and Technology Open Research"
+    organisation_id: f1000
+    organisation_name: "F1000 Research Ltd for the American Nuclear Society"
+    prc_role: integrated_platform
+    status: active
+    launch_year: 2023
+    model_since: 2023
+    model_note: >-
+      D-052: F1000-hosted venue listed on the F1000 venues page (2026-10-27); 100 journal-article records 2023–2026 under ISSN 2755-967X.
+    coverage_start_year: 2023
+    coverage_end_year: null
+    discipline_scope: physical_sciences
+    country_of_operator: "United Kingdom"
+    initiation_class: author_initiated
+    classification_confidence: high
+    classification_note: "Author submission; invited peer review takes place openly after publication."
+    prc_configuration: approval_threshold
+    configuration_confidence: high
+    configuration_note: "Articles that pass peer review are indexed; F1000 approval statuses apply."
+    provisional: true
+    publish_arrangement: platform_own
+    review_arrangement: platform_own
+    curation_arrangement: platform_own
+    output_types: [version_of_record, review_report, approval_status]
+    public_review_reports: true
+    approval_status_public: true
+    summary_assessment: false
+    reviewer_identity_disclosed: always
+    version_linked_review: true
+    review_to_object_relation: crossref_is_review_of
+    public_author_response: true
+    review_has_doi: true
+    data_source: crossref
+    register_status: quantified
+    data_status: machine_readable
+    doi_prefix: "10.12688"
+    doi_pattern: "^10\\.12688/nuclscitechnolopenres\\."
+    doi_version_pattern: "^(10\\.12688/nuclscitechnolopenres\\.\\d+)\\.\\d+$"
+    sciety_group_slug: null
+    extraction_selector:
+      crossref:
+        prefix: "10.12688"
+        record_types: [journal-article, peer-review]
+        doi_regex: "^10\\.12688/nuclscitechnolopenres\\.\\d+\\.\\d+$"
+        review_doi_prefix: "10.21956"
+        sample_work_doi: "10.12688/nuclscitechnolopenres.17738.2"
+        sample_review_doi: "10.21956/nuclscitechnolopenres.18846.r27569"
+    eligibility_events:
+      - first public posting of version 1 of an article (journal-article)
+    counting_event: first_public_posting
+    counting_event_date_field: issued
+    evidence_url:
+      - https://www.f1000.com/resources-for-researchers/where-to-publish-your-research/f1000-publishing-venues/
+      - https://api.crossref.org/works?filter=issn:2755-967X,type:journal-article&rows=0
+    verified_on: "2026-10-27"
+
+  - row_id: digital_twin
+    row_label: "Digital Twin (F1000 platform period)"
+    organisation_id: f1000
+    organisation_name: "F1000 Research Ltd (Taylor & Francis)"
+    prc_role: integrated_platform
+    status: closed
+    launch_year: 2021
+    model_since: 2021
+    model_note: >-
+      D-052: F1000-hosted venue 2021–2025 (52 records 10.12688/digitaltwin.*, last issued 2025-07-18); from 2025 the title continues as a conventional Taylor & Francis journal (10.1080/27525783.*, received/accepted dates) and is outside the row. Part of the 10.12688 records is now owned under prefix 10.1080, so the selector is the ISSN scope with a DOI regex; 79 of the 10.21956/digitaltwin review records are likewise owned under 10.1080 (member 301), so 10.1080 is walked as a second review prefix. Closure year to be confirmed by the maintainer.
+    coverage_start_year: 2021
+    coverage_end_year: 2025
+    discipline_scope: physical_sciences
+    country_of_operator: "United Kingdom"
+    initiation_class: author_initiated
+    classification_confidence: high
+    classification_note: "Author submission; invited peer review takes place openly after publication."
+    prc_configuration: approval_threshold
+    configuration_confidence: high
+    configuration_note: "Articles that pass peer review are indexed; F1000 approval statuses apply."
+    provisional: true
+    publish_arrangement: platform_own
+    review_arrangement: platform_own
+    curation_arrangement: platform_own
+    output_types: [version_of_record, review_report, approval_status]
+    public_review_reports: true
+    approval_status_public: true
+    summary_assessment: false
+    reviewer_identity_disclosed: always
+    version_linked_review: true
+    review_to_object_relation: crossref_is_review_of
+    public_author_response: true
+    review_has_doi: true
+    data_source: crossref
+    register_status: quantified
+    data_status: machine_readable
+    doi_prefix: "10.12688"
+    doi_pattern: "^10\\.12688/digitaltwin\\."
+    doi_version_pattern: "^(10\\.12688/digitaltwin\\.\\d+)\\.\\d+$"
+    sciety_group_slug: null
+    extraction_selector:
+      crossref:
+        issn: ["2752-5783"]
+        record_types: [journal-article, peer-review]
+        doi_regex: "^10\\.12688/digitaltwin\\.\\d+\\.\\d+$"
+        review_doi_prefix: ["10.21956", "10.1080"]
+        review_doi_regex: "^10\\.21956/digitaltwin\\."
+        sample_work_doi: "10.12688/digitaltwin.17451.2"
+        sample_review_doi: "10.21956/digitaltwin.19424.r29511"
+    eligibility_events:
+      - first public posting of version 1 of an article (journal-article)
+    counting_event: first_public_posting
+    counting_event_date_field: issued
+    evidence_url:
+      - https://api.crossref.org/works?filter=issn:2752-5783,type:journal-article&rows=0
+      - https://www.tandfonline.com/journals/tdtw20/about-this-journal
+    verified_on: "2026-10-27"
+
+  - row_id: molecular_psychology
+    row_label: "Molecular Psychology: Brain, Behavior, and Society"
+    organisation_id: f1000
+    organisation_name: "F1000 Research Ltd (Taylor & Francis)"
+    prc_role: integrated_platform
+    status: dormant
+    launch_year: 2022
+    model_since: 2022
+    model_note: >-
+      D-052: F1000-hosted venue; 44 journal-article records 2022–2025 (last issued 2025-06-17); not listed on the F1000 venues page on 2026-10-27. Operating status to be confirmed by the maintainer.
+    coverage_start_year: 2022
+    coverage_end_year: null
+    discipline_scope: life_sciences
+    country_of_operator: "United Kingdom"
+    initiation_class: author_initiated
+    classification_confidence: high
+    classification_note: "Author submission; invited peer review takes place openly after publication."
+    prc_configuration: approval_threshold
+    configuration_confidence: high
+    configuration_note: "Articles that pass peer review are indexed; F1000 approval statuses apply."
+    provisional: true
+    publish_arrangement: platform_own
+    review_arrangement: platform_own
+    curation_arrangement: platform_own
+    output_types: [version_of_record, review_report, approval_status]
+    public_review_reports: true
+    approval_status_public: true
+    summary_assessment: false
+    reviewer_identity_disclosed: always
+    version_linked_review: true
+    review_to_object_relation: crossref_is_review_of
+    public_author_response: true
+    review_has_doi: true
+    data_source: crossref
+    register_status: quantified
+    data_status: machine_readable
+    doi_prefix: "10.12688"
+    doi_pattern: "^10\\.12688/molpsychol\\."
+    doi_version_pattern: "^(10\\.12688/molpsychol\\.\\d+)\\.\\d+$"
+    sciety_group_slug: null
+    extraction_selector:
+      crossref:
+        prefix: "10.12688"
+        record_types: [journal-article, peer-review]
+        doi_regex: "^10\\.12688/molpsychol\\.\\d+\\.\\d+$"
+        review_doi_prefix: "10.21956"
+        sample_work_doi: "10.12688/molpsychol.17571.2"
+        sample_review_doi: "10.21956/molpsychol.18763.r26810"
+    eligibility_events:
+      - first public posting of version 1 of an article (journal-article)
+    counting_event: first_public_posting
+    counting_event_date_field: issued
+    evidence_url:
+      - https://api.crossref.org/works?filter=issn:2752-8286,type:journal-article&rows=0
+    verified_on: "2026-10-27"
+
+  - row_id: materials_open_research
+    row_label: "Materials Open Research"
+    organisation_id: f1000
+    organisation_name: "F1000 Research Ltd (Taylor & Francis)"
+    prc_role: integrated_platform
+    status: dormant
+    launch_year: 2022
+    model_since: 2022
+    model_note: >-
+      D-052: F1000-hosted venue; 29 journal-article records 2022–2024 (last issued 2024-06-03); not listed on the F1000 venues page on 2026-10-27. Operating status to be confirmed by the maintainer.
+    coverage_start_year: 2022
+    coverage_end_year: null
+    discipline_scope: physical_sciences
+    country_of_operator: "United Kingdom"
+    initiation_class: author_initiated
+    classification_confidence: high
+    classification_note: "Author submission; invited peer review takes place openly after publication."
+    prc_configuration: approval_threshold
+    configuration_confidence: high
+    configuration_note: "Articles that pass peer review are indexed; F1000 approval statuses apply."
+    provisional: true
+    publish_arrangement: platform_own
+    review_arrangement: platform_own
+    curation_arrangement: platform_own
+    output_types: [version_of_record, review_report, approval_status]
+    public_review_reports: true
+    approval_status_public: true
+    summary_assessment: false
+    reviewer_identity_disclosed: always
+    version_linked_review: true
+    review_to_object_relation: crossref_is_review_of
+    public_author_response: true
+    review_has_doi: true
+    data_source: crossref
+    register_status: quantified
+    data_status: machine_readable
+    doi_prefix: "10.12688"
+    doi_pattern: "^10\\.12688/materialsopenres\\."
+    doi_version_pattern: "^(10\\.12688/materialsopenres\\.\\d+)\\.\\d+$"
+    sciety_group_slug: null
+    extraction_selector:
+      crossref:
+        prefix: "10.12688"
+        record_types: [journal-article, peer-review]
+        doi_regex: "^10\\.12688/materialsopenres\\.\\d+\\.\\d+$"
+        review_doi_prefix: "10.21956"
+        sample_work_doi: "10.12688/materialsopenres.17627.1"
+        sample_review_doi: "10.21956/materialsopenres.18924.r27008"
+    eligibility_events:
+      - first public posting of version 1 of an article (journal-article)
+    counting_event: first_public_posting
+    counting_event_date_field: issued
+    evidence_url:
+      - https://api.crossref.org/works?filter=issn:2754-7531,type:journal-article&rows=0
+    verified_on: "2026-10-27"
+
+  - row_id: cobot
+    row_label: "Cobot"
+    organisation_id: f1000
+    organisation_name: "F1000 Research Ltd (Taylor & Francis)"
+    prc_role: integrated_platform
+    status: dormant
+    launch_year: 2022
+    model_since: 2022
+    model_note: >-
+      D-052: F1000-hosted venue; 42 journal-article records 2022–2025 (last issued 2025-04-10), all still owned under 10.12688; not listed on the F1000 venues page on 2026-10-27. 28 of the 10.21956/cobot review records are owned under prefix 10.1080 (member 301) and 28 further peer-review records exist under 10.1080/27525813.*, so 10.1080 is walked as a second review prefix and a Taylor & Francis continuation is to be confirmed by the maintainer.
+    coverage_start_year: 2022
+    coverage_end_year: null
+    discipline_scope: physical_sciences
+    country_of_operator: "United Kingdom"
+    initiation_class: author_initiated
+    classification_confidence: high
+    classification_note: "Author submission; invited peer review takes place openly after publication."
+    prc_configuration: approval_threshold
+    configuration_confidence: high
+    configuration_note: "Articles that pass peer review are indexed; F1000 approval statuses apply."
+    provisional: true
+    publish_arrangement: platform_own
+    review_arrangement: platform_own
+    curation_arrangement: platform_own
+    output_types: [version_of_record, review_report, approval_status]
+    public_review_reports: true
+    approval_status_public: true
+    summary_assessment: false
+    reviewer_identity_disclosed: always
+    version_linked_review: true
+    review_to_object_relation: crossref_is_review_of
+    public_author_response: true
+    review_has_doi: true
+    data_source: crossref
+    register_status: quantified
+    data_status: machine_readable
+    doi_prefix: "10.12688"
+    doi_pattern: "^10\\.12688/cobot\\."
+    doi_version_pattern: "^(10\\.12688/cobot\\.\\d+)\\.\\d+$"
+    sciety_group_slug: null
+    extraction_selector:
+      crossref:
+        prefix: "10.12688"
+        record_types: [journal-article, peer-review]
+        doi_regex: "^10\\.12688/cobot\\.\\d+\\.\\d+$"
+        review_doi_prefix: ["10.21956", "10.1080"]
+        review_doi_regex: "^10\\.21956/cobot\\."
+        sample_work_doi: "10.12688/cobot.17512.2"
+        sample_review_doi: "10.21956/cobot.18994.r28390"
+    eligibility_events:
+      - first public posting of version 1 of an article (journal-article)
+    counting_event: first_public_posting
+    counting_event_date_field: issued
+    evidence_url:
+      - https://api.crossref.org/works?filter=issn:2752-5813,type:journal-article&rows=0
+    verified_on: "2026-10-27"
+
+  - row_id: bioethics_open_research
+    row_label: "Bioethics Open Research"
+    organisation_id: f1000
+    organisation_name: "F1000 Research Ltd (Taylor & Francis, with the American Journal of Bioethics)"
+    prc_role: integrated_platform
+    status: active
+    launch_year: 2023
+    model_since: 2023
+    model_note: >-
+      D-052: F1000-hosted venue listed on the F1000 venues page (2026-10-27); 17 journal-article records 2023–2025 under ISSN 2754-981X.
+    coverage_start_year: 2023
+    coverage_end_year: null
+    discipline_scope: social_sciences
+    country_of_operator: "United Kingdom"
+    initiation_class: author_initiated
+    classification_confidence: high
+    classification_note: "Author submission; invited peer review takes place openly after publication."
+    prc_configuration: approval_threshold
+    configuration_confidence: high
+    configuration_note: "Articles that pass peer review are indexed; F1000 approval statuses apply."
+    provisional: true
+    publish_arrangement: platform_own
+    review_arrangement: platform_own
+    curation_arrangement: platform_own
+    output_types: [version_of_record, review_report, approval_status]
+    public_review_reports: true
+    approval_status_public: true
+    summary_assessment: false
+    reviewer_identity_disclosed: always
+    version_linked_review: true
+    review_to_object_relation: crossref_is_review_of
+    public_author_response: true
+    review_has_doi: true
+    data_source: crossref
+    register_status: quantified
+    data_status: machine_readable
+    doi_prefix: "10.12688"
+    doi_pattern: "^10\\.12688/bioethopenres\\."
+    doi_version_pattern: "^(10\\.12688/bioethopenres\\.\\d+)\\.\\d+$"
+    sciety_group_slug: null
+    extraction_selector:
+      crossref:
+        prefix: "10.12688"
+        record_types: [journal-article, peer-review]
+        doi_regex: "^10\\.12688/bioethopenres\\.\\d+\\.\\d+$"
+        review_doi_prefix: "10.21956"
+        sample_work_doi: "10.12688/bioethopenres.17725.1"
+        sample_review_doi: "10.21956/bioethopenres.18774.r26951"
+    eligibility_events:
+      - first public posting of version 1 of an article (journal-article)
+    counting_event: first_public_posting
+    counting_event_date_field: issued
+    evidence_url:
+      - https://api.crossref.org/works?filter=issn:2754-981X,type:journal-article&rows=0
+    verified_on: "2026-10-27"
 
   - row_id: nihr_open_research
     row_label: "NIHR Open Research"
@@ -501,16 +924,22 @@ platforms:
     data_source: crossref
     register_status: quantified
     data_status: machine_readable
-    doi_prefix: "10.12688"
-    doi_pattern: "^10\\.12688/nihropenres\\."
-    doi_version_pattern: "^(10\\.12688/nihropenres\\.\\d+)\\.\\d+$"
+    doi_prefix: "10.3310"
+    doi_pattern: "^10\\.3310/nihropenres\\."
+    doi_version_pattern: "^(10\\.3310/nihropenres\\.\\d+)\\.\\d+$"
     sciety_group_slug: null
     extraction_selector:
+      # D-047: NIHR Open Research registers articles and reviews under the NIHR
+      # owner prefix 10.3310 (shared with the NIHR Journals Library), not 10.12688.
+      # Reviews are 10.3310/nihropenres.<stem>.r<n>; attribution stays relation-based.
       crossref:
-        prefix: "10.12688"
+        prefix: "10.3310"
         record_types: [journal-article, peer-review]
-        doi_regex: "^10\\.12688/nihropenres\\.\\d+\\.\\d+$"
-        review_doi_prefix: "10.21956"
+        doi_regex: "^10\\.3310/nihropenres\\.\\d+\\.\\d+$"
+        review_doi_prefix: "10.3310"
+        review_doi_regex: "^10\\.3310/nihropenres\\.\\d+\\.r\\d+$"
+        sample_work_doi: "10.3310/nihropenres.13716.3"
+        sample_review_doi: "10.3310/nihropenres.15251.r36677"
     eligibility_events:
       - first public posting of version 1 of an article (journal-article)
     counting_event: first_public_posting
@@ -567,6 +996,8 @@ platforms:
         record_types: [journal-article, peer-review]
         doi_regex: "^10\\.12688/(healthopenres|amrcopenres)\\.\\d+\\.\\d+$"
         review_doi_prefix: "10.21956"
+        sample_work_doi: "10.12688/amrcopenres.13036.2"
+        sample_review_doi: "10.21956/amrcopenres.14207.r27061"
     eligibility_events:
       - first public posting of version 1 of an article (journal-article)
     counting_event: first_public_posting
@@ -625,6 +1056,8 @@ platforms:
         record_types: [journal-article, peer-review]
         doi_regex: "^10\\.12688/(openresafrica|aasopenres)\\.\\d+\\.\\d+$"
         review_doi_prefix: "10.21956"
+        sample_work_doi: "10.12688/aasopenres.13189.1"
+        sample_review_doi: "10.21956/aasopenres.14299.r28589"
     eligibility_events:
       - first public posting of version 1 of an article (journal-article)
     counting_event: first_public_posting
@@ -682,6 +1115,8 @@ platforms:
         record_types: [journal-article, peer-review]
         doi_regex: "^10\\.12688/routledgeopenres\\.\\d+\\.\\d+$"
         review_doi_prefix: "10.21956"
+        sample_work_doi: "10.12688/routledgeopenres.17573.2"
+        sample_review_doi: "10.21956/routledgeopenres.19093.r27024"
     eligibility_events:
       - first public posting of version 1 of an article (journal-article)
     counting_event: first_public_posting
@@ -743,6 +1178,8 @@ platforms:
         record_types: [journal-article, posted-content, peer-review]
         doi_regex: "^10\\.(15694|12688)/mep\\."
         review_doi_prefix: "10.21956"
+        sample_work_doi: "10.15694/mep.2016.000153"
+        sample_review_doi: "10.21956/mep.19233.r27897"
         notes: >-
           Three DOI regimes: 10.15694/mep.<year>.<vol>.<art> and
           10.15694/mep.<year>.<art> (base records without version suffix),
@@ -839,6 +1276,7 @@ platforms:
             evidence_urls:
               - https://api.crossref.org/works/10.12688/emeraldopenres.13140.1
               - https://api.crossref.org/works/10.35241/emeraldopenres.13140.2
+        sample_work_doi: "10.1108/eor-14-2021-0002"
         notes: >-
           Retrieved by journal ISSN, not by prefix: the records are owned by
           Emerald's shared prefix 10.1108, and the original 10.35241 DOIs are
@@ -971,15 +1409,27 @@ platforms:
     doi_version_pattern: null
     sciety_group_slug: null
     extraction_selector:
+      # D-049: PCI deposits recommendations, reviews, decisions and author
+      # responses as journal-article records in "Peer Community in …"
+      # containers, each with an is-review-of relation to the evaluated
+      # preprint; there are no peer-review records under 10.24072. The
+      # recommendation (10.24072/pci.<community>.<number>) is the evaluation
+      # record of this row; the evaluated works are external (bioRxiv etc.).
       crossref:
         prefix: "10.24072"
-        record_types: [peer-review, journal-article, posted-content]
+        record_types: [journal-article]
         doi_regex: "^10\\.24072/pci\\."
+        evaluation_record_types: [journal-article]
+        evaluation_doi_regex: "^10\\.24072/pci\\.[a-z]+\\.\\d+$"
+        target_filter: external
+        sample_review_doi: "10.24072/pci.evolbiol.100844"
         notes: >-
-          Recommendation DOIs follow 10.24072/pci.<community>.<number>; the
-          Crossref record type and the presence of is-review-of relations are
-          confirmed in the first local run. Peer Community Journal articles
-          (10.24072/pcjournal.*) are excluded from this row.
+          Recommendation DOIs follow 10.24072/pci.<community>.<number>;
+          reviews (.rev<n>), decisions (.d<n>) and author responses (.ar<n>)
+          share the stem and are not counted as evaluations of this row.
+          Peer Community Journal articles (10.24072/pcjournal.*) are excluded
+          from this row. The row owns no work records: counting follows the
+          earliest recommendation per external target.
       sciety:
         group_slugs: [peer-community-in-archaeology, peer-community-in-ecology, peer-community-in-paleontology, peer-community-in-evolutionary-biology, peer-community-in-animal-science, peer-community-in-zoology, peer-community-in-neuroscience]
         role: cross_check
@@ -1048,6 +1498,7 @@ platforms:
         record_types: [journal-article]
         doi_regex: "^10\\.21468/scipost(?!\\.report\\.)"
         exclude_doi_regex: "^10\\.21468/scipost\\.report\\."
+        sample_work_doi: "10.21468/scipostphysproc.1.009"
     eligibility_events:
       - published work (journal-article under 10.21468, excluding 10.21468/scipost.report.*) that underwent the public-refereeing workflow
     counting_event: final_article
@@ -1550,6 +2001,8 @@ platforms:
                 - "^10\\.5194/wes-\\d{4}-\\d+$"
               egusphere_regime: false
             doi_stems_observed_in_listing: [wes]
+        sample_work_doi: "10.5194/acp-2020-1121"
+        sample_review_doi: "10.5194/acp-2020-1121-rc2"
         notes: >-
           Journal list hand-verified on each journal's own peer-review page
           (D-027). doi_stems_observed_in_listing records the DOI stems seen on
@@ -1624,15 +2077,23 @@ platforms:
     doi_version_pattern: null
     sciety_group_slug: null
     extraction_selector:
+      # D-050: JMIRx Med deposits no peer-review records; review reports
+      # ("Peer Review of …") and author responses ("Authors' Response to Peer
+      # Reviews of …") are journal-article records in the same container and
+      # are kept as companion items, never counted as works.
       crossref:
         prefix: "10.2196"
-        record_types: [journal-article, peer-review]
+        record_types: [journal-article]
         container_titles: ["JMIRx Med"]
+        companion_title_regex: "^(Peer Review of |Authors[’'] Response to Peer Reviews? of )"
+        sample_work_doi: "10.2196/35862"
         notes: >-
           Prefix 10.2196 covers all JMIR journals; selection is by
-          container-title. Peer-review reports are published as companion
-          items with their own DOIs; their Crossref record type is confirmed in
-          the first local run.
+          container-title. Peer-review reports and author responses are
+          published as companion items with their own DOIs and deposited as
+          journal-article records (run_20261026_01: 316 + 104 of 622 records
+          in the container); they carry has-preprint, not is-review-of, and
+          are not attributed to articles.
     eligibility_events:
       - published Version of Record (journal-article, container-title JMIRx Med) of a reviewed preprint
     counting_event: final_article
@@ -1701,6 +2162,8 @@ platforms:
         record_types: [posted-content, journal-article, peer-review]
         doi_regex: "^10\\.1099/acmi\\."
         container_titles: ["Access Microbiology"]
+        sample_work_doi: "10.1099/acmi.fis2019.po0077"
+        sample_review_doi: "10.1099/acmi.0.000955.v2.1"
         notes: >-
           Prefix 10.1099 covers all Microbiology Society journals; selection is
           by DOI stem acmi and container-title. Preprint and review DOI
@@ -1956,6 +2419,8 @@ platforms:
         prefix: "10.32388"
         record_types: [journal-article, posted-content, peer-review]
         exclude_title_regex: "^WITHDRAWN$"
+        sample_work_doi: "10.32388/jupe8t.2"
+        sample_review_doi: "10.32388/362gyr"
         notes: >-
           A hosted work qualifies only if at least one Crossref peer-review
           record carries an is-review-of relation pointing to it. Metadata
@@ -2024,6 +2489,7 @@ platforms:
         prefix: "10.32388"
         record_types: [peer-review]
         target_filter: "is-review-of targets whose normalised DOI does not start with 10.32388/"
+        sample_review_doi: "10.32388/evg34l"
         notes: >-
           Targets are kept as registered (lower-cased) in reviewed_work_id; one
           work counts once at its earliest Qeios review.
@@ -2219,13 +2685,22 @@ platforms:
         role: primary
       crossref:
         prefix: "10.1162"
-        record_types: [journal-article, peer-review]
-        container_titles: ["Rapid Reviews: COVID-19", "Rapid Reviews Infectious Diseases", "Rapid Reviews\\Infectious Diseases"]
+        record_types: [peer-review]
+        container_titles: ["Rapid Reviews COVID-19", "Rapid Reviews: COVID-19", "Rapid Reviews Infectious Diseases", "Rapid Reviews\\Infectious Diseases"]
+        review_doi_regex: "^10\\.1162/2e3983f5\\."
+        target_filter: external
         role: cross_check
+        sample_review_doi: "10.1162/2e3983f5.da219ef4"
         notes: >-
-          Prefix 10.1162 covers all MIT Press journals; selection is by
-          container-title. Whether review records carry is-review-of relations
-          is confirmed in the first local run.
+          Prefix 10.1162 covers all MIT Press journals. The venue deposits its
+          review reports as peer-review records 10.1162/2e3983f5.<hash> with
+          is-review-of pointing at external preprints (10.1101, 10.64898) and
+          no container-title; the same reports also appear as journal-article
+          records in the container "Rapid Reviews COVID-19" (is-supplement-to),
+          which are not works of the row. Selection of review records is by
+          DOI regex and external target (D-054); a bare prefix test would
+          claim the reviews of every other MIT Press journal (QSS decision and
+          review records target 10.1162 DOIs).
     eligibility_events:
       - qualifying docmap evaluation output for an already-public preprint
     counting_event: earliest_qualifying_evaluation

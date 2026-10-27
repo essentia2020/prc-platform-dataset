@@ -68,9 +68,10 @@ to be disjoint.
 Source of truth: `config/platforms.yaml` (hand-edited). `config/platforms.csv`
 is generated from it (`python -m src.common.register --export`) and never
 edited by hand. Medium or low confidence alone does not set `provisional`.
-Decisions clear that flag, except for the explicit VeriXiv deposit check
-in D-013. Candidates audited but not included are in
-`config/excluded_candidates.yaml`.
+Decisions clear that flag. VeriXiv (deposit confirmed in run_20261026_01,
+D-051) and the seven F1000-infrastructure venues added after that run
+(D-052) are provisional until their first flattening. Candidates audited
+but not included are in `config/excluded_candidates.yaml`.
 
 | Row (`row_id`) | Organisation | Axis 1 (confidence) | Axis 2 (confidence) | Source | Counting event | Coverage | Data status |
 |---|---|---|---|---|---|---|---|
@@ -78,9 +79,16 @@ in D-013. Candidates audited but not included are in
 | `f1000research` | F1000 Research Ltd (Taylor & Francis) | `author_initiated` (high) | `approval_threshold` (high) | crossref | first_public_posting | 2013–cutoff | machine_readable |
 | `wellcome_open_research` | F1000 Research Ltd for Wellcome | `author_initiated` (high) | `approval_threshold` (high) | crossref | first_public_posting | 2016–cutoff | machine_readable |
 | `gates_open_research` | F1000 Research Ltd for the Gates Foundation | `author_initiated` (high) | `approval_threshold` (medium) | crossref | first_public_posting | 2017–2024 | partial_coverage |
-| `verixiv` | F1000 Research Ltd for the Gates Foundation | `author_initiated` (high) | `approval_threshold` (medium) (provisional) | crossref | first_public_posting | 2024–cutoff | partial_coverage |
+| `verixiv` | F1000 Research Ltd for the Gates Foundation | `author_initiated` (high) | `approval_threshold` (medium) (provisional) | crossref | first_public_posting | 2024–cutoff | machine_readable |
 | `open_research_europe` | F1000 Research Ltd for the European Commission | `author_initiated` (high) | `approval_threshold` (high) | crossref | first_public_posting | 2021–cutoff | machine_readable |
 | `hrb_open_research` | F1000 Research Ltd for the Health Research Board (Ireland) | `author_initiated` (high) | `approval_threshold` (high) | crossref | first_public_posting | 2018–cutoff | machine_readable |
+| `stosunki_miedzynarodowe` | F1000 Research Ltd for the University of Warsaw (Faculty of Political Science and International Studies) | `author_initiated` (high) | `approval_threshold` (high) (provisional) | crossref | first_public_posting | 2021–cutoff | machine_readable |
+| `nuclear_science_technology_open_research` | F1000 Research Ltd for the American Nuclear Society | `author_initiated` (high) | `approval_threshold` (high) (provisional) | crossref | first_public_posting | 2023–cutoff | machine_readable |
+| `digital_twin` | F1000 Research Ltd (Taylor & Francis) | `author_initiated` (high) | `approval_threshold` (high) (provisional) | crossref | first_public_posting | 2021–2025 | machine_readable |
+| `molecular_psychology` | F1000 Research Ltd (Taylor & Francis) | `author_initiated` (high) | `approval_threshold` (high) (provisional) | crossref | first_public_posting | 2022–cutoff | machine_readable |
+| `materials_open_research` | F1000 Research Ltd (Taylor & Francis) | `author_initiated` (high) | `approval_threshold` (high) (provisional) | crossref | first_public_posting | 2022–cutoff | machine_readable |
+| `cobot` | F1000 Research Ltd (Taylor & Francis) | `author_initiated` (high) | `approval_threshold` (high) (provisional) | crossref | first_public_posting | 2022–cutoff | machine_readable |
+| `bioethics_open_research` | F1000 Research Ltd (Taylor & Francis, with the American Journal of Bioethics) | `author_initiated` (high) | `approval_threshold` (high) (provisional) | crossref | first_public_posting | 2023–cutoff | machine_readable |
 | `nihr_open_research` | F1000 Research Ltd for the National Institute for Health and Care Research | `author_initiated` (high) | `approval_threshold` (high) | crossref | first_public_posting | 2021–cutoff | machine_readable |
 | `health_open_research` | F1000 Research Ltd with the Association of Medical Research Charities | `author_initiated` (high) | `approval_threshold` (high) | crossref | first_public_posting | 2019–cutoff | machine_readable |
 | `open_research_africa` | F1000 Research Ltd with the Science for Africa Foundation | `author_initiated` (high) | `approval_threshold` (high) | crossref | first_public_posting | 2018–cutoff | machine_readable |
@@ -115,7 +123,9 @@ in D-013. Candidates audited but not included are in
 Coverage "cutoff" means an open series ending at `analysis_cutoff_date`
 (`config/run.yaml`). `partial_coverage` and `defunct` explain why a row's
 counts are limited; `register_only` rows carry blank analytical values,
-never zero. VeriXiv awaits review-deposit confirmation. Copernicus counts
+never zero. A quantified row whose selector matches no record in any of
+its complete scopes is a selector defect and publishes no count
+(`selector_no_match`, D-047), never a zero. Copernicus counts
 discussion preprints of 29 hand-verified journals (D-027); EGUsphere-era
 preprints count only when attributed to a verified journal, so that part of
 the series is a lower bound. Access Microbiology has a run-derived start
@@ -138,6 +148,7 @@ python -m src.run_pipeline --stages all      # run every stage
 python -m src.run_pipeline --stages extract_crossref_works --force-new-walk   # new walk despite a complete one
 python -m src.run_pipeline --stages normalise,analyse,report                 # offline stages only, from existing interim files
 python -m pytest                             # test suite (offline; no API is contacted)
+python tools/check_register_prefixes.py      # one-off register check: resolves one known work and one known review DOI per quantified Crossref row and compares owner prefix and member with the declared scopes (contacts the Crossref API; run by the maintainer before an extraction)
 PRC_RAW_STORE=<raw store root> python -m pytest tests/test_manifest_checksums_match.py
 python tools/audit_text.py --tokens <path outside the repository> --history
 ```
@@ -145,7 +156,7 @@ python tools/audit_text.py --tokens <path outside the repository> --history
 Stage order, fixed in `src/run_pipeline.py`:
 
 1. `extract_crossref_works` — one cursor walk per `works__<prefix>__<type>` or `works__issn_<issn>__<type>` scope (journal-article, posted-content) → `data/raw/crossref/<scope>/…`, split per row by DOI regex into `data/interim/crossref_works__<row_id>.csv`
-2. `extract_crossref_peer_reviews` — one walk per `works__<prefix>__peer-review` scope, including separate review prefixes → `data/interim/crossref_peer_reviews__<row_id>.csv` (one line per review DOI and `is-review-of` target) and `crossref_peer_reviews__unattributed__<prefix>.csv`
+2. `extract_crossref_peer_reviews` — one walk per `works__<prefix>__peer-review` scope over every declared review prefix (10.21956, 10.5256, 10.68336, 10.3310, …) plus the declared evaluation-record scopes (PCI: `works__10.24072__journal-article`) → `data/interim/crossref_peer_reviews__<row_id>.csv` (one line per review DOI, `is-review-of` target and `asserted_by`) and `crossref_peer_reviews__unattributed__<prefix>.csv`
 3. `extract_sciety_evaluations` — one paginated walk per group (`index?publisheraccount=<group page URL>`) → `data/raw/sciety/evaluations__<group_slug>/…`, `data/interim/sciety_evaluations__<group_slug>.csv`; publisher-account mismatch hard-fails normalisation
 4. `normalise` — `src/normalise/clean_and_normalise.py`: record-level layer `data/processed/records_<row_id>.csv` (work, evaluation and relation lines; canonical identifiers; evaluation identity; source-precision dates) plus `normalisation_summary.json`; rows with a blocked scope get no file
 5. `analyse` — `src/analyse/build_aggregates.py`: work-level decisions `data/processed/works_included.csv`, `analysis_manifest.json`, run counts in `data_quality_log.csv`, every table in `reports/tables/*.csv|md`
@@ -208,7 +219,8 @@ src/         run_pipeline.py; common/ (config, register, identifiers, log, dates
              http, raw_store, manifest, walk, interim, eligibility, aggregates),
              extract/ (selectors, crossref_common, crossref_works,
              crossref_peer_reviews, sciety_evaluations), normalise/, analyse/, report/
-tools/       audit_text.py (repository text audit)
+tools/       audit_text.py (repository text audit), check_register_prefixes.py
+             (owner-prefix and member check of the register against Crossref)
 tests/       pytest suite and fixtures
 data/        raw/ (outside Git), interim/ (outside Git), processed/, manifests/
 reports/     tables/, figures/, CHECKSUMS.txt
@@ -263,7 +275,7 @@ discussion for individually verified journals. Full statement:
 4. Extension of the platform register with additional attributes describing
    outputs and review-transparency features of each platform.
 5. Cross-DOI work correspondence for the Gates Open Research / VeriXiv pair
-   after the VeriXiv deposit is confirmed and before release freeze, resolved from both sides (`is-preprint-of` on the VeriXiv
+   (deposit confirmed, D-051) before release freeze, resolved from both sides (`is-preprint-of` on the VeriXiv
    record, `has-preprint` on the Gates Open Research record; D-041);
    `cross_platform_overlap.csv` currently reports overlap on
    `canonical_work_id` only. OpenAlex serves only as a diagnostic in the

@@ -17,7 +17,7 @@ from urllib.parse import quote, parse_qs, urlsplit
 from ..common.config import RunConfig
 from ..common.dates import format_partial_date, parse_crossref_date, parse_timestamp
 from ..common.http import PoliteClient, default_transport
-from ..common.identifiers import normalise_doi
+from ..common.identifiers import collapse_repeated_slashes, identifier_flag, normalise_doi
 from ..common.interim import (CROSSREF_REVIEW_COLUMNS, CROSSREF_WORK_COLUMNS, resolve_interim_root,
                               write_csv)
 from ..common.manifest import (DEFAULT_MANIFEST_ROOT, WalkRecord, list_walks, run_manifest_path,
@@ -146,9 +146,13 @@ def flatten_item(item: Mapping[str, Any], *, platform_id: str, walk: WalkRecord,
     relation = item.get("relation") or {}
     targets = relation.get("is-review-of") if isinstance(relation, Mapping) else None
     joined = "; ".join(str(t.get("id", "")) for t in targets if isinstance(t, Mapping)) if targets else ""
+    raw_doi = str(item.get("DOI", ""))
     return {
-        "doi": normalise_doi(item.get("DOI", "")) if item.get("DOI") else "",
-        "doi_original": str(item.get("DOI", "")),
+        # ``doi`` is the canonical string form (repeated slashes collapsed);
+        # ``doi_original`` keeps the deposited string, ``doi_flag`` names the defect.
+        "doi": collapse_repeated_slashes(normalise_doi(raw_doi)) if raw_doi else "",
+        "doi_original": raw_doi,
+        "doi_flag": identifier_flag(raw_doi),
         "type": str(item.get("type", "")),
         "title": _first(item.get("title")),
         "prefix": str(item.get("prefix", "") or ""),
@@ -196,6 +200,10 @@ def flatten_works(store: RawStore, walk: WalkRecord, selectors: list[CrossrefSel
                     bases = sel.attribution_bases(item)
                     row.update(attribution_basis=";".join(bases), included="" if bases else "false",
                                exclusion_reason="" if bases else "no_journal_attribution")
+                elif sel.is_companion_item(item):
+                    # Review reports / author responses deposited as journal-article
+                    # (JMIRx Med, D-050): kept in the interim, never counted as works.
+                    row.update(included="false", exclusion_reason="companion_item")
                 out[sel.row_id].append(row)
     return out
 
@@ -213,7 +221,7 @@ def flatten_reviews(store: RawStore, walk: WalkRecord, selectors: list[CrossrefS
     out: dict[str, list[dict[str, Any]]] = {s.row_id: [] for s in selectors}
     out[unattributed] = []
     for item, page in iter_walk_items(store, walk):
-        if item.get("type") != REVIEW_RECORD_TYPE:
+        if item.get("type") != REVIEW_RECORD_TYPE and not any(s.is_evaluation_record(item) for s in selectors):
             continue
         targets = review_targets(item)
         inverse = (inverse_targets or {}).get(normalise_doi(item.get("DOI", "")), [])
@@ -228,7 +236,8 @@ def flatten_reviews(store: RawStore, walk: WalkRecord, selectors: list[CrossrefS
                                 accepted_attempt=page.accepted_attempt, retrieved_at_utc=page.accepted_at_utc)
             for target in targets:
                 out[key].append({**base, "target_id_raw": target.raw, "target_id_type": target.id_type,
-                                 "target_flag": target.flag, "target_relation_type": target.relation_type})
+                                 "target_flag": target.flag, "target_relation_type": target.relation_type,
+                                 "asserted_by": target.asserted_by, "target_doi_flag": target.doi_flag})
     return out
 
 
@@ -271,6 +280,10 @@ def run_crossref(run_config: RunConfig, sources_config: Mapping[str, Any], platf
         if scope.record_type == REVIEW_RECORD_TYPE:
             dependents = [s for s in selectors if scope.prefix in s.review_prefixes()
                           and REVIEW_RECORD_TYPE in s.record_types]
+        elif kinds == "reviews":
+            # a work-type walk feeding the review stage (evaluation_record_types)
+            dependents = [s for s in selectors if scope.prefix in s.prefixes
+                          and scope.record_type in s.evaluation_record_types]
         else:
             dependents = [s for s in selectors if scope.key in s.work_keys()
                           and scope.record_type in s.record_types]
@@ -282,7 +295,7 @@ def run_crossref(run_config: RunConfig, sources_config: Mapping[str, Any], platf
                              blocked_rows=outcome.blocked_rows)
             outcomes.append(outcome)
             continue
-        if scope.record_type == REVIEW_RECORD_TYPE:
+        if kinds == "reviews":
             inverse = inverse_review_targets(run_config, dependents, store, manifest_root)
             tables = flatten_reviews(store, walk, dependents, scope.prefix, inverse)
         else:

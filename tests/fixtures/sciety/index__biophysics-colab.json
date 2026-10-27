@@ -1,0 +1,48 @@
+{
+ "articles": [
+  {
+   "@context": "https://w3id.org/docmaps/context.jsonld",
+   "id": "https://sciety.org/docmaps/v1/evaluations-by/biophysics-colab/10.1101/2023.02.02.000002.docmap.json",
+   "type": "docmap",
+   "created": "2023-04-01T00:00:00.000Z",
+   "updated": "2023-04-05T00:00:00.000Z",
+   "publisher": {
+    "id": "https://www.sciencecolab.org/biophysics-colab",
+    "name": "Biophysics Colab",
+    "account": {
+     "id": "https://sciety.org/groups/4bbf0c12-629b-4bb8-91d6-974f4df8efb2",
+     "service": "https://sciety.org"
+    }
+   },
+   "first-step": "_:b0",
+   "steps": {
+    "_:b0": {
+     "assertions": [],
+     "inputs": [
+      {
+       "doi": "10.1101/2023.02.02.000002",
+       "url": "https://doi.org/10.1101/2023.02.02.000002"
+      }
+     ],
+     "actions": [
+      {
+       "participants": [],
+       "outputs": [
+        {
+         "type": "review-article",
+         "published": "2023-04-05T09:00:00.000Z",
+         "content": [
+          {
+           "type": "web-page",
+           "url": "https://sciety.org/evaluations/hypothesis:BPC001/content"
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   }
+  }
+ ]
+}

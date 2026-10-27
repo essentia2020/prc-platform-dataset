@@ -1,0 +1,126 @@
+{
+ "status": "ok",
+ "message": {
+  "items": [
+   {
+    "DOI": "10.3310/nihropenres.13716.1",
+    "type": "journal-article",
+    "prefix": "10.3310",
+    "member": "6221",
+    "title": [
+     "Synthetic NIHR Open Research article v1"
+    ],
+    "container-title": [
+     "NIHR Open Research"
+    ],
+    "created": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "deposited": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "indexed": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "issued": {
+     "date-parts": [
+      [
+       2023,
+       4,
+       3
+      ]
+     ]
+    },
+    "published-online": {
+     "date-parts": [
+      [
+       2023,
+       4,
+       3
+      ]
+     ]
+    }
+   },
+   {
+    "DOI": "10.3310/nihropenres.13716.3",
+    "type": "journal-article",
+    "prefix": "10.3310",
+    "member": "6221",
+    "title": [
+     "Synthetic NIHR Open Research article v3"
+    ],
+    "container-title": [
+     "NIHR Open Research"
+    ],
+    "created": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "deposited": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "indexed": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "issued": {
+     "date-parts": [
+      [
+       2024,
+       2,
+       9
+      ]
+     ]
+    },
+    "published-online": {
+     "date-parts": [
+      [
+       2024,
+       2,
+       9
+      ]
+     ]
+    }
+   },
+   {
+    "DOI": "10.3310/abcd1234",
+    "type": "journal-article",
+    "prefix": "10.3310",
+    "member": "6221",
+    "title": [
+     "Synthetic NIHR Journals Library article (not the row)"
+    ],
+    "container-title": [
+     "Health Technology Assessment"
+    ],
+    "created": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "deposited": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "indexed": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "issued": {
+     "date-parts": [
+      [
+       2023,
+       5,
+       1
+      ]
+     ]
+    },
+    "published-online": {
+     "date-parts": [
+      [
+       2023,
+       5,
+       1
+      ]
+     ]
+    }
+   }
+  ],
+  "total-results": 3,
+  "next-cursor": null
+ }
+}

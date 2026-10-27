@@ -59,7 +59,7 @@ One line per register row (observation series). Lists are joined with `; `;
 | `doi_pattern` | regex or empty | selects the row's DOIs | `^10\.32388/` |
 | `doi_version_pattern` | regex or empty | group 1 = canonical stem | `^(10\.32388/[a-z0-9]+)(?:\.\d+)?$` |
 | `sciety_group_slug` | string or empty | slug in `https://sciety.org/groups/<slug>` | `prereview` |
-| `extraction_selector` | JSON | keys `crossref` and/or `sciety`; `crossref` holds `prefix` (owner prefix or list) and/or `issn` (journal ISSN; requires `doi_regex`), `record_types`, `doi_regex`, optional `review_doi_prefix`, `journals`, `target_filter`, `notes` | `{"crossref":{…}}` |
+| `extraction_selector` | JSON | keys `crossref` and/or `sciety`; `crossref` holds `prefix` (owner prefix or list) and/or `issn` (journal ISSN; requires `doi_regex` or `container_titles`), `record_types`, optional `scope_keys` (record type → `prefix`/`issn`, required when both keys are declared; peer-review scopes are always prefix-based), `doi_regex`, `container_titles`, `review_doi_prefix` (prefix or list of owner prefixes walked for review records), `review_doi_regex`, `evaluation_record_types` with `evaluation_doi_regex` (evaluation records deposited under a work type, e.g. PCI recommendations as `journal-article`), `companion_title_regex` (work-type records that are review reports or author responses, excluded as `companion_item`), `sample_work_doi`, `sample_review_doi` (one known DOI each for `tools/check_register_prefixes.py`), `journals`, `target_filter`, `notes` | `{"crossref":{…}}` |
 | `eligibility_events` | list | free text per event | `first public posting; ≥1 qualifying review` |
 | `counting_event` | enum | `first_public_posting`, `earliest_qualifying_evaluation`, `final_article` | `first_public_posting` |
 | `counting_event_date_field` | string | source field priority | `posted -> issued` |
@@ -77,7 +77,17 @@ or `pending_journal_verification` cannot have `register_status: quantified`.
 For Copernicus, `extraction_selector.crossref.journals` is the hand-verified
 list: each entry must contain `evidence_url`, `verified_on`, and
 `discussion_selector`. `candidate_journal_titles` is not an executable
-filter. A review-deposit confirmation is still required for VeriXiv.
+filter. The VeriXiv review deposit was confirmed in run_20261026_01
+(D-051); the row stays `provisional: true` until its first flattening.
+
+A quantified Crossref row whose selector matches zero records across all
+of its complete scopes publishes no count: every cell is `not_observable`
+with `source_observability_status=selector_no_match` and the run appends a
+`selector_no_match` data-quality row (D-047). The condition marks a
+selector defect (owner prefix, pattern or record type), not an observed
+zero. `tools/check_register_prefixes.py` compares the declared scopes with
+the Crossref prefix and member of `sample_work_doi` / `sample_review_doi`
+before an extraction.
 
 `extraction_selector.crossref.work_correspondences` holds explicit
 record-level correspondences: `primary_doi`, `alias_doi`, `version_stem`,
@@ -217,6 +227,7 @@ without a complete walk have `extraction_status` `incomplete` or `failed`.
 | `created`, `deposited`, `indexed` | timestamp | `*.date-time` | diagnostics only |
 | `issued`, `posted`, `published_online`, `published_print` | partial date | `*.date-parts[0]` as `YYYY`, `YYYY-MM` or `YYYY-MM-DD` | `2023-05` |
 | `relation_is_review_of` | string | `relation.is-review-of[*].id` joined by `; ` | — |
+| `doi_flag` | enum or empty | `repeated_slash` when the deposited DOI contains `//`; `doi` holds the collapsed form, `doi_original` the deposited string (D-053) | — |
 | `relation_json` | JSON string | complete Crossref `relation` object, preserving version and has-review evidence | `{}` |
 | `retrieved_at_utc` | timestamp | manifest `accepted_at_utc` | — |
 | `platform_id` | string | `row_id` | `qeios_hosted_works` |
@@ -243,14 +254,25 @@ Unattributed preprints have `included=false` and
 
 ### 4.2 `crossref_peer_reviews__<row_id>.csv`
 
-Same columns as 4.1 plus one line per (review DOI, target):
+Same columns as 4.1 plus one line per (review DOI, target, `asserted_by`).
+Crossref returns most `is-review-of` relations twice, once asserted by the
+subject and once by the object; both lines are kept here and collapse to one
+relation at normalisation (key: `row_id`, `review_record_id`,
+`reviewed_work_id`).
 
 | Column | Type | Meaning |
 |---|---|---|
 | `target_id_raw` | string | `relation.is-review-of[i].id` as asserted, or the work DOI of an inverse `has-review` edge |
 | `target_id_type` | string | `relation.is-review-of[i].id-type` (`doi`, `url`, …), or `doi` for inverse work-side evidence |
 | `target_flag` | enum or empty | `placeholder`, `malformed`, `self_reference`, `missing` (neither review-side nor usable work-side target evidence); empty when valid |
+| `asserted_by` | enum or empty | `relation.is-review-of[i].asserted-by` (`subject`, `object`); empty when absent |
+| `target_doi_flag` | enum or empty | `repeated_slash` when the asserted target DOI contains `//`; the target is matched on its collapsed form (D-053) |
 | `target_relation_type` | enum | `is-review-of` or `has-review`; the latter identifies inverse work-side evidence |
+
+Evaluation records deposited under a work type (PCI recommendations,
+`journal-article` under `10.24072/pci.`) are selected by
+`evaluation_record_types` + `evaluation_doi_regex` and written to this file
+with their deposited `type`; they never enter 4.1.
 
 A review record is attributed to a row by its valid targets (DOI matching
 the row's work selector), by an explicit `review_doi_regex`, by
@@ -324,7 +346,8 @@ gets no file and an older file is removed). Column order is fixed by
 | `relation_json` | JSON string or empty | full source relation object retained on Crossref work records |
 | `record_flag` | enum or empty | `withdrawn`, `placeholder_target`, `malformed_target`, `self_reference_target`, `missing_target`, `later_version` |
 | `attribution_basis` | string or empty | Copernicus: `; `-joined signals (see 4.1) |
-| `exclusion_reason` | enum or empty | record-level reason carried from extraction (`no_journal_attribution`) |
+| `exclusion_reason` | enum or empty | record-level reason carried from extraction (`no_journal_attribution`, `companion_item`) |
+| `identifier_flag` | enum or empty | `repeated_slash`: the deposited identifier (work DOI or review target) contained `//`; `source_record_id` and `work_id` keep the asserted string, canonical ids use the collapsed form (D-053) |
 | `retrieved_at_utc`, `walk_id`, `page` | string | provenance of the interim line |
 
 `later_version` is informational: a work with several version records keeps
@@ -358,7 +381,7 @@ counts.
 | `canonical_work_id`, `work_doi` | string | — |
 | `correspondence_basis` | string or empty | documented record-level correspondence basis carried from contributing work records |
 | `included` | boolean | — |
-| `exclusion_reason` | enum or empty | `missing_event_date`, `ambiguous_cutoff_date`, `future_event`, `no_qualifying_review`, `withdrawn`, `later_version`, `register_only`, `no_journal_attribution` |
+| `exclusion_reason` | enum or empty | `missing_event_date`, `ambiguous_cutoff_date`, `future_event`, `no_qualifying_review`, `withdrawn`, `later_version`, `register_only`, `no_journal_attribution`, `companion_item` (review report or author response deposited as a work-type record, D-050) |
 | `posting_event_date_raw`, `posting_event_date_precision`, `posting_event_interval_start`, `posting_event_interval_end` | see 5.1 | posting event group |
 | `eligibility_review_event_date_raw`, `eligibility_review_event_date_precision`, `eligibility_review_event_interval_start`, `eligibility_review_event_interval_end`, `eligibility_review_record_id` | see 5.1 | eligibility-review event group |
 | `counting_event_date_raw`, `counting_event_date_precision`, `counting_event_interval_start`, `counting_event_interval_end` | see 5.1 | counting event group |
@@ -396,7 +419,7 @@ remains the conservative interval of the chosen record;
 |---|---|---|
 | `issue_id` | string | unique (`DQ-001`, …) |
 | `row_id` | string | register row or `all` |
-| `issue_type` | enum | `deposition_discontinuity`, `no_review_records`, `partial_source_coverage`, `placeholder_relation`, `retrospective_deposit`, `date_semantics`, `missing_event_date`, `ambiguous_cutoff_date`, `malformed_doi`, `withdrawn_record`, `other` |
+| `issue_type` | enum | `deposition_discontinuity`, `no_review_records`, `partial_source_coverage`, `placeholder_relation`, `retrospective_deposit`, `date_semantics`, `missing_event_date`, `ambiguous_cutoff_date`, `malformed_doi`, `withdrawn_record`, `selector_no_match`, `companion_record`, `other` |
 | `description` | string | neutral description of the issue |
 | `evidence` | string | URL, record id or test name |
 | `effect_on_counts` | string | expected direction and scope of the effect |
@@ -422,7 +445,9 @@ applicable, `year` (integer), `year_label` (`2026 (year_to_date, cutoff
 `partial_year` (boolean), `extraction_status` (`complete` / `incomplete` /
 `failed`; `not_applicable` for rows without a machine-readable source),
 `source_observability_status` (`observable` / `partial_known_scope` /
-`unknown_scope` / `pending_run` / `not_observable`; `pending_run` is the
+`unknown_scope` / `pending_run` / `selector_no_match` / `not_observable`;
+`selector_no_match` marks a quantified row whose complete scopes matched no
+record (D-047) and blocks every group the row belongs to; `pending_run` is the
 transient state of a run-deferred coverage start before the first complete
 run and must be absent from released tables, D-039), `observation_status` (`observed` /
 `observed_zero` / `not_observable` / `register_only` / `not_applicable`),

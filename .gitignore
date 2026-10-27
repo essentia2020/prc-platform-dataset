@@ -24,3 +24,9 @@ dist/
 .vscode/
 .idea/
 .DS_Store
+
+# Harvested records and per-run summaries live in the release archive (D-056)
+data/processed/records_*.csv
+data/processed/works_included.csv
+data/processed/analysis_manifest.json
+data/processed/normalisation_summary.json

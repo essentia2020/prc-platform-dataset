@@ -82,9 +82,11 @@ RECOGNITION_SIGNALS = ["public_review_reports", "approval_status_public", "summa
                        "version_linked_review", "public_author_response", "review_has_doi"]
 DQ_COLUMNS = ["issue_id", "row_id", "issue_type", "description", "evidence", "effect_on_counts", "handling",
               "n_records_affected", "status", "origin", "run_id", "walk_id"]
-GROUP_BLOCKING_SOURCE_STATUSES = ("unknown_scope", "pending_run")   # D-038 (amended), D-039
+GROUP_BLOCKING_SOURCE_STATUSES = ("unknown_scope", "pending_run", "selector_no_match")   # D-038 (amended), D-039, D-047
 GROUP_BLOCKING_COVERAGE = ("partial_coverage",)                     # D-038 (amended)
 PENDING_RUN = "pending_run"
+SELECTOR_NO_MATCH = "selector_no_match"
+RECORD_LEVEL_EXCLUSIONS = ("no_journal_attribution", "companion_item")   # set at extraction, carried per record
 
 
 class AnalysisError(RuntimeError):
@@ -128,6 +130,13 @@ class RowAnalysis:
     diagnostics: dict[str, int] = field(default_factory=dict)
     effective_register_status: str = ""     # register status after run-derived fallbacks (D-032)
     evaluation_ids_by_year: dict[int, set[str]] = field(default_factory=dict)   # dated evaluations on/before cutoff
+    selector_no_match: bool = False         # complete scopes, zero matching records (D-047): never a zero
+
+    @property
+    def publishable(self) -> bool:
+        """A count may be published for this row (register summary, cells)."""
+        return (self.complete and self.effective_register_status == "quantified" and not self.start_unresolved
+                and not self.selector_no_match)
 
     @property
     def row_id(self) -> str:
@@ -264,8 +273,10 @@ def analyse_row(row: Mapping[str, Any], state: RowState, records: list[Mapping[s
                                       parent["review_record_id"]))
         bases = sorted({b for r in work_recs for b in (r.get("attribution_basis") or "").split(";") if b})
         title = "WITHDRAWN" if work_recs and not active else ""
-        if work_recs and all(r.get("exclusion_reason") == "no_journal_attribution" for r in work_recs):
-            decision = WorkDecision(included=False, exclusion_reason="no_journal_attribution",
+        record_reasons = {r.get("exclusion_reason") or "" for r in work_recs}
+        if work_recs and len(record_reasons) == 1 and record_reasons <= set(RECORD_LEVEL_EXCLUSIONS):
+            # every record of the work carries the same extraction-stage exclusion
+            decision = WorkDecision(included=False, exclusion_reason=next(iter(record_reasons)),
                                     n_evaluation_records=len({e.record_id for e in eval_events}))
         else:
             decision = decide_work(counting_event=counting_event, postings=postings, evaluations=eval_events,
@@ -302,6 +313,10 @@ def analyse_row(row: Mapping[str, Any], state: RowState, records: list[Mapping[s
                 e["canonical_evaluation_id"] or e["review_record_id"])
     analysis.diagnostics["n_withdrawn_records"] = sum(
         1 for recs in works_by_id.values() for r in recs if r.get("record_flag") == "withdrawn")
+    analysis.diagnostics["n_malformed_doi_records"] = sum(
+        1 for rec in records if rec.get("identifier_flag"))
+    analysis.diagnostics["n_companion_item_records"] = sum(
+        1 for recs in works_by_id.values() for r in recs if r.get("exclusion_reason") == "companion_item")
     analysis.diagnostics["n_included"] = len(analysis.included_works())
     return analysis
 
@@ -360,6 +375,14 @@ def row_cells(analysis: RowAnalysis, years: Iterable[int], cutoff: date) -> dict
             status = "unknown_scope" if analysis.complete else PENDING_RUN
             cell = Cell(cell.row_id, cell.year, None, "not_observable", cell.extraction_status, cell.partial_year,
                         "no_data", status)
+        if (analysis.selector_no_match and not analysis.start_unresolved
+                and cell.observation_status in ("observed", "observed_zero", "not_observable")):
+            # D-047: complete scopes that match no record of the row are a selector
+            # defect (wrong owner prefix, pattern or type), not an observation of zero.
+            # A row with an unresolved coverage start keeps ``unknown_scope`` (D-039);
+            # the data-quality row still names the selector as the cause.
+            cell = Cell(cell.row_id, cell.year, None, "not_observable", cell.extraction_status, cell.partial_year,
+                        "no_data", SELECTOR_NO_MATCH)
         cells[year] = cell
     return cells
 
@@ -554,6 +577,23 @@ def update_data_quality_log(path: Path, analyses: dict[str, RowAnalysis], manife
         observe(a, "withdrawn_record", d.get("n_withdrawn_records", 0),
                 "Work records titled WITHDRAWN.", "Record dropped before eligibility.", "lowers the row count",
                 f"records_{a.row_id}.csv (record_flag=withdrawn)")
+        observe(a, SELECTOR_NO_MATCH, 1 if a.selector_no_match else 0,
+                "All primary scopes complete but the row's selector matched no work and no evaluation record "
+                "(owner prefix, DOI pattern or record type mismatch).",
+                "Every cell of the row is not_observable with source_observability_status=selector_no_match; "
+                "register_summary.unique_works_to_cutoff is blank; group sums that include the row are blank. "
+                "Correct the selector before the next extraction (tools/check_register_prefixes.py).",
+                "no count published for the row", f"run manifest: scopes of {a.row_id}")
+        observe(a, "malformed_doi", d.get("n_malformed_doi_records", 0),
+                "Records or relation lines whose DOI string was deposited with a repeated slash (10.x//y).",
+                "Raw string kept in source_record_id / target_id_raw; canonical identifiers use the single-slash "
+                "form (identifier_flag=repeated_slash).", "none on counts; restores records a strict match would lose",
+                f"records_{a.row_id}.csv (identifier_flag)")
+        observe(a, "companion_record", d.get("n_companion_item_records", 0),
+                "Review reports or author responses deposited as journal-article records in the row's container.",
+                "Kept in the works interim with included=false and exclusion_reason=companion_item; never counted "
+                "as works; not attributed to articles (no is-review-of relation).", "lowers the row count",
+                f"records_{a.row_id}.csv (exclusion_reason=companion_item)")
         observe(a, "missing_event_date", d.get("excluded_missing_event_date", 0),
                 "Works whose counting event has no asserted date.", "Excluded; never imputed.",
                 "lowers the row count")
@@ -611,6 +651,13 @@ def run(run_config: RunConfig, sources_config: Mapping[str, Any], platforms: lis
             a.diagnostics["coverage_start_resolved_from_run"] = start
         a.eligible_start, a.eligible_end, a.start_unresolved = start, end, unresolved
         a.effective_register_status = effective_register_status(row, manifest, a.complete)
+        if (a.complete and a.effective_register_status == "quantified"
+                and a.diagnostics.get("n_work_records", 0) == 0 and a.diagnostics.get("n_evaluation_records", 0) == 0):
+            # D-047 guard: zero records across all complete scopes is never observed_zero.
+            a.selector_no_match = True
+            a.diagnostics[SELECTOR_NO_MATCH] = 1
+            logger.event(SELECTOR_NO_MATCH, row_id=row_id,
+                         scopes=sorted(a.state.primary_scopes))
         if a.effective_register_status == "register_only":
             a.diagnostics["register_only_fallback"] = 1
             logger.event("register_only_fallback", row_id=row_id,
@@ -671,7 +718,7 @@ def run(run_config: RunConfig, sources_config: Mapping[str, Any], platforms: lis
         row = a.row
         inc = a.included_works() if a.complete else []
         yrs = sorted({int(w.counting_year) for w in inc})  # type: ignore[arg-type]
-        publishable = a.complete and a.effective_register_status == "quantified" and not a.start_unresolved
+        publishable = a.publishable
         summary_rows.append({
             "row_id": a.row_id, "organisation_id": row.get("organisation_id", ""),
             "initiation_class": row.get("initiation_class", ""),
@@ -691,8 +738,8 @@ def run(run_config: RunConfig, sources_config: Mapping[str, Any], platforms: lis
         })
     _write_table(tables_root, "register_summary", list(summary_rows[0].keys()), summary_rows, cutoff=cutoff,
                  additivity="row_series", snapshot=snapshot,
-                 note="`unique_works_to_cutoff` is blank for register-only rows, blocked extraction or an unresolved "
-                      "coverage start.")
+                 note="`unique_works_to_cutoff` is blank for register-only rows, blocked extraction, an unresolved "
+                      "coverage start or a selector that matched no record (selector_no_match).")
 
     # coverage matrix
     coverage_rows = []
@@ -762,6 +809,7 @@ def run(run_config: RunConfig, sources_config: Mapping[str, Any], platforms: lis
                        "cross_check_scopes": a.state.cross_check_scopes,
                        "blocking_scopes": a.state.blocking_scopes, "eligible_start": a.eligible_start,
                        "eligible_end": a.eligible_end, "start_unresolved": a.start_unresolved,
+                       "selector_no_match": a.selector_no_match,
                        "partial_known_scope_years": sorted(a.partial_known_scope_years),
                        "diagnostics": a.diagnostics} for a in analyses.values()},
         "n_data_quality_issues_observed": sum(1 for r in dq_rows if r["status"] == "observed"),

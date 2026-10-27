@@ -23,7 +23,7 @@ import re
 from dataclasses import dataclass, field
 from typing import Any, Iterable, Mapping
 
-from ..common.identifiers import is_doi_like, normalise_doi
+from ..common.identifiers import collapse_repeated_slashes, identifier_flag, is_doi_like, normalise_doi
 from ..common.correspondence import correspondence_index
 
 PLACEHOLDER_TARGET_RE = re.compile(
@@ -76,10 +76,15 @@ class CrossrefSelector:
     doi_regex: re.Pattern | None = None
     exclude_doi_regex: re.Pattern | None = None
     container_titles: list[str] = field(default_factory=list)
-    review_doi_prefix: str | None = None
+    review_doi_prefixes: list[str] = field(default_factory=list)   # owner prefixes of review records
     review_doi_regex: re.Pattern | None = None
     exclude_title_regex: re.Pattern | None = None
-    target_filter: str | None = None          # "external" for qeios_external_works
+    evaluation_record_types: list[str] = field(default_factory=list)  # non-peer-review types that are evaluations
+    evaluation_doi_regex: re.Pattern | None = None
+    companion_title_regex: re.Pattern | None = None   # journal-article companions (review reports, responses)
+    sample_work_doi: str = ""
+    sample_review_doi: str = ""
+    target_filter: str | None = None          # "external" for qeios_external_works / pci_recommendations
     journals: list[JournalRule] = field(default_factory=list)
     egusphere_regex: re.Pattern | None = None
     selector_status: str = ""
@@ -98,11 +103,42 @@ class CrossrefSelector:
         """Scope keys for work record types: owner prefixes and ``issn:<issn>``."""
         return list(self.prefixes) + [f"issn:{i}" for i in self.issns]
 
+    @property
+    def review_doi_prefix(self) -> str | None:
+        """First declared review owner prefix (compatibility accessor)."""
+        return self.review_doi_prefixes[0] if self.review_doi_prefixes else None
+
     def review_prefixes(self) -> list[str]:
+        """Owner prefixes walked for peer-review records: the work prefixes
+        plus every declared ``review_doi_prefix`` (a string or a list — a
+        row's reviews may be owned by another member than its works, e.g.
+        F1000Research → 10.5256, Open Research Europe → 10.68336)."""
         out = list(self.prefixes)
-        if self.review_doi_prefix and self.review_doi_prefix not in out:
-            out.append(self.review_doi_prefix)
+        for prefix in self.review_doi_prefixes:
+            if prefix not in out:
+                out.append(prefix)
         return out
+
+    def record_types_include_evaluations(self) -> bool:
+        """Does the row expect evaluation records (peer-review or a declared work type)?"""
+        return REVIEW_RECORD_TYPE in self.record_types or bool(self.evaluation_record_types)
+
+    def is_evaluation_record(self, item: Mapping[str, Any]) -> bool:
+        """Non-peer-review record that the row treats as an evaluation (D-049).
+
+        Peer Community In deposits recommendations, reviews and decisions as
+        ``journal-article`` records carrying ``is-review-of``; the DOI regex
+        selects the recommendation records.
+        """
+        if item.get("type") not in self.evaluation_record_types or not self.evaluation_doi_regex:
+            return False
+        return bool(self.evaluation_doi_regex.match(normalise_doi(item.get("DOI", ""))))
+
+    def is_companion_item(self, item: Mapping[str, Any]) -> bool:
+        """Journal-article companion (review report / author response) deposited as an article (D-050)."""
+        if not self.companion_title_regex:
+            return False
+        return any(self.companion_title_regex.match(t.strip()) for t in _as_list(item.get("title")))
 
     # ------------------------------------------------------------- works
     def doi_in_scope(self, doi: str) -> bool:
@@ -126,7 +162,11 @@ class CrossrefSelector:
     def matches_work(self, item: Mapping[str, Any]) -> bool:
         if item.get("type") not in WORK_RECORD_TYPES or item.get("type") not in self.record_types:
             return False
-        doi = normalise_doi(item.get("DOI", ""))
+        if self.is_evaluation_record(item):
+            return False
+        # Canonical form for selection: a repeated slash at source
+        # (10.15694//mep.…) must not hide the record from its row.
+        doi = collapse_repeated_slashes(normalise_doi(item.get("DOI", "")))
         if not self.doi_in_scope(doi):
             return False
         if self.container_titles:
@@ -197,8 +237,11 @@ class CrossrefSelector:
 
     # ----------------------------------------------------------- reviews
     def claims_review(self, item: Mapping[str, Any], targets: list["ReviewTarget"]) -> bool:
-        """Is this peer-review record attributable to the row?"""
-        if item.get("type") != REVIEW_RECORD_TYPE or REVIEW_RECORD_TYPE not in self.record_types:
+        """Is this evaluation record attributable to the row?"""
+        if item.get("type") == REVIEW_RECORD_TYPE:
+            if REVIEW_RECORD_TYPE not in self.record_types:
+                return False
+        elif not self.is_evaluation_record(item):
             return False
         doi = normalise_doi(item.get("DOI", ""))
         if self.review_doi_regex and self.review_doi_regex.match(doi):
@@ -215,6 +258,10 @@ class CrossrefSelector:
             titles = [t.strip() for t in _as_list(item.get("container-title"))]
             if any(t in self.container_titles for t in titles):
                 return True
+            if not self.doi_regex:
+                # A container-title selector cannot be tested on a bare target DOI: the shared
+                # publisher prefix would claim every review of every journal under it (D-054).
+                return False
         return any(t.doi and self.doi_in_scope(t.doi) for t in targets if not t.flag)
 
 
@@ -222,16 +269,23 @@ class CrossrefSelector:
 class ReviewTarget:
     raw: str
     id_type: str
-    doi: str          # normalised DOI when id_type is doi-like, else ""
+    doi: str          # normalised DOI when id_type is doi-like, else "" (repeated slashes collapsed)
     flag: str         # "", "placeholder", "malformed", "self_reference", "missing"
     relation_type: str = "is-review-of"
+    asserted_by: str = ""   # Crossref ``asserted-by``: subject / object / ""
+    doi_flag: str = ""      # "repeated_slash" when the raw target DOI had a run of slashes
 
 
 def review_targets(item: Mapping[str, Any]) -> list[ReviewTarget]:
-    """Flatten ``relation.is-review-of`` with the three target flags."""
+    """Flatten ``relation.is-review-of`` with the target flags.
+
+    One ``ReviewTarget`` per relation line as asserted by Crossref; the same
+    (review, target) pair may appear twice with different ``asserted_by``
+    values — the normalise key absorbs the duplicate, the interim keeps both.
+    """
     relation = item.get("relation") or {}
     entries = relation.get("is-review-of") if isinstance(relation, Mapping) else None
-    review_doi = normalise_doi(item.get("DOI", "")) if item.get("DOI") else ""
+    review_doi = collapse_repeated_slashes(normalise_doi(item.get("DOI", ""))) if item.get("DOI") else ""
     if not entries:
         return [ReviewTarget("", "", "", "missing")]
     out: list[ReviewTarget] = []
@@ -241,8 +295,10 @@ def review_targets(item: Mapping[str, Any]) -> list[ReviewTarget]:
             continue
         raw = str(entry.get("id", "")).strip()
         id_type = str(entry.get("id-type", "")).strip().lower()
+        asserted = str(entry.get("asserted-by", "") or "").strip().lower()
         doi = ""
         flag = ""
+        doi_flag = ""
         if id_type == "doi" or (not id_type and raw.lower().startswith("10.")):
             try:
                 doi = normalise_doi(raw)
@@ -253,14 +309,17 @@ def review_targets(item: Mapping[str, Any]) -> list[ReviewTarget]:
             elif not doi or not is_doi_like(doi):
                 flag = "malformed"
                 doi = ""
-            elif review_doi and doi == review_doi:
-                flag = "self_reference"
+            else:
+                doi_flag = identifier_flag(doi)
+                doi = collapse_repeated_slashes(doi)
+                if review_doi and doi == review_doi:
+                    flag = "self_reference"
         elif id_type in ("url", "uri"):
             if not raw.lower().startswith(("http://", "https://")):
                 flag = "malformed"
         elif not raw:
             flag = "malformed"
-        out.append(ReviewTarget(raw, id_type, doi, flag))
+        out.append(ReviewTarget(raw, id_type, doi, flag, asserted_by=asserted, doi_flag=doi_flag))
     return out
 
 
@@ -282,6 +341,14 @@ def compile_crossref_selector(row: Mapping[str, Any]) -> CrossrefSelector | None
     target_filter = None
     if "target_filter" in block:
         target_filter = "external"
+    evaluation_types = _as_list(block.get("evaluation_record_types"))
+    for t in evaluation_types:
+        if t == REVIEW_RECORD_TYPE or t not in WORK_RECORD_TYPES:
+            raise SelectorError(f"row {row.get('row_id')}: evaluation_record_types may only name work record "
+                                f"types deposited as evaluations, got {t!r}")
+    if evaluation_types and not block.get("evaluation_doi_regex"):
+        raise SelectorError(f"row {row.get('row_id')}: evaluation_record_types requires evaluation_doi_regex")
+    review_prefixes = [p for p in _as_list(block.get("review_doi_prefix")) if p]
     issns = [i.strip().upper() for i in _as_list(block.get("issn")) if i and i.strip()]
     for issn in issns:
         if not ISSN_RE.match(issn):
@@ -300,9 +367,14 @@ def compile_crossref_selector(row: Mapping[str, Any]) -> CrossrefSelector | None
         doi_regex=_compile(block.get("doi_regex")),
         exclude_doi_regex=_compile(block.get("exclude_doi_regex")),
         container_titles=_as_list(block.get("container_titles")),
-        review_doi_prefix=block.get("review_doi_prefix"),
+        review_doi_prefixes=review_prefixes,
         review_doi_regex=_compile(block.get("review_doi_regex")),
         exclude_title_regex=_compile(block.get("exclude_title_regex")),
+        evaluation_record_types=evaluation_types,
+        evaluation_doi_regex=_compile(block.get("evaluation_doi_regex")),
+        companion_title_regex=_compile(block.get("companion_title_regex")),
+        sample_work_doi=str(block.get("sample_work_doi") or ""),
+        sample_review_doi=str(block.get("sample_review_doi") or ""),
         target_filter=target_filter,
         journals=journals,
         egusphere_regex=egusphere,
@@ -369,6 +441,12 @@ def crossref_scopes(selectors: Iterable[CrossrefSelector], kinds: str = "all") -
             elif kinds in ("all", "works"):
                 for key in sel.work_keys():
                     scopes.add(CrossrefScope(key, record_type))
+        if kinds in ("all", "reviews"):
+            # Evaluation records deposited under a work type (PCI): the same
+            # prefix walk feeds the review stage; the walk is shared, not repeated.
+            for record_type in sel.evaluation_record_types:
+                for prefix in sel.prefixes:
+                    scopes.add(CrossrefScope(prefix, record_type))
     return sorted(scopes, key=lambda s: (s.key, s.record_type))
 
 

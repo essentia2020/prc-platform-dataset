@@ -1,0 +1,192 @@
+{
+ "status": "ok",
+ "message": {
+  "items": [
+   {
+    "DOI": "10.2196/35862",
+    "type": "journal-article",
+    "prefix": "10.2196",
+    "member": "2244",
+    "title": [
+     "Synthetic JMIRx Med article"
+    ],
+    "container-title": [
+     "JMIRx Med"
+    ],
+    "created": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "deposited": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "indexed": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "issued": {
+     "date-parts": [
+      [
+       2022,
+       4,
+       22
+      ]
+     ]
+    },
+    "published-online": {
+     "date-parts": [
+      [
+       2022,
+       4,
+       22
+      ]
+     ]
+    },
+    "relation": {
+     "has-preprint": [
+      {
+       "id": "10.2196/preprints.35862",
+       "id-type": "doi",
+       "asserted-by": "object"
+      }
+     ]
+    }
+   },
+   {
+    "DOI": "10.2196/36207",
+    "type": "journal-article",
+    "prefix": "10.2196",
+    "member": "2244",
+    "title": [
+     "Peer Review of \u201cSynthetic JMIRx Med article\u201d"
+    ],
+    "container-title": [
+     "JMIRx Med"
+    ],
+    "created": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "deposited": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "indexed": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "issued": {
+     "date-parts": [
+      [
+       2022,
+       1,
+       27
+      ]
+     ]
+    },
+    "published-online": {
+     "date-parts": [
+      [
+       2022,
+       1,
+       27
+      ]
+     ]
+    },
+    "relation": {
+     "has-preprint": [
+      {
+       "id": "10.2196/preprints.35862",
+       "id-type": "doi",
+       "asserted-by": "object"
+      }
+     ]
+    }
+   },
+   {
+    "DOI": "10.2196/36198",
+    "type": "journal-article",
+    "prefix": "10.2196",
+    "member": "2244",
+    "title": [
+     "Authors\u2019 Response to Peer Reviews of \u201cSynthetic JMIRx Med article\u201d"
+    ],
+    "container-title": [
+     "JMIRx Med"
+    ],
+    "created": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "deposited": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "indexed": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "issued": {
+     "date-parts": [
+      [
+       2022,
+       1,
+       27
+      ]
+     ]
+    },
+    "published-online": {
+     "date-parts": [
+      [
+       2022,
+       1,
+       27
+      ]
+     ]
+    },
+    "relation": {
+     "has-preprint": [
+      {
+       "id": "10.2196/preprints.35862",
+       "id-type": "doi",
+       "asserted-by": "object"
+      }
+     ]
+    }
+   },
+   {
+    "DOI": "10.2196/40000",
+    "type": "journal-article",
+    "prefix": "10.2196",
+    "member": "2244",
+    "title": [
+     "Synthetic other JMIR journal article"
+    ],
+    "container-title": [
+     "Journal of Medical Internet Research"
+    ],
+    "created": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "deposited": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "indexed": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "issued": {
+     "date-parts": [
+      [
+       2022,
+       5,
+       1
+      ]
+     ]
+    },
+    "published-online": {
+     "date-parts": [
+      [
+       2022,
+       5,
+       1
+      ]
+     ]
+    }
+   }
+  ],
+  "total-results": 4,
+  "next-cursor": null
+ }
+}

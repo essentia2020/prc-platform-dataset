@@ -30,7 +30,14 @@ Rules implemented here (and nowhere else):
 * Copernicus records keep ``attribution_basis`` and the
   ``no_journal_attribution`` exclusion reason set by the extraction stage;
 * no date is imputed: ``event_date_raw`` is the source date at its own precision
-  (``YYYY``, ``YYYY-MM`` or ``YYYY-MM-DD``) or empty.
+  (``YYYY``, ``YYYY-MM`` or ``YYYY-MM-DD``) or empty;
+* a DOI deposited with a repeated slash (``10.15694//mep.…``) is kept as
+  asserted in ``source_record_id`` / ``work_id`` and collapsed in the canonical
+  identifier; ``identifier_flag = repeated_slash`` marks the record or relation
+  line (DQ ``malformed_doi``);
+* evaluation records deposited under a work type (PCI recommendations,
+  ``evaluation_record_types``) arrive through the peer-review interim and are
+  evaluation records here; their ``source_record_type`` is the Crossref type.
 
 Rows whose primary scopes are not complete get no records file (an existing
 file from an earlier run is removed) and are listed in the stage summary so
@@ -65,7 +72,7 @@ RECORD_COLUMNS = [
     "event_kind", "event_date_raw", "event_date_precision", "event_interval_start", "event_interval_end",
     "created", "deposited", "indexed", "issued", "posted",
     "title", "container_title", "relation_json", "record_flag", "attribution_basis", "exclusion_reason",
-    "retrieved_at_utc", "walk_id", "page",
+    "identifier_flag", "retrieved_at_utc", "walk_id", "page",
 ]
 WORK_TYPES = ("posted-content", "journal-article")
 WITHDRAWN_RE = re.compile(r"^\s*WITHDRAWN\s*$", re.IGNORECASE)
@@ -139,6 +146,7 @@ def work_records(row: Mapping[str, Any], interim_rows: list[Mapping[str, str]]) 
         if r.get("type") not in WORK_TYPES:
             continue
         doi = normalise_doi(r["doi"])
+        asserted = normalise_doi(r.get("doi_original") or r["doi"])  # keeps a repeated slash if deposited so
         canonical, basis = canonical_work_doi(row, doi)
         rec = _blank_record(row_id, "work_record", "crossref")
         # The event kind follows the row's counting event, not the Crossref
@@ -147,9 +155,10 @@ def work_records(row: Mapping[str, Any], interim_rows: list[Mapping[str, str]]) 
         kind = "final_article" if row.get("counting_event") == "final_article" else "posting"
         rec.update(_event_date(r, chain))
         rec.update(
-            source_record_id=doi, source_record_type=r.get("type", ""),
-            work_id=_doi_id(doi), canonical_work_id=_doi_id(canonical), work_doi=canonical,
+            source_record_id=asserted, source_record_type=r.get("type", ""),
+            work_id=_doi_id(asserted), canonical_work_id=_doi_id(canonical), work_doi=canonical,
             correspondence_basis=basis, relation_json=r.get("relation_json", ""),
+            identifier_flag=r.get("doi_flag", ""),
             event_kind=kind,
             created=r.get("created", ""), deposited=r.get("deposited", ""), indexed=r.get("indexed", ""),
             issued=r.get("issued", ""), posted=r.get("posted", ""),
@@ -206,7 +215,9 @@ def review_records(row: Mapping[str, Any], interim_rows: list[Mapping[str, str]]
     out: list[dict[str, str]] = []
     seen: set[str] = set()
     for r in interim_rows:
-        if r.get("type") != "peer-review":
+        # The peer-review interim holds peer-review records and, for rows with
+        # ``evaluation_record_types``, evaluation records deposited under a work type.
+        if r.get("type") not in ("peer-review", *WORK_TYPES):
             continue
         doi = normalise_doi(r["doi"])
         if doi not in seen:
@@ -214,7 +225,8 @@ def review_records(row: Mapping[str, Any], interim_rows: list[Mapping[str, str]]
             rec = _blank_record(row_id, "evaluation_record", "crossref")
             rec.update(_event_date(r, ("issued", "created")))
             rec.update(
-                source_record_id=doi, source_record_type="peer-review",
+                source_record_id=doi, source_record_type=r.get("type") or "peer-review",
+                identifier_flag=r.get("doi_flag", ""),
                 review_record_id=doi, source_evaluation_id=doi, evaluation_doi=doi,
                 canonical_evaluation_id=canonical_evaluation_id(source="crossref", source_evaluation_id=doi,
                                                                 evaluation_doi=doi),
@@ -234,7 +246,8 @@ def review_records(row: Mapping[str, Any], interim_rows: list[Mapping[str, str]]
             canonical, basis = canonical_work_doi(row, bare_doi(wid))
             cwid = _doi_id(canonical)
         rel.update(
-            source_record_id=doi, source_record_type="peer-review", review_record_id=doi,
+            source_record_id=doi, source_record_type=r.get("type") or "peer-review", review_record_id=doi,
+            identifier_flag=r.get("target_doi_flag", ""),
             source_evaluation_id=doi, evaluation_doi=doi,
             canonical_evaluation_id=canonical_evaluation_id(source="crossref", source_evaluation_id=doi,
                                                             evaluation_doi=doi),

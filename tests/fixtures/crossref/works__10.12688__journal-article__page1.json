@@ -200,9 +200,48 @@
       ]
      ]
     }
+   },
+   {
+    "DOI": "10.15694//mep.2021.000035.1",
+    "type": "journal-article",
+    "prefix": "10.12688",
+    "member": "0",
+    "title": [
+     "Synthetic malformed-DOI record"
+    ],
+    "container-title": [
+     "MedEdPublish"
+    ],
+    "created": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "deposited": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "indexed": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "issued": {
+     "date-parts": [
+      [
+       2021,
+       9,
+       1
+      ]
+     ]
+    },
+    "published-online": {
+     "date-parts": [
+      [
+       2021,
+       9,
+       1
+      ]
+     ]
+    }
    }
   ],
   "next-cursor": null,
-  "total-results": 6
+  "total-results": 7
  }
 }

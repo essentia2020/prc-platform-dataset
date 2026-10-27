@@ -31,5 +31,6 @@ def test_both_source_rows_depend_on_every_primary_scope(pipeline_outputs):
     rows = {str(p["row_id"]): p for p in pipeline_outputs.platforms}
     primary, cross = row_scopes(rows["pci_recommendations"])
     assert any(k.startswith("crossref/") for k in primary)
-    pending, _ = row_scopes(rows["verixiv"])
-    assert pending == []      # pending selector: no scope, no count
+    verixiv, _ = row_scopes(rows["verixiv"])
+    assert sorted(verixiv) == ["crossref/works__10.12688__peer-review", "crossref/works__10.12688__posted-content",
+                               "crossref/works__10.21956__peer-review"]   # D-051: selector enabled

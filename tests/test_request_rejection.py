@@ -96,12 +96,12 @@ def test_definitive_rejection_is_not_retried(tmp_path: Path):
 
 def test_retryable_status_is_still_logged_as_retry(tmp_path: Path):
     run_config, sources, platforms, logger, roots = run_context(tmp_path)
-    transport = FixtureTransport({"prefix:10.1162,type:journal-article": [crossref_page(503)]})
+    transport = FixtureTransport({"prefix:10.1099,type:journal-article": [crossref_page(503)]})
     crossref_works.run(run_config, sources, platforms, logger, transport=transport,
                        sleeper=lambda s: None, **roots)
     log_lines = [json.loads(line) for line in logger.path.read_text(encoding="utf-8").splitlines() if line.strip()]
     attempts = [e for e in log_lines if e["event"] == "http_attempt" and "outcome" in e
-                and e["scope"] == "works__10.1162__journal-article"]
+                and e["scope"] == "works__10.1099__journal-article"]
     assert [a["outcome"] for a in attempts] == ["retry", "accepted"]
 
 

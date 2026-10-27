@@ -1,0 +1,51 @@
+{
+ "status": "ok",
+ "message": {
+  "items": [
+   {
+    "DOI": "10.5256/f1000research.1001.r5001",
+    "type": "peer-review",
+    "prefix": "10.5256",
+    "member": "2560",
+    "title": [
+     "Synthetic record"
+    ],
+    "container-title": [],
+    "created": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "deposited": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "indexed": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "issued": {
+     "date-parts": [
+      [
+       2022,
+       6,
+       6
+      ]
+     ]
+    },
+    "relation": {
+     "is-review-of": [
+      {
+       "id": "10.12688/f1000research.1001.1",
+       "id-type": "doi",
+       "asserted-by": "subject"
+      },
+      {
+       "id": "10.12688/f1000research.1001.1",
+       "id-type": "doi",
+       "asserted-by": "object"
+      }
+     ]
+    }
+   }
+  ],
+  "total-results": 1,
+  "next-cursor": null
+ }
+}
