@@ -1082,6 +1082,7 @@ Molecular Psychology, Materials Open Research, Cobot) carry status fields
 marked for confirmation. The rows leave provisional status at their first
 flattening or move to `excluded_candidates` if criteria 1–3 fail on
 inspection.
+Statuses confirmed: three active (Stosunki Międzynarodowe, Nuclear Science and Technology OR, Bioethics OR), one closed (Digital Twin, 2021–2025), three dormant (Molecular Psychology — last new submission 2025-01-27; Cobot — 2024-11-18; Materials Open Research — 2024-06-03).
 
 ## D-053: Repeated slashes in deposited DOIs 
 **Context:** three MedEd
