@@ -150,6 +150,7 @@ python -m src.run_pipeline --stages normalise,analyse,report                 # o
 python -m pytest                             # test suite (offline; no API is contacted)
 python tools/check_register_prefixes.py      # one-off register check: resolves one known work and one known review DOI per quantified Crossref row and compares owner prefix and member with the declared scopes (contacts the Crossref API; run by the maintainer before an extraction)
 PRC_RAW_STORE=<raw store root> python -m pytest tests/test_manifest_checksums_match.py
+python tools/check_walk_shape.py --run <run_id> --raw-root <raw store root>   # walk-shape check after a run: repeated cursor, page count vs total-results, mid-walk short page, record on two pages (rule 5 reads the raw store; --no-raw for the manifest-only rules); exit 1 on an issue, 2 when inconclusive
 python tools/audit_text.py --tokens <path outside the repository> --history
 ```
 
@@ -220,7 +221,9 @@ src/         run_pipeline.py; common/ (config, register, identifiers, log, dates
              extract/ (selectors, crossref_common, crossref_works,
              crossref_peer_reviews, sciety_evaluations), normalise/, analyse/, report/
 tools/       audit_text.py (repository text audit), check_register_prefixes.py
-             (owner-prefix and member check of the register against Crossref)
+             (owner-prefix and member check of the register against Crossref),
+             check_walk_shape.py (post-run cursor-walk shape check against the
+             walk manifests and the local raw store)
 tests/       pytest suite and fixtures
 data/        raw/ (outside Git), interim/ (outside Git), processed/, manifests/
 reports/     tables/, figures/, CHECKSUMS.txt

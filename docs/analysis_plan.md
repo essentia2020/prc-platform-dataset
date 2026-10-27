@@ -277,7 +277,7 @@ values.
 | Group additivity (D-038 blocking statuses, `blocking_rows`, footnotes), deduplication, no grand total, overlap reporting, Qeios disjointness | `build_aggregates._group_members`, `_group_cells`, `_dedup_cells` | `tests/test_total_equals_sum_of_years.py` |
 | Transient `pending_run` absent from released tables (D-039) | `build_aggregates.row_cells` | `tests/test_release_no_pending_run.py` |
 | Single data-quality log, preset rows immutable, run rows identified (D-040) | `build_aggregates.update_data_quality_log` | `tests/test_data_quality_log_single_file.py` |
-| Walk shape: `total_delta == 0` is necessary, the page sequence is the proof (repeated `cursor_in`, non-empty pages vs `ceil(total-results / rows)`, mid-walk short page, record on two pages) | `src/common/manifest.py::walk_shape_issues` | `tests/test_walk_shape.py` |
+| Walk shape: `total_delta == 0` is necessary, the page sequence is the proof (repeated `cursor_in`, non-empty pages vs `ceil(total-results / rows)`, mid-walk short page, record on two pages; pages missing from the raw store make the last rule inconclusive, never passed) | `src/common/manifest.py::walk_shape_issues`; post-run CLI `tools/check_walk_shape.py --run <run_id> [--raw-root]` | `tests/test_walk_shape.py`, `tests/test_check_walk_shape_cli.py` |
 | Deposition diagnostics (Qeios indicators, `created`/`deposited` after cutoff) | `build_aggregates.qeios_indicators` | `tests/test_total_equals_sum_of_years.py` (via tables) |
 | Figures 1–7, hatched partial year, categorical panels, checksums | `src/report/make_reports.py` | `tests/test_report_figures.py` |
 

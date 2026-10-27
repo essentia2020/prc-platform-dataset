@@ -12,6 +12,7 @@ terminal line at all — contributes nothing to any count.
 
 from __future__ import annotations
 
+import gzip
 import json
 import os
 import platform
@@ -303,6 +304,17 @@ def verify_walk_against_store(walk: WalkRecord, raw_root: Path) -> list[str]:
 # two pages.  ``walk_shape_issues`` reports these from the walk manifest (and
 # from the raw store when it is available); it never changes a walk state.
 
+def _read_response_payload(path: Path) -> dict:
+    """Parse a stored response, gzip-compressed (``.gz``, as the raw store writes it) or plain."""
+    if path.suffix == ".gz":
+        with gzip.open(path, "rb") as handle:
+            raw = handle.read()
+    else:
+        raw = path.read_bytes()
+    payload = json.loads(raw.decode("utf-8"))
+    return payload if isinstance(payload, dict) else {}
+
+
 def expected_pages(first_total: int | None, rows: int) -> int | None:
     """Number of non-empty pages a stable result set yields at ``rows`` per page."""
     if first_total is None or rows <= 0:
@@ -317,7 +329,9 @@ def walk_shape_issues(walk: WalkRecord, rows: int, raw_root: Path | None = None)
     of non-empty pages against ``ceil(first_page_total_results / rows)``, at
     most one trailing empty page, no short page before the last non-empty
     page, and — when ``raw_root`` is given — no DOI accepted on two pages.
-    Walks of other states are not judged (they contribute nothing anyway).
+    Pages absent from the raw store make the last check inconclusive, which
+    is reported as an issue rather than passed over.  Walks of other states
+    are not judged (they contribute nothing anyway).
     """
     if walk.state != "complete":
         return []
@@ -341,16 +355,20 @@ def walk_shape_issues(walk: WalkRecord, rows: int, raw_root: Path | None = None)
     if raw_root is not None:
         seen: dict[str, int] = {}
         duplicates = 0
+        missing = 0
+        unreadable = 0
         for p in walk.pages:
             target = raw_root / p.response_path
             if not target.is_file():
+                missing += 1
                 continue
             try:
-                payload = json.loads(target.read_text(encoding="utf-8"))
+                payload = _read_response_payload(target)
             except (OSError, UnicodeDecodeError, json.JSONDecodeError):
+                unreadable += 1
                 continue
             for item in (payload.get("message") or {}).get("items") or []:
-                doi = str(item.get("DOI", "")).lower()
+                doi = str(item.get("DOI", "")).strip().lower()
                 if not doi:
                     continue
                 if doi in seen and seen[doi] != p.page:
@@ -358,4 +376,7 @@ def walk_shape_issues(walk: WalkRecord, rows: int, raw_root: Path | None = None)
                 seen.setdefault(doi, p.page)
         if duplicates:
             issues.append(f"{duplicates} record(s) accepted on more than one page")
+        if missing or unreadable:
+            issues.append(f"raw store: {missing} page(s) missing, {unreadable} unreadable; "
+                          "the duplicate-record check is inconclusive")
     return issues
