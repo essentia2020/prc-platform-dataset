@@ -1148,6 +1148,30 @@ and the SHA-256 of every file go into README (Data availability) and the
 checksums file. `.gitignore` lists the four processed-layer families. No
 history rewrite is involved (D-004, D-042): the files were never committed.
 
+## D-057: Windowed retrieval for `works__10.5256__peer-review` (D-045 option c)
+Two shape-consistent walks of this scope on 2026-10-27 (31 non-empty pages and an
+empty terminal page, no repeated cursor) accepted 30,166 and 29,992 of 30,197
+records; `total-results` was stable in the first walk and moved within
+[29,370; 30,197] in the second. The cursor decodes to a (timestamp, DOI) keyset,
+and a yearly created-date probe sums to the unwindowed total with difference 0,
+so the deficit is cursor-step loss on replica or index inconsistency, not deposit
+or deletion during the walk. A tolerance (option a/b, 25 proposed) would accept
+an arbitrary loss and is rejected. The scope is retrieved as date windows
+instead: one cursor walk per window at tolerance 0, the unwindowed total probed
+before and after the pass, and the scope complete only when every window walk is
+complete and the window totals sum to both probes. Windows are issued-date
+calendar quarters from 2012Q3 through the cutoff quarter with an open guard on
+each side (59 windows, largest 1,426 records, two pages); created dates were
+rejected because 26,752 of the records are created in 2025 and 3,445 in 2026.
+The pass is recorded as one composite walk of the scope (page lines renumbered,
+window provenance per line, window set and probes in the completion block) plus
+one walk per window sub-scope, and judged by `check_walk_shape` with composite
+rules (windows complete, partition deltas 0, no DOI on two pages across windows).
+`windowed_scopes` and `total_tolerance_overrides` are mutually exclusive per
+scope. `run_20261026_01` is extended, not replaced: cutoff, register and policy
+are unchanged; the per-scope `software` record in the run manifest documents the
+commit of each extension.
+
 ## Q-4: Cross-DOI work correspondence for Gates Open Research / VeriXiv
 
 - **Date:** 2026-10-20

@@ -57,6 +57,14 @@
   are retained but not counted.
 - The cutoff year is a partial year (`year_to_date`) unless the cutoff is
   31 December; a lower value in that year is never evidence of decline.
+- Crossref cursor walks over tens of pages can skip records between cursor
+  steps while `total-results` stays constant (F1000Research reviews under
+  10.5256: 31 and 205 of 30,197 records missing in two walks of 2026-10-27).
+  Such a scope is retrieved in issued-date windows of at most a few pages
+  each, with the window totals checked against the unwindowed total before
+  and after the pass (D-057). Records without an issued date would fall
+  outside every window; the partition check would then fail the scope
+  rather than count the remainder.
 - Emerald Open Research is observed through records re-registered under 10.1108/EOR-* after the platform closed; the original 10.35241 DOIs are Crossref aliases of these primaries and are returned once. A primary carries the issued date of the last original version, so a work whose versions span two calendar years is counted in the later year; titles carry no version tag and the share of such works cannot be determined from the permitted sources (data-quality log, date_semantics). Three title-level journal records returned by the ISSN query are excluded by record type.
 
 ## Register coverage versus quantitative coverage

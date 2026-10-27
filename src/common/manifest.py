@@ -26,6 +26,8 @@ WALK_STATES = ("in_progress", "complete", "incomplete_restarted", "failed")
 TERMINAL_STATES = ("complete", "incomplete_restarted", "failed")
 SELECTED_WALK_POLICIES = ("latest_completed_then_smallest_walk_id",)
 DEFAULT_MANIFEST_ROOT = Path("data") / "manifests"
+# Completion rule of a composite walk assembled from date-window walks (D-057).
+WINDOWED_RULE = "crossref_windowed_total_checked"
 
 
 class ManifestError(RuntimeError):
@@ -106,8 +108,9 @@ class WalkManifestWriter:
             handle.write(json.dumps({**self.identity, **payload}, ensure_ascii=False,
                                     sort_keys=True) + "\n")
 
-    def accept_page(self, entry: PageEntry) -> None:
-        self._append({"record": "page", "walk_state": "in_progress", **entry.__dict__})
+    def accept_page(self, entry: PageEntry, **extra) -> None:
+        """Record an accepted page; ``extra`` carries provenance such as the window of a composite walk."""
+        self._append({"record": "page", "walk_state": "in_progress", **entry.__dict__, **extra})
 
     def reject_attempt(self, page: int, attempt: int, http_status: int | None,
                        reason: str, response_path: str | None, sha256: str | None) -> None:
@@ -182,6 +185,9 @@ def list_walks(manifest_root: Path, run_id: str, source: str, scope: str) -> lis
         return []
     prefix = f"{source}__{scope}__"
     walks = [read_walk_manifest(p) for p in sorted(folder.glob(f"{prefix}w*.manifest.jsonl"))]
+    # The glob alone would also admit a sub-scope whose own name starts with
+    # ``w``; the identity line of each manifest is authoritative.
+    walks = [w for w in walks if w.source == source and w.scope == scope]
     return sorted(walks, key=lambda w: w.walk_id)
 
 
@@ -243,10 +249,26 @@ def software_record(repo_root: Path | None = None) -> dict:
     return record
 
 
+_SOFTWARE_CACHE: dict = {}
+
+
+def _software_once() -> dict:
+    """``software_record()`` evaluated once per process (one invocation = one code state)."""
+    if "record" not in _SOFTWARE_CACHE:
+        _SOFTWARE_CACHE["record"] = software_record()
+    return dict(_SOFTWARE_CACHE["record"])
+
+
 def update_run_manifest_scope(path: Path, *, run_id: str, cutoff: str, policy: str,
                               source: str, scope: str, walks: list[WalkRecord],
-                              software: dict | None = None, now=utc_now) -> dict:
-    """Record all walks of one scope and the selected walk under the policy."""
+                              software: dict | None = None, now=utc_now, extra: dict | None = None) -> dict:
+    """Record all walks of one scope and the selected walk under the policy.
+
+    ``extra`` is merged into the scope entry (for example the ``window_set``
+    of a windowed scope).  Each entry also records the software in effect
+    when it was written, because a run may be extended by later invocations
+    under newer code than the run-level ``software`` record.
+    """
     payload = load_run_manifest(path) or {
         "run_id": run_id, "analysis_cutoff_date": cutoff, "selected_walk_policy": policy,
         "retrieval_started_at": now(), "retrieval_finished_at": "", "scopes": {},
@@ -272,6 +294,9 @@ def update_run_manifest_scope(path: Path, *, run_id: str, cutoff: str, policy: s
         "items": selected.items_total if selected else None,
         "completion": selected.completion if selected else None,
         "anomalies": selected.anomalies if selected else [],
+        "recorded_at": now(),
+        "software": software if software is not None else _software_once(),
+        **(extra or {}),
     }
     payload["retrieval_finished_at"] = now()
     write_run_manifest(path, payload)
@@ -332,9 +357,18 @@ def walk_shape_issues(walk: WalkRecord, rows: int, raw_root: Path | None = None)
     Pages absent from the raw store make the last check inconclusive, which
     is reported as an issue rather than passed over.  Walks of other states
     are not judged (they contribute nothing anyway).
+
+    A composite walk (completion rule ``crossref_windowed_total_checked``)
+    is judged by its own rules instead of 1-4: every window walk complete,
+    window totals equal to the unwindowed total before and after the pass,
+    and — with ``raw_root`` — no DOI accepted on two pages across windows.
+    The window walks themselves are ordinary walks and are judged by 1-5
+    under their own sub-scope.
     """
     if walk.state != "complete":
         return []
+    if walk.completion.get("rule") == WINDOWED_RULE:
+        return _composite_shape_issues(walk, raw_root)
     issues: list[str] = []
     cursors = [p.cursor_in for p in walk.pages]
     repeated = sorted({c for c in cursors if c and cursors.count(c) > 1})
@@ -353,30 +387,69 @@ def walk_shape_issues(walk: WalkRecord, rows: int, raw_root: Path | None = None)
         if p.items_in_page < rows:
             issues.append(f"short page {p.page} ({p.items_in_page} < {rows}) before the last non-empty page")
     if raw_root is not None:
-        seen: dict[str, int] = {}
-        duplicates = 0
-        missing = 0
-        unreadable = 0
-        for p in walk.pages:
-            target = raw_root / p.response_path
-            if not target.is_file():
-                missing += 1
+        issues.extend(_duplicate_record_issues(walk.pages, raw_root))
+    return issues
+
+
+def _composite_shape_issues(walk: WalkRecord, raw_root: Path | None) -> list[str]:
+    issues: list[str] = []
+    completion = walk.completion
+    windows = completion.get("windows") or []
+    if not windows:
+        issues.append("composite walk without a window list")
+    declared = completion.get("window_count")
+    if declared is not None and declared != len(windows):
+        issues.append(f"window_count {declared} differs from {len(windows)} listed window(s)")
+    not_complete = [w for w in windows if w.get("state") != "complete"]
+    if not_complete:
+        issues.append(f"{len(not_complete)} window walk(s) not complete: "
+                      + ", ".join(str(w.get("label")) for w in not_complete[:5]))
+    totals = [w.get("first_page_total_results") for w in windows]
+    if any(type(t) is not int for t in totals):
+        issues.append("a window is missing first_page_total_results")
+    else:
+        window_sum = sum(totals)
+        for key in ("unwindowed_total_before", "unwindowed_total_after"):
+            total = completion.get(key)
+            if type(total) is not int:
+                issues.append(f"{key} missing")
+            elif total != window_sum:
+                issues.append(f"window totals sum to {window_sum} but {key} is {total}")
+    if sum(int(w.get("pages") or 0) for w in windows) != len(walk.pages):
+        issues.append(f"{len(walk.pages)} composite page(s) but the windows account for "
+                      f"{sum(int(w.get('pages') or 0) for w in windows)}")
+    if raw_root is not None:
+        issues.extend(_duplicate_record_issues(walk.pages, raw_root))
+    return issues
+
+
+def _duplicate_record_issues(pages: list[PageEntry], raw_root: Path) -> list[str]:
+    """Rule 5: no DOI accepted on two pages; missing raw pages make it inconclusive."""
+    issues: list[str] = []
+    seen: dict[str, int] = {}
+    duplicates = 0
+    missing = 0
+    unreadable = 0
+    for p in pages:
+        target = raw_root / p.response_path
+        if not target.is_file():
+            missing += 1
+            continue
+        try:
+            payload = _read_response_payload(target)
+        except (OSError, UnicodeDecodeError, json.JSONDecodeError):
+            unreadable += 1
+            continue
+        for item in (payload.get("message") or {}).get("items") or []:
+            doi = str(item.get("DOI", "")).strip().lower()
+            if not doi:
                 continue
-            try:
-                payload = _read_response_payload(target)
-            except (OSError, UnicodeDecodeError, json.JSONDecodeError):
-                unreadable += 1
-                continue
-            for item in (payload.get("message") or {}).get("items") or []:
-                doi = str(item.get("DOI", "")).strip().lower()
-                if not doi:
-                    continue
-                if doi in seen and seen[doi] != p.page:
-                    duplicates += 1
-                seen.setdefault(doi, p.page)
-        if duplicates:
-            issues.append(f"{duplicates} record(s) accepted on more than one page")
-        if missing or unreadable:
-            issues.append(f"raw store: {missing} page(s) missing, {unreadable} unreadable; "
-                          "the duplicate-record check is inconclusive")
+            if doi in seen and seen[doi] != p.page:
+                duplicates += 1
+            seen.setdefault(doi, p.page)
+    if duplicates:
+        issues.append(f"{duplicates} record(s) accepted on more than one page")
+    if missing or unreadable:
+        issues.append(f"raw store: {missing} page(s) missing, {unreadable} unreadable; "
+                      "the duplicate-record check is inconclusive")
     return issues

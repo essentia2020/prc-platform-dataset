@@ -23,7 +23,8 @@ SCOPE_IDS = {s.scope_id for s in crossref_scopes(crossref_selectors(load_platfor
 def _run(tmp_path: Path, module):
     run_config, sources, platforms, logger, roots = run_context(tmp_path)
     transport = FixtureTransport()
-    outcomes = module.run(run_config, sources, platforms, logger, transport=transport, **roots)
+    outcomes = module.run(run_config, sources, platforms, logger, transport=transport, sleeper=lambda _: None,
+                          **roots)
     return outcomes, roots, transport
 
 
@@ -176,7 +177,8 @@ def test_pci_scope_is_shared_between_stages(tmp_path: Path):
         _rows(roots, "crossref_works__pci_recommendations.csv") == []
     n_before = len(transport.requests)
     run_config, sources, platforms, logger, _ = run_context(tmp_path)
-    crossref_peer_reviews.run(run_config, sources, platforms, logger, transport=transport, **roots)
+    crossref_peer_reviews.run(run_config, sources, platforms, logger, transport=transport, sleeper=lambda _: None,
+                              **roots)
     pci = _rows(roots, "crossref_peer_reviews__pci_recommendations.csv")
     assert sorted(r["doi"] for r in pci) == ["10.24072/pci.ecology.100500", "10.24072/pci.evolbiol.100844"]
     assert all(r["type"] == "journal-article" for r in pci)

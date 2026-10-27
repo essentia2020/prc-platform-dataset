@@ -35,6 +35,40 @@ def make_run_config(cutoff: str = "2026-09-30", run_id: str = "run_test_01") -> 
                      user_agent_label="prc-platform-dataset-tests", extra={})
 
 
+_DATE_FILTER_FIELDS = {"issued": "issued", "created": "created", "deposit": "deposited", "posted": "posted",
+                       "pub": "published", "index": "indexed"}
+
+
+def _item_date(item: dict, field: str) -> str | None:
+    """ISO day of a Crossref date field; partial dates take the first day/month."""
+    value = item.get(field) or {}
+    parts = (value.get("date-parts") or [[]])[0] if isinstance(value, dict) else []
+    if parts and parts[0]:
+        y, m, d = (list(parts) + [1, 1])[:3]
+        return f"{int(y):04d}-{int(m or 1):02d}-{int(d or 1):02d}"
+    stamp = value.get("date-time") if isinstance(value, dict) else None
+    return str(stamp)[:10] if stamp else None
+
+
+def _within_date_filters(item: dict, filters: dict[str, str]) -> bool:
+    """Apply from-/until-<field>-date filters (inclusive) the way the live API does."""
+    for name, bound in filters.items():
+        if not (name.startswith("from-") or name.startswith("until-")) or not name.endswith("-date"):
+            continue
+        stem = name.split("-", 1)[1][: -len("-date")]
+        field = _DATE_FILTER_FIELDS.get(stem)
+        if field is None:
+            continue
+        day = _item_date(item, field)
+        if day is None:
+            return False
+        if name.startswith("from-") and day < bound:
+            return False
+        if name.startswith("until-") and day > bound:
+            return False
+    return True
+
+
 class FixtureTransport:
     """Callable ``(url, headers, timeout) -> (status, headers, body)``.
 
@@ -76,6 +110,7 @@ class FixtureTransport:
         if not paths:
             return EMPTY_CROSSREF
         items = [item for path in paths for item in json.loads(path.read_bytes())["message"]["items"]]
+        items = [item for item in items if _within_date_filters(item, filters)]
         rows = int(query.get("rows", ["1000"])[0])
         part = items[(page - 1) * rows:page * rows]
         tag = "QPC" if (prefix, record_type) == ("10.32388", "posted-content") else "DATA"

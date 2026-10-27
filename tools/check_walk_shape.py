@@ -23,6 +23,13 @@ By default only the walk selected in the run manifest is judged for each
 scope; ``--all-walks`` judges every complete walk in the folder.  Walks in
 other states are listed but never judged (they contribute nothing to counts).
 
+A windowed scope (D-057) appears as one composite walk plus one ordinary
+walk per window sub-scope ``<scope>__<field>_<from>_<until>``.  Rules 1-5
+apply to each window walk; the composite is judged by its own rules: every
+window complete, window totals equal to the unwindowed total before and
+after the pass, page count equal to the sum of window pages, and rule 5
+across all windows.  The report marks composites with ``composite``.
+
 This script is run locally by the maintainer; it contacts no network service
 and changes no file.
 
@@ -51,7 +58,7 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 from src.common.config import load_sources_config  # noqa: E402
-from src.common.manifest import (DEFAULT_MANIFEST_ROOT, ManifestError, WalkRecord,  # noqa: E402
+from src.common.manifest import (DEFAULT_MANIFEST_ROOT, WINDOWED_RULE, ManifestError, WalkRecord,  # noqa: E402
                                  expected_pages, load_run_manifest, read_walk_manifest,
                                  run_manifest_path, verify_walk_against_store,
                                  walk_shape_issues)
@@ -75,6 +82,8 @@ class WalkReport:
     first_page_total_results: int | None = None
     total_delta: int | None = None
     terminal_evidence: str = ""
+    composite: bool = False
+    windows: int | None = None
     issues: list[str] = field(default_factory=list)
     digest_problems: list[str] = field(default_factory=list)
 
@@ -129,8 +138,12 @@ def judge(walk: WalkRecord, rows: int, raw_root: Path | None, selected: bool,
                         empty_pages=sum(1 for p in walk.pages if p.items_in_page == 0),
                         first_page_total_results=walk.completion.get("first_page_total_results"),
                         total_delta=walk.completion.get("total_delta"),
-                        terminal_evidence=walk.completion.get("terminal_evidence", ""))
-    report.expected_non_empty_pages = expected_pages(report.first_page_total_results, rows)
+                        terminal_evidence=walk.completion.get("terminal_evidence", ""),
+                        composite=walk.completion.get("rule") == WINDOWED_RULE)
+    if report.composite:
+        report.windows = len(walk.completion.get("windows") or [])
+    else:
+        report.expected_non_empty_pages = expected_pages(report.first_page_total_results, rows)
     if not report.judged:
         return report
     report.issues = walk_shape_issues(walk, rows, raw_root)
@@ -182,9 +195,13 @@ def format_text(reports: list[WalkReport], errors: list[str], run_id: str, rows:
         if not r.judged:
             lines.append(f"{head} not judged")
             continue
-        shape = (f"pages={r.pages} non_empty={r.non_empty_pages} expected={r.expected_non_empty_pages} "
-                 f"empty={r.empty_pages} total={r.first_page_total_results} delta={r.total_delta} "
-                 f"terminal={r.terminal_evidence or '-'}")
+        if r.composite:
+            shape = (f"composite windows={r.windows} pages={r.pages} non_empty={r.non_empty_pages} "
+                     f"total={r.first_page_total_results} delta={r.total_delta}")
+        else:
+            shape = (f"pages={r.pages} non_empty={r.non_empty_pages} expected={r.expected_non_empty_pages} "
+                     f"empty={r.empty_pages} total={r.first_page_total_results} delta={r.total_delta} "
+                     f"terminal={r.terminal_evidence or '-'}")
         verdict = "ok" if not r.issues and not r.digest_problems else ("INCONCLUSIVE" if r.inconclusive and not r.shape_issues else "ISSUE")
         lines.append(f"{head} {verdict:12s} {shape}")
         for issue in r.issues + r.digest_problems:

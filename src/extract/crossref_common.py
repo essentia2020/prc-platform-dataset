@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import json
 from dataclasses import dataclass, field
+from datetime import date
 from pathlib import Path
 from typing import Any, Callable, Mapping
 from urllib.parse import quote, parse_qs, urlsplit
@@ -24,6 +25,8 @@ from ..common.manifest import (DEFAULT_MANIFEST_ROOT, WalkRecord, list_walks, ru
                                update_run_manifest_scope, select_walk, load_run_manifest, write_run_manifest)
 from ..common.raw_store import RawStore
 from ..common.walk import CursorWalker, ParsedPage
+from ..common.windowed_walk import WindowedWalker
+from ..common.windows import DateWindow, WindowError, date_windows, window_scope_id
 from .selectors import (REVIEW_RECORD_TYPE, CrossrefScope, CrossrefSelector, crossref_scopes,
                         crossref_selectors, review_targets)
 
@@ -92,11 +95,59 @@ def scope_tolerance(pagination: Mapping[str, Any], scope_id: str) -> tuple[int, 
     return int(pagination.get("total_tolerance", 0) or 0), str(pagination.get("tolerance_reason") or "")
 
 
-def url_builder(run_config: RunConfig, sources_config: Mapping[str, Any], scope: CrossrefScope
-                ) -> Callable[[str], str]:
+def windowed_scope_config(pagination: Mapping[str, Any], scope_id: str) -> Mapping[str, Any] | None:
+    """The ``windowed_scopes`` entry of a scope (D-045 option c), or ``None``.
+
+    A windowed scope is walked per date window at tolerance 0, so it may not
+    also appear in ``total_tolerance_overrides``: the two mechanisms answer
+    the same symptom in incompatible ways and the configuration must say
+    which one applies.
+    """
+    windowed = pagination.get("windowed_scopes") or {}
+    if scope_id not in windowed:
+        return None
+    entry = windowed[scope_id] or {}
+    if not isinstance(entry, Mapping) or not {"date_field", "granularity", "first_window_start"} <= set(entry):
+        raise ExtractionIncomplete(f"windowed_scopes[{scope_id}] needs date_field, granularity, "
+                                   "first_window_start and reason")
+    if not str(entry.get("reason") or "").strip():
+        raise ExtractionIncomplete(f"windowed_scopes[{scope_id}] needs a reason")
+    if scope_id in (pagination.get("total_tolerance_overrides") or {}):
+        raise ExtractionIncomplete(f"{scope_id} is listed in both windowed_scopes and total_tolerance_overrides; "
+                                   "a windowed scope is always checked at tolerance 0")
+    return entry
+
+
+def scope_windows(run_config: RunConfig, entry: Mapping[str, Any]) -> list[DateWindow]:
+    """Window set of a windowed scope: guard + calendar periods through the cutoff + guard."""
+    first = entry["first_window_start"]
+    first = first if isinstance(first, date) else date.fromisoformat(str(first))
+    try:
+        return date_windows(str(entry["date_field"]), str(entry["granularity"]), first,
+                            run_config.analysis_cutoff_date)
+    except WindowError as exc:
+        raise ExtractionIncomplete(f"windowed_scopes: {exc}") from exc
+
+
+def _finish_url(base: str, path: str, select: list[str]) -> str:
+    if select:
+        path += "&select=" + ",".join(select)
+    if "sort" in parse_qs(urlsplit(path).query):
+        raise ValueError("sort is not allowed with Crossref cursor pagination")
+    return base + path
+
+
+def url_builder(run_config: RunConfig, sources_config: Mapping[str, Any], scope: CrossrefScope,
+                window: DateWindow | None = None) -> Callable[[str], str]:
+    """Page-URL builder for a scope; with ``window`` the window filter is added to the query."""
     source = sources_config["sources"][SOURCE]
     templates = source["query_templates"]
-    template_key = "works_by_issn_and_type" if scope.kind == "issn" else "works_by_prefix_and_type"
+    if window is not None:
+        if scope.kind == "issn":
+            raise ExtractionIncomplete("windowed walks are defined for prefix scopes only")
+        template_key = "works_by_prefix_type_and_window"
+    else:
+        template_key = "works_by_issn_and_type" if scope.kind == "issn" else "works_by_prefix_and_type"
     template = templates[template_key].strip()
     pagination = source.get("pagination") or {}
     rows = int(pagination.get("rows") or 1000)
@@ -105,13 +156,19 @@ def url_builder(run_config: RunConfig, sources_config: Mapping[str, Any], scope:
 
     def build(cursor: str) -> str:
         path = template.format(doi_prefix=scope.prefix, issn=scope.issn, record_type=scope.record_type, rows=rows,
-                               cursor=quote(cursor or "*", safe=""), mailto=quote(run_config.mailto, safe="@"))
-        if select:
-            path += "&select=" + ",".join(select)
-        if "sort" in parse_qs(urlsplit(path).query):
-            raise ValueError("sort is not allowed with Crossref cursor pagination")
-        return base + path
+                               cursor=quote(cursor or "*", safe=""), mailto=quote(run_config.mailto, safe="@"),
+                               window_filter=window.crossref_filter if window else "")
+        return _finish_url(base, path, select)
     return build
+
+
+def probe_url(run_config: RunConfig, sources_config: Mapping[str, Any], scope: CrossrefScope) -> str:
+    """``rows=0`` request that returns only ``total-results`` for the unwindowed scope."""
+    source = sources_config["sources"][SOURCE]
+    template = source["query_templates"]["works_total_by_prefix_and_type"].strip()
+    path = template.format(doi_prefix=scope.prefix, record_type=scope.record_type,
+                           mailto=quote(run_config.mailto, safe="@"))
+    return source["base_url"].rstrip("/") + path
 
 
 def parse_crossref_page(body: bytes) -> ParsedPage:
@@ -261,13 +318,38 @@ def run_crossref(run_config: RunConfig, sources_config: Mapping[str, Any], platf
     blocked: set[str] = set()
     for scope in scopes:
         pagination = sources_config["sources"][SOURCE]["pagination"]
-        tolerance, tolerance_reason = scope_tolerance(pagination, scope.scope_id)
-        walker = CursorWalker(client=client, store=store, manifest_root=manifest_root, run_id=run_config.run_id,
-                              source=SOURCE, scope=scope.scope_id, logger=logger,
-                              total_tolerance=tolerance, tolerance_reason=tolerance_reason)
-        walk = walker.run(build_url=url_builder(run_config, sources_config, scope),
-                          parse_page=parse_crossref_page, initial_cursor=initial_cursor(sources_config),
-                          force_new_walk=force_new_walk)
+        windowed = windowed_scope_config(pagination, scope.scope_id)
+        extra: dict[str, Any] = {}
+        if windowed is not None:
+            windows = scope_windows(run_config, windowed)
+            walker = WindowedWalker(client=client, store=store, manifest_root=manifest_root,
+                                    run_id=run_config.run_id, source=SOURCE, scope=scope.scope_id,
+                                    windows=windows, granularity=str(windowed["granularity"]), logger=logger)
+            walk = walker.run(build_window_url=lambda w: url_builder(run_config, sources_config, scope, w),
+                              probe_url=probe_url(run_config, sources_config, scope),
+                              parse_page=parse_crossref_page, initial_cursor=initial_cursor(sources_config),
+                              force_new_walk=force_new_walk)
+            extra["window_set"] = {"date_field": str(windowed["date_field"]),
+                                   "granularity": str(windowed["granularity"]),
+                                   "first_window_start": windows[1].start.isoformat(),
+                                   "reason": str(windowed["reason"]),
+                                   "windows": [w.as_record() for w in windows]}
+            for window in windows:
+                sub_scope = window_scope_id(scope.scope_id, window)
+                update_run_manifest_scope(run_manifest_path(manifest_root, run_config.run_id),
+                                          run_id=run_config.run_id,
+                                          cutoff=run_config.analysis_cutoff_date.isoformat(),
+                                          policy=run_config.selected_walk_policy, source=SOURCE, scope=sub_scope,
+                                          walks=list_walks(manifest_root, run_config.run_id, SOURCE, sub_scope),
+                                          extra={"window_of": scope.scope_id, "window": window.as_record()})
+        else:
+            tolerance, tolerance_reason = scope_tolerance(pagination, scope.scope_id)
+            walker = CursorWalker(client=client, store=store, manifest_root=manifest_root,
+                                  run_id=run_config.run_id, source=SOURCE, scope=scope.scope_id, logger=logger,
+                                  total_tolerance=tolerance, tolerance_reason=tolerance_reason)
+            walk = walker.run(build_url=url_builder(run_config, sources_config, scope),
+                              parse_page=parse_crossref_page, initial_cursor=initial_cursor(sources_config),
+                              force_new_walk=force_new_walk)
         walks = list_walks(manifest_root, run_config.run_id, SOURCE, scope.scope_id)
         selected, _ = select_walk(walks, run_config.selected_walk_policy)
         if selected is not None:
@@ -275,7 +357,7 @@ def run_crossref(run_config: RunConfig, sources_config: Mapping[str, Any], platf
         update_run_manifest_scope(run_manifest_path(manifest_root, run_config.run_id), run_id=run_config.run_id,
                                   cutoff=run_config.analysis_cutoff_date.isoformat(),
                                   policy=run_config.selected_walk_policy, source=SOURCE,
-                                  scope=scope.scope_id, walks=walks)
+                                  scope=scope.scope_id, walks=walks, extra=extra)
         outcome = ScopeOutcome(scope=scope, walk=walk)
         if scope.record_type == REVIEW_RECORD_TYPE:
             dependents = [s for s in selectors if scope.prefix in s.review_prefixes()

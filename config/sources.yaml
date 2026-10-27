@@ -21,8 +21,13 @@ sources:
       # parameters are repeated, and the cursor changes on every page.
       works_by_issn_and_type: >-
         /works?filter=issn:{issn},type:{record_type}&rows={rows}&cursor={cursor}&mailto={mailto}
-      works_by_prefix_type_and_date: >-
-        /works?filter=prefix:{doi_prefix},type:{record_type},from-created-date:{from_date},until-created-date:{until_date}&rows={rows}&cursor={cursor}&mailto={mailto}
+      # Windowed walks (D-045 option c, D-057): `{window_filter}` is the
+      # from-/until-<field>-date pair of one window; both bounds are inclusive.
+      works_by_prefix_type_and_window: >-
+        /works?filter=prefix:{doi_prefix},type:{record_type},{window_filter}&rows={rows}&cursor={cursor}&mailto={mailto}
+      # Unwindowed total-results probe made before and after a windowed pass.
+      works_total_by_prefix_and_type: >-
+        /works?filter=prefix:{doi_prefix},type:{record_type}&rows=0&mailto={mailto}
     pagination:
       mode: cursor
       initial_cursor: "*"
@@ -44,6 +49,19 @@ sources:
         works__10.5194__posted-content:
           total_tolerance: 25
           reason: "Same cause; EGUsphere registers preprints continuously. Observed delta +4 of 238,421 on 2026-10-26."
+      # Scopes walked in date windows instead of one cursor walk (D-045
+      # option c, D-057). Each window is its own cursor walk at tolerance 0;
+      # the scope is complete only when every window is complete and the
+      # window totals sum to the unwindowed total-results probed before and
+      # after the pass. A scope listed here may not also carry a tolerance
+      # override. Windows: a guard before `first_window_start`, calendar
+      # periods through the analysis cutoff, and an open guard after.
+      windowed_scopes:
+        works__10.5256__peer-review:
+          date_field: issued
+          granularity: quarter
+          first_window_start: "2012-07-01"
+          reason: "Single cursor walks of this scope lose records between cursor steps (2026-10-27: -31 of 30,197 with a stable total-results, -205 with a moving one) although a yearly created-date probe sums to the unwindowed total, so the set is retrievable; a tolerance would hide the loss, windows of at most two pages avoid it. Quarters by issued date: created dates cluster in 2025-2026 (bulk registration) and would give windows of thousands of records."
       # Only the elements that the Crossref REST API enumerates as selectable
       # may appear here; any other name makes /works answer HTTP 400 for the
       # whole page (the enumeration is returned by the API itself on an

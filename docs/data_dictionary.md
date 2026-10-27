@@ -181,6 +181,29 @@ Sciety uses
 A manifest without a `walk_end` line is `in_progress` and
 is closed as `incomplete_restarted` by the next invocation.
 
+A scope listed in `pagination.windowed_scopes` (D-057) is recorded as one
+*composite* walk of the scope with `rule=crossref_windowed_total_checked`
+plus one ordinary walk per window sub-scope
+`<scope>__<date_field>_<from>_<until>` (`min` / `max` for the open guard
+windows) and two `rows=0` probes stored under `<scope>__probe` (page 1
+before, page 2 after the pass). The composite's page lines are the window
+pages renumbered from 1 and carry `window`, `window_walk_id` and
+`window_page` in addition to the fields below; `response_path` points at
+the window's raw files. Its `completion` records `date_field`,
+`granularity`, `window_count`, `windows` (per window: `label`, `from`,
+`until`, `scope`, `walk_id`, `state`, `first_page_total_results`,
+`accepted_items_total`, `pages`, `total_delta`, `reason`), `probe_before`
+and `probe_after` (`response_path`, `sha256`, `total_results`, `url`,
+`requested_at_utc`), `unwindowed_total_before`, `unwindowed_total_after`,
+`sum_of_window_totals`, `partition_delta_before`, `partition_delta_after`,
+and the single-walk keys (`first_page_total_results` = probe before,
+`last_page_total_results` = probe after, `accepted_items_total`,
+`total_delta`, `total_results_moved_during_walk`, `total_tolerance` = 0,
+`terminal_evidence` = `all_windows_terminal`). The composite is `complete`
+only when every window walk is complete and `sum_of_window_totals` equals
+both probes; otherwise it is `failed` and the reason names the window(s)
+or the partition difference.
+
 | Field | Type | Allowed values | Meaning |
 |---|---|---|---|
 | `run_id`, `walk_id`, `scope`, `source` | string | `source`: `crossref` / `sciety` | identity of the walk |
@@ -208,8 +231,8 @@ without a complete walk have `extraction_status` `incomplete` or `failed`.
 | `analysis_cutoff_date` | date | copied from `config/run.yaml` at run start |
 | `retrieval_started_at`, `retrieval_finished_at` | timestamp | actual retrieval window |
 | `selected_walk_policy` | string | from `config/run.yaml` |
-| `scopes` | object | keyed `<source>/<scope>`; per scope: `walk_ids` (all), `walk_states`, `selected_walk_id`, `selection_reason`, `extraction_status` (`complete` / `incomplete` / `failed`), `completed_at`, `pages`, `items` |
-| `software` | object | recorded at run start: `python`, `implementation`, `platform`, `executable`, `git_commit` and `git_worktree` (`clean` / `dirty`; `unavailable` when the working copy is not a Git repository) |
+| `scopes` | object | keyed `<source>/<scope>`; per scope: `walk_ids` (all), `walk_states`, `selected_walk_id`, `selection_reason`, `extraction_status` (`complete` / `incomplete` / `failed`), `completed_at`, `pages`, `items`, `completion`, `anomalies`, `recorded_at`, `software` (as below, in effect when the entry was written); a windowed scope (D-057) adds `window_set` (`date_field`, `granularity`, `first_window_start`, `reason`, `windows`) and each window sub-scope has its own entry with `window_of` and `window` |
+| `software` | object | recorded at run start: `python`, `implementation`, `platform`, `executable`, `git_commit` and `git_worktree` (`clean` / `dirty`; `unavailable` when the working copy is not a Git repository). A run extended by later invocations may have been written under several commits; the per-scope `software` field records which |
 
 ## 4. Interim layer (`data/interim/`, outside Git)
 

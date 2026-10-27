@@ -185,6 +185,12 @@ is followed and logged as a page-level `short_page` anomaly. Missing
 Every request repeats the original query parameters with the `next-cursor`
 from the immediately preceding response. The default tolerance is zero;
 scope-specific overrides and their reasons are in `config/sources.yaml`.
+A scope whose single cursor walk loses
+records between cursor steps is listed in `pagination.windowed_scopes`
+and walked per date window at tolerance 0 (D-045 option c, D-057): the
+unwindowed `total-results` is probed before and after the pass, and the
+scope is complete only when every window walk is complete and the window
+totals sum to both probes.
 Sciety follows continuation links
 until exhaustion, independently of Crossref's total check (D-034).
 
