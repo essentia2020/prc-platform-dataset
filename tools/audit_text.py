@@ -41,6 +41,7 @@ import sys
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Iterable, Iterator, Mapping, Sequence
+import fnmatch
 
 import yaml
 
@@ -53,6 +54,7 @@ TEXT_SUFFIXES = {
     ".toml", ".cfg", ".ini", ".rst", ".sh", ".gitignore", "",
 }
 SKIP_DIRS = {".git", "__pycache__", ".pytest_cache", "data/raw", "data/interim", "logs"}
+SKIP_GLOBS = ("data/processed/records_*.csv", "data/manifests/*")
 SKIP_NAMES = {".gitkeep"}
 
 # Files exempt from R2 as a whole (dependency pins and package metadata).
@@ -460,6 +462,8 @@ def is_text_candidate(path: str) -> bool:
     if p.name in SKIP_NAMES:
         return False
     if any(path == d or path.startswith(d + "/") for d in SKIP_DIRS):
+        return False
+    if any(fnmatch.fnmatch(path, g) for g in SKIP_GLOBS):
         return False
     return p.suffix.lower() in TEXT_SUFFIXES or p.name.startswith(".")
 
