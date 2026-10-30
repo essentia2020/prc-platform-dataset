@@ -182,7 +182,9 @@ def test_prereview_is_in_index_and_counted(outputs):
 
 
 def test_data_quality_row_names_the_snapshot(outputs):
-    dq = [r for r in _dq(outputs) if r["issue_type"] == "source_not_covering"]
+    run_id = outputs.run_config.run_id
+    dq = [r for r in _dq(outputs)
+          if r["issue_type"] == "source_not_covering" and r["run_id"] == run_id]
     rows = outputs.analysis_manifest["rows"]
     # in the fixtures every Sciety-only group except PREreview and Biophysics Colab is absent from the index
     assert {r["row_id"] for r in dq} == {row_id for row_id, r in rows.items() if r["source_not_covering"]}

@@ -38,6 +38,19 @@
   JMIRx Med retains final-article counting despite its `core_publish_first`
   classification ruling; Access Microbiology counts preprint posting, with
   its coverage start to be established by the completed local run.
+- **Two rows count only works with a posted-content record (D-060).** eLife
+  deposits Reviewed Preprints as `posted-content` and the version of record
+  of the same stem as `journal-article`; the prefix also carries the
+  journal's pre-model articles (journal-article only, 2012 onwards;
+  16,075 stems in run_20261027_01), which are not Reviewed Preprints and are
+  excluded as `no_posting_record`. Access Microbiology deposits the preprint
+  as `posted-content` with an empty container-title and the accepted
+  versions and version of record as `journal-article`; conference abstracts
+  under the same stem family and articles published before the preprint
+  model are outside the row. Both series therefore measure the
+  publish-first model only, not the journals' total output; a Reviewed
+  Preprint or an Access Microbiology preprint whose posted-content record
+  was never deposited is missed.
 - **Deposition practice changes over time.** For Qeios, registration of
   reviews of external works in Crossref largely ceased after 2022, and
   metadata deposition for hosted works became discontinuous after 2024;

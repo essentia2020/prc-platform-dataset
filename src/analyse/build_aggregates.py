@@ -51,11 +51,17 @@ from ..normalise.clean_and_normalise import DEFAULT_PROCESSED_ROOT, records_path
 
 DEFAULT_TABLES_ROOT = Path("reports") / "tables"
 REQUIRES_EVALUATION_RE = re.compile(r"at least one (?:qualifying )?(?:public )?(?:review|evaluation)", re.IGNORECASE)
+# D-060: a first-public-posting row whose eligibility event names the Crossref
+# record type ``posted-content`` admits a work only through a posted-content
+# record; journal-article records of the same stem are later versions, works
+# without a posted-content record are excluded (``no_posting_record``).
+REQUIRES_POSTING_RECORD_RE = re.compile(r"\bposted-content\b", re.IGNORECASE)
+POSTING_RECORD_TYPE = "posted-content"
 FIRST_EVENT_YEAR_POLICY = "first_qualifying_event_year_from_completed_run"
 QEIOS_PAIR = ("qeios_hosted_works", "qeios_external_works")
 
 WORKS_COLUMNS = [
-    "row_id", "canonical_work_id", "work_doi", "included", "exclusion_reason", "counting_event",
+    "row_id", "canonical_work_id", "work_doi", "included", "exclusion_reason", "in_eligible_range", "counting_event",
     "posting_event_date_raw", "posting_event_date_precision", "posting_event_interval_start",
     "posting_event_interval_end", "posting_record_id",
     "eligibility_review_event_date_raw", "eligibility_review_event_date_precision",
@@ -152,6 +158,19 @@ class RowAnalysis:
     def included_works(self) -> list[WorkAnalysis]:
         return [w for w in self.works if w.included]
 
+    def counted_works(self) -> list[WorkAnalysis]:
+        """Included works whose counting year lies in the row's eligible range.
+
+        Cells outside the range are ``not_applicable``; the works counted
+        there enter no cell and must not enter the register summary or the
+        deduplicated group series either (D-060).
+        """
+        if self.eligible_start is None:
+            return self.included_works()
+        end = self.eligible_end
+        return [w for w in self.included_works()
+                if self.eligible_start <= int(w.counting_year) <= (end if end is not None else int(w.counting_year))]  # type: ignore[arg-type]
+
     def counts_by_year(self) -> dict[int, int]:
         out: dict[int, int] = defaultdict(int)
         for w in self.included_works():
@@ -180,6 +199,17 @@ def requires_evaluation(row: Mapping[str, Any]) -> bool:
     if isinstance(events, str):
         events = [events]
     return any(REQUIRES_EVALUATION_RE.search(str(e)) for e in events)
+
+
+def requires_posting_record(row: Mapping[str, Any]) -> bool:
+    """A first-public-posting row admits works only through posted-content
+    records when its register event list names that record type (D-060)."""
+    if row.get("counting_event") != "first_public_posting":
+        return False
+    events = row.get("eligibility_events") or []
+    if isinstance(events, str):
+        events = [events]
+    return any(REQUIRES_POSTING_RECORD_RE.search(str(e)) for e in events)
 
 
 def eligible_range(row: Mapping[str, Any], cutoff: date) -> tuple[int | None, int, bool]:
@@ -232,6 +262,7 @@ def analyse_row(row: Mapping[str, Any], state: RowState, records: list[Mapping[s
     analysis = RowAnalysis(row=row, state=state)
     counting_event = str(row.get("counting_event") or "")
     needs_eval = requires_evaluation(row)
+    needs_posting_record = requires_posting_record(row)
     works_by_id: dict[str, list[Mapping[str, str]]] = defaultdict(list)
     evaluations: dict[str, Mapping[str, str]] = {}
     relations_by_target: dict[str, list[Mapping[str, str]]] = defaultdict(list)
@@ -266,6 +297,8 @@ def analyse_row(row: Mapping[str, Any], state: RowState, records: list[Mapping[s
         work_recs = works_by_id.get(cwid, [])
         active = [r for r in work_recs if r.get("record_flag") != "withdrawn"]
         postings = [_event(r, "posting") for r in active if r["event_kind"] == "posting"]
+        if needs_posting_record:
+            postings = [e for e in postings if e.record_type == POSTING_RECORD_TYPE]
         finals = [_event(r, "final_article") for r in active if r["event_kind"] == "final_article"]
         eval_events: list[EventRecord] = []
         for rel in relations_by_target.get(cwid, []):
@@ -280,6 +313,11 @@ def analyse_row(row: Mapping[str, Any], state: RowState, records: list[Mapping[s
         if work_recs and len(record_reasons) == 1 and record_reasons <= set(RECORD_LEVEL_EXCLUSIONS):
             # every record of the work carries the same extraction-stage exclusion
             decision = WorkDecision(included=False, exclusion_reason=next(iter(record_reasons)),
+                                    n_evaluation_records=len({e.record_id for e in eval_events}))
+        elif needs_posting_record and active and not postings:
+            # D-060: only journal-article records for this stem (pre-model
+            # article, or a version of record whose posting was never deposited)
+            decision = WorkDecision(included=False, exclusion_reason="no_posting_record",
                                     n_evaluation_records=len({e.record_id for e in eval_events}))
         else:
             decision = decide_work(counting_event=counting_event, postings=postings, evaluations=eval_events,
@@ -324,7 +362,7 @@ def analyse_row(row: Mapping[str, Any], state: RowState, records: list[Mapping[s
     return analysis
 
 
-def _works_row(w: WorkAnalysis) -> dict[str, Any]:
+def _works_row(w: WorkAnalysis, in_range: bool | None = None) -> dict[str, Any]:
     def group(prefix: str, ev: EventRecord | None) -> dict[str, Any]:
         if ev is None or ev.interval is None:
             return {f"{prefix}_event_date_raw": "", f"{prefix}_event_date_precision": "",
@@ -337,6 +375,7 @@ def _works_row(w: WorkAnalysis) -> dict[str, Any]:
     out: dict[str, Any] = {
         "row_id": w.row_id, "canonical_work_id": w.canonical_work_id, "work_doi": w.work_doi,
         "included": "true" if d.included else "false", "exclusion_reason": d.exclusion_reason,
+        "in_eligible_range": "" if in_range is None else ("true" if in_range else "false"),
         "counting_event": d.counting_event,
         **group("posting", w.posting), "posting_record_id": w.posting.record_id if w.posting else "",
         **group("eligibility_review", w.eligibility_review),
@@ -483,7 +522,7 @@ def _dedup_cells(analyses: list[RowAnalysis], cells: dict[str, dict[int, Cell]],
     for value in sorted(groups):
         earliest: dict[str, tuple[int, str, str]] = {}
         for a in groups[value]:
-            for w in a.included_works():
+            for w in a.counted_works():
                 item = (int(w.counting_year), w.counting_record.interval.start.isoformat() if w.counting_record
                         and w.counting_record.interval else "", a.row_id)
                 if w.canonical_work_id not in earliest or item < earliest[w.canonical_work_id]:
@@ -713,10 +752,13 @@ def run(run_config: RunConfig, sources_config: Mapping[str, Any], platforms: lis
         analyses[row_id] = a
 
     # Qeios disjointness (hard rule) and overlap table
-    included_by_work: dict[str, list[WorkAnalysis]] = defaultdict(list)
+    included_by_work: dict[str, list[WorkAnalysis]] = defaultdict(list)   # disjointness: every included work
+    counted_by_work: dict[str, list[WorkAnalysis]] = defaultdict(list)    # overlap table: eligible range (D-060)
     for a in analyses.values():
         for w in a.included_works():
             included_by_work[w.canonical_work_id].append(w)
+        for w in a.counted_works():
+            counted_by_work[w.canonical_work_id].append(w)
     qeios_overlap = [cw for cw, ws in included_by_work.items() if {w.row_id for w in ws} >= set(QEIOS_PAIR)]
     if qeios_overlap:
         raise AggregateError(f"Qeios rows share {len(qeios_overlap)} included work(s), e.g. {qeios_overlap[:3]}")
@@ -730,7 +772,10 @@ def run(run_config: RunConfig, sources_config: Mapping[str, Any], platforms: lis
                 and a.effective_register_status != "register_only"]
 
     processed_root.mkdir(parents=True, exist_ok=True)
-    works_rows = [_works_row(w) for a in analyses.values() for w in a.works]
+    works_rows = []
+    for a in analyses.values():
+        counted_ids = {id(w) for w in a.counted_works()}
+        works_rows.extend(_works_row(w, (id(w) in counted_ids) if w.included else None) for w in a.works)
     write_csv(processed_root / "works_included.csv", WORKS_COLUMNS, works_rows)
 
     # --- tables
@@ -762,7 +807,8 @@ def run(run_config: RunConfig, sources_config: Mapping[str, Any], platforms: lis
     for a in analyses.values():
         row = a.row
         inc = a.included_works() if a.complete else []
-        yrs = sorted({int(w.counting_year) for w in inc})  # type: ignore[arg-type]
+        counted = a.counted_works() if a.complete else []      # D-060: eligible range only
+        yrs = sorted({int(w.counting_year) for w in counted})  # type: ignore[arg-type]
         publishable = a.publishable
         summary_rows.append({
             "row_id": a.row_id, "organisation_id": row.get("organisation_id", ""),
@@ -778,14 +824,17 @@ def run(run_config: RunConfig, sources_config: Mapping[str, Any], platforms: lis
             "eligible_end_year": a.eligible_end if a.eligible_end is not None else "",
             "first_year_with_data": yrs[0] if (publishable and yrs) else "",
             "last_year_with_data": yrs[-1] if (publishable and yrs) else "",
-            "unique_works_to_cutoff": len({w.canonical_work_id for w in inc}) if publishable else "",
+            "unique_works_to_cutoff": len({w.canonical_work_id for w in counted}) if publishable else "",
             "n_works_excluded": len(a.works) - len(inc) if publishable else "",
+            "n_works_outside_eligible_range": len(inc) - len(counted) if publishable else "",
         })
     _write_table(tables_root, "register_summary", list(summary_rows[0].keys()), summary_rows, cutoff=cutoff,
                  additivity="row_series", snapshot=snapshot,
                  note="`unique_works_to_cutoff` is blank for register-only rows, blocked extraction, an unresolved "
                       "coverage start, a selector that matched no record (selector_no_match) or a source that "
-                      "does not cover the group (source_not_covering).")
+                      "does not cover the group (source_not_covering). `unique_works_to_cutoff`, "
+                      "`first_year_with_data` and `last_year_with_data` cover the eligible range only; included "
+                      "works counted outside it are reported in `n_works_outside_eligible_range` (D-060).")
 
     # coverage matrix
     coverage_rows = []
@@ -802,7 +851,7 @@ def run(run_config: RunConfig, sources_config: Mapping[str, Any], platforms: lis
 
     # overlap (reported, never removed)
     overlap_rows = []
-    for cw, ws in sorted(included_by_work.items()):
+    for cw, ws in sorted(counted_by_work.items()):
         if len({w.row_id for w in ws}) < 2:
             continue
         earliest = min(ws, key=lambda w: (w.counting_record.interval.start if w.counting_record and

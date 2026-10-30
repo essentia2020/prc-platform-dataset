@@ -1198,6 +1198,22 @@ for such rows are register decisions, not analysis defaults. Rule 6 of
 - **Evidence:** run_20261027_01; index snapshot 2026-10-28 ~05:10 UTC, 5,398 docmaps, 11 groups, SHA-256 a9eba43264284203fe0d0605ec22ab927a490ab281cc330a1ab19f599bc3ed77; sciety/sciety#2161, #1088. Affected rows: `metaror`, `review_commons`, `peerref`, `the_unjournal`.
 - **Authority:** instruction §9.4, §9.6; D-037, D-047.
 
+## D-060: Posting-record gate, alternative selector signals, eligible-range totals
+
+Date: 2026-10-28
+Status: applied
+decided_by: researcher
+
+### Context
+In run_20261027_01 two first-public-posting rows counted the wrong population. eLife (`unique_works_to_cutoff` 20,877, `first_year_with_data` 2012): 16,075 journal-article-only stems are pre-model articles, not Reviewed Preprints; 4,864 stems have a posted-content record. Access Microbiology (2,268 works from 2019): the conjunctive `doi_regex` + `container_titles` selector dropped all 1,797 posted-content records (empty container-title) and admitted 1,299 conference abstracts; the D-017 run-derived start (2019) came from abstracts and pre-model articles. `register_summary` and the deduplicated group series also counted included works dated outside their rows' eligible range, while the row cells correctly carried `not_applicable`.
+
+### Decision
+(1) A first-public-posting row whose `eligibility_events` text names the record type `posted-content` admits a work only through a posted-content record; journal-article records of the same stem are later versions and never supply the counting date; a work without a posted-content record is excluded as `no_posting_record`. The rule is read from the register, never keyed on a row id; it currently gates `elife_reviewed_preprints` and `access_microbiology`. (2) For work records `doi_regex` and `container_titles` are alternative signals, as for review records; with `prefix`/`issn` alone the container-title remains the required discriminator. Access Microbiology selects by `^10\.1099/acmi\.0\.\d+(\.v\d+)?$` alone (abstracts excluded; a container-title would readmit them), `sample_work_doi` `10.1099/acmi.0.000460.v1`. (3) `register_summary.first_year_with_data`, `last_year_with_data`, `unique_works_to_cutoff`, the deduplicated group series and the overlap table cover each row's eligible range only; included works outside it are reported in `n_works_outside_eligible_range` and `works_included.in_eligible_range`. (4) eLife `coverage_start_year` and `model_since` = 2022: six Reviewed Preprint postings dated 2022 precede the January 2023 launch (pilot); the 2023 boundary is refuted by the run. Access Microbiology keeps `first_qualifying_event_year_from_completed_run`, now resolved from posted-content records only.
+
+### Consequences
+eLife ≈ 4.9k works 2022–2026 instead of 20,877; Access Microbiology ≤ 880 works from the first preprint year; early all-row and class dedup cells lose works counted outside their rows' ranges; the D-017 start is re-derived in the re-run. Rows whose `first_year_with_data` preceded the start for date reasons only (PREreview, Qeios hosted works, MedEdPublish, PCI) are unaffected in their cells; their register start years remain open register questions.
+The descriptive `doi_pattern` of `access_microbiology` was tightened to `^10\.1099/acmi\.0\.\d+` in the same hunk (accepted 2026-10-30). Test `test_data_quality_row_names_the_snapshot` now filters the single-file data-quality log by the fixture `run_id` (D-040 keeps rows of other runs, so the test was sensitive to the working-tree log).
+
 ## Q-4: Cross-DOI work correspondence for Gates Open Research / VeriXiv
 
 - **Date:** 2026-10-20

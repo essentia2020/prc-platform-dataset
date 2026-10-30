@@ -59,7 +59,7 @@ One line per register row (observation series). Lists are joined with `; `;
 | `doi_pattern` | regex or empty | selects the row's DOIs | `^10\.32388/` |
 | `doi_version_pattern` | regex or empty | group 1 = canonical stem | `^(10\.32388/[a-z0-9]+)(?:\.\d+)?$` |
 | `sciety_group_slug` | string or empty | slug in `https://sciety.org/groups/<slug>` | `prereview` |
-| `extraction_selector` | JSON | keys `crossref` and/or `sciety`; `crossref` holds `prefix` (owner prefix or list) and/or `issn` (journal ISSN; requires `doi_regex` or `container_titles`), `record_types`, optional `scope_keys` (record type → `prefix`/`issn`, required when both keys are declared; peer-review scopes are always prefix-based), `doi_regex`, `container_titles`, `review_doi_prefix` (prefix or list of owner prefixes walked for review records), `review_doi_regex`, `evaluation_record_types` with `evaluation_doi_regex` (evaluation records deposited under a work type, e.g. PCI recommendations as `journal-article`), `companion_title_regex` (work-type records that are review reports or author responses, excluded as `companion_item`), `sample_work_doi`, `sample_review_doi` (one known DOI each for `tools/check_register_prefixes.py`), `journals`, `target_filter`, `notes` | `{"crossref":{…}}` |
+| `extraction_selector` | JSON | keys `crossref` and/or `sciety`; `crossref` holds `prefix` (owner prefix or list) and/or `issn` (journal ISSN; requires `doi_regex` or `container_titles`), `record_types`, optional `scope_keys` (record type → `prefix`/`issn`, required when both keys are declared; peer-review scopes are always prefix-based), `doi_regex`, `container_titles` (for work records the two are alternative signals, as for review records: a DOI matching `doi_regex` is in scope whatever its container-title, a record under the walked prefix or ISSN whose container-title is listed is in scope whatever its DOI; with `prefix`/`issn` alone the container-title is the required discriminator — D-060), `review_doi_prefix` (prefix or list of owner prefixes walked for review records), `review_doi_regex`, `evaluation_record_types` with `evaluation_doi_regex` (evaluation records deposited under a work type, e.g. PCI recommendations as `journal-article`), `companion_title_regex` (work-type records that are review reports or author responses, excluded as `companion_item`), `sample_work_doi`, `sample_review_doi` (one known DOI each for `tools/check_register_prefixes.py`), `journals`, `target_filter`, `notes` | `{"crossref":{…}}` |
 | `eligibility_events` | list | free text per event | `first public posting; ≥1 qualifying review` |
 | `counting_event` | enum | `first_public_posting`, `earliest_qualifying_evaluation`, `final_article` | `first_public_posting` |
 | `counting_event_date_field` | string | source field priority | `posted -> issued` |
@@ -102,6 +102,18 @@ marks a source that does not carry the group, not a selector defect and
 not an observed zero; a group present in the index that yields zero items
 keeps `selector_no_match`. When the index walk is not complete, coverage is
 `unverified` and the D-047 rule applies unchanged.
+
+A first-public-posting row whose `eligibility_events` text names the
+record type `posted-content` admits a work only through a posted-content
+record (D-060; read from the register as the review requirement of D-036
+is, never keyed on a row id). Journal-article records of the same stem
+(accepted versions, versions of record) stay in the work and never supply
+its counting date; a work with no posted-content record is excluded as
+`no_posting_record`. The gate separates eLife Reviewed Preprints from the
+journal's pre-model articles and Access Microbiology preprints from
+articles published before the preprint model; rows whose postings are
+deposited as `journal-article` (F1000-style version 1, Copernicus
+discussion papers) do not name the type and are not gated.
 
 `extraction_selector.crossref.work_correspondences` holds explicit
 record-level correspondences: `primary_doi`, `alias_doi`, `version_stem`,
@@ -420,7 +432,8 @@ counts.
 | `canonical_work_id`, `work_doi` | string | — |
 | `correspondence_basis` | string or empty | documented record-level correspondence basis carried from contributing work records |
 | `included` | boolean | — |
-| `exclusion_reason` | enum or empty | `missing_event_date`, `ambiguous_cutoff_date`, `future_event`, `no_qualifying_review`, `withdrawn`, `later_version`, `register_only`, `no_journal_attribution`, `companion_item` (review report or author response deposited as a work-type record, D-050) |
+| `in_eligible_range` | boolean or empty | included works only: `true` when `counting_year` lies in the row's eligible range (the work enters a cell, the register summary and the deduplicated group series), `false` when it lies before `eligible_start_year` or after `eligible_end_year` (the cell is `not_applicable`; the work enters no count); empty for excluded works (D-060) |
+| `exclusion_reason` | enum or empty | `missing_event_date`, `ambiguous_cutoff_date`, `future_event`, `no_qualifying_review`, `withdrawn`, `later_version`, `register_only`, `no_journal_attribution`, `companion_item` (review report or author response deposited as a work-type record, D-050), `no_posting_record` (gated row without a posted-content record, D-060) |
 | `posting_event_date_raw`, `posting_event_date_precision`, `posting_event_interval_start`, `posting_event_interval_end` | see 5.1 | posting event group |
 | `eligibility_review_event_date_raw`, `eligibility_review_event_date_precision`, `eligibility_review_event_interval_start`, `eligibility_review_event_interval_end`, `eligibility_review_record_id` | see 5.1 | eligibility-review event group |
 | `counting_event_date_raw`, `counting_event_date_precision`, `counting_event_interval_start`, `counting_event_interval_end` | see 5.1 | counting event group |
@@ -517,7 +530,7 @@ rows.
 | `unique_works_by_class_year.csv` | `initiation_class`, `year` | `additivity = deduplicated` on `canonical_work_id`; year of earliest counting event among the class's rows |
 | `unique_works_by_configuration_year.csv` | `prc_configuration`, `year` | `additivity = deduplicated` |
 | `unique_works_all_rows_year.csv` | `year` | the only all-row total; plus `n_author_initiated_by_earliest_event`, `n_community_initiated_by_earliest_event`, `n_mixed_by_earliest_event` (each work attributed to the class of the row holding its earliest counting event; inputs of Figure 3) |
-| `register_summary.csv` | `row_id` | `organisation_id`, both classes and confidences, `register_status`, `effective_register_status` (after the run-derived Copernicus fallback of D-032; equals `register_status` otherwise), `data_status`, `data_source`, `provisional`, `extraction_status`, `eligible_start_year`, `eligible_end_year`, `first_year_with_data`, `last_year_with_data`, `unique_works_to_cutoff`, `n_works_excluded` (the last five are blank unless the row is quantified, complete and has a resolved coverage start) |
+| `register_summary.csv` | `row_id` | `organisation_id`, both classes and confidences, `register_status`, `effective_register_status` (after the run-derived Copernicus fallback of D-032; equals `register_status` otherwise), `data_status`, `data_source`, `provisional`, `extraction_status`, `eligible_start_year`, `eligible_end_year`, `first_year_with_data`, `last_year_with_data`, `unique_works_to_cutoff`, `n_works_excluded`, `n_works_outside_eligible_range` (the last six are blank unless the row is quantified, complete and has a resolved coverage start; `first_year_with_data`, `last_year_with_data` and `unique_works_to_cutoff` cover the eligible range only — an included work whose counting year lies outside it enters no cell and is counted in `n_works_outside_eligible_range`, D-060) |
 | `coverage_matrix.csv` | `row_id`, `year` | `coverage` ∈ `complete`, `year_to_date`, `partial_coverage`, `partial_known_scope`, `no_data`, `not_applicable`; `note` explains `partial_known_scope` (yearly lower bound) and unresolved coverage starts; EGUsphere attributed series is a yearly lower bound; `partial_year` remains independent |
 | `cross_platform_overlap.csv` | `canonical_work_id` | `row_ids` (`; `-joined), `n_rows`, `earliest_row_id`, `earliest_year`, `correspondence_basis` (`canonical_work_id`; after VeriXiv deposit confirmation and before release freeze also `is_preprint_of` / `has_preprint` for pairs resolved from the VeriXiv or the Gates Open Research record, D-041) |
 | `qeios_indicators_by_year.csv` | `year` | `new_hosted_works` (hosted works by first posting year on or before the cutoff, withdrawn excluded, review not required), `hosted_works_with_review`, `review_dois` (distinct review identifiers dated in the year, both Qeios rows), `external_works_reviewed`, `events_registered_after_cutoff_counted`, `events_redeposited_after_cutoff_counted`, `extraction_status`; blank until both Qeios scopes are complete |

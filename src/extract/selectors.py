@@ -167,13 +167,24 @@ class CrossrefSelector:
         # Canonical form for selection: a repeated slash at source
         # (10.15694//mep.…) must not hide the record from its row.
         doi = collapse_repeated_slashes(normalise_doi(item.get("DOI", "")))
-        if not self.doi_in_scope(doi):
+        if self.exclude_doi_regex and self.exclude_doi_regex.match(doi):
             return False
-        if self.container_titles:
-            titles = [t.strip() for t in _as_list(item.get("container-title"))]
-            if not any(t in self.container_titles for t in titles):
-                return False
-        return True
+        if not self.container_titles:
+            return self.doi_in_scope(doi)
+        titles = [t.strip() for t in _as_list(item.get("container-title"))]
+        title_match = any(t in self.container_titles for t in titles)
+        if self.doi_regex:
+            # D-060: ``doi_regex`` and ``container_titles`` are alternative
+            # signals, as for review records. A record whose DOI matches the
+            # regex is in scope even when its container-title is empty
+            # (Access Microbiology posted-content); a record under the walked
+            # prefix whose container-title matches is in scope even when the
+            # regex does not match.
+            in_walk = bool(self.issns) or any(doi.startswith(p.lower() + "/") for p in self.prefixes)
+            return self.doi_in_scope(doi) or (title_match and in_walk)
+        # Prefix- or ISSN-wide scope: the container-title is the only
+        # discriminator and is required.
+        return self.doi_in_scope(doi) and title_match
 
     def journal_for(self, doi: str) -> str | None:
         """Copernicus only: journal_id whose journal-specific regex matches."""

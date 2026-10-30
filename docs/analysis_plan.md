@@ -58,6 +58,7 @@ Event-date priority:
 |---|---|---|
 | First public posting | `posted-content` | `posted` → `issued` |
 | First public posting | `journal-article` version 1 / base record | `issued` |
+| First public posting, gated row (`eligibility_events` names `posted-content`; D-060) | `posted-content` only; a work without one is excluded as `no_posting_record` | `posted` → `issued` |
 | Earliest qualifying review | Crossref `peer-review` | `issued` |
 | Earliest qualifying review | Sciety evaluation | evaluation `published` |
 | Final article | `journal-article` | `issued` |
@@ -163,6 +164,22 @@ with specific methodology:
   in the completed local run, not an assumed 2023 boundary. Keep the
   approved classification separate from this unresolved coverage field;
   no eligible-range zero filling is permitted until the start is resolved.
+  D-060: the qualifying event is the posted-content record of an
+  `acmi.0.NNNNNN` stem (`.v1`, `.v2` for a revised preprint; empty
+  container-title in Crossref); accepted versions are `journal-article`
+  records `.vN` and the version of record is the unversioned
+  `journal-article` of the same stem, merged by `doi_version_pattern`.
+  Conference abstracts under `10.1099/acmi.<meeting>.*` are outside the
+  selector; articles published before the preprint model (no posted-content
+  record) are excluded as `no_posting_record` and never set the start.
+- **eLife — Reviewed Preprints.** D-060: a work enters the row only through
+  a posted-content record (the Reviewed Preprint, version 1); the
+  `journal-article` version of record of the same stem is merged by
+  `doi_version_pattern` and never supplies the counting date. Journal-article
+  records without a posted-content record of the same stem are pre-model
+  articles (2012 onwards) and are excluded as `no_posting_record`. Six
+  Reviewed Preprint postings dated 2022 precede the January 2023 launch
+  (pilot), so `coverage_start_year` and `model_since` are 2022.
 - **JMIRx Med.** D-016 assigns `mixed` (medium), `core_publish_first`
   (medium), `overlay_journal`, without changing the final-article counting
   event. No public discussion precedes the editorial decision. The
@@ -276,6 +293,7 @@ values.
 | Row technical state from the run manifest; cross-check scopes never block | `src/common/run_state.py` | `tests/test_run_state.py` |
 | Record-level layer, identifiers, evaluation identity, source-precision dates, flagged targets | `src/normalise/clean_and_normalise.py` | `tests/test_normalise_records.py` |
 | Register-row event map (`counting_event`; ≥1 qualifying evaluation read from `eligibility_events`) | `src/analyse/build_aggregates.py::requires_evaluation` | `tests/test_binding_decision_consistent.py` |
+| Posting-record gate for first-public-posting rows naming `posted-content` (D-060); `doi_regex` and `container_titles` as alternative work-record signals; register summary and deduplicated group series restricted to each row's eligible range (`in_eligible_range`, `n_works_outside_eligible_range`) | `build_aggregates.requires_posting_record`, `RowAnalysis.counted_works`, `src/extract/selectors.py::CrossrefSelector.matches_work` | `tests/test_posting_record_gate.py` |
 | Cutoff rule, missingness gates, tie-break | `src/common/eligibility.py`, `src/common/dates.py` | `tests/test_ambiguous_cutoff_not_counted.py`, `tests/test_eligibility_rules.py` |
 | Copernicus register-only fallback applied only to a complete run (D-032) | `build_aggregates.effective_register_status` | `tests/test_binding_decision_consistent.py` |
 | Blank vs zero; register-only; incomplete scope; unresolved coverage start | `src/common/aggregates.py::cell_for`, `build_aggregates.row_cells` | `tests/test_register_only_is_blank.py`, `tests/test_incomplete_extraction_blocks_outputs.py`, `tests/test_complete_empty_is_zero.py` |

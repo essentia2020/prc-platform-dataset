@@ -41,9 +41,14 @@ platforms:
     prc_role: integrated_platform
     status: active
     launch_year: 2012
-    model_since: 2023
-    model_note: null
-    coverage_start_year: 2023
+    model_since: 2022
+    model_note: >-
+      D-060: six Reviewed Preprint postings (posted-content, version 1) dated
+      2022 precede the January 2023 public launch of the model (pilot); the
+      assumed 2023 boundary was refuted by run_20261027_01 and the series
+      starts in 2022. Journal-article records without a posted-content record
+      of the same stem are pre-model articles and are outside the row.
+    coverage_start_year: 2022
     coverage_end_year: null
     discipline_scope: life_sciences
     country_of_operator: "United Kingdom"
@@ -89,10 +94,12 @@ platforms:
         sample_work_doi: "10.7554/elife.91984"
         sample_review_doi: "10.7554/elife.112155.1.sa4"
         notes: >-
-          Reviewed Preprints are expected as posted-content with version
-          suffixes; Public Reviews and Assessments as peer-review records with
-          is-review-of relations. Record types to be confirmed by the first
-          local run.
+          Confirmed by run_20261027_01: Reviewed Preprints are posted-content
+          with version suffixes, the version of record of the same stem is a
+          journal-article, Public Reviews and Assessments are peer-review
+          records with is-review-of relations. A work enters the row only
+          through a posted-content record (D-060); journal-article-only stems
+          (pre-model workflow, 2012 onwards) are excluded as no_posting_record.
       sciety:
         group_slug: elife
         group_id: b560187e-f2fb-4ff9-a861-a204f3fc0fb0
@@ -2117,7 +2124,10 @@ platforms:
     model_note: >-
       D-017: determine the series start from qualifying events in the completed
       local run, not from an assumed 2023 start. The journal's 2019 launch is
-      not the start of the open-platform observation series.
+      not the start of the open-platform observation series. D-060: the
+      qualifying event is a posted-content record (preprint version .v1/.v2 of
+      an acmi.0 stem); conference abstracts and journal-article records without
+      a posted-content record of the same stem never set the start.
     coverage_start_year: null
     coverage_end_year: null
     discipline_scope: life_sciences
@@ -2154,7 +2164,7 @@ platforms:
     register_status: quantified
     data_status: machine_readable
     doi_prefix: "10.1099"
-    doi_pattern: "^10\\.1099/acmi\\."
+    doi_pattern: "^10\\.1099/acmi\\.0\\.\\d+"
     doi_version_pattern: "^(10\\.1099/acmi\\.0\\.\\d+)(?:\\.v\\d+)?(?:\\.\\d+)?$"
     sciety_group_slug: access-microbiology
     extraction_selector:
@@ -2162,21 +2172,28 @@ platforms:
       crossref:
         prefix: "10.1099"
         record_types: [posted-content, journal-article, peer-review]
-        doi_regex: "^10\\.1099/acmi\\."
-        container_titles: ["Access Microbiology"]
-        sample_work_doi: "10.1099/acmi.fis2019.po0077"
+        doi_regex: "^10\\.1099/acmi\\.0\\.\\d+(\\.v\\d+)?$"
+        sample_work_doi: "10.1099/acmi.0.000460.v1"
         sample_review_doi: "10.1099/acmi.0.000955.v2.1"
         notes: >-
           Prefix 10.1099 covers all Microbiology Society journals; selection is
-          by DOI stem acmi and container-title. Preprint and review DOI
-          patterns are confirmed in the first local run.
+          by the article DOI stem acmi.0.NNNNNN alone (D-060). Confirmed by
+          run_20261027_01: the preprint is a posted-content record
+          acmi.0.NNNNNN.v1 (.v2 for a revised preprint) with an empty
+          container-title; accepted versions are journal-article records
+          acmi.0.NNNNNN.vN; the version of record is the unversioned
+          journal-article acmi.0.NNNNNN. Conference abstracts
+          (acmi.ac2019.po*, acmi.fis2019.po*, acmi.cc*, acmi.imav*, ...) carry
+          the journal's container-title and are outside the row; a
+          container-title signal would readmit them, so none is declared.
+          Review records are acmi.0.NNNNNN.vN.M with is-review-of relations.
       sciety:
         group_slug: access-microbiology
         group_id: 4d6a8908-22a9-45c8-bd56-3c7140647709
         group_page_url: https://sciety.org/groups/access-microbiology
         role: cross_check
     eligibility_events:
-      - first public posting of the preprint version of a submitted article
+      - first public posting of the preprint version of a submitted article (posted-content)
     counting_event: first_public_posting
     counting_event_date_field: "posted -> issued"
     evidence_url:

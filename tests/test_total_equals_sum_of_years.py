@@ -11,8 +11,9 @@ def test_row_total_equals_sum_of_year_cells(pipeline_outputs):
         if summary["unique_works_to_cutoff"] == "":
             continue
         yearly = sum(int(c["count"]) for c in cells if c["count"] != "")
-        included = [w for w in out.works(row_id) if w["included"] == "true"]
-        assert yearly == int(summary["unique_works_to_cutoff"]) == len({w["canonical_work_id"] for w in included})
+        # included works counted outside the eligible range enter no cell and no total (D-060)
+        counted = [w for w in out.works(row_id) if w["included"] == "true" and w["in_eligible_range"] == "true"]
+        assert yearly == int(summary["unique_works_to_cutoff"]) == len({w["canonical_work_id"] for w in counted})
 
 
 def test_group_tables_have_no_grand_total_row(pipeline_outputs):

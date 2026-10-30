@@ -75,7 +75,7 @@ but not included are in `config/excluded_candidates.yaml`.
 
 | Row (`row_id`) | Organisation | Axis 1 (confidence) | Axis 2 (confidence) | Source | Counting event | Coverage | Data status |
 |---|---|---|---|---|---|---|---|
-| `elife_reviewed_preprints` | eLife Sciences Publications Ltd | `author_initiated` (high) | `core_publish_first` (high) | both | first_public_posting | 2023–cutoff | machine_readable |
+| `elife_reviewed_preprints` | eLife Sciences Publications Ltd | `author_initiated` (high) | `core_publish_first` (high) | both | first_public_posting | 2022–cutoff | machine_readable |
 | `f1000research` | F1000 Research Ltd (Taylor & Francis) | `author_initiated` (high) | `approval_threshold` (high) | crossref | first_public_posting | 2013–cutoff | machine_readable |
 | `wellcome_open_research` | F1000 Research Ltd for Wellcome | `author_initiated` (high) | `approval_threshold` (high) | crossref | first_public_posting | 2016–cutoff | machine_readable |
 | `gates_open_research` | F1000 Research Ltd for the Gates Foundation | `author_initiated` (high) | `approval_threshold` (medium) | crossref | first_public_posting | 2017–2024 | partial_coverage |
@@ -216,7 +216,12 @@ The peer-review stage refreshes per-record `attribution_basis` from complete
 selected walks. Unattributed preprints stay in interim with `included=false`
 and `exclusion_reason=no_journal_attribution`; attributed records still need
 final eligibility checks. Affected years carry `partial_known_scope` in
-`coverage_matrix`, independently of `partial_year` (D-032). ResearchHub is
+`coverage_matrix`, independently of `partial_year` (D-032).
+A first-public-posting row whose eligibility event names `posted-content`
+(eLife Reviewed Preprints, Access Microbiology) admits a work only through a
+posted-content record; journal-article-only stems are excluded as
+`no_posting_record`, and `register_summary.csv` counts the eligible range
+only (`n_works_outside_eligible_range`; D-060). ResearchHub is
 scheduled for reassessment when the documentation stabilises, before release freeze (D-033).
 
 ## Repository layout
