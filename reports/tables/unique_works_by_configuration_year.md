@@ -2,15 +2,15 @@
 
 Analysis cutoff: 2026-09-30; year 2026 is year_to_date (not annualised).
 Additivity: `deduplicated`. No all-row total is published in this table.
-Snapshot: Crossref/Sciety retrieval finished 2026-10-27T05:25:39Z.
+Snapshot: Crossref/Sciety retrieval finished 2026-10-30T14:28:37Z.
 Empty cells are not zeros: see `observation_status` and `extraction_status` in the CSV.
 A canonical work counts once per group, in the year of its earliest counting event.
 
 | prc_configuration | year | year_label | count | partial_year | extraction_status | source_observability_status | observation_status | coverage | temporal_coverage_status | additivity | blocking_rows |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| approval_threshold | 2013 | 2013 | 1 | false | complete | observable | observed | complete | complete | deduplicated |  |
-| approval_threshold | 2014 | 2014 | 256 | false | complete | observable | observed | complete | complete | deduplicated |  |
-| approval_threshold | 2015 | 2015 | 435 | false | complete | observable | observed | complete | complete | deduplicated |  |
+| approval_threshold | 2013 | 2013 | 0 | false | complete | observable | observed_zero | complete | complete | deduplicated |  |
+| approval_threshold | 2014 | 2014 | 255 | false | complete | observable | observed | complete | complete | deduplicated |  |
+| approval_threshold | 2015 | 2015 | 432 | false | complete | observable | observed | complete | complete | deduplicated |  |
 | approval_threshold | 2016 | 2016 | 770 | false | complete | observable | observed | complete | complete | deduplicated |  |
 | approval_threshold | 2017 | 2017 |  | false | complete | not_observable | not_observable | no_data | not_assessable | deduplicated | gates_open_research:partial_coverage |
 | approval_threshold | 2018 | 2018 |  | false | complete | not_observable | not_observable | no_data | not_assessable | deduplicated | gates_open_research:partial_coverage |
@@ -21,14 +21,14 @@ A canonical work counts once per group, in the year of its earliest counting eve
 | approval_threshold | 2023 | 2023 |  | false | complete | not_observable | not_observable | no_data | not_assessable | deduplicated | gates_open_research:partial_coverage; qeios_hosted_works:partial_coverage |
 | approval_threshold | 2024 | 2024 |  | false | complete | not_observable | not_observable | no_data | not_assessable | deduplicated | gates_open_research:partial_coverage; qeios_hosted_works:partial_coverage |
 | approval_threshold | 2025 | 2025 |  | false | complete | not_observable | not_observable | no_data | not_assessable | deduplicated | qeios_hosted_works:partial_coverage |
-| approval_threshold | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 2426 | true | complete | observable | observed | year_to_date | partial | deduplicated |  |
-| core_publish_first | 2020 | 2020 | 2089 | false | complete | observable | observed | complete | complete | deduplicated |  |
-| core_publish_first | 2021 | 2021 | 2304 | false | complete | observable | observed | complete | complete | deduplicated |  |
-| core_publish_first | 2022 | 2022 | 2168 | false | complete | observable | observed | complete | complete | deduplicated |  |
-| core_publish_first | 2023 | 2023 | 2573 | false | complete | observable | observed | complete | complete | deduplicated |  |
-| core_publish_first | 2024 | 2024 |  | false | incomplete | not_observable | not_observable | no_data | not_assessable | deduplicated | metaror:incomplete |
-| core_publish_first | 2025 | 2025 |  | false | incomplete | not_observable | not_observable | no_data | not_assessable | deduplicated | metaror:incomplete |
-| core_publish_first | 2026 | 2026 (year_to_date, cutoff 2026-09-30) |  | true | incomplete | not_observable | not_observable | no_data | not_assessable | deduplicated | metaror:incomplete |
+| approval_threshold | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 2871 | true | complete | observable | observed | year_to_date | partial | deduplicated |  |
+| core_publish_first | 2020 | 2020 | 5 | false | complete | observable | observed | complete | complete | deduplicated |  |
+| core_publish_first | 2021 | 2021 | 55 | false | complete | observable | observed | complete | complete | deduplicated |  |
+| core_publish_first | 2022 | 2022 | 38 | false | complete | observable | observed | complete | complete | deduplicated |  |
+| core_publish_first | 2023 | 2023 | 1198 | false | complete | observable | observed | complete | complete | deduplicated |  |
+| core_publish_first | 2024 | 2024 |  | false | complete | not_observable | not_observable | no_data | not_assessable | deduplicated | metaror:source_not_covering |
+| core_publish_first | 2025 | 2025 |  | false | complete | not_observable | not_observable | no_data | not_assessable | deduplicated | metaror:source_not_covering |
+| core_publish_first | 2026 | 2026 (year_to_date, cutoff 2026-09-30) |  | true | complete | not_observable | not_observable | no_data | not_assessable | deduplicated | metaror:source_not_covering |
 | hybrid_public_discussion | 2001 | 2001 | 14 | false | complete | observable | observed | complete | complete | deduplicated |  |
 | hybrid_public_discussion | 2002 | 2002 | 79 | false | complete | observable | observed | complete | complete | deduplicated |  |
 | hybrid_public_discussion | 2003 | 2003 | 180 | false | complete | observable | observed | complete | complete | deduplicated |  |
@@ -47,24 +47,24 @@ A canonical work counts once per group, in the year of its earliest counting eve
 | hybrid_public_discussion | 2016 | 2016 | 3721 | false | complete | observable | observed | complete | complete | deduplicated |  |
 | hybrid_public_discussion | 2017 | 2017 | 3692 | false | complete | observable | observed | complete | complete | deduplicated |  |
 | hybrid_public_discussion | 2018 | 2018 | 3956 | false | complete | observable | observed | complete | complete | deduplicated |  |
-| hybrid_public_discussion | 2019 | 2019 | 4826 | false | complete | observable | observed | complete | complete | deduplicated |  |
-| hybrid_public_discussion | 2020 | 2020 | 5421 | false | complete | observable | observed | complete | complete | deduplicated |  |
-| hybrid_public_discussion | 2021 | 2021 | 4807 | false | complete | observable | observed | complete | complete | deduplicated |  |
-| hybrid_public_discussion | 2022 | 2022 | 4980 | false | complete | partial_known_scope | observed | partial_known_scope | partial | deduplicated |  |
-| hybrid_public_discussion | 2023 | 2023 | 5121 | false | complete | partial_known_scope | observed | partial_known_scope | partial | deduplicated |  |
-| hybrid_public_discussion | 2024 | 2024 | 4999 | false | complete | partial_known_scope | observed | partial_known_scope | partial | deduplicated |  |
-| hybrid_public_discussion | 2025 | 2025 | 5853 | false | complete | partial_known_scope | observed | partial_known_scope | partial | deduplicated |  |
-| hybrid_public_discussion | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 4805 | true | complete | partial_known_scope | observed | year_to_date | partial | deduplicated |  |
-| review_or_curation_service | 2017 | 2017 | 0 | false | complete | observable | observed_zero | complete | complete | deduplicated |  |
-| review_or_curation_service | 2018 | 2018 |  | false | incomplete | not_observable | not_observable | no_data | not_assessable | deduplicated | prelights:incomplete |
-| review_or_curation_service | 2019 | 2019 |  | false | incomplete | not_observable | not_observable | no_data | not_assessable | deduplicated | prelights:incomplete; prereview:incomplete; review_commons:incomplete |
-| review_or_curation_service | 2020 | 2020 |  | false | incomplete | not_observable | not_observable | no_data | not_assessable | deduplicated | ncrc:incomplete; prelights:incomplete; prereview:incomplete; qeios_external_works:partial_coverage; rapid_reviews_infectious_diseases:incomplete; review_commons:incomplete |
-| review_or_curation_service | 2021 | 2021 |  | false | incomplete | not_observable | not_observable | no_data | not_assessable | deduplicated | asapbio_crowd_review:incomplete; biophysics_colab:incomplete; ncrc:incomplete; prelights:incomplete; prereview:incomplete; qeios_external_works:partial_coverage; rapid_reviews_infectious_diseases:incomplete; review_commons:incomplete |
-| review_or_curation_service | 2022 | 2022 |  | false | incomplete | not_observable | not_observable | no_data | not_assessable | deduplicated | arcadia_science:incomplete; asapbio_crowd_review:incomplete; asapbio_scielo_crowd_review:incomplete; biophysics_colab:incomplete; life_science_editors:incomplete; life_science_editors_foundation:incomplete; ncrc:incomplete; peerref:incomplete; prelights:incomplete; prereview:incomplete; qeios_external_works:partial_coverage; rapid_reviews_infectious_diseases:incomplete; review_commons:incomplete |
-| review_or_curation_service | 2023 | 2023 |  | false | incomplete | not_observable | not_observable | no_data | not_assessable | deduplicated | arcadia_science:incomplete; asapbio_crowd_review:incomplete; asapbio_scielo_crowd_review:incomplete; biophysics_colab:incomplete; life_science_editors:incomplete; life_science_editors_foundation:incomplete; peerref:incomplete; prelights:incomplete; prereview:incomplete; qeios_external_works:partial_coverage; rapid_reviews_infectious_diseases:incomplete; review_commons:incomplete; the_unjournal:incomplete |
-| review_or_curation_service | 2024 | 2024 |  | false | incomplete | not_observable | not_observable | no_data | not_assessable | deduplicated | arcadia_science:incomplete; asapbio_crowd_review:incomplete; asapbio_scielo_crowd_review:incomplete; biophysics_colab:incomplete; life_science_editors:incomplete; life_science_editors_foundation:incomplete; peerref:incomplete; prelights:incomplete; prereview:incomplete; qeios_external_works:partial_coverage; rapid_reviews_infectious_diseases:incomplete; review_commons:incomplete; the_unjournal:incomplete |
-| review_or_curation_service | 2025 | 2025 |  | false | incomplete | not_observable | not_observable | no_data | not_assessable | deduplicated | arcadia_science:incomplete; asapbio_crowd_review:incomplete; asapbio_scielo_crowd_review:incomplete; biophysics_colab:incomplete; life_science_editors:incomplete; life_science_editors_foundation:incomplete; peerref:incomplete; prelights:incomplete; prereview:incomplete; qeios_external_works:partial_coverage; rapid_reviews_infectious_diseases:incomplete; review_commons:incomplete; the_unjournal:incomplete |
-| review_or_curation_service | 2026 | 2026 (year_to_date, cutoff 2026-09-30) |  | true | incomplete | not_observable | not_observable | no_data | not_assessable | deduplicated | arcadia_science:incomplete; asapbio_crowd_review:incomplete; asapbio_scielo_crowd_review:incomplete; biophysics_colab:incomplete; life_science_editors:incomplete; life_science_editors_foundation:incomplete; peerref:incomplete; prelights:incomplete; prereview:incomplete; rapid_reviews_infectious_diseases:incomplete; review_commons:incomplete; the_unjournal:incomplete |
+| hybrid_public_discussion | 2019 | 2019 | 4087 | false | complete | observable | observed | complete | complete | deduplicated |  |
+| hybrid_public_discussion | 2020 | 2020 | 4891 | false | complete | observable | observed | complete | complete | deduplicated |  |
+| hybrid_public_discussion | 2021 | 2021 | 4639 | false | complete | observable | observed | complete | complete | deduplicated |  |
+| hybrid_public_discussion | 2022 | 2022 | 4812 | false | complete | partial_known_scope | observed | partial_known_scope | partial | deduplicated |  |
+| hybrid_public_discussion | 2023 | 2023 | 5179 | false | complete | partial_known_scope | observed | partial_known_scope | partial | deduplicated |  |
+| hybrid_public_discussion | 2024 | 2024 | 5036 | false | complete | partial_known_scope | observed | partial_known_scope | partial | deduplicated |  |
+| hybrid_public_discussion | 2025 | 2025 | 5896 | false | complete | partial_known_scope | observed | partial_known_scope | partial | deduplicated |  |
+| hybrid_public_discussion | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 4864 | true | complete | partial_known_scope | observed | year_to_date | partial | deduplicated |  |
+| review_or_curation_service | 2017 | 2017 | 23 | false | complete | observable | observed | complete | complete | deduplicated |  |
+| review_or_curation_service | 2018 | 2018 |  | false | complete | not_observable | not_observable | no_data | not_assessable | deduplicated | prelights:partial_coverage |
+| review_or_curation_service | 2019 | 2019 |  | false | complete | not_observable | not_observable | no_data | not_assessable | deduplicated | prelights:partial_coverage; prereview:partial_coverage; review_commons:source_not_covering |
+| review_or_curation_service | 2020 | 2020 |  | false | complete | not_observable | not_observable | no_data | not_assessable | deduplicated | prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage; review_commons:source_not_covering |
+| review_or_curation_service | 2021 | 2021 |  | false | complete | not_observable | not_observable | no_data | not_assessable | deduplicated | prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage; review_commons:source_not_covering |
+| review_or_curation_service | 2022 | 2022 |  | false | complete | not_observable | not_observable | no_data | not_assessable | deduplicated | peerref:source_not_covering; prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage; review_commons:source_not_covering |
+| review_or_curation_service | 2023 | 2023 |  | false | complete | not_observable | not_observable | no_data | not_assessable | deduplicated | peerref:source_not_covering; prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage; review_commons:source_not_covering; the_unjournal:source_not_covering |
+| review_or_curation_service | 2024 | 2024 |  | false | complete | not_observable | not_observable | no_data | not_assessable | deduplicated | peerref:source_not_covering; prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage; review_commons:source_not_covering; the_unjournal:source_not_covering |
+| review_or_curation_service | 2025 | 2025 |  | false | complete | not_observable | not_observable | no_data | not_assessable | deduplicated | peerref:source_not_covering; prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage; review_commons:source_not_covering; the_unjournal:source_not_covering |
+| review_or_curation_service | 2026 | 2026 (year_to_date, cutoff 2026-09-30) |  | true | complete | not_observable | not_observable | no_data | not_assessable | deduplicated | peerref:source_not_covering; review_commons:source_not_covering; the_unjournal:source_not_covering |
 
 Blank group cells (D-038): the member row and status that block the sum.
 - approval_threshold, 2017: gates_open_research:partial_coverage
@@ -76,15 +76,15 @@ Blank group cells (D-038): the member row and status that block the sum.
 - approval_threshold, 2023: gates_open_research:partial_coverage; qeios_hosted_works:partial_coverage
 - approval_threshold, 2024: gates_open_research:partial_coverage; qeios_hosted_works:partial_coverage
 - approval_threshold, 2025: qeios_hosted_works:partial_coverage
-- core_publish_first, 2024: metaror:incomplete
-- core_publish_first, 2025: metaror:incomplete
-- core_publish_first, 2026: metaror:incomplete
-- review_or_curation_service, 2018: prelights:incomplete
-- review_or_curation_service, 2019: prelights:incomplete; prereview:incomplete; review_commons:incomplete
-- review_or_curation_service, 2020: ncrc:incomplete; prelights:incomplete; prereview:incomplete; qeios_external_works:partial_coverage; rapid_reviews_infectious_diseases:incomplete; review_commons:incomplete
-- review_or_curation_service, 2021: asapbio_crowd_review:incomplete; biophysics_colab:incomplete; ncrc:incomplete; prelights:incomplete; prereview:incomplete; qeios_external_works:partial_coverage; rapid_reviews_infectious_diseases:incomplete; review_commons:incomplete
-- review_or_curation_service, 2022: arcadia_science:incomplete; asapbio_crowd_review:incomplete; asapbio_scielo_crowd_review:incomplete; biophysics_colab:incomplete; life_science_editors:incomplete; life_science_editors_foundation:incomplete; ncrc:incomplete; peerref:incomplete; prelights:incomplete; prereview:incomplete; qeios_external_works:partial_coverage; rapid_reviews_infectious_diseases:incomplete; review_commons:incomplete
-- review_or_curation_service, 2023: arcadia_science:incomplete; asapbio_crowd_review:incomplete; asapbio_scielo_crowd_review:incomplete; biophysics_colab:incomplete; life_science_editors:incomplete; life_science_editors_foundation:incomplete; peerref:incomplete; prelights:incomplete; prereview:incomplete; qeios_external_works:partial_coverage; rapid_reviews_infectious_diseases:incomplete; review_commons:incomplete; the_unjournal:incomplete
-- review_or_curation_service, 2024: arcadia_science:incomplete; asapbio_crowd_review:incomplete; asapbio_scielo_crowd_review:incomplete; biophysics_colab:incomplete; life_science_editors:incomplete; life_science_editors_foundation:incomplete; peerref:incomplete; prelights:incomplete; prereview:incomplete; qeios_external_works:partial_coverage; rapid_reviews_infectious_diseases:incomplete; review_commons:incomplete; the_unjournal:incomplete
-- review_or_curation_service, 2025: arcadia_science:incomplete; asapbio_crowd_review:incomplete; asapbio_scielo_crowd_review:incomplete; biophysics_colab:incomplete; life_science_editors:incomplete; life_science_editors_foundation:incomplete; peerref:incomplete; prelights:incomplete; prereview:incomplete; qeios_external_works:partial_coverage; rapid_reviews_infectious_diseases:incomplete; review_commons:incomplete; the_unjournal:incomplete
-- review_or_curation_service, 2026: arcadia_science:incomplete; asapbio_crowd_review:incomplete; asapbio_scielo_crowd_review:incomplete; biophysics_colab:incomplete; life_science_editors:incomplete; life_science_editors_foundation:incomplete; peerref:incomplete; prelights:incomplete; prereview:incomplete; rapid_reviews_infectious_diseases:incomplete; review_commons:incomplete; the_unjournal:incomplete
+- core_publish_first, 2024: metaror:source_not_covering
+- core_publish_first, 2025: metaror:source_not_covering
+- core_publish_first, 2026: metaror:source_not_covering
+- review_or_curation_service, 2018: prelights:partial_coverage
+- review_or_curation_service, 2019: prelights:partial_coverage; prereview:partial_coverage; review_commons:source_not_covering
+- review_or_curation_service, 2020: prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage; review_commons:source_not_covering
+- review_or_curation_service, 2021: prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage; review_commons:source_not_covering
+- review_or_curation_service, 2022: peerref:source_not_covering; prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage; review_commons:source_not_covering
+- review_or_curation_service, 2023: peerref:source_not_covering; prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage; review_commons:source_not_covering; the_unjournal:source_not_covering
+- review_or_curation_service, 2024: peerref:source_not_covering; prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage; review_commons:source_not_covering; the_unjournal:source_not_covering
+- review_or_curation_service, 2025: peerref:source_not_covering; prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage; review_commons:source_not_covering; the_unjournal:source_not_covering
+- review_or_curation_service, 2026: peerref:source_not_covering; review_commons:source_not_covering; the_unjournal:source_not_covering

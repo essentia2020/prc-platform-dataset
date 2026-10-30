@@ -2,9 +2,104 @@
 
 Analysis cutoff: 2026-09-30; year 2026 is year_to_date (not annualised).
 Additivity: `row_series`. No all-row total is published in this table.
-Snapshot: Crossref/Sciety retrieval finished 2026-10-27T05:25:39Z.
+Snapshot: Crossref/Sciety retrieval finished 2026-10-30T14:28:37Z.
 Empty cells are not zeros: see `observation_status` and `extraction_status` in the CSV.
 Overlap is reported, not removed; the Qeios pair must be absent here (hard check).
 
 | canonical_work_id | row_ids | n_rows | earliest_row_id | earliest_year | correspondence_basis |
 |---|---|---|---|---|---|
+| doi:10.1101/2020.07.03.186395 | prelights; prereview | 2 | prelights | 2020 | canonical_work_id |
+| doi:10.1101/2020.07.13.190140 | prelights; rapid_reviews_infectious_diseases | 2 | prelights | 2020 | canonical_work_id |
+| doi:10.1101/2020.07.27.20161976 | qeios_external_works; rapid_reviews_infectious_diseases | 2 | rapid_reviews_infectious_diseases | 2021 | canonical_work_id |
+| doi:10.1101/2020.07.27.212076 | prereview; rapid_reviews_infectious_diseases | 2 | prereview | 2022 | canonical_work_id |
+| doi:10.1101/2020.08.01.20166595 | ncrc; rapid_reviews_infectious_diseases | 2 | ncrc | 2021 | canonical_work_id |
+| doi:10.1101/2020.08.20.259937 | prelights; rapid_reviews_infectious_diseases | 2 | prelights | 2020 | canonical_work_id |
+| doi:10.1101/2020.11.04.20225573 | ncrc; rapid_reviews_infectious_diseases | 2 | ncrc | 2021 | canonical_work_id |
+| doi:10.1101/2020.11.09.375469 | prelights; prereview | 2 | prelights | 2020 | canonical_work_id |
+| doi:10.1101/2021.01.07.425740 | ncrc; rapid_reviews_infectious_diseases | 2 | ncrc | 2021 | canonical_work_id |
+| doi:10.1101/2021.01.08.425793 | prereview; rapid_reviews_infectious_diseases | 2 | prereview | 2021 | canonical_work_id |
+| doi:10.1101/2021.01.28.428724 | prelights; prereview | 2 | prereview | 2021 | canonical_work_id |
+| doi:10.1101/2021.02.04.21251134 | prereview; rapid_reviews_infectious_diseases | 2 | prereview | 2021 | canonical_work_id |
+| doi:10.1101/2021.03.04.433973 | prelights; prereview | 2 | prelights | 2021 | canonical_work_id |
+| doi:10.1101/2021.04.06.21254882 | ncrc; qeios_external_works; rapid_reviews_infectious_diseases | 3 | rapid_reviews_infectious_diseases | 2021 | canonical_work_id |
+| doi:10.1101/2021.04.07.21255081 | ncrc; qeios_external_works; rapid_reviews_infectious_diseases | 3 | qeios_external_works | 2021 | canonical_work_id |
+| doi:10.1101/2021.06.04.447151 | arcadia_science; asapbio_crowd_review | 2 | asapbio_crowd_review | 2022 | canonical_work_id |
+| doi:10.1101/2021.07.07.21260122 | ncrc; qeios_external_works | 2 | ncrc | 2021 | canonical_work_id |
+| doi:10.1101/2021.08.20.21262158 | ncrc; qeios_external_works | 2 | ncrc | 2021 | canonical_work_id |
+| doi:10.1101/2021.11.12.21265796 | ncrc; rapid_reviews_infectious_diseases | 2 | ncrc | 2021 | canonical_work_id |
+| doi:10.1101/2021.12.04.471113 | prereview; qeios_external_works | 2 | qeios_external_works | 2022 | canonical_work_id |
+| doi:10.1101/2022.02.14.480438 | prelights; qeios_external_works | 2 | qeios_external_works | 2022 | canonical_work_id |
+| doi:10.1101/2022.08.26.505350 | arcadia_science; life_science_editors_foundation | 2 | arcadia_science | 2022 | canonical_work_id |
+| doi:10.1101/2023.02.05.527185 | arcadia_science; prelights | 2 | arcadia_science | 2023 | canonical_work_id |
+| doi:10.1101/2023.03.22.533773 | life_science_editors; prelights | 2 | life_science_editors | 2023 | canonical_work_id |
+| doi:10.1101/2023.05.07.539107 | arcadia_science; prereview | 2 | arcadia_science | 2023 | canonical_work_id |
+| doi:10.1101/2023.06.12.544578 | arcadia_science; prereview | 2 | arcadia_science | 2024 | canonical_work_id |
+| doi:10.1101/2023.08.30.555457 | arcadia_science; prelights | 2 | arcadia_science | 2023 | canonical_work_id |
+| doi:10.1101/2023.09.08.556788 | prereview; rapid_reviews_infectious_diseases | 2 | prereview | 2023 | canonical_work_id |
+| doi:10.1101/2023.09.20.558163 | arcadia_science; rapid_reviews_infectious_diseases | 2 | arcadia_science | 2023 | canonical_work_id |
+| doi:10.1101/2023.09.23.23295865 | prereview; rapid_reviews_infectious_diseases | 2 | prereview | 2023 | canonical_work_id |
+| doi:10.1101/2023.09.29.560084 | prereview; rapid_reviews_infectious_diseases | 2 | prereview | 2023 | canonical_work_id |
+| doi:10.1101/2023.10.04.23296554 | prereview; rapid_reviews_infectious_diseases | 2 | rapid_reviews_infectious_diseases | 2023 | canonical_work_id |
+| doi:10.1101/2023.10.10.561753 | prereview; rapid_reviews_infectious_diseases | 2 | rapid_reviews_infectious_diseases | 2023 | canonical_work_id |
+| doi:10.1101/2023.10.12.561972 | prereview; rapid_reviews_infectious_diseases | 2 | rapid_reviews_infectious_diseases | 2023 | canonical_work_id |
+| doi:10.1101/2023.10.13.562225 | arcadia_science; prelights | 2 | arcadia_science | 2023 | canonical_work_id |
+| doi:10.1101/2023.10.18.563024 | prereview; rapid_reviews_infectious_diseases | 2 | prereview | 2023 | canonical_work_id |
+| doi:10.1101/2023.10.26.23297597 | prereview; rapid_reviews_infectious_diseases | 2 | rapid_reviews_infectious_diseases | 2023 | canonical_work_id |
+| doi:10.1101/2023.11.03.23298032 | prereview; rapid_reviews_infectious_diseases | 2 | prereview | 2023 | canonical_work_id |
+| doi:10.1101/2023.11.06.565837 | arcadia_science; rapid_reviews_infectious_diseases | 2 | arcadia_science | 2023 | canonical_work_id |
+| doi:10.1101/2023.11.29.23299187 | prereview; rapid_reviews_infectious_diseases | 2 | prereview | 2023 | canonical_work_id |
+| doi:10.1101/2024.04.07.588499 | arcadia_science; prelights | 2 | prelights | 2024 | canonical_work_id |
+| doi:10.1101/2024.04.20.590411 | arcadia_science; prereview; rapid_reviews_infectious_diseases | 3 | prereview | 2024 | canonical_work_id |
+| doi:10.1101/2024.09.10.24312897 | prereview; rapid_reviews_infectious_diseases | 2 | prereview | 2024 | canonical_work_id |
+| doi:10.1101/2024.09.16.613342 | prelights; prereview | 2 | prereview | 2024 | canonical_work_id |
+| doi:10.1101/2024.10.09.24315208 | prereview; rapid_reviews_infectious_diseases | 2 | prereview | 2024 | canonical_work_id |
+| doi:10.1101/2024.10.11.617849 | prelights; prereview | 2 | prelights | 2024 | canonical_work_id |
+| doi:10.1101/2024.11.04.24316579 | prereview; rapid_reviews_infectious_diseases | 2 | prereview | 2024 | canonical_work_id |
+| doi:10.1101/2024.11.18.24316975 | prereview; rapid_reviews_infectious_diseases | 2 | prereview | 2024 | canonical_work_id |
+| doi:10.1101/2024.11.26.625530 | arcadia_science; prereview | 2 | arcadia_science | 2025 | canonical_work_id |
+| doi:10.1101/2024.12.22.629557 | arcadia_science; prelights | 2 | arcadia_science | 2025 | canonical_work_id |
+| doi:10.1101/2025.02.03.25321585 | prereview; rapid_reviews_infectious_diseases | 2 | prereview | 2025 | canonical_work_id |
+| doi:10.1101/2025.02.03.636309 | arcadia_science; prereview | 2 | arcadia_science | 2025 | canonical_work_id |
+| doi:10.1101/2025.02.07.636856 | prereview; rapid_reviews_infectious_diseases | 2 | prereview | 2025 | canonical_work_id |
+| doi:10.1101/2025.02.13.638075 | prereview; rapid_reviews_infectious_diseases | 2 | rapid_reviews_infectious_diseases | 2025 | canonical_work_id |
+| doi:10.1101/2025.02.18.638918 | arcadia_science; life_science_editors_foundation | 2 | arcadia_science | 2025 | canonical_work_id |
+| doi:10.1101/2025.02.18.638923 | prereview; rapid_reviews_infectious_diseases | 2 | prereview | 2025 | canonical_work_id |
+| doi:10.1101/2025.02.25.25322865 | prereview; rapid_reviews_infectious_diseases | 2 | prereview | 2025 | canonical_work_id |
+| doi:10.1101/2025.02.27.640495 | prelights; prereview | 2 | prereview | 2025 | canonical_work_id |
+| doi:10.1101/2025.03.10.642431 | life_science_editors_foundation; prelights | 2 | life_science_editors_foundation | 2025 | canonical_work_id |
+| doi:10.1101/2025.03.16.25324079 | prereview; rapid_reviews_infectious_diseases | 2 | prereview | 2025 | canonical_work_id |
+| doi:10.1101/2025.03.20.25324205 | prereview; rapid_reviews_infectious_diseases | 2 | rapid_reviews_infectious_diseases | 2025 | canonical_work_id |
+| doi:10.1101/2025.03.24.25324527 | prereview; rapid_reviews_infectious_diseases | 2 | rapid_reviews_infectious_diseases | 2025 | canonical_work_id |
+| doi:10.1101/2025.03.30.25324898 | prereview; rapid_reviews_infectious_diseases | 2 | prereview | 2025 | canonical_work_id |
+| doi:10.1101/2025.04.16.649113 | prereview; rapid_reviews_infectious_diseases | 2 | prereview | 2025 | canonical_work_id |
+| doi:10.1101/2025.04.17.25324904 | prereview; rapid_reviews_infectious_diseases | 2 | prereview | 2025 | canonical_work_id |
+| doi:10.1101/2025.06.17.25329745 | prereview; rapid_reviews_infectious_diseases | 2 | prereview | 2025 | canonical_work_id |
+| doi:10.1101/2025.09.12.675947 | arcadia_science; prereview | 2 | arcadia_science | 2025 | canonical_work_id |
+| doi:10.1101/2025.09.19.25336212 | prereview; rapid_reviews_infectious_diseases | 2 | prereview | 2025 | canonical_work_id |
+| doi:10.1101/2025.09.19.677332 | prereview; rapid_reviews_infectious_diseases | 2 | prereview | 2025 | canonical_work_id |
+| doi:10.1101/2025.09.22.25336338 | prereview; rapid_reviews_infectious_diseases | 2 | prereview | 2025 | canonical_work_id |
+| doi:10.1101/2025.09.23.25335263 | prereview; rapid_reviews_infectious_diseases | 2 | prereview | 2025 | canonical_work_id |
+| doi:10.1101/2025.09.24.25336608 | prereview; rapid_reviews_infectious_diseases | 2 | prereview | 2025 | canonical_work_id |
+| doi:10.1101/2025.10.01.25337091 | prereview; rapid_reviews_infectious_diseases | 2 | prereview | 2025 | canonical_work_id |
+| doi:10.1101/2025.10.14.25338029 | prereview; rapid_reviews_infectious_diseases | 2 | prereview | 2025 | canonical_work_id |
+| doi:10.1101/2025.10.17.683141 | prereview; rapid_reviews_infectious_diseases | 2 | prereview | 2025 | canonical_work_id |
+| doi:10.1101/2025.10.27.25338874 | prereview; rapid_reviews_infectious_diseases | 2 | prereview | 2025 | canonical_work_id |
+| doi:10.1101/2025.10.31.25335414 | prereview; rapid_reviews_infectious_diseases | 2 | prereview | 2025 | canonical_work_id |
+| doi:10.1101/2025.11.14.688544 | prereview; rapid_reviews_infectious_diseases | 2 | prereview | 2025 | canonical_work_id |
+| doi:10.12688/verixiv.630.1 | prereview; rapid_reviews_infectious_diseases | 2 | prereview | 2025 | canonical_work_id |
+| doi:10.1590/scielopreprints.3745 | asapbio_scielo_crowd_review; prereview | 2 | asapbio_scielo_crowd_review | 2022 | canonical_work_id |
+| doi:10.21203/rs.3.rs-1020603/v1 | prereview; qeios_external_works | 2 | qeios_external_works | 2021 | canonical_work_id |
+| doi:10.2139/ssrn.5205109 | prereview; rapid_reviews_infectious_diseases | 2 | prereview | 2025 | canonical_work_id |
+| doi:10.2139/ssrn.5220658 | prereview; rapid_reviews_infectious_diseases | 2 | prereview | 2025 | canonical_work_id |
+| doi:10.32942/x2cg64 | pci_recommendations; prereview | 2 | prereview | 2023 | canonical_work_id |
+| doi:10.64898/2026.01.13.698576 | arcadia_science; prereview | 2 | arcadia_science | 2026 | canonical_work_id |
+| doi:10.64898/2026.01.26.26344900 | prereview; rapid_reviews_infectious_diseases | 2 | prereview | 2026 | canonical_work_id |
+| doi:10.64898/2026.01.30.702911 | arcadia_science; prelights | 2 | arcadia_science | 2026 | canonical_work_id |
+| doi:10.64898/2026.02.19.26346635 | prereview; rapid_reviews_infectious_diseases | 2 | prereview | 2026 | canonical_work_id |
+| doi:10.64898/2026.02.21.26346782 | prereview; rapid_reviews_infectious_diseases | 2 | prereview | 2026 | canonical_work_id |
+| doi:10.64898/2026.03.20.26348644 | prereview; rapid_reviews_infectious_diseases | 2 | prereview | 2026 | canonical_work_id |
+| doi:10.64898/2026.03.29.26349652 | prereview; rapid_reviews_infectious_diseases | 2 | prereview | 2026 | canonical_work_id |
+| doi:10.64898/2026.03.30.26349758 | prereview; rapid_reviews_infectious_diseases | 2 | prereview | 2026 | canonical_work_id |
+| doi:10.64898/2026.04.04.26350168 | prereview; rapid_reviews_infectious_diseases | 2 | prereview | 2026 | canonical_work_id |
+| doi:10.64898/2026.04.08.717014 | arcadia_science; prereview | 2 | arcadia_science | 2026 | canonical_work_id |
+| doi:10.64898/2026.04.23.719915 | arcadia_science; prelights | 2 | arcadia_science | 2026 | canonical_work_id |

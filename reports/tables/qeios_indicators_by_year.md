@@ -2,7 +2,7 @@
 
 Analysis cutoff: 2026-09-30; year 2026 is year_to_date (not annualised).
 Additivity: `row_series`. No all-row total is published in this table.
-Snapshot: Crossref/Sciety retrieval finished 2026-10-27T05:25:39Z.
+Snapshot: Crossref/Sciety retrieval finished 2026-10-30T14:28:37Z.
 Empty cells are not zeros: see `observation_status` and `extraction_status` in the CSV.
 Deposition diagnostics: `created`/`deposited` after the cutoff is reported, never used to infer that a record was absent at the cutoff.
 
