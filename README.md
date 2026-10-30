@@ -244,6 +244,21 @@ reports/     tables/, figures/, CHECKSUMS.txt
 logs/        extraction_<run_id>.jsonl (outside Git)
 ```
 
+## Data availability
+
+The repository tracks configuration, documentation, the data-quality log,
+the page manifests, the published tables and figures and `reports/CHECKSUMS.txt`
+(D-056). Harvested records are not tracked: for each run they are deposited
+as a release archive. For `run_20261027_01` the archive
+`prc-platform-dataset_run_20261027_01.zip` (97.2 MB) contains
+`data/processed/records_*.csv`, `works_included.csv`,
+`normalisation_summary.json`, `analysis_manifest.json`, `data/interim/*` and a
+copy of `data/manifests/run_20261027_01/` — 273 files; their SHA-256 sums and
+the sum of the archive itself are in
+`reports/release_archive_run_20261027_01.sha256`. Archive SHA-256:
+`93b68f8c1b8d85e1abd6bc691d03c4ac28560d405e29c78f9d43f0cf32f0a648`.
+Zenodo DOI: pending deposit.
+
 ## Licensing
 
 - `LICENSE` — MIT License; applies to the code in `src/`, `tools/` and
