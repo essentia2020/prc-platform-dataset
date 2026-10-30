@@ -148,7 +148,8 @@ def test_malformed_meded_work_is_counted_and_logged(pipeline_outputs):
     assert all(r["reviewed_canonical_work_id"] == "doi:10.15694/mep.2021.000035"
                for r in flagged if r["relation_type"] == "is-review-of")
     dq = [r for r in read_csv(out.processed / "data_quality_log.csv")
-          if r["row_id"] == "meded_publish" and r["issue_type"] == "malformed_doi" and r["status"] == "observed"]
+          if r["run_id"] == out.run_config.run_id and r["row_id"] == "meded_publish"
+          and r["issue_type"] == "malformed_doi" and r["status"] == "observed"]
     assert len(dq) == 1 and int(dq[0]["n_records_affected"]) >= 3
 
 
@@ -200,7 +201,8 @@ def test_jmirx_companion_items_are_kept_but_not_counted(pipeline_outputs):
     assert recs["10.2196/35862"]["exclusion_reason"] == ""
     assert "10.2196/40000" not in recs      # other JMIR journal
     dq = [r for r in read_csv(out.processed / "data_quality_log.csv")
-          if r["row_id"] == "jmirx_med" and r["issue_type"] == "companion_record" and r["status"] == "observed"]
+          if r["run_id"] == out.run_config.run_id and r["row_id"] == "jmirx_med"
+          and r["issue_type"] == "companion_record" and r["status"] == "observed"]
     assert len(dq) == 1 and dq[0]["n_records_affected"] == "2"
 
 
