@@ -172,10 +172,12 @@ def test_sciety_pagination_keeps_filter_and_request_sidecar(tmp_path):
     outcomes = sciety_evaluations.run(config, sources, rows, logger, transport=transport, sleeper=lambda _: None, **roots)
     assert len(outcomes[0].walk.pages) == 3 and outcomes[0].complete
     assert outcomes[0].walk.completion["rule"] == "sciety_continuation_exhausted"
-    sidecars = list(roots["raw_root"].rglob("*.request.json"))
+    sidecars = list((roots["raw_root"] / "sciety" / "evaluations__prereview").rglob("*.request.json"))
     assert len(sidecars) == 3
     for sidecar in sidecars:
         assert json.loads(sidecar.read_text())["parameters"]["publisheraccount"] == ["https://sciety.org/groups/prereview"]
+    probe = list((roots["raw_root"] / "sciety" / "index__all").rglob("*.request.json"))   # coverage probe, D-058
+    assert len(probe) == 1 and "publisheraccount" not in json.loads(probe[0].read_text())["parameters"]
 
 
 def test_sciety_mismatch_in_docmap_without_outputs_still_fails(tmp_path):

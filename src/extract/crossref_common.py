@@ -50,10 +50,17 @@ class ScopeOutcome:
 
 
 # ---------------------------------------------------------------- requests
-def http_settings(run_config: RunConfig, sources_config: Mapping[str, Any]) -> dict[str, Any]:
+def http_settings(run_config: RunConfig, sources_config: Mapping[str, Any],
+                  source: str | None = None) -> dict[str, Any]:
+    """HTTP settings in precedence order: ``http_defaults`` of sources.yaml,
+    then the optional ``sources.<source>.http`` block, then ``extra.http`` of
+    the run configuration.  A per-source block carries only the keys it
+    overrides (for example a longer ``timeout_seconds`` for Sciety, whose
+    index pages are single multi-megabyte responses)."""
     defaults = dict(sources_config.get("http_defaults") or {})
+    per_source = dict(((sources_config.get("sources") or {}).get(source) or {}).get("http") or {}) if source else {}
     overrides = dict((run_config.extra or {}).get("http") or {})
-    merged = {**defaults, **overrides}
+    merged = {**defaults, **per_source, **overrides}
     merged.setdefault("timeout_seconds", 60)
     merged.setdefault("max_attempts_per_page", 5)
     merged.setdefault("backoff_seconds", [2, 5, 15, 45, 120])
@@ -63,7 +70,7 @@ def http_settings(run_config: RunConfig, sources_config: Mapping[str, Any]) -> d
 
 def build_client(run_config: RunConfig, sources_config: Mapping[str, Any], *, transport=None,
                  sleeper=None, logger=None) -> PoliteClient:
-    settings = http_settings(run_config, sources_config)
+    settings = http_settings(run_config, sources_config, SOURCE)
     source = sources_config["sources"][SOURCE]
     rate = source.get("rate_limit") or {}
     per_second = float(rate.get("max_requests_per_second") or 1)

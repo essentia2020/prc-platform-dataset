@@ -15,7 +15,12 @@
   the work count and no reviewed-works series is attempted.
 - **Sciety** covers only groups that have joined Sciety and only from their
   joining date; earlier activity of those groups (for example early PREreview
-  and preLights activity) is missing.
+  and preLights activity) is missing. The docmaps index additionally covers
+  only the groups Sciety has enabled for docmaps, group by group (eleven
+  groups in the index of 2026-10-28). Register rows whose only selector is a
+  Sciety group absent from the index (MetaROR, Review Commons, PeerRef, The
+  Unjournal in run_20261027_01) publish no count: `source_not_covering`
+  (D-058), never a zero, although their Sciety group pages list evaluations.
 - **SciPost** is observed through final published works, not every submission.
   **Copernicus** instead counts discussion-preprint entry into public
   discussion (D-015), so rejected discussion preprints are not categorically
@@ -161,6 +166,9 @@ release freeze.
   `selector_no_match` (D-047), and `tools/check_register_prefixes.py`
   resolves one known work DOI and one known review DOI per row before an
   extraction to compare owner prefix and member with the declared scopes.
+  For Sciety rows the analogous ambiguity (empty response because the group
+  is not in the index) is resolved by the run's own index snapshot
+  (`source_not_covering`, D-058).
 - **Repeated slashes in deposited DOIs.** MedEd Publish deposited one 2021
   article as `10.15694//mep.2021.000035.1` with three reviews targeting the
   same double-slash string (D-053, DQ-015). Canonical identifiers use the

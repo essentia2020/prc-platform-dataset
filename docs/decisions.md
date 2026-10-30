@@ -1172,6 +1172,32 @@ scope. `run_20261026_01` is extended, not replaced: cutoff, register and policy
 are unchanged; the per-scope `software` record in the run manifest documents the
 commit of each extension.
 
+## D-058: Source coverage of a Sciety group is verified per run; an absent group is `source_not_covering`, never a zero
+
+- **Date:** 2026-10-28
+- **Status:** proposed (reply from Sciety, connect@sciety.org, 2026-10-28, pending)
+- decided_by: researcher
+- **Question:** How is an empty per-group Sciety response distinguished from a group the docmaps index does not carry?
+- **Options:** (a) treat as observed zero; (b) treat as `selector_no_match` (D-047); (c) verify against the unfiltered index per run and record `source_not_covering`.
+- **Decision:** (c). The Sciety docmaps index lists only the groups Sciety has enabled for
+docmaps, group by group (sciety/sciety#2161, #1088); eleven groups on
+2026-10-28. An empty per-group response is therefore ambiguous. Each run
+retrieves the unfiltered index once (scope `index__all`, stored
+immutably, SHA-256 per page in the run manifest) and records for every
+group scope whether the group is present and with how many docmaps
+(`index_coverage`). A quantified row whose primary scopes are all Sciety
+groups absent from that snapshot publishes no count: cells
+`not_observable` with `source_observability_status=source_not_covering`,
+group sums blocked, one data-quality row naming the snapshot. The
+condition describes the source, not the platform and not the selector; a
+group present in the index that yields zero items keeps
+`selector_no_match` (D-047). When the index walk is incomplete, coverage
+is `unverified` and D-047 applies unchanged. Alternative primary sources
+for such rows are register decisions, not analysis defaults. Rule 6 of
+`tools/check_walk_shape.py` reports the same condition per walk.
+- **Evidence:** run_20261027_01; index snapshot 2026-10-28 ~05:10 UTC, 5,398 docmaps, 11 groups, SHA-256 a9eba43264284203fe0d0605ec22ab927a490ab281cc330a1ab19f599bc3ed77; sciety/sciety#2161, #1088. Affected rows: `metaror`, `review_commons`, `peerref`, `the_unjournal`.
+- **Authority:** instruction §9.4, §9.6; D-037, D-047.
+
 ## Q-4: Cross-DOI work correspondence for Gates Open Research / VeriXiv
 
 - **Date:** 2026-10-20

@@ -10,6 +10,12 @@ This module maps that scope-level state onto register rows:
   still incomplete;
 * otherwise the row is ``incomplete`` (including scopes never attempted).
 
+A Sciety scope entry may carry ``index_coverage`` (D-058): whether the group
+is present in the unfiltered docmaps index retrieved by the same run.  A row
+whose primary scopes are all Sciety groups absent from that index is
+``source_not_covering``: complete, but the source does not carry the group,
+so a zero there is a property of the source, never an observation.
+
 Scopes declared with ``role: cross_check`` in the row's selector are not
 counting sources.  Their state is reported separately and never blocks a
 row's analytical outputs; when a cross-check scope is not complete, the
@@ -29,6 +35,7 @@ from ..extract.selectors import (REVIEW_RECORD_TYPE, compile_crossref_selector, 
 from .manifest import load_run_manifest, run_manifest_path
 
 EXTRACTION_STATUSES = ("complete", "incomplete", "failed")
+INDEX_COVERAGE_STATUSES = ("in_index", "not_in_index", "unverified")
 
 
 @dataclass
@@ -38,6 +45,13 @@ class RowState:
     primary_scopes: dict[str, str] = field(default_factory=dict)      # "<source>/<scope>" -> status
     cross_check_scopes: dict[str, str] = field(default_factory=dict)
     selected_walks: dict[str, str | None] = field(default_factory=dict)
+    index_coverage: dict[str, str] = field(default_factory=dict)       # Sciety scopes only (D-058)
+
+    @property
+    def source_not_covering(self) -> bool:
+        """Every primary scope is a Sciety group absent from the run's index snapshot (D-058)."""
+        return bool(self.primary_scopes) and all(
+            self.index_coverage.get(key) == "not_in_index" for key in self.primary_scopes)
 
     @property
     def extraction_status(self) -> str:
@@ -70,6 +84,16 @@ def _scope_status(manifest: Mapping[str, Any], key: str) -> tuple[str, str | Non
     return status, entry.get("selected_walk_id")
 
 
+def _scope_index_coverage(manifest: Mapping[str, Any], key: str) -> str | None:
+    """``in_index`` / ``not_in_index`` / ``unverified`` of a Sciety scope entry, else ``None``."""
+    entry = (manifest.get("scopes") or {}).get(key) or {}
+    coverage = entry.get("index_coverage")
+    if not isinstance(coverage, Mapping):
+        return None
+    status = str(coverage.get("status") or "unverified")
+    return status if status in INDEX_COVERAGE_STATUSES else "unverified"
+
+
 def row_scopes(row: Mapping[str, Any]) -> tuple[list[str], list[str]]:
     """``(primary_scope_keys, cross_check_scope_keys)`` for one register row."""
     primary: list[str] = []
@@ -97,6 +121,10 @@ def row_states(manifest: Mapping[str, Any], platforms: list[Mapping[str, Any]]) 
             state.primary_scopes[key], state.selected_walks[key] = _scope_status(manifest, key)
         for key in cross:
             state.cross_check_scopes[key], state.selected_walks[key] = _scope_status(manifest, key)
+        for key in primary + cross:
+            coverage = _scope_index_coverage(manifest, key)
+            if coverage is not None:
+                state.index_coverage[key] = coverage
         states[state.row_id] = state
     return states
 

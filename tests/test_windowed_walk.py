@@ -185,8 +185,8 @@ def test_composite_passes_the_walk_shape_check(tmp_path: Path):
     run_config, roots, _, _, _ = _run(tmp_path)
     walk = _composite(roots, run_config)[0]
     assert walk_shape_issues(walk, 3, roots["raw_root"]) == []
-    reports, errors = check_walk_shape.run_check(run_config.run_id, roots["manifest_root"], roots["raw_root"], 3,
-                                                 [SCOPE, f"{SCOPE}__issued_2022-04-01_2022-06-30"], False, True)
+    reports, errors, _ = check_walk_shape.run_check(run_config.run_id, roots["manifest_root"], roots["raw_root"], 3,
+                                                    [SCOPE, f"{SCOPE}__issued_2022-04-01_2022-06-30"], False, True)
     assert errors == []
     by_scope = {r.scope: r for r in reports}
     assert by_scope[SCOPE].composite and by_scope[SCOPE].windows == 59 and by_scope[SCOPE].issues == []

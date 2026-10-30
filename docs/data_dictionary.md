@@ -89,6 +89,20 @@ zero. `tools/check_register_prefixes.py` compares the declared scopes with
 the Crossref prefix and member of `sample_work_doi` / `sample_review_doi`
 before an extraction.
 
+A quantified Sciety row is subject to a second check (D-058). The Sciety
+docmaps index lists only the groups Sciety has enabled for docmaps, so an
+empty per-group response is ambiguous on its own. Each run walks the
+unfiltered index once (scope `index__all`) and records per group scope
+whether the group is present in that snapshot (`index_coverage`, §3.3). A
+row whose primary scopes are all Sciety groups absent from the snapshot
+publishes no count: every cell is `not_observable` with
+`source_observability_status=source_not_covering` and the run appends a
+`source_not_covering` data-quality row naming the snapshot. The condition
+marks a source that does not carry the group, not a selector defect and
+not an observed zero; a group present in the index that yields zero items
+keeps `selector_no_match`. When the index walk is not complete, coverage is
+`unverified` and the D-047 rule applies unchanged.
+
 `extraction_selector.crossref.work_correspondences` holds explicit
 record-level correspondences: `primary_doi`, `alias_doi`, `version_stem`,
 `version_relation` (`from_doi`, `to_doi`, `type`, `asserted_by`),
@@ -129,8 +143,9 @@ prefix and record type, shared by every row declaring that prefix) or
 `works__issn_<issn>__<record_type>` (Crossref; one walk per journal ISSN
 and record type, for rows whose records are owned by a shared prefix or
 whose original DOIs are aliases of re-registered primaries) or
-`evaluations__<group_slug>` (Sciety; one paginated walk per group). The
-Crossref `prefix` filter selects by current owner prefix, so records that
+`evaluations__<group_slug>` (Sciety; one paginated walk per group) or
+`index__all` (Sciety; the unfiltered docmaps index, one walk per run as the
+coverage probe of D-058). The Crossref `prefix` filter selects by current owner prefix, so records that
 changed owner with a title transfer appear under the acquiring member's
 prefix while keeping their DOI string; the row's `doi_regex` decides
 membership, never the bare prefix.
@@ -231,7 +246,8 @@ without a complete walk have `extraction_status` `incomplete` or `failed`.
 | `analysis_cutoff_date` | date | copied from `config/run.yaml` at run start |
 | `retrieval_started_at`, `retrieval_finished_at` | timestamp | actual retrieval window |
 | `selected_walk_policy` | string | from `config/run.yaml` |
-| `scopes` | object | keyed `<source>/<scope>`; per scope: `walk_ids` (all), `walk_states`, `selected_walk_id`, `selection_reason`, `extraction_status` (`complete` / `incomplete` / `failed`), `completed_at`, `pages`, `items`, `completion`, `anomalies`, `recorded_at`, `software` (as below, in effect when the entry was written); a windowed scope (D-057) adds `window_set` (`date_field`, `granularity`, `first_window_start`, `reason`, `windows`) and each window sub-scope has its own entry with `window_of` and `window` |
+| `scopes` | object | keyed `<source>/<scope>`; per scope: `walk_ids` (all), `walk_states`, `selected_walk_id`, `selection_reason`, `extraction_status` (`complete` / `incomplete` / `failed`), `completed_at`, `pages`, `items`, `completion`, `anomalies`, `recorded_at`, `software` (as below, in effect when the entry was written); a windowed scope (D-057) adds `window_set` (`date_field`, `granularity`, `first_window_start`, `reason`, `windows`) and each window sub-scope has its own entry with `window_of` and `window`; a Sciety group scope adds `index_coverage` (`status`: `in_index` / `not_in_index` / `unverified`, `docmaps_in_index`, `docmaps_walked`, `index_walk_id`, `index_retrieved_at`; D-058) and the probe scope `sciety/index__all` carries `role: coverage_probe` |
+| `sciety_index_snapshot` | object | written by the Sciety stage when the index walk is complete (D-058): `scope`, `walk_id`, `retrieved_at`, `pages`, `docmaps_total`, `page_sha256` (one digest per stored page), `groups` (docmaps per `publisher.account.id` as served, register groups and others alike) |
 | `software` | object | recorded at run start: `python`, `implementation`, `platform`, `executable`, `git_commit` and `git_worktree` (`clean` / `dirty`; `unavailable` when the working copy is not a Git repository). A run extended by later invocations may have been written under several commits; the per-scope `software` field records which |
 
 ## 4. Interim layer (`data/interim/`, outside Git)
@@ -442,7 +458,7 @@ remains the conservative interval of the chosen record;
 |---|---|---|
 | `issue_id` | string | unique (`DQ-001`, …) |
 | `row_id` | string | register row or `all` |
-| `issue_type` | enum | `deposition_discontinuity`, `no_review_records`, `partial_source_coverage`, `placeholder_relation`, `retrospective_deposit`, `date_semantics`, `missing_event_date`, `ambiguous_cutoff_date`, `malformed_doi`, `withdrawn_record`, `selector_no_match`, `companion_record`, `other` |
+| `issue_type` | enum | `deposition_discontinuity`, `no_review_records`, `partial_source_coverage`, `placeholder_relation`, `retrospective_deposit`, `date_semantics`, `missing_event_date`, `ambiguous_cutoff_date`, `malformed_doi`, `withdrawn_record`, `selector_no_match`, `source_not_covering`, `companion_record`, `other` |
 | `description` | string | neutral description of the issue |
 | `evidence` | string | URL, record id or test name |
 | `effect_on_counts` | string | expected direction and scope of the effect |
@@ -468,9 +484,11 @@ applicable, `year` (integer), `year_label` (`2026 (year_to_date, cutoff
 `partial_year` (boolean), `extraction_status` (`complete` / `incomplete` /
 `failed`; `not_applicable` for rows without a machine-readable source),
 `source_observability_status` (`observable` / `partial_known_scope` /
-`unknown_scope` / `pending_run` / `selector_no_match` / `not_observable`;
-`selector_no_match` marks a quantified row whose complete scopes matched no
-record (D-047) and blocks every group the row belongs to; `pending_run` is the
+`unknown_scope` / `pending_run` / `selector_no_match` / `source_not_covering` /
+`not_observable`; `selector_no_match` marks a quantified row whose complete
+scopes matched no record (D-047) and `source_not_covering` a quantified
+Sciety row whose group is absent from the run's docmaps index snapshot
+(D-058); both block every group the row belongs to; `pending_run` is the
 transient state of a run-deferred coverage start before the first complete
 run and must be absent from released tables, D-039), `observation_status` (`observed` /
 `observed_zero` / `not_observable` / `register_only` / `not_applicable`),

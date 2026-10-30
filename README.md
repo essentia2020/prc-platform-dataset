@@ -131,7 +131,10 @@ preprints count only when attributed to a verified journal, so that part of
 the series is a lower bound. Access Microbiology has a run-derived start
 rather than an assumed 2023 boundary. The three `register_only` rows with
 `data_source: none` (ScienceOpen, Octopus, Peeriodicals; D-028) satisfy the
-inclusion criteria but have no selector in the two permitted sources.
+inclusion criteria but have no selector in the two permitted sources. A
+quantified Sciety row whose group is absent from the docmaps index
+retrieved by the same run publishes no count either (`source_not_covering`,
+D-058): the index lists only groups enabled for docmaps by Sciety.
 The approved cutoff is 2026-09-30; 2026 is `year_to_date`.
 
 ## How to run
@@ -150,7 +153,7 @@ python -m src.run_pipeline --stages normalise,analyse,report                 # o
 python -m pytest                             # test suite (offline; no API is contacted)
 python tools/check_register_prefixes.py      # one-off register check: resolves one known work and one known review DOI per quantified Crossref row and compares owner prefix and member with the declared scopes (contacts the Crossref API; run by the maintainer before an extraction)
 PRC_RAW_STORE=<raw store root> python -m pytest tests/test_manifest_checksums_match.py
-python tools/check_walk_shape.py --run <run_id> --raw-root <raw store root>   # walk-shape check after a run: repeated cursor, page count vs total-results, mid-walk short page, record on two pages (rule 5 reads the raw store; --no-raw for the manifest-only rules); exit 1 on an issue, 2 when inconclusive
+python tools/check_walk_shape.py --run <run_id> --raw-root <raw store root>   # walk-shape check after a run: repeated cursor, page count vs total-results, mid-walk short page, record on two pages (rule 5 reads the raw store; --no-raw for the manifest-only rules); rule 6 checks zero-item Sciety walks against the run's docmaps index snapshot (or --sciety-index <stored index response>); exit 1 on an issue, 2 when inconclusive
 python tools/audit_text.py --tokens <path outside the repository> --history
 ```
 
@@ -158,7 +161,7 @@ Stage order, fixed in `src/run_pipeline.py`:
 
 1. `extract_crossref_works` — one cursor walk per `works__<prefix>__<type>` or `works__issn_<issn>__<type>` scope (journal-article, posted-content) → `data/raw/crossref/<scope>/…`, split per row by DOI regex into `data/interim/crossref_works__<row_id>.csv`
 2. `extract_crossref_peer_reviews` — one walk per `works__<prefix>__peer-review` scope over every declared review prefix (10.21956, 10.5256, 10.68336, 10.3310, …) plus the declared evaluation-record scopes (PCI: `works__10.24072__journal-article`) → `data/interim/crossref_peer_reviews__<row_id>.csv` (one line per review DOI, `is-review-of` target and `asserted_by`) and `crossref_peer_reviews__unattributed__<prefix>.csv`
-3. `extract_sciety_evaluations` — one paginated walk per group (`index?publisheraccount=<group page URL>`) → `data/raw/sciety/evaluations__<group_slug>/…`, `data/interim/sciety_evaluations__<group_slug>.csv`; publisher-account mismatch hard-fails normalisation
+3. `extract_sciety_evaluations` — one walk of the unfiltered index per run (`index`, scope `index__all`, the coverage probe of D-058) and one paginated walk per group (`index?publisheraccount=<group page URL>`) → `data/raw/sciety/evaluations__<group_slug>/…`, `data/interim/sciety_evaluations__<group_slug>.csv`; `index_coverage` per group in the run manifest; publisher-account mismatch hard-fails normalisation
 4. `normalise` — `src/normalise/clean_and_normalise.py`: record-level layer `data/processed/records_<row_id>.csv` (work, evaluation and relation lines; canonical identifiers; evaluation identity; source-precision dates) plus `normalisation_summary.json`; rows with a blocked scope get no file
 5. `analyse` — `src/analyse/build_aggregates.py`: work-level decisions `data/processed/works_included.csv`, `analysis_manifest.json`, run counts in `data_quality_log.csv`, every table in `reports/tables/*.csv|md`
 6. `report` — `src/report/make_reports.py`: Figures 1–7 in `reports/figures/*.png|svg` (matplotlib, Agg backend) and `reports/CHECKSUMS.txt` over processed files, tables and figures
@@ -229,7 +232,7 @@ src/         run_pipeline.py; common/ (config, register, identifiers, log, dates
 tools/       audit_text.py (repository text audit), check_register_prefixes.py
              (owner-prefix and member check of the register against Crossref),
              check_walk_shape.py (post-run cursor-walk shape check against the
-             walk manifests and the local raw store)
+             walk manifests and the local raw store; Sciety index coverage)
 tests/       pytest suite and fixtures
 data/        raw/ (outside Git), interim/ (outside Git), processed/, manifests/
 reports/     tables/, figures/, CHECKSUMS.txt

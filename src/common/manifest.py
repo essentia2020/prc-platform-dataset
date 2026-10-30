@@ -303,6 +303,20 @@ def update_run_manifest_scope(path: Path, *, run_id: str, cutoff: str, policy: s
     return payload
 
 
+def update_run_manifest_field(path: Path, *, run_id: str, key: str, value, now=utc_now) -> dict:
+    """Set one run-level field of an existing run manifest (for example the
+    Sciety index snapshot record of D-058).  Scope entries are untouched."""
+    payload = load_run_manifest(path)
+    if not payload:
+        raise ManifestError(f"run manifest {path} does not exist")
+    if payload.get("run_id") != run_id:
+        raise ManifestError(f"run manifest {path} belongs to run {payload.get('run_id')!r}")
+    payload[key] = value
+    payload["retrieval_finished_at"] = now()
+    write_run_manifest(path, payload)
+    return payload
+
+
 def verify_walk_against_store(walk: WalkRecord, raw_root: Path) -> list[str]:
     """Return a list of mismatches between manifest digests and stored bytes."""
     from .raw_store import sha256_of_file  # local import keeps modules decoupled

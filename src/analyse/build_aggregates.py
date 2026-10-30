@@ -82,10 +82,12 @@ RECOGNITION_SIGNALS = ["public_review_reports", "approval_status_public", "summa
                        "version_linked_review", "public_author_response", "review_has_doi"]
 DQ_COLUMNS = ["issue_id", "row_id", "issue_type", "description", "evidence", "effect_on_counts", "handling",
               "n_records_affected", "status", "origin", "run_id", "walk_id"]
-GROUP_BLOCKING_SOURCE_STATUSES = ("unknown_scope", "pending_run", "selector_no_match")   # D-038 (amended), D-039, D-047
+GROUP_BLOCKING_SOURCE_STATUSES = ("unknown_scope", "pending_run", "selector_no_match",
+                                  "source_not_covering")            # D-038 (amended), D-039, D-047, D-058
 GROUP_BLOCKING_COVERAGE = ("partial_coverage",)                     # D-038 (amended)
 PENDING_RUN = "pending_run"
 SELECTOR_NO_MATCH = "selector_no_match"
+SOURCE_NOT_COVERING = "source_not_covering"
 RECORD_LEVEL_EXCLUSIONS = ("no_journal_attribution", "companion_item")   # set at extraction, carried per record
 
 
@@ -131,12 +133,13 @@ class RowAnalysis:
     effective_register_status: str = ""     # register status after run-derived fallbacks (D-032)
     evaluation_ids_by_year: dict[int, set[str]] = field(default_factory=dict)   # dated evaluations on/before cutoff
     selector_no_match: bool = False         # complete scopes, zero matching records (D-047): never a zero
+    source_not_covering: bool = False       # zero records and the source does not carry the group (D-058)
 
     @property
     def publishable(self) -> bool:
         """A count may be published for this row (register summary, cells)."""
         return (self.complete and self.effective_register_status == "quantified" and not self.start_unresolved
-                and not self.selector_no_match)
+                and not self.selector_no_match and not self.source_not_covering)
 
     @property
     def row_id(self) -> str:
@@ -383,6 +386,12 @@ def row_cells(analysis: RowAnalysis, years: Iterable[int], cutoff: date) -> dict
             # the data-quality row still names the selector as the cause.
             cell = Cell(cell.row_id, cell.year, None, "not_observable", cell.extraction_status, cell.partial_year,
                         "no_data", SELECTOR_NO_MATCH)
+        if (analysis.source_not_covering and not analysis.start_unresolved
+                and cell.observation_status in ("observed", "observed_zero", "not_observable")):
+            # D-058: the group is absent from the docmaps index retrieved by the same run; the
+            # source does not cover it.  Not a selector defect and not a zero.
+            cell = Cell(cell.row_id, cell.year, None, "not_observable", cell.extraction_status, cell.partial_year,
+                        "no_data", SOURCE_NOT_COVERING)
         cells[year] = cell
     return cells
 
@@ -535,6 +544,27 @@ def _load_dq(path: Path) -> list[dict[str, str]]:
     return [dict(r) for r in read_csv(path)] if path.exists() else []
 
 
+def _index_snapshot_evidence(manifest: Mapping[str, Any], a: RowAnalysis) -> str:
+    """Evidence string of a ``source_not_covering`` row: the run's index snapshot and the scope entries."""
+    snap = manifest.get("sciety_index_snapshot") or {}
+    digest = (snap.get("page_sha256") or [""])[0]
+    head = (f"run manifest: sciety_index_snapshot walk {snap.get('walk_id')} "
+            f"({snap.get('docmaps_total')} docmaps, retrieved {snap.get('retrieved_at')}"
+            + (f", sha256 {digest}" if digest else "") + ")") if snap else "run manifest: sciety_index_snapshot"
+    return head + f"; index_coverage of {', '.join(sorted(a.state.primary_scopes))}"
+
+
+def _coverage_note(a: RowAnalysis, c: Cell, manifest: Mapping[str, Any]) -> str:
+    if a.start_unresolved and c.observation_status == "not_observable":
+        return "coverage start unresolved; no zero filling"
+    if c.source_observability_status == SOURCE_NOT_COVERING:
+        retrieved = (manifest.get("sciety_index_snapshot") or {}).get("retrieved_at") or "this run"
+        return f"group absent from the Sciety docmaps index retrieved {retrieved}; no zero filling (D-058)"
+    if c.coverage == "partial_known_scope":
+        return "yearly lower bound: unattributed EGUsphere preprints excluded"
+    return ""
+
+
 def update_data_quality_log(path: Path, analyses: dict[str, RowAnalysis], manifest: Mapping[str, Any]) -> list[dict]:
     """Append run-observed issues to the single log file (D-040).
 
@@ -584,6 +614,15 @@ def update_data_quality_log(path: Path, analyses: dict[str, RowAnalysis], manife
                 "register_summary.unique_works_to_cutoff is blank; group sums that include the row are blank. "
                 "Correct the selector before the next extraction (tools/check_register_prefixes.py).",
                 "no count published for the row", f"run manifest: scopes of {a.row_id}")
+        observe(a, SOURCE_NOT_COVERING, 1 if a.source_not_covering else 0,
+                "All primary scopes complete with zero docmaps, and the row's Sciety group is absent from the "
+                "unfiltered docmaps index retrieved by the same run; the index lists only the groups Sciety has "
+                "enabled for docmaps, so the source does not cover the group.",
+                "Every cell of the row is not_observable with source_observability_status=source_not_covering; "
+                "register_summary.unique_works_to_cutoff is blank; group sums that include the row are blank. "
+                "The zero is a property of the source, never an observation of the platform; a count needs an "
+                "admissible source named in the register (D-058).",
+                "no count published for the row", _index_snapshot_evidence(manifest, a))
         observe(a, "malformed_doi", d.get("n_malformed_doi_records", 0),
                 "Records or relation lines whose DOI string was deposited with a repeated slash (10.x//y).",
                 "Raw string kept in source_record_id / target_id_raw; canonical identifiers use the single-slash "
@@ -654,10 +693,16 @@ def run(run_config: RunConfig, sources_config: Mapping[str, Any], platforms: lis
         if (a.complete and a.effective_register_status == "quantified"
                 and a.diagnostics.get("n_work_records", 0) == 0 and a.diagnostics.get("n_evaluation_records", 0) == 0):
             # D-047 guard: zero records across all complete scopes is never observed_zero.
-            a.selector_no_match = True
-            a.diagnostics[SELECTOR_NO_MATCH] = 1
-            logger.event(SELECTOR_NO_MATCH, row_id=row_id,
-                         scopes=sorted(a.state.primary_scopes))
+            if a.state.source_not_covering:
+                # D-058: every primary scope is a Sciety group absent from the run's index snapshot.
+                a.source_not_covering = True
+                a.diagnostics[SOURCE_NOT_COVERING] = 1
+                logger.event(SOURCE_NOT_COVERING, row_id=row_id, scopes=sorted(a.state.primary_scopes))
+            else:
+                a.selector_no_match = True
+                a.diagnostics[SELECTOR_NO_MATCH] = 1
+                logger.event(SELECTOR_NO_MATCH, row_id=row_id,
+                             scopes=sorted(a.state.primary_scopes))
         if a.effective_register_status == "register_only":
             a.diagnostics["register_only_fallback"] = 1
             logger.event("register_only_fallback", row_id=row_id,
@@ -739,7 +784,8 @@ def run(run_config: RunConfig, sources_config: Mapping[str, Any], platforms: lis
     _write_table(tables_root, "register_summary", list(summary_rows[0].keys()), summary_rows, cutoff=cutoff,
                  additivity="row_series", snapshot=snapshot,
                  note="`unique_works_to_cutoff` is blank for register-only rows, blocked extraction, an unresolved "
-                      "coverage start or a selector that matched no record (selector_no_match).")
+                      "coverage start, a selector that matched no record (selector_no_match) or a source that "
+                      "does not cover the group (source_not_covering).")
 
     # coverage matrix
     coverage_rows = []
@@ -750,10 +796,7 @@ def run(run_config: RunConfig, sources_config: Mapping[str, Any], platforms: lis
                                   "extraction_status": c.extraction_status,
                                   "source_observability_status": c.source_observability_status,
                                   "observation_status": c.observation_status,
-                                  "note": ("coverage start unresolved; no zero filling" if a.start_unresolved
-                                           and c.observation_status == "not_observable" else
-                                           ("yearly lower bound: unattributed EGUsphere preprints excluded"
-                                            if c.coverage == "partial_known_scope" else ""))})
+                                  "note": _coverage_note(a, c, manifest)})
     _write_table(tables_root, "coverage_matrix", list(coverage_rows[0].keys()), coverage_rows, cutoff=cutoff,
                  additivity="row_series", snapshot=snapshot)
 
@@ -810,6 +853,8 @@ def run(run_config: RunConfig, sources_config: Mapping[str, Any], platforms: lis
                        "blocking_scopes": a.state.blocking_scopes, "eligible_start": a.eligible_start,
                        "eligible_end": a.eligible_end, "start_unresolved": a.start_unresolved,
                        "selector_no_match": a.selector_no_match,
+                       "source_not_covering": a.source_not_covering,
+                       "index_coverage": a.state.index_coverage,
                        "partial_known_scope_years": sorted(a.partial_known_scope_years),
                        "diagnostics": a.diagnostics} for a in analyses.values()},
         "n_data_quality_issues_observed": sum(1 for r in dq_rows if r["status"] == "observed"),

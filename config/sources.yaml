@@ -122,6 +122,12 @@ sources:
     rate_limit:
       max_requests_per_second: 1
       note: Unauthenticated public endpoint; one request per pagination page.
+    http:
+      # Per-source override of http_defaults (run.yaml extra.http still wins).
+      # The unfiltered index and the largest group pages are single
+      # multi-megabyte responses; 60 s cut the seven largest group walks in
+      # run_20261027_01 on a slow route.
+      timeout_seconds: 300
     licence: >-
       Sciety docmaps are published openly; evaluation texts belong to the
       evaluating groups and are not stored by this dataset (only identifiers,
@@ -130,11 +136,15 @@ sources:
     terms_url: https://sciety.org/legal
     coverage_limits: >-
       Only groups that have joined Sciety and only evaluations ingested from
-      the join date onwards; evaluations are keyed to preprint DOIs.
+      the join date onwards; evaluations are keyed to preprint DOIs. The
+      docmaps index lists only the groups Sciety has enabled for docmaps,
+      group by group; a group absent from it yields an empty per-group
+      response that is not a zero (D-058).
     reproducibility: >-
       The index reflects the current state of Sciety; groups may be added,
-      renamed or re-ingested. Each run stores the full index response
-      immutably.
+      renamed or re-ingested. Each run stores the unfiltered index response
+      immutably (scope index__all) and records per group whether it is
+      present there (index_coverage in the run manifest).
 
 http_defaults:
   user_agent_template: "{label}/1.4.0 (mailto:{mailto})"

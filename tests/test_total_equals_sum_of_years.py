@@ -32,7 +32,8 @@ def _blocking(member):
     """D-038 (amended): statuses that blank a group cell; not_applicable / observed_zero never do."""
     if member["observation_status"] in ("not_applicable", "register_only"):
         return None
-    if member["source_observability_status"] in ("unknown_scope", "pending_run", "selector_no_match"):
+    if member["source_observability_status"] in ("unknown_scope", "pending_run", "selector_no_match",
+                                                 "source_not_covering"):
         return member["source_observability_status"]
     if member["coverage"] == "partial_coverage":
         return "partial_coverage"
@@ -91,7 +92,8 @@ def test_partial_coverage_member_blanks_group_and_footnote_names_it(pipeline_out
 
 def test_blank_group_statuses_are_from_the_closed_vocabulary(pipeline_outputs):
     out = pipeline_outputs
-    allowed = {"unknown_scope", "pending_run", "selector_no_match", "partial_coverage", "incomplete", "failed"}
+    allowed = {"unknown_scope", "pending_run", "selector_no_match", "source_not_covering", "partial_coverage",
+               "incomplete", "failed"}
     for name in ("works_by_class_year", "works_by_configuration_year", "unique_works_by_class_year",
                  "unique_works_by_configuration_year", "unique_works_all_rows_year"):
         for r in out.table(name):

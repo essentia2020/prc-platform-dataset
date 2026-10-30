@@ -121,6 +121,13 @@ class FixtureTransport:
     @staticmethod
     def _sciety(query: dict[str, list[str]]) -> bytes:
         account = unquote(query.get("publisheraccount", [""])[0])
+        if not account:
+            # Unfiltered index (coverage probe, D-058): every group fixture in one response,
+            # foreign docmaps included, as the live index serves them.
+            articles = []
+            for fixture in sorted(SCIETY.glob("index__*.json")):
+                articles.extend(json.loads(fixture.read_bytes())["articles"])
+            return json.dumps({"articles": articles}).encode()
         slug = account.rstrip("/").rsplit("/", 1)[-1]
         path = SCIETY / f"index__{slug}.json"
         if not path.exists():

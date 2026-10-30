@@ -11,6 +11,18 @@ Flattening (§4.3 of the data dictionary): one line per evaluation output in
 docmap order; ``evaluation_index`` is the position of the output within the
 docmap, ``evaluation_id`` is ``sciety:<docmap_id>:<index>`` unless the
 output carries a DOI.  Complete walks only.
+
+Coverage probe (D-058): the index lists only the groups Sciety has enabled
+for docmaps, so an empty per-group response is ambiguous on its own.  In
+``per_group`` mode the stage also walks the unfiltered index once per run as
+scope ``index__all`` (reused like any other complete walk) and records, for
+every group scope, whether the group is present in that snapshot and with how
+many docmaps (``index_coverage`` in the run manifest; the snapshot itself
+under ``sciety_index_snapshot``).  In ``full_index`` mode the single
+full-index walk serves as the snapshot.  The probe never changes a walk
+state or a count; the analysis stage reads it to tell a source that does
+not cover a group (``source_not_covering``) from a selector that matched
+nothing (``selector_no_match``).
 """
 
 from __future__ import annotations
@@ -26,7 +38,7 @@ from ..common.dates import DateError, format_partial_date, parse_partial_date
 from ..common.identifiers import normalise_doi
 from ..common.interim import SCIETY_EVALUATION_COLUMNS, resolve_interim_root, write_csv
 from ..common.manifest import (DEFAULT_MANIFEST_ROOT, WalkRecord, list_walks, run_manifest_path,
-                               update_run_manifest_scope, select_walk)
+                               update_run_manifest_field, update_run_manifest_scope, select_walk)
 from ..common.raw_store import RawStore
 from ..common.walk import CursorWalker, ParsedPage
 from .crossref_common import ExtractionIncomplete, http_settings
@@ -35,6 +47,9 @@ from .selectors import ScietyScope, sciety_scopes
 from ..normalise.sciety_integrity import validate_docmap_publishers
 
 SOURCE = "sciety"
+INDEX_SCOPE = "index__all"                 # unfiltered docmaps index, one walk per run (D-058)
+FULL_INDEX_SCOPE = "evaluations__full_index"
+IN_INDEX, NOT_IN_INDEX, UNVERIFIED = "in_index", "not_in_index", "unverified"
 
 
 @dataclass
@@ -44,6 +59,7 @@ class ScietyOutcome:
     rows_written: int = 0
     foreign_docmaps: int = 0
     issues: list[str] = field(default_factory=list)
+    index_coverage: dict[str, Any] = field(default_factory=dict)
 
     @property
     def complete(self) -> bool:
@@ -52,7 +68,7 @@ class ScietyOutcome:
 
 def build_client(run_config: RunConfig, sources_config: Mapping[str, Any], *, transport=None,
                  sleeper=None, logger=None) -> PoliteClient:
-    settings = http_settings(run_config, sources_config)
+    settings = http_settings(run_config, sources_config, SOURCE)
     rate = sources_config["sources"][SOURCE].get("rate_limit") or {}
     per_second = float(rate.get("max_requests_per_second") or 1)
     kwargs: dict[str, Any] = dict(
@@ -70,6 +86,52 @@ def index_url(sources_config: Mapping[str, Any], scope: ScietyScope) -> str:
     source = sources_config["sources"][SOURCE]
     template = source["query_templates"]["docmaps_by_publisher"].strip()
     return source["base_url"].rstrip("/") + template.format(group_id=quote(scope.publisher_account_url, safe=""))
+
+
+def full_index_url(sources_config: Mapping[str, Any]) -> str:
+    source = sources_config["sources"][SOURCE]
+    return source["base_url"].rstrip("/") + source["query_templates"]["docmaps_index"].strip()
+
+
+def docmap_account_id(docmap: Mapping[str, Any]) -> str:
+    return str(((docmap.get("publisher") or {}).get("account") or {}).get("id", "")).rstrip("/")
+
+
+def index_coverage_counts(store: RawStore, walk: WalkRecord, scopes: list[ScietyScope]
+                          ) -> tuple[dict[str, int], dict[str, int]]:
+    """Docmaps per group scope and per publisher account in a complete index walk.
+
+    The first mapping is keyed by ``scope_id`` and uses the register's account
+    matching (slug URL or configured group id); the second is keyed by the
+    account id as served and lists every group the snapshot carries, named or
+    not in the register.
+    """
+    if not walk.is_complete:
+        raise ExtractionIncomplete(f"index walk {walk.walk_id} is {walk.state}")
+    by_scope = {scope.scope_id: 0 for scope in scopes}
+    by_account: dict[str, int] = {}
+    for page in walk.pages:
+        payload = store.read_response_json(page.response_path)
+        for docmap in payload["articles"]:
+            account = docmap_account_id(docmap)
+            by_account[account] = by_account.get(account, 0) + 1
+            for scope in scopes:
+                if scope.account_matches(account):
+                    by_scope[scope.scope_id] += 1
+    return by_scope, by_account
+
+
+def coverage_entry(scope: ScietyScope, index_walk: WalkRecord | None, by_scope: Mapping[str, int] | None,
+                   docmaps_walked: int | None) -> dict[str, Any]:
+    """``index_coverage`` record of one group scope for the run manifest."""
+    if index_walk is None or by_scope is None:
+        return {"status": UNVERIFIED, "docmaps_in_index": None, "docmaps_walked": docmaps_walked,
+                "index_walk_id": index_walk.walk_id if index_walk is not None else None,
+                "index_retrieved_at": None}
+    n = int(by_scope.get(scope.scope_id, 0))
+    return {"status": IN_INDEX if n > 0 else NOT_IN_INDEX, "docmaps_in_index": n,
+            "docmaps_walked": docmaps_walked, "index_walk_id": index_walk.walk_id,
+            "index_retrieved_at": index_walk.ended_at_utc}
 
 
 def parse_index_page(body: bytes, next_paths=("next", "links.next")) -> ParsedPage:
@@ -242,30 +304,58 @@ def run(run_config: RunConfig, sources_config: Mapping[str, Any], platforms: lis
     mode = source_config.get("retrieval_mode", "per_group")
     if mode not in ("per_group", "full_index"):
         raise ValueError("unknown Sciety retrieval_mode")
-    outcomes: list[ScietyOutcome] = []
-    for scope in scopes:
-        scope_name = scope.scope_id if mode == "per_group" else "evaluations__full_index"
+    next_paths = source_config["pagination"]["next_paths"]
+    manifest_path = run_manifest_path(manifest_root, run_config.run_id)
+    manifest_kwargs = dict(run_id=run_config.run_id, cutoff=run_config.analysis_cutoff_date.isoformat(),
+                           policy=run_config.selected_walk_policy, source=SOURCE)
+
+    def walk_scope(scope_name: str, build_url, force: bool) -> tuple[WalkRecord, list[WalkRecord]]:
         walker = CursorWalker(client=client, store=store, manifest_root=manifest_root, run_id=run_config.run_id,
                               source=SOURCE, scope=scope_name, logger=logger)
-        url = (index_url(sources_config, scope) if mode == "per_group" else
-               source_config["base_url"].rstrip("/") + source_config["query_templates"]["docmaps_index"])
-        next_paths = sources_config["sources"][SOURCE]["pagination"]["next_paths"]
-        walk = walker.run(build_url=lambda cursor: continuation_url(url, cursor, scope if mode == "per_group" else None),
-                          parse_page=lambda body: parse_index_page(body, next_paths),
-                          initial_cursor="", force_new_walk=force_new_walk and (mode == "per_group" or not outcomes))
+        walk = walker.run(build_url=build_url, parse_page=lambda body: parse_index_page(body, next_paths),
+                          initial_cursor="", force_new_walk=force)
         walks = list_walks(manifest_root, run_config.run_id, SOURCE, scope_name)
         selected, _ = select_walk(walks, run_config.selected_walk_policy)
-        if selected is not None:
-            walk = selected
-        update_run_manifest_scope(run_manifest_path(manifest_root, run_config.run_id), run_id=run_config.run_id,
-                                  cutoff=run_config.analysis_cutoff_date.isoformat(),
-                                  policy=run_config.selected_walk_policy, source=SOURCE,
-                                  scope=scope_name, walks=walks)
+        return (selected if selected is not None else walk), walks
+
+    # Coverage probe (D-058): the unfiltered index, one walk per run.  In
+    # full_index mode the data walk itself is the snapshot.
+    index_scope = INDEX_SCOPE if mode == "per_group" else FULL_INDEX_SCOPE
+    index_url_all = full_index_url(sources_config)
+    index_walk, index_walks = walk_scope(index_scope, lambda cursor: continuation_url(index_url_all, cursor, None),
+                                         force_new_walk)
+    update_run_manifest_scope(manifest_path, scope=index_scope, walks=index_walks, **manifest_kwargs,
+                              extra={"role": "coverage_probe"})
+    by_scope: dict[str, int] | None = None
+    if index_walk.is_complete:
+        by_scope, by_account = index_coverage_counts(store, index_walk, scopes)
+        update_run_manifest_field(manifest_path, run_id=run_config.run_id, key="sciety_index_snapshot", value={
+            "scope": index_scope, "walk_id": index_walk.walk_id, "retrieved_at": index_walk.ended_at_utc,
+            "pages": len(index_walk.pages), "docmaps_total": index_walk.items_total,
+            "page_sha256": [p.sha256 for p in index_walk.pages],
+            "groups": dict(sorted(by_account.items()))})
+        if logger is not None:
+            logger.event("sciety_index_snapshot", scope=index_scope, walk_id=index_walk.walk_id,
+                         docmaps=index_walk.items_total, groups=len(by_account))
+    elif logger is not None:
+        logger.event("sciety_index_unverified", scope=index_scope, walk_state=index_walk.state)
+
+    outcomes: list[ScietyOutcome] = []
+    for scope in scopes:
+        if mode == "per_group":
+            url = index_url(sources_config, scope)
+            walk, walks = walk_scope(scope.scope_id, lambda cursor, u=url, sc=scope: continuation_url(u, cursor, sc),
+                                     force_new_walk)
+            scope_name = scope.scope_id
+        else:
+            walk, walks, scope_name = index_walk, index_walks, FULL_INDEX_SCOPE
         outcome = ScietyOutcome(scope=scope, walk=walk)
+        docmaps_walked: int | None = None
         if walk.is_complete:
             rows, foreign, issues = flatten_walk(store, walk, scope, full_index=mode == "full_index")
             outcome.foreign_docmaps = foreign
             outcome.issues = issues
+            docmaps_walked = walk.items_total - foreign
             outcome.rows_written = write_csv(interim / f"sciety_evaluations__{scope.group_slug}.csv",
                                              SCIETY_EVALUATION_COLUMNS, rows)
             if logger is not None:
@@ -274,9 +364,23 @@ def run(run_config: RunConfig, sources_config: Mapping[str, Any], platforms: lis
         elif logger is not None:
             logger.event("scope_blocked", source=SOURCE, scope=scope.scope_id, walk_state=walk.state,
                          blocked_rows=[scope.row_id])
+        outcome.index_coverage = coverage_entry(scope, index_walk, by_scope, docmaps_walked)
+        if mode == "per_group":
+            update_run_manifest_scope(manifest_path, scope=scope_name, walks=walks, **manifest_kwargs,
+                                      extra={"index_coverage": outcome.index_coverage})
+        else:
+            # one shared walk: the scope entry is the probe entry; coverage per group is
+            # kept in the snapshot record (groups) and in the outcome.
+            update_run_manifest_scope(manifest_path, scope=scope_name, walks=walks, **manifest_kwargs,
+                                      extra={"role": "coverage_probe"})
         outcomes.append(outcome)
     incomplete = [o for o in outcomes if not o.complete]
+    problems = []
     if incomplete:
         detail = "; ".join(f"{o.scope.scope_id}: {o.walk.state} (blocks {o.scope.row_id})" for o in incomplete)
-        raise ExtractionIncomplete(f"{len(incomplete)} Sciety scope(s) not complete — {detail}")
+        problems.append(f"{len(incomplete)} Sciety scope(s) not complete — {detail}")
+    if not index_walk.is_complete:
+        problems.append(f"{index_scope}: {index_walk.state} (coverage of zero-item groups unverified)")
+    if problems:
+        raise ExtractionIncomplete("; ".join(problems))
     return outcomes

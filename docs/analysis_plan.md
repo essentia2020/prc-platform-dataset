@@ -199,6 +199,7 @@ with specific methodology:
 |---|---:|---:|---|
 | `register_only` | empty | empty | register metadata only |
 | completed extraction, selector matched no record in any complete scope | empty | empty | blocked: `selector_no_match` plus data-quality row (D-047) |
+| completed extraction, zero records, every primary scope a Sciety group absent from the run's docmaps index snapshot | empty | empty | blocked: `source_not_covering` plus data-quality row (D-058) |
 | completed extraction, matching records but none in a year of the eligible range | 0 | 0 for that year | may publish |
 | completed extraction, no qualifying works after valid exclusions | 0 | 0 for the eligible range only | may publish with quality-log entry |
 | incomplete or failed extraction | empty | empty | affected outputs blocked |
@@ -214,7 +215,11 @@ quantified row whose selector matched zero records across all its complete
 scopes is a selector defect, never an observed zero: its cells are
 `not_observable` / `selector_no_match`, the group series it belongs to stay
 blank for those years, and `tools/check_register_prefixes.py` is run
-before the next extraction.
+before the next extraction. A quantified Sciety row whose group is absent
+from the unfiltered docmaps index retrieved by the same run is a source
+that does not cover the group, never an observed zero: its cells are
+`not_observable` / `source_not_covering`, the group series stay blank, and
+a count needs an admissible source named in the register (D-058).
 
 ## Current partial year
 
@@ -275,6 +280,7 @@ values.
 | Copernicus register-only fallback applied only to a complete run (D-032) | `build_aggregates.effective_register_status` | `tests/test_binding_decision_consistent.py` |
 | Blank vs zero; register-only; incomplete scope; unresolved coverage start | `src/common/aggregates.py::cell_for`, `build_aggregates.row_cells` | `tests/test_register_only_is_blank.py`, `tests/test_incomplete_extraction_blocks_outputs.py`, `tests/test_complete_empty_is_zero.py` |
 | Group additivity (D-038 blocking statuses, `blocking_rows`, footnotes), deduplication, no grand total, overlap reporting, Qeios disjointness | `build_aggregates._group_members`, `_group_cells`, `_dedup_cells` | `tests/test_total_equals_sum_of_years.py` |
+| Sciety index coverage (D-058): one `index__all` walk per run, `index_coverage` per group scope, `source_not_covering` for rows whose groups are absent from the snapshot; rule 6 of the walk-shape check | `src/extract/sciety_evaluations.py::index_coverage_counts`, `src/common/run_state.py::RowState.source_not_covering`, `build_aggregates.row_cells`; `tools/check_walk_shape.py` (`--sciety-index`) | `tests/test_sciety_coverage.py`, `tests/test_check_walk_shape_sciety.py` |
 | Transient `pending_run` absent from released tables (D-039) | `build_aggregates.row_cells` | `tests/test_release_no_pending_run.py` |
 | Single data-quality log, preset rows immutable, run rows identified (D-040) | `build_aggregates.update_data_quality_log` | `tests/test_data_quality_log_single_file.py` |
 | Walk shape: `total_delta == 0` is necessary, the page sequence is the proof (repeated `cursor_in`, non-empty pages vs `ceil(total-results / rows)`, mid-walk short page, record on two pages; pages missing from the raw store make the last rule inconclusive, never passed) | `src/common/manifest.py::walk_shape_issues`; post-run CLI `tools/check_walk_shape.py --run <run_id> [--raw-root]` | `tests/test_walk_shape.py`, `tests/test_check_walk_shape_cli.py` |

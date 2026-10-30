@@ -27,8 +27,10 @@ def test_one_request_per_group_using_the_publisher_account_filter(tmp_path: Path
     outcomes, _, transport = _run(tmp_path)
     assert all(o.complete for o in outcomes)
     urls = [r["url"] for r in transport.requests]
-    assert len(urls) == len(outcomes)
-    assert all("publisheraccount=https%3A%2F%2Fsciety.org%2Fgroups%2F" in u for u in urls)
+    filtered = [u for u in urls if "publisheraccount=https%3A%2F%2Fsciety.org%2Fgroups%2F" in u]
+    assert len(filtered) == len(outcomes)
+    # plus exactly one unfiltered request: the coverage probe of the index (D-058)
+    assert [u for u in urls if u not in filtered] == ["https://sciety.org/docmaps/v1/index"]
 
 
 def test_docmap_with_two_outputs_yields_two_evaluation_rows_for_one_work(tmp_path: Path):
