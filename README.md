@@ -1,4 +1,4 @@
-# PRC Platform Dataset 1.4.0
+﻿# PRC Platform Dataset 1.4.0
 
 An open, reproducible dataset of research works flowing through
 Publish–Review–Curate (PRC) platforms. Platforms are classified on two
@@ -257,7 +257,7 @@ copy of `data/manifests/run_20261027_01/` — 273 files; their SHA-256 sums and
 the sum of the archive itself are in
 `reports/release_archive_run_20261027_01.sha256`. Archive SHA-256:
 `93b68f8c1b8d85e1abd6bc691d03c4ac28560d405e29c78f9d43f0cf32f0a648`.
-Zenodo DOI: pending deposit.
+Zenodo DOI: [10.5281/zenodo.23812673](https://doi.org/10.5281/zenodo.23812673).
 
 ## Licensing
 
