@@ -154,8 +154,9 @@ def test_blocking_statuses_still_blank_the_group(pipeline_outputs):
     assert "scipost:selector_no_match" in cell["blocking_rows"]
     # the other lists are still filled so that the reader sees the whole picture
     assert "qeios_hosted_works:partial_coverage" in cell["lower_bound_rows"]  # D-062: gates_open_research is machine_readable
-    assert "review_commons:source_not_covering" in cell["excluded_rows"]
-    assert "metaror" not in cell["excluded_rows"]                        # D-064: Crossref primary
+    assert "peerref:source_not_covering" in cell["excluded_rows"]
+    for row_id in ("metaror", "review_commons"):                         # D-064, D-065: Crossref primary
+        assert row_id not in cell["excluded_rows"]
     # observed_zero and not_applicable members appear in no list
     for r in out.table("works_by_class_year"):
         for column in ("blocking_rows", "lower_bound_rows", "excluded_rows"):

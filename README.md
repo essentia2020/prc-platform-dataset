@@ -101,7 +101,7 @@ but not included are in `config/excluded_candidates.yaml`.
 | `copernicus_interactive_public_peer_review` | Copernicus Publications (Copernicus GmbH) | `author_initiated` (high) | `hybrid_public_discussion` (high) | crossref | first_public_posting | 2001–cutoff | machine_readable |
 | `jmirx_med` | JMIR Publications | `mixed` (medium) | `core_publish_first` (medium) | crossref | final_article | 2020–cutoff | machine_readable |
 | `access_microbiology` | Microbiology Society | `author_initiated` (high) | `hybrid_public_discussion` (medium) | both | first_public_posting | run-derived–cutoff | machine_readable |
-| `review_commons` | Review Commons (EMBO and ASAPbio) | `author_initiated` (high) | `review_or_curation_service` (high) | sciety | earliest_qualifying_evaluation | 2019–cutoff | machine_readable |
+| `review_commons` | Review Commons (EMBO and ASAPbio) | `author_initiated` (high) | `review_or_curation_service` (high) | both | earliest_qualifying_evaluation | 2020–cutoff | machine_readable |
 | `peerref` | PeerRef | `author_initiated` (high) | `review_or_curation_service` (high) | sciety | earliest_qualifying_evaluation | 2022–cutoff | partial_coverage |
 | `biophysics_colab` | Science Colab | `mixed` (low) | `review_or_curation_service` (high) | sciety | earliest_qualifying_evaluation | 2021–cutoff | machine_readable |
 | `qeios_hosted_works` | Qeios Ltd | `author_initiated` (medium) | `approval_threshold` (medium) | crossref | first_public_posting | 2019–cutoff | partial_coverage |

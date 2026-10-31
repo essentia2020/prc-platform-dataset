@@ -21,12 +21,13 @@
   Sciety group absent from the index (Review Commons and PeerRef in
   run_20261027_01) publish no count: `source_not_covering` (D-058), never a
   zero, although their Sciety group pages list evaluations. The Unjournal
-  (D-063) and MetaROR (D-064, superseding D-025) left this set: their
-  evaluations are Crossref `peer-review` records with `is-review-of`
-  (MetaROR under its own prefix 10.70744; The Unjournal under the PubPub
-  prefix 10.21428 with the community stem `d28e8e57`), so Crossref is the
-  primary source and the absent Sciety group is kept as a cross-check only
-  (D-037).
+  (D-063), MetaROR (D-064, superseding D-025) and Review Commons (D-065)
+  left this set: their evaluations are Crossref `peer-review` records with
+  `is-review-of` (MetaROR under its own prefix 10.70744; The Unjournal
+  under the PubPub prefix 10.21428 with the community stem `d28e8e57`;
+  Review Commons under the EMBO prefix 10.15252 with the stem `rc.`), so
+  Crossref is the primary source and the absent Sciety group is kept as a
+  cross-check only (D-037). PeerRef remains the only row in the set.
 - **SciPost** is observed through final published works, not every submission.
   **Copernicus** instead counts discussion-preprint entry into public
   discussion (D-015), so rejected discussion preprints are not categorically
@@ -70,10 +71,21 @@
   `qeios_hosted_works` and `qeios_external_works` (the deposition
   discontinuities above), and `the_unjournal` (D-063: only evaluations the
   Unjournal registers as Crossref `peer-review` records with `is-review-of`
-  are observable — 42 of 105 records under the community stem on
+  are observable — 42 of 106 records under the community stem on
   2026-10-31; its `journal-article` evaluation summaries carry no relation
   and are not counted, and evaluations published without a Crossref record
   are missed).
+
+**Pending external requests (as of 2026-10-31).** Two requests about source
+coverage are open; no outcome is claimed here.
+
+- sciety/sciety#4254 (opened 2026-10-31): PeerRef into the Sciety docmaps
+  index and, if no obstacle, MetaROR, Review Commons and The Unjournal for
+  the cross-check scopes. The Sciety docmaps allow-list is the only machine
+  route for PeerRef; a direct request to PeerRef follows if Sciety declines.
+- The Unjournal (e-mail of 2026-10-31): `is-review-of` on the evaluation
+  summaries deposited as `journal-article` records and the ISSN in the
+  deposited metadata.
 
 ## Event history and retrieval
 
@@ -128,9 +140,9 @@ and D-058). The cell is published as a lower bound and names the rows:
   attribution of `copernicus_interactive_public_peer_review`) are counted;
   their series are lower bounds, so the group cell is one.
 - `excluded_rows` — quantified Sciety rows whose group is absent from the
-  run's docmaps index snapshot (`review_commons`, `peerref`; D-058) are not
-  counted (`the_unjournal` was in this set until D-063 and `metaror` until
-  D-064 made Crossref their primary source). The row keeps
+  run's docmaps index snapshot (`peerref`; D-058) are not counted
+  (`the_unjournal` was in this set until D-063, `metaror` until D-064 and
+  `review_commons` until D-065 made Crossref their primary source). The row keeps
   `register_status quantified`, its own cells stay `not_observable` with
   the D-058 note, and the group cell is published without it.
 
@@ -214,6 +226,19 @@ release freeze.
   placeholder_target`, create no work and are counted per run in the
   `placeholder_relation` row of the data-quality log; the reviewed
   manuscripts are absent from the `metaror` series.
+- **Evaluation summaries without a relation (The Unjournal).** Thirteen
+  `journal-article` records under the community stem `d28e8e57`
+  (evaluation summaries and manager reports) carry no relation at all and
+  no ISSN, so they lie outside the `peer-review` walk and are neither
+  counted nor flagged (probe of 2026-10-31: 106 records under the stem
+  including the title-level `journal` record, 42 `peer-review` with
+  `is-review-of` to 36 distinct external targets; DQ-016); the evaluation
+  count per work is a lower bound.
+- **Report dates at transfer (Review Commons).** The Crossref `issued` date
+  of a Review Commons report is the publication date of the report package
+  at transfer to a journal (mandatory since 2022-06-01), not the date of
+  review, so the `review_commons` series lags review and may cluster on
+  posting days (DQ-017; D-065).
 - **Owner prefix versus DOI string.** The Crossref `prefix` filter selects
   by current owner, not by the string of the DOI. Three rows in
   run_20261026_01 declared a prefix that owns none of the venue's records

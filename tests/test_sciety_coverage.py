@@ -22,10 +22,11 @@ from src.extract import sciety_evaluations
 from src.extract.crossref_common import ExtractionIncomplete, http_settings
 from tests.offline import FixtureTransport, crossref_page, make_run_config, run_context, run_full_pipeline
 
-# Sciety-primary rows whose group is absent from the docmaps index.  metaror and the_unjournal left this
-# set with D-063 / D-064 (Crossref primary, the Sciety group kept as cross-check).
-ABSENT_ROWS = ("review_commons", "peerref")
-CROSS_CHECK_ONLY_ROWS = ("metaror", "the_unjournal")
+# Sciety-primary rows whose group is absent from the docmaps index.  the_unjournal, metaror and
+# review_commons left this set with D-063, D-064 and D-065 (Crossref primary, the Sciety group kept as
+# cross-check).
+ABSENT_ROWS = ("peerref",)
+CROSS_CHECK_ONLY_ROWS = ("metaror", "the_unjournal", "review_commons")
 
 
 def _active_cells(outputs, row_id):
@@ -96,12 +97,12 @@ def test_failed_probe_leaves_coverage_unverified_and_makes_the_stage_incomplete(
     manifest = load_run_manifest(run_manifest_path(roots["manifest_root"], run_config.run_id))
     assert "sciety_index_snapshot" not in manifest
     assert manifest["scopes"]["sciety/index__all"]["extraction_status"] == "failed"
-    entry = manifest["scopes"]["sciety/evaluations__review-commons"]
+    entry = manifest["scopes"]["sciety/evaluations__peerref"]
     assert entry["extraction_status"] == "complete"
     assert entry["index_coverage"]["status"] == "unverified" and entry["index_coverage"]["docmaps_in_index"] is None
-    assert (roots["interim_root"] / "sciety_evaluations__review-commons.csv").exists()
+    assert (roots["interim_root"] / "sciety_evaluations__peerref.csv").exists()
     states = row_states(manifest, platforms)
-    assert states["review_commons"].extraction_status == "complete" and not states["review_commons"].source_not_covering
+    assert states["peerref"].extraction_status == "complete" and not states["peerref"].source_not_covering
 
 
 def test_full_index_mode_uses_the_data_walk_as_snapshot(tmp_path: Path):
@@ -171,7 +172,7 @@ def test_absent_groups_are_source_not_covering_never_zero(outputs):
 
 
 def test_cross_check_only_absence_does_not_make_a_crossref_primary_row_not_covering(outputs):
-    """D-063 / D-064 with D-037: the absent Sciety group of a Crossref-primary row is recorded as not_in_index on the
+    """D-063 / D-064 / D-065 with D-037: the absent Sciety group of a Crossref-primary row is recorded as not_in_index on the
     cross-check scope and changes nothing about the row's observability."""
     rows = outputs.analysis_manifest["rows"]
     for row_id in CROSS_CHECK_ONLY_ROWS:

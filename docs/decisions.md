@@ -1,11 +1,11 @@
 # Decision log — PRC Platform Dataset 1.4.0
 
-Numbered record of every design, classification and process decision. Each entry states the date, the question, the options considered, the decision, the evidence URL(s) and who decided. Every entry, D-001 through D-056 and Q-1 through Q-4, carries decided_by: researcher. D-027 through D-031 document preparation choices; D-032 through D-035 record the decisions on extraction, 2026-10-20, and govern their implementation; D-036 through D-041 record the decisions on normalisation, analysis and reporting, 2026-10-20; D-042 records the decision on repository history, 2026-10-20; D-043 and D-044 record the decisions of 2026-10-26 on two register rows whose Crossref records changed owner or primary identifier; D-045 records the decision of 2026-10-26 on Crossref walk completion and per-scope tolerance; D-046 through D-054 record the decisions of 2026-10-27 on the structural findings of run_20261026_01 (withdrawn review records, owner prefixes and the selector_no_match guard, evaluation records deposited under work types, companion items, VeriXiv, seven provisional F1000-infrastructure rows, repeated-slash DOIs, the Rapid Reviews cross-check); D-055 and D-056 record the decisions of 2026-10-27 on the audit boundary for harvested text and on keeping harvested records outside the repository. Confidence and decision status are independent: a decided classification may retain medium or low confidence without being provisional.
+Numbered record of every design, classification and process decision. Each entry states the date, the question, the options considered, the decision, the evidence URL(s) and who decided. Every entry, D-001 through D-065 and Q-1 through Q-5, carries decided_by: researcher. D-027 through D-031 document preparation choices; D-032 through D-035 record the decisions on extraction, 2026-10-20, and govern their implementation; D-036 through D-041 record the decisions on normalisation, analysis and reporting, 2026-10-20; D-042 records the decision on repository history, 2026-10-20; D-043 and D-044 record the decisions of 2026-10-26 on two register rows whose Crossref records changed owner or primary identifier; D-045 records the decision of 2026-10-26 on Crossref walk completion and per-scope tolerance; D-046 through D-054 record the decisions of 2026-10-27 on the structural findings of run_20261026_01 (withdrawn review records, owner prefixes and the selector_no_match guard, evaluation records deposited under work types, companion items, VeriXiv, seven provisional F1000-infrastructure rows, repeated-slash DOIs, the Rapid Reviews cross-check); D-055 and D-056 record the decisions of 2026-10-27 on the audit boundary for harvested text and on keeping harvested records outside the repository; D-058 records the decision of 2026-10-28 on verifying Sciety index coverage per run; D-060 through D-062 record the decisions of 2026-10-29 on the posting-record gate, group cells as lower bounds and the Gates Open Research data_status (D-059 was merged into D-061); D-063 through D-065 record the decisions of 2026-10-31 on Crossref peer-review records as the primary source for The Unjournal, MetaROR and Review Commons. Confidence and decision status are independent: a decided classification may retain medium or low confidence without being provisional.
 Decision entries in this log are identified by decision number, date and subject.
 
 ---
 
-## D-001 — Qeios: two register rows with separate classifications
+## D-001: Qeios: two register rows with separate classifications
 
 - **Date:** 2026-10-19
 - **Decided by:** researcher
@@ -47,7 +47,7 @@ Decision entries in this log are identified by decision number, date and subject
 - **Evidence:** https://www.qeios.com/publishing-policy ;
   https://www.qeios.com/about ; https://www.qeios.com/plans
 
-## D-002 — SciPost: `author_initiated` (high) / `hybrid_public_discussion` (high)
+## D-002: SciPost: `author_initiated` (high) / `hybrid_public_discussion` (high)
 
 - **Date:** 2026-10-19
 - **Decided by:** researcher
@@ -81,7 +81,7 @@ Decision entries in this log are identified by decision number, date and subject
   https://scipost.org/submissions/editorial_workflow ;
   https://scipost.org/EdCol_by-laws
 
-## D-003 — Licensing split
+## D-003: Licensing split
 
 - **Date:** 2026-10-20 (user ruling)
 - **Decided by:** researcher
@@ -98,7 +98,7 @@ Decision entries in this log are identified by decision number, date and subject
 - **Evidence:** https://opensource.org/license/mit ;
   https://creativecommons.org/licenses/by/4.0/
 
-## D-004 — Repository-history audit
+## D-004: Repository-history audit
 
 - **Date:** 2026-10-20 (user ruling)
 - **Decided by:** researcher
@@ -113,7 +113,7 @@ Decision entries in this log are identified by decision number, date and subject
   explicit user approval.
 - **Evidence:** not applicable (process decision).
 
-## D-005 — Raw-response storage
+## D-005: Raw-response storage
 
 - **Date:** 2026-10-20 (user ruling)
 - **Decided by:** researcher
@@ -134,7 +134,7 @@ Decision entries in this log are identified by decision number, date and subject
   record linked to the release.
 - **Evidence:** not applicable (process decision).
 
-## D-006 — Zenodo concept record
+## D-006: Zenodo concept record
 
 - **Date:** 2026-10-20 (user ruling)
 - **Decided by:** researcher
@@ -152,7 +152,7 @@ Decision entries in this log are identified by decision number, date and subject
   is outside the repository audit and its content is not quoted.
 - **Evidence:** https://doi.org/10.5281/zenodo.22787722
 
-## D-007 — Project structure
+## D-007: Project structure
 
 - **Date:** 2026-10-20 (user ruling)
 - **Decided by:** researcher
@@ -169,7 +169,7 @@ Decision entries in this log are identified by decision number, date and subject
   `tests/test_manifest_checksums_match.py` are part of the test listing.
 - **Evidence:** not applicable (process decision).
 
-## D-008 — Audit tokens (R1) and voice rule (R4)
+## D-008: Audit tokens (R1) and voice rule (R4)
 
 - **Date:** 2026-10-20 (user ruling)
 - **Decided by:** researcher
@@ -188,7 +188,7 @@ Decision entries in this log are identified by decision number, date and subject
   echoed in any repository file or report.
 - **Evidence:** not applicable (process decision).
 
-## D-009 — Limitations as a separate file
+## D-009: Limitations as a separate file
 
 - **Date:** 2026-10-20 (user ruling)
 - **Decided by:** researcher
@@ -200,7 +200,7 @@ Decision entries in this log are identified by decision number, date and subject
   "Limitations" section that links to it, not a copy.
 - **Evidence:** not applicable (process decision).
 
-## D-010 — One field for the data source
+## D-010: One field for the data source
 
 - **Date:** 2026-10-20 (user ruling)
 - **Decided by:** researcher
@@ -212,7 +212,7 @@ Decision entries in this log are identified by decision number, date and subject
   the register-row event map.
 - **Evidence:** not applicable (schema decision).
 
-## D-011 — Permitted citations
+## D-011: Permitted citations
 
 - **Date:** 2026-10-20 (user ruling)
 - **Decided by:** researcher
@@ -240,7 +240,7 @@ Decision entries in this log are identified by decision number, date and subject
 All entries below record decisions, 2026-10-20. Approval of a method is distinct from
 completion of its evidence checks; outstanding checks are stated explicitly.
 
-## D-012 — F1000-platform stems: which rows, and splitting of merged sites
+## D-012: F1000-platform stems: which rows, and splitting of merged sites
 
 - **Date:** 2026-10-20
 - **Status:** decided
@@ -264,7 +264,7 @@ completion of its evidence checks; outstanding checks are stated explicitly.
 - **Evidence:** https://f1000research.com/about ;
   https://www.f1000.com/resources-for-researchers/where-to-publish-your-research/f1000-publishing-venues/
 
-## D-013 — Gates Open Research: model change (VeriXiv) in 2024
+## D-013: Gates Open Research: model change (VeriXiv) in 2024
 
 - **Date:** 2026-10-20
 - **Status:** decided; deposit verification remains open for VeriXiv
@@ -291,7 +291,7 @@ completion of its evidence checks; outstanding checks are stated explicitly.
   match. The zero-intersection test remains specific to the two Qeios rows.
 - **Evidence:** https://gatesopenresearch.org/about
 
-## D-014 — Emerald Open Research: closure year
+## D-014: Emerald Open Research: closure year
 
 - **Date:** 2026-10-20
 - **Status:** decided
@@ -307,7 +307,7 @@ completion of its evidence checks; outstanding checks are stated explicitly.
 - **Evidence:** https://emeraldopenresearch.com/about ;
   https://www.emerald.com/insight/publication/issn/2631-3952
 
-## D-015 — Copernicus interactive public peer review: journal list and counting event
+## D-015: Copernicus interactive public peer review: journal list and counting event
 
 - **Date:** 2026-10-20
 - **Status:** decided; journal-level verification remains to be completed
@@ -335,7 +335,7 @@ completion of its evidence checks; outstanding checks are stated explicitly.
 - **Evidence:** https://publications.copernicus.org/services/public_peer_review.html ;
   https://www.egusphere.net/about/faqs.html
 
-## D-016 — JMIRx Med: `mixed` / `core_publish_first` (both medium)
+## D-016: JMIRx Med: `mixed` / `core_publish_first` (both medium)
 
 - **Date:** 2026-10-20
 - **Status:** decided
@@ -355,7 +355,7 @@ completion of its evidence checks; outstanding checks are stated explicitly.
 - **Evidence:** https://support.jmir.org/hc/en-us/articles/360034752692-What-is-JMIRx ;
   https://xmed.jmir.org/
 
-## D-017 — Access Microbiology: configuration and `model_since`
+## D-017: Access Microbiology: configuration and `model_since`
 
 - **Date:** 2026-10-20
 - **Status:** decided; coverage start awaits the local run
@@ -375,7 +375,7 @@ completion of its evidence checks; outstanding checks are stated explicitly.
 - **Evidence:** https://sciety.org/groups/access-microbiology/about ;
   https://www.microbiologyresearch.org/content/journal/acmi/about
 
-## D-018 — PREreview: `community_initiated` (medium) versus `mixed`
+## D-018: PREreview: `community_initiated` (medium) versus `mixed`
 
 - **Date:** 2026-10-20
 - **Status:** decided
@@ -389,7 +389,7 @@ completion of its evidence checks; outstanding checks are stated explicitly.
   `review_or_curation_service` and clear `provisional`.
 - **Evidence:** https://prereview.org/request-a-prereview
 
-## D-019 — Biophysics Colab: `mixed` (low)
+## D-019: Biophysics Colab: `mixed` (low)
 
 - **Date:** 2026-10-20
 - **Status:** decided
@@ -404,7 +404,7 @@ completion of its evidence checks; outstanding checks are stated explicitly.
   ruling; `provisional: false`.
 - **Evidence:** https://www.sciencecolab.org/biophysics-colab
 
-## D-020 — Life Science Editors Foundation and Life Science Editors: inclusion and class
+## D-020: Life Science Editors Foundation and Life Science Editors: inclusion and class
 
 - **Date:** 2026-10-20
 - **Status:** decided
@@ -425,7 +425,7 @@ completion of its evidence checks; outstanding checks are stated explicitly.
   https://www.lifescienceeditors.org/foundation ;
   https://sciety.org/groups/life-science-editors/about
 
-## D-021 — The Unjournal: `mixed` (medium)
+## D-021: The Unjournal: `mixed` (medium)
 
 - **Date:** 2026-10-20
 - **Status:** decided
@@ -438,7 +438,7 @@ completion of its evidence checks; outstanding checks are stated explicitly.
   `provisional: false`.
 - **Evidence:** https://www.unjournal.org/about
 
-## D-022 — ASAPbio crowd review rows: status and overlap with PREreview
+## D-022: ASAPbio crowd review rows: status and overlap with PREreview
 
 - **Date:** 2026-10-20
 - **Status:** decided
@@ -456,7 +456,7 @@ completion of its evidence checks; outstanding checks are stated explicitly.
   Clear `provisional`.
 - **Evidence:** https://asapbio.org/crowd-preprint-review
 
-## D-023 — Arcadia Science: operating status
+## D-023: Arcadia Science: operating status
 
 - **Date:** 2026-10-20
 - **Status:** decided
@@ -472,7 +472,7 @@ completion of its evidence checks; outstanding checks are stated explicitly.
 - **Evidence:** https://sciety.org/groups/arcadia-science ;
   https://research.arcadiascience.com/
 
-## D-024 — PeerRef: dormant service
+## D-024: PeerRef: dormant service
 
 - **Date:** 2026-10-20
 - **Status:** decided
@@ -485,10 +485,10 @@ completion of its evidence checks; outstanding checks are stated explicitly.
   and an open series (`coverage_end_year: null`); not a 2023 closure.
 - **Evidence:** https://www.peerref.com/ ; https://sciety.org/groups/peerref
 
-## D-025 — MetaROR: data source
+## D-025: MetaROR: data source
 
 - **Date:** 2026-10-20
-- **Status:** decided
+- **Status:** decided; superseded by D-064 (Crossref selector confirmed by probe of 2026-10-31)
 - decided_by: researcher
 - **Question:** MetaROR publishes reviews and curation statements via
   Sciety; whether it also deposits Crossref peer-review records is unknown.
@@ -498,7 +498,7 @@ completion of its evidence checks; outstanding checks are stated explicitly.
   evidence supporting an additional Crossref selector.
 - **Evidence:** https://metaror.org/about/ ; https://metaror.org/how-it-works/
 
-## D-026 — Excluded candidates and pending verifications
+## D-026: Excluded candidates and pending verifications
 
 - **Date:** 2026-10-20
 - **Status:** decided; pending candidate checks remain required
@@ -521,7 +521,7 @@ completion of its evidence checks; outstanding checks are stated explicitly.
   of machine-readable records as a substantive exclusion criterion.
 - **Evidence:** `config/excluded_candidates.yaml` (per-candidate URLs).
 
-## Q-1 — Analysis cutoff
+## Q-1: Analysis cutoff
 
 - **Date:** 2026-10-20
 - **Status:** decided
@@ -533,7 +533,7 @@ completion of its evidence checks; outstanding checks are stated explicitly.
   in analytical output metadata.
 - **Evidence:** not applicable (analysis parameter).
 
-## Q-2 — Repository URL and DOI
+## Q-2: Repository URL and DOI
 
 - **Date:** 2026-10-20
 - **Status:** decided
@@ -545,7 +545,7 @@ completion of its evidence checks; outstanding checks are stated explicitly.
   no placeholders in `CITATION.cff`.
 - **Evidence:** not applicable (release metadata decision).
 
-## Q-3 — Provisional flag
+## Q-3: Provisional flag
 
 - **Date:** 2026-10-20
 - **Status:** decided
@@ -560,7 +560,7 @@ completion of its evidence checks; outstanding checks are stated explicitly.
   classification confidence and must not be concealed by clearing a flag.
 - **Evidence:** not applicable (classification governance).
 
-## D-027 — Copernicus: hand-verified journal list and discussion-preprint selectors
+## D-027: Copernicus: hand-verified journal list and discussion-preprint selectors
 
 - **Date:** 2026-10-20
 - **Status:** decided; confirmed by user ruling, 2026-10-20
@@ -600,7 +600,7 @@ completion of its evidence checks; outstanding checks are stated explicitly.
   https://www.egusphere.net/about/faqs.html; per-journal URLs in
   `config/platforms.yaml`.
 
-## D-028 — Disposition of the pending candidates (D-026)
+## D-028: Disposition of the pending candidates (D-026)
 
 - **Date:** 2026-10-20
 - **Status:** decided; confirmed by user ruling, 2026-10-20
@@ -636,7 +636,7 @@ completion of its evidence checks; outstanding checks are stated explicitly.
 - **Evidence:** per-candidate URLs in `config/excluded_candidates.yaml` and
   `config/platforms.yaml`.
 
-## D-029 — Sciety retrieval: per-publisher index and group identity
+## D-029: Sciety retrieval: per-publisher index and group identity
 
 - **Date:** 2026-10-20
 - **Status:** decided
@@ -655,7 +655,7 @@ completion of its evidence checks; outstanding checks are stated explicitly.
 - **Evidence:** https://sciety.org/docmaps/v1/ (endpoint documentation);
   group pages linked from `config/platforms.yaml`.
 
-## D-030 — Crossref retrieval scopes and interim attribution
+## D-030: Crossref retrieval scopes and interim attribution
 
 - **Date:** 2026-10-20
 - **Status:** decided
@@ -675,7 +675,7 @@ completion of its evidence checks; outstanding checks are stated explicitly.
   confirmed.
 - **Evidence:** `src/extract/selectors.py`; `docs/data_dictionary.md` §4.
 
-## D-031 — Walk life cycle, manifests and selection
+## D-031: Walk life cycle, manifests and selection
 
 - **Date:** 2026-10-20
 - **Status:** decided
@@ -1176,9 +1176,7 @@ commit of each extension.
 
 - **Date:** 2026-10-28
 - **Status:** decided; amended by D-061 (group cells). Source follow-up open:
-  e-mail to connect@sciety.org of 2026-10-28 (unanswered on 2026-10-31) and
-  sciety/sciety#4254 of 2026-10-31 requesting docmaps for Review Commons and
-  PeerRef, and secondarily MetaROR and The Unjournal.
+  e-mail to connect@sciety.org of 2026-10-28 (unanswered on 2026-10-31) and sciety/sciety#4254 of 2026-10-31, narrowed the same day to PeerRef after Crossref routes were confirmed for MetaROR (D-064), The Unjournal (D-063) and Review Commons (D-065).
 - decided_by: researcher
 - **Question:** How is an empty per-group Sciety response distinguished from a group the docmaps index does not carry?
 - **Options:** (a) treat as observed zero; (b) treat as `selector_no_match` (D-047); (c) verify against the unfiltered index per run and record `source_not_covering`.
@@ -1204,16 +1202,12 @@ for such rows are register decisions, not analysis defaults. Rule 6 of
   issued 2024-11-20 to 2026-10-15) and The Unjournal under
   10.21428/d28e8e57 (42 peer-review records with is-review-of; 13
   journal-article records without a relation). Their source question moves to
-  the register (D-063 proposal; D-025 to be revised). Review Commons and
-  PeerRef have no admissible alternative source; for them the condition
-  persists until Sciety enables docmaps. The request is tracked in
-  sciety/sciety#4254, opened on 2026-10-31; by the precedent of
-  sciety/sciety#2161 (2023-03-24) enabling a group is an allowlist change.
+  the register (D-063 proposal; D-025 to be revised). Review Commons registers its reports under 10.15252 (EMBO Press, member 79; 5,629 peer-review records, each with is-review-of) and moves to D-065. PeerRef alone has no admissible alternative source; the condition persists until Sciety enables docmaps for the group. The request is tracked in sciety/sciety#4254, opened on 2026-10-31 and narrowed to PeerRef the same day; by the precedent of sciety/sciety#2161 (2023-03-24) enabling a group is an allowlist change.
   A reply or closure of the issue is recorded here as the status of the
   source, not as a change of any row's classification.
 - **Evidence:** run_20261027_01; index snapshot 2026-10-28 ~05:10 UTC, 5,398 docmaps, 11 groups, SHA-256 a9eba43264284203fe0d0605ec22ab927a490ab281cc330a1ab19f599bc3ed77; sciety/sciety#2161, #1088. Affected rows: `metaror`, `review_commons`, `peerref`, `the_unjournal`.   sciety/sciety#2161, #1088; sciety/sciety#4254 (opened 2026-10-31);
-  Crossref probes 2026-10-31 (members 9621 and 51568; prefixes 10.21428,
-  10.70744).
+  Crossref probes 2026-10-31 (members 9621, 51568 and 79; prefixes 10.21428,
+  10.70744, 10.15252).
 - **Authority:** instruction §9.4, §9.6; D-037, D-047.
 
 ## D-059: merged into D-061, not implemented separately.
@@ -1258,6 +1252,110 @@ The descriptive `doi_pattern` of `access_microbiology` was tightened to `^10\.10
 - **Decision:** `data_status: machine_readable`. The series boundary stays in `model_note` (D-013). A `partial_coverage` flag requires a recorded reason in the register or the data-quality log.
 - **Consequences:** `author_initiated` and `approval_threshold` 2017–2018 become `complete`; the row leaves `lower_bound_rows` for 2017–2024. The 53 works outside the eligible range remain an open register question (series boundary), unrelated to coverage.
 
+## D-063: The Unjournal — Crossref peer-review records are the primary source
+
+- **Date:** 2026-10-31
+- **Status:** proposed; applied at the next extraction
+- decided_by: researcher
+- **Question:** The Sciety group is absent from the docmaps index (D-058),
+  so the row published no count in run_20261027_01. The Unjournal
+  deposits its evaluations through PubPub under the shared prefix
+  10.21428, stem d28e8e57, as peer-review records with is-review-of to
+  external works (NBER, SSRN, AEA and others). Can Crossref carry the row?
+- **Options considered:** (a) wait for the index; (b) data_source both
+  with the Sciety scope as a second primary; (c) Crossref primary with
+  Sciety as cross-check.
+- **Decision:** (c), encoded as data_source both, extraction_selector
+  crossref.role primary, sciety.role cross_check (the register's
+  convention for a Crossref-primary row with a Sciety cross-check, as
+  for eLife, PCI and Access Microbiology). Selector: prefix 10.21428,
+  type peer-review, review_doi_regex ^10\.21428/d28e8e57\., target_filter
+  external. On a shared prefix the declared review_doi_regex together
+  with target_filter external is the selector; a bare prefix never is
+  (D-054 lineage). Counting event unchanged: earliest_qualifying_evaluation
+  on issued. data_status machine_readable; coverage_start_year 2023.
+  Evaluation summaries and manager reports deposited as journal-article
+  records without a relation are outside the walk and are not counted;
+  the evaluation count per work is therefore a lower bound (DQ-016). An
+  ISSN-based scope is not possible: ISSN 3071-2173 is absent from every
+  record, including the title-level record of the series. The Sciety
+  scope stays as cross-check and never blocks the row (D-037).
+- **Evidence:** api.crossref.org/members/9621;
+  https://sciety.org/groups/the-unjournal; https://www.unjournal.org/about;
+  probe of 2026-10-31 (prefix 10.21428, stem d28e8e57, 16 pages of
+  14,048 prefix records): 106 records = 42 peer-review, 49 component,
+  13 journal-article, 1 posted-content, 1 journal (title-level record
+  10.21428/d28e8e57, created 2023-03-16, no ISSN); all 42 peer-review
+  carry is-review-of -> 36 distinct external targets (10.3386: 28,
+  10.2139: 7, 10.1257: 6, 10.1038/10.1080/10.3200: 1 each; by year
+  2023:17 2024:12 2025:11 2026:2); 13 journal-article records without
+  relation; ISSN 3071-2173 in 0 records; unjournal_probe_2026-10-31.json;
+  crossref_probes_2026-10-31.txt. Request to the service for is-review-of
+  on summaries and for the ISSN sent 2026-10-31.
+
+## D-064: MetaROR — Crossref peer-review records are the primary source
+
+- **Date:** 2026-10-31
+- **Status:** proposed; applied at the next extraction
+- decided_by: researcher
+- **Question:** D-025 kept data_source sciety until a local run supported
+  a Crossref selector. The probe of 2026-10-31 found 277 peer-review
+  records under 10.70744, each with is-review-of to an external preprint,
+  continuous from 2024-11-20; the Sciety group is absent from the docmaps
+  index and inactive since November 2024.
+- **Options considered:** (a) keep sciety and wait for the index;
+  (b) data_source both with the Sciety scope as a second primary;
+  (c) Crossref primary with Sciety as cross-check.
+- **Decision:** (c), encoded as data_source both with
+  extraction_selector.crossref.role primary and sciety.role cross_check;
+  data_source crossref alone would remove the Sciety scope from the run.
+  Selector: prefix 10.70744, type peer-review, review_doi_regex
+  ^10\.70744/metaror\., external targets. Counting event unchanged
+  (earliest_qualifying_evaluation on issued); data_status
+  machine_readable; no partial_coverage; coverage_start_year 2024.
+  Targets under 10.70744/metaror.placeholder are flagged
+  placeholder_target, excluded from the work universe, counted in the
+  data-quality log (placeholder_relation) and named in limitations: the
+  reviewed manuscripts with DataCite-registered DOIs (arXiv, OSF) are
+  absent from the series. The Sciety scope stays as cross-check and never
+  blocks the row (D-037). Supersedes D-025.
+- **Evidence:** api.crossref.org/members/51568;
+  api.crossref.org/works?filter=prefix:10.70744 (278 on 2026-10-31:
+  277 peer-review, 1 posted-content);
+  https://metaror.org/set-of-metaror-manuscripts-with-a-datacite-doi/;
+  https://sciety.org/groups/metaror; crossref_probes_2026-10-31.txt.
+
+## D-065: Review Commons — Crossref peer-review records are the primary source
+
+- **Date:** 2026-10-31
+- **Status:** proposed; applied at the next extraction
+- decided_by: researcher
+- **Question:** The Sciety group is absent from the docmaps index (D-058).
+  A probe of 2026-10-31 found 5,629 peer-review records under 10.15252
+  (EMBO Press, member 79), stem rc., every sampled record with is-review-of
+  to a bioRxiv or medRxiv preprint, issued 2020–2026.
+- **Options considered:** (a) wait for the index; (b) EEB docmaps as a
+  third source; (c) Crossref primary with Sciety as cross-check.
+- **Decision:** (c), encoded as data_source both, crossref primary, sciety
+  cross_check. Selector prefix 10.15252, type peer-review, review_doi_regex
+  ^10\.15252/rc\., external targets, sample 10.15252/rc.2023168736. Counting
+  event unchanged. data_status machine_readable, no partial_coverage,
+  coverage_start_year 2020; 2019 is not_applicable. issued is the
+  publication date of the report package at transfer, not the date of
+  review; recorded in configuration_note and limitations. Author responses
+  (has-reply, same stem and type) never add a work. EEB is not admitted as
+  a source: its range pages mix journal-publication docmaps with service
+  docmaps (390 Review Commons docmaps for 2022–2023 against 2,020 Crossref
+  report records, consistent at manuscript level; 9 PeerRef docmaps
+  against roughly 35 works on the Sciety group page), and its terms of use
+  are not stated. It may serve as a diagnostic only.
+- **Evidence:** api.crossref.org/works?filter=prefix:10.15252,type:peer-review
+  (5,629 on 2026-10-31; by year 2020:312 2021:519 2022:912 2023:1108
+  2024:998 2025:1018 2026:762); api.crossref.org/members/79;
+  api.crossref.org/works/10.15252/rc.2023168736;
+  crossref_probes_2026-10-31.txt; reviewcommons_sample200_2026-10-31.json
+  (SHA-256 7B22A6F4…76A7); eeb_slugs_2022-2023.txt.
+
 ## Q-4: Cross-DOI work correspondence for Gates Open Research / VeriXiv
 
 - **Date:** 2026-10-20
@@ -1276,9 +1374,10 @@ The descriptive `doi_pattern` of `access_microbiology` was tightened to `^10\.10
 ## Q-5: alternative sources for Sciety groups absent from the docmaps index
 
 - **Date:** 2026-10-30
-- **Status:** open; not for this release
+- **Status:** partly resolved; PeerRef open, not for this release
 - decided_by: researcher
 - **Question:** MetaROR, Review Commons, PeerRef and The Unjournal list evaluations on their Sciety group pages and own sites, but are absent from the docmaps index. Which admissible source, if any, would carry them, and under what register entry?
 - **Decision so far:** none in 1.4.0. The rows stay `quantified` / `source_not_covering`; group cells exclude and name them (D-061).   Update 2026-10-31: Crossref selectors are available for MetaROR and The
   Unjournal (D-058 follow-up, D-063); Review Commons and PeerRef depend on
   sciety/sciety#4254.
+- Update 2026-10-31: Crossref selectors adopted for The Unjournal (D-063), MetaROR (D-064) and Review Commons (D-065), all applied at the next extraction. PeerRef remains source_not_covering and depends on sciety/sciety#4254; a direct request to the service follows if Sciety declines.

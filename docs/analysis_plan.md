@@ -323,9 +323,10 @@ twin carries one footnote per blank cell and one per lower-bound cell.
    rows observable in the run. Its totals are therefore lower, and a
    segment is the row's share of the deduplicated total, not the row's own
    series (that series is `works_by_row_year.csv` and Figure 1). The
-   Unjournal (D-063) and MetaROR (D-064) enter Figure 8 from the first run
-   after those decisions (Crossref peer-review records as primary source);
-   until then they are named among the excluded rows in the footer.
+   Unjournal (D-063), MetaROR (D-064) and Review Commons (D-065) enter
+   Figure 8 from the first run after those decisions (Crossref peer-review
+   records as primary source); until then they are named among the
+   excluded rows in the footer.
 
 All figures are recomputed from `data/processed/` tables; no hard-coded
 values. Legend swatches are plain: hatches describe cells (partial year,

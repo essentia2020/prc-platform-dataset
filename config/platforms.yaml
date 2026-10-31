@@ -2236,8 +2236,20 @@ platforms:
     status: active
     launch_year: 2019
     model_since: 2019
-    model_note: null
-    coverage_start_year: 2019
+    model_note: >-
+      D-065 (supersedes the Sciety-only selector): counted from Crossref
+      peer-review records under the EMBO Press prefix 10.15252 with the
+      stem rc. (member 79), each with is-review-of pointing to the reviewed
+      preprint on an external prefix; the counting event is the earliest
+      such record per preprint (issued date). issued is the publication
+      date of the report package at transfer to a journal, not the date of
+      review, so the series lags review and may cluster on posting days.
+      Author responses are records of the same stem and type (reports
+      carry has-reply, responses is-reply-to) with the same is-review-of
+      target and never add a work. The first record is issued in 2020, so
+      the series starts with coverage_start_year 2020 although the service
+      launched in December 2019.
+    coverage_start_year: 2020
     coverage_end_year: null
     discipline_scope: life_sciences
     country_of_operator: "Germany"
@@ -2253,7 +2265,9 @@ platforms:
       Journal-independent review of preprints hosted elsewhere; reviews and
       author response are posted on bioRxiv/medRxiv and Sciety when the
       authors transfer to an affiliate journal; reports anonymous unless
-      signed.
+      signed. The Crossref issued date of a report is the publication date
+      of the report package at transfer (mandatory since 2022-06-01), not
+      the date of review.
     provisional: false
     publish_arrangement: external_preprint_server
     review_arrangement: platform_own
@@ -2264,30 +2278,47 @@ platforms:
     summary_assessment: false
     reviewer_identity_disclosed: optional
     version_linked_review: true
-    review_to_object_relation: sciety_docmap
+    review_to_object_relation: crossref_is_review_of
     public_author_response: true
-    review_has_doi: false
-    data_source: sciety
+    review_has_doi: true
+    data_source: both
     register_status: quantified
     data_status: machine_readable
-    doi_prefix: null
-    doi_pattern: null
+    doi_prefix: "10.15252"
+    doi_pattern: "^10\\.15252/rc\\."
     doi_version_pattern: null
     sciety_group_slug: review-commons
     extraction_selector:
+      crossref:
+        # D-065: Review Commons registers its review reports and author
+        # responses as Crossref peer-review records under the EMBO Press
+        # prefix 10.15252 (member 79) with the stem rc., each with
+        # is-review-of pointing to the reviewed preprint on an external
+        # prefix.  The stem is the selector; other peer-review records of
+        # the member outside the stem are not works of this row.
+        role: primary
+        prefix: "10.15252"
+        record_types: [peer-review]
+        review_doi_regex: "^10\\.15252/rc\\."
+        target_filter: external
+        sample_review_doi: "10.15252/rc.2023168736"
       sciety:
+        # Kept as cross-check (D-037): the group is absent from the docmaps
+        # index (D-058) and confirms nothing until Sciety enables it.
         group_slug: review-commons
         group_id: 316db7d9-88cc-4c26-b386-f067e0f56334
         group_page_url: https://sciety.org/groups/review-commons
-        role: primary
+        role: cross_check
     eligibility_events:
-      - qualifying docmap evaluation output for an already-public preprint
+      - qualifying Crossref peer-review record (review report) with is-review-of pointing to an already-public preprint
     counting_event: earliest_qualifying_evaluation
-    counting_event_date_field: "evaluation published"
+    counting_event_date_field: issued
     evidence_url:
       - https://www.reviewcommons.org/authors/
       - https://sciety.org/groups/review-commons/about
-    verified_on: "2026-10-20"
+      - https://api.crossref.org/works?filter=prefix:10.15252,type:peer-review&rows=0
+      - https://api.crossref.org/members/79
+    verified_on: "2026-10-31"
 
   # ---------------------------------------------------------------- PeerRef
   - row_id: peerref

@@ -103,15 +103,19 @@ not an observed zero; a group present in the index that yields zero items
 keeps `selector_no_match`. When the index walk is not complete, coverage is
 `unverified` and the D-047 rule applies unchanged. A row whose primary
 source is Crossref and whose Sciety group is a cross-check only (The
-Unjournal since D-063, MetaROR since D-064; `data_source = both`) records
-the absent group as `not_in_index` on the cross-check scope and is observable through
+Unjournal since D-063, MetaROR since D-064, Review Commons since D-065;
+`data_source = both`) records the absent group as `not_in_index` on the cross-check scope and is observable through
 its Crossref scopes; a cross-check never blocks a count (D-037).
 
 A `review_doi_regex` declared together with `target_filter: external` is
 the row's selector on a shared prefix: a `peer-review` record under the
 walked prefix that does not match the pattern is not the row's, whatever
 its target (D-063; the Unjournal stem `d28e8e57` under the PubPub prefix
-10.21428, the Rapid Reviews stem under the MIT Press prefix 10.1162).
+10.21428, the Rapid Reviews stem under the MIT Press prefix 10.1162, the
+Review Commons stem `rc.` under the EMBO prefix 10.15252). Author
+responses deposited as `peer-review` records with `is-reply-to` and the
+same `is-review-of` target (Review Commons) are evaluation records of the
+row; they share the target with the referee reports and never add a work.
 
 A first-public-posting row whose `eligibility_events` text names the
 record type `posted-content` admits a work only through a posted-content
@@ -486,7 +490,7 @@ remains the conservative interval of the chosen record;
 | `evidence` | string | URL, record id or test name |
 | `effect_on_counts` | string | expected direction and scope of the effect |
 | `handling` | string | how the pipeline treats affected records |
-| `n_records_affected` | integer or empty | empty for preset rows; filled for run rows |
+| `n_records_affected` | integer or empty | filled for run rows; empty for preset rows unless the row records a count observed in a dated probe named in `evidence` (DQ-016) |
 | `status` | enum | `template`, `observed`, `resolved` |
 | `origin` | enum | `preset` (hand-written, never modified by a run) or `run` |
 | `run_id` | string or empty | the run that observed the issue (`run` rows only) |
