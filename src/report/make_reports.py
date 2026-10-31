@@ -15,6 +15,9 @@ Conventions shared by all figures:
   cutoff is 31 December;
 * empty cells (``count`` blank) are never drawn as zero — they are left out
   and the legend says so;
+* legend swatches are plain patches (``_plain_legend``): hatches describe
+  cells (year_to_date, lower bound), never categories; small multiples use
+  independent y-axes; the suptitle sits directly above the axes (``_layout``);
 * colours come from a colour-blind-safe categorical palette (the seaborn
   ``colorblind`` palette when seaborn is importable, the same eight hex
   values otherwise); categorical variables in Figure 7 use categorical
@@ -51,6 +54,12 @@ COVERAGE_COLOURS = {"complete": "#0173b2", "year_to_date": "#56b4e9", "partial_c
                     "partial_known_scope": "#ca9161", "no_data": "#949494", "not_applicable": "#eeeeee",
                     "register_only": "#ffffff"}
 CLASS_ORDER = ["author_initiated", "community_initiated", "mixed"]
+# Figure 8: rows whose whole-period total is below this are merged into one "Other" segment
+FIG8_OTHER_THRESHOLD = 1000
+FIG8_OTHER_LABEL = "Other"
+FIG8_OTHER_COLOUR = "#4d4d4d"       # dark grey
+# distinct hues for named rows beyond the ten of the colorblind palette (never the Other grey)
+FIG8_EXTRA_HEX = ["#004c6d", "#8c510a", "#01665e", "#7b3294", "#b2182b", "#5e3c99", "#e08214", "#1b7837"]
 CONFIG_ORDER = ["core_publish_first", "approval_threshold", "hybrid_public_discussion", "review_or_curation_service"]
 
 
@@ -168,6 +177,38 @@ def _integer_axis(ax, values: list[int | None]) -> None:
     ax.xaxis.set_major_locator(MaxNLocator(integer=True))
 
 
+def _plain_legend(target, labels: list[str], colours: Mapping[str, str], **kwargs):
+    """Legend with plain swatches: hatches mark cells, not categories, so a handle inherited from the first
+    drawn patch of a category would mislabel the category."""
+    from matplotlib.patches import Patch
+    handles = [Patch(facecolor=colours[label], edgecolor="black", linewidth=0.4) for label in labels]
+    kwargs.setdefault("fontsize", 7)
+    kwargs.setdefault("title_fontsize", 7)
+    return target.legend(handles, labels, **kwargs)
+
+
+SUPTITLE_GAP = 0.012          # figure fraction between the tallest axes decoration and the suptitle baseline
+
+
+def _layout(fig, bottom: float) -> None:
+    """Reserve the footer, lay the axes out, then sit the suptitle just above the tallest panel so that
+    no empty band is left between title and axes."""
+    fig.tight_layout(rect=(0, bottom + 0.01, 1, 0.94))
+    title = fig._suptitle
+    if title is None or not fig.axes:
+        return
+    renderer = fig.canvas.get_renderer()
+    inv = fig.transFigure.inverted()
+    tops = []
+    for ax in fig.axes:
+        bbox = ax.get_tightbbox(renderer)
+        if bbox is not None:
+            tops.append(inv.transform((0, bbox.y1))[1])
+    if tops:
+        title.set_verticalalignment("bottom")
+        title.set_y(min(0.995, max(tops) + SUPTITLE_GAP))
+
+
 # ------------------------------------------------------------------ figures
 def figure_1(tables: Path, platforms: list[dict[str, str]], cutoff: date, snapshot: str, out: Path) -> list[Path]:
     import matplotlib.pyplot as plt
@@ -211,7 +252,10 @@ def _grouped_bar_figure(path: Path, key: str, order: list[str], title: str, cuto
     cats = [c for c in order if c in groups] + sorted(set(groups) - set(order))
     colours = category_colour_map(cats)
     if small_multiples:
-        fig, axes = plt.subplots(1, max(len(cats), 1), figsize=(3.6 * max(len(cats), 1), 3.4), squeeze=False, sharey=True)
+        # independent y-axes: a shared axis took its limit from one panel and clipped the others
+        # each panel's limit is set from its own maximum in ``_bars``
+        fig, axes = plt.subplots(1, max(len(cats), 1), figsize=(3.6 * max(len(cats), 1), 3.4), squeeze=False,
+                                 sharey=False)
         for ax, cat in zip(axes.flat, cats):
             _bars(ax, groups[cat], colours[cat])
             for bar, r in zip(ax.patches, [r for r in groups[cat] if _count(r["count"]) is not None]):
@@ -238,12 +282,12 @@ def _grouped_bar_figure(path: Path, key: str, order: list[str], title: str, cuto
                 b.set_hatch(h)
             all_values.extend(ys)
         _integer_axis(ax, all_values)
-        ax.legend(fontsize=7, title=key, title_fontsize=7)
+        _plain_legend(ax, cats, colours, title=key)
         ax.tick_params(labelsize=7)
     fig.suptitle(title, fontsize=9)
     bottom = _footer(fig, cutoff, snapshot, " ".join(p for p in ("Deduplicated within each group; groups are not "
                                                                   "summed to a grand total.", _lower_bound_note(rows)) if p))
-    fig.tight_layout(rect=(0, bottom + 0.01, 1, 0.94))
+    _layout(fig, bottom)
     return _save(fig, out, name)
 
 
@@ -256,7 +300,8 @@ def figure_2(tables, cutoff, snapshot, out):
 def figure_6(tables, cutoff, snapshot, out):
     return _grouped_bar_figure(tables / "unique_works_by_configuration_year.csv", "prc_configuration", CONFIG_ORDER,
                                "Figure 6 — Annual unique works by workflow configuration (deduplicated within "
-                               "configuration)", cutoff, snapshot, out, "fig6_unique_works_by_configuration",
+                               "configuration; independent y-axes)", cutoff, snapshot, out,
+                               "fig6_unique_works_by_configuration",
                                small_multiples=True)
 
 
@@ -264,7 +309,7 @@ def figure_3(tables: Path, cutoff: date, snapshot: str, out: Path) -> list[Path]
     import matplotlib.pyplot as plt
     rows = _read(tables / "unique_works_all_rows_year.csv")
     colours = category_colour_map(CLASS_ORDER)
-    fig, ax = plt.subplots(figsize=(9, 4))
+    fig, ax = plt.subplots(figsize=(10, 4))
     bottoms: dict[int, float] = defaultdict(float)
     for cls in CLASS_ORDER:
         xs, ys, hs = [], [], []
@@ -288,16 +333,92 @@ def figure_3(tables: Path, cutoff: date, snapshot: str, out: Path) -> list[Path]
         ax.set_xlim(min(all_years) - 0.6, max(all_years) + 0.6)
     ax.xaxis.set_major_locator(MaxNLocator(integer=True))
     ax.set_ylim(0, 1)
-    ax.set_ylabel("share of unique works")
-    ax.legend(fontsize=7, title="initiation class (earliest counting event)", title_fontsize=7)
+    ax.set_ylabel("share of unique works", fontsize=8)
+    # share bars always fill 0–1, so the legend sits outside the axes
+    _plain_legend(ax, CLASS_ORDER, colours, loc="upper left", bbox_to_anchor=(1.01, 1), borderaxespad=0,
+                  title="initiation class\n(earliest counting event)")
     ax.tick_params(labelsize=7)
     fig.suptitle("Figure 3 — Share of initiation classes per year within unique_works_all_rows_year", fontsize=9)
     bottom = _footer(fig, cutoff, snapshot, " ".join(p for p in ("Years with a blank or zero all-row total are not "
                                                                   "drawn. Attribution to a class is relative to the "
                                                                   "rows observable in this run.",
                                                                   _lower_bound_note(rows)) if p))
-    fig.tight_layout(rect=(0, bottom + 0.01, 1, 0.94))
+    _layout(fig, bottom)
     return _save(fig, out, "fig3_class_shares")
+
+
+def figure_8_series(tables: Path) -> dict[str, Any]:
+    """Data behind Figure 8: per published all-rows year, the unique works attributed to each row at its
+    earliest counting event; rows under ``FIG8_OTHER_THRESHOLD`` over the whole period are merged into Other.
+
+    Returned as a plain structure so that tests and the figure share one derivation:
+    ``years`` (drawn years, ascending), ``order`` (segment labels, descending whole-period total, Other last),
+    ``segments`` {label: {year: count}}, ``other_rows`` (merged row_ids, descending total), ``totals``
+    {year: all-rows count}, ``hatches`` {year: hatch}, ``all_rows`` (the all-rows table rows drawn).
+    """
+    by_row = _read(tables / "unique_works_all_rows_by_row_year.csv")
+    all_rows = [r for r in _read(tables / "unique_works_all_rows_year.csv") if _count(r["count"]) is not None]
+    years = sorted(int(r["year"]) for r in all_rows)
+    drawn = [r for r in by_row if _count(r["count"]) is not None and int(r["year"]) in set(years)]
+    totals_by_row: dict[str, int] = defaultdict(int)
+    for r in drawn:
+        totals_by_row[r["row_id"]] += _count(r["count"])
+    ranked = sorted(totals_by_row, key=lambda rid: (-totals_by_row[rid], rid))
+    named = [rid for rid in ranked if totals_by_row[rid] >= FIG8_OTHER_THRESHOLD]
+    other_rows = [rid for rid in ranked if totals_by_row[rid] < FIG8_OTHER_THRESHOLD]
+    segments: dict[str, dict[int, int]] = {rid: defaultdict(int) for rid in named}
+    if other_rows:
+        segments[FIG8_OTHER_LABEL] = defaultdict(int)
+    for r in drawn:
+        label = r["row_id"] if r["row_id"] in segments else FIG8_OTHER_LABEL
+        segments[label][int(r["year"])] += _count(r["count"])
+    return {"years": years, "order": list(segments), "segments": {k: dict(v) for k, v in segments.items()},
+            "other_rows": other_rows, "totals": {int(r["year"]): _count(r["count"]) for r in all_rows},
+            "hatches": {int(r["year"]): _hatch(r) for r in all_rows}, "all_rows": all_rows}
+
+
+def figure_8(tables: Path, cutoff: date, snapshot: str, out: Path) -> list[Path]:
+    """Stacked unique works per year by register row (counterpart of the per-platform figure of the PRC
+    definition paper; see docs/analysis_plan.md): each work sits in the row of its earliest counting event,
+    so the segments sum to the all-rows total."""
+    import matplotlib.pyplot as plt
+    from matplotlib.ticker import MaxNLocator
+    data = figure_8_series(tables)
+    years, order, segments = data["years"], data["order"], data["segments"]
+    named = [label for label in order if label != FIG8_OTHER_LABEL]
+    hues = palette(min(len(named), len(COLORBLIND_HEX))) + FIG8_EXTRA_HEX
+    colours = {label: hues[i] for i, label in enumerate(named)}
+    colours[FIG8_OTHER_LABEL] = FIG8_OTHER_COLOUR
+    fig, ax = plt.subplots(figsize=(11, 4.6))
+    bottoms: dict[int, int] = defaultdict(int)
+    for label in order:                      # largest total at the bottom of the stack
+        xs = [y for y in years if segments[label].get(y)]
+        ys = [segments[label][y] for y in xs]
+        bars = ax.bar(xs, ys, width=0.8, bottom=[bottoms[y] for y in xs], color=colours[label],
+                      edgecolor="black", linewidth=0.3)
+        for bar, y in zip(bars, xs):
+            bar.set_hatch(data["hatches"][y])      # the year's hatch, applied to the whole bar
+        for y, v in zip(xs, ys):
+            bottoms[y] += v
+    if years:
+        ax.set_xlim(min(years) - 0.6, max(years) + 0.6)
+    ax.xaxis.set_major_locator(MaxNLocator(integer=True))
+    _integer_axis(ax, [data["totals"][y] for y in years])
+    ax.set_ylabel("unique works (all rows)", fontsize=8)
+    ax.tick_params(labelsize=7)
+    _plain_legend(ax, order, colours, loc="upper left", bbox_to_anchor=(1.01, 1), borderaxespad=0,
+                  title="register row (descending total)")
+    fig.suptitle("Figure 8 — Annual unique works across all rows, stacked by register row of the earliest "
+                 "counting event", fontsize=9)
+    other_note = ""
+    if data["other_rows"]:
+        other_note = (f"Other (rows below {FIG8_OTHER_THRESHOLD:,} works over the whole period): "
+                      + ", ".join(data["other_rows"]) + ".")
+    bottom = _footer(fig, cutoff, snapshot, " ".join(p for p in (
+        "Each work is attributed to the row of its earliest counting event; segments sum to the all-rows total.",
+        _lower_bound_note(data["all_rows"]), other_note) if p))
+    _layout(fig, bottom)
+    return _save(fig, out, "fig8_unique_works_by_row_stacked")
 
 
 def figure_4(tables: Path, cutoff: date, snapshot: str, out: Path) -> list[Path]:
@@ -358,11 +479,11 @@ def figure_5(tables: Path, cutoff: date, snapshot: str, out: Path) -> list[Path]
     _integer_axis(ax, all_values)
     if years:
         ax.set_xlim(min(years) - 0.6, max(years) + 0.6)
-    ax.legend(fontsize=7)
+    _plain_legend(ax, indicators, colours)
     ax.tick_params(labelsize=7)
     fig.suptitle("Figure 5 — Qeios indicators by year (deposition diagnostics; two disjoint rows)", fontsize=9)
-    _footer(fig, cutoff, snapshot, "Deposit dates after the cutoff are reported in the table, not inferred here.")
-    fig.tight_layout(rect=(0, 0.04, 1, 0.94))
+    bottom = _footer(fig, cutoff, snapshot, "Deposit dates after the cutoff are reported in the table, not inferred here.")
+    _layout(fig, bottom)
     return _save(fig, out, "fig5_qeios_indicators")
 
 
@@ -418,7 +539,7 @@ def write_checksums(path: Path, roots: Iterable[Path]) -> int:
             digest = hashlib.sha256(file.read_bytes()).hexdigest()
             lines.append(f"{digest}  {file.as_posix()}")
     Path(path).parent.mkdir(parents=True, exist_ok=True)
-    Path(path).write_text("\n".join(lines) + ("\n" if lines else ""), encoding="utf-8")
+    Path(path).write_text("\n".join(lines) + ("\n" if lines else ""), encoding="utf-8", newline="\n")
     return len(lines)
 
 
@@ -454,6 +575,7 @@ def run(run_config: RunConfig, sources_config: Mapping[str, Any], platforms: lis
     written += figure_5(tables_root, cutoff, snapshot, figures_root)
     written += figure_6(tables_root, cutoff, snapshot, figures_root)
     written += figure_7(tables_root, cutoff, snapshot, figures_root)
+    written += figure_8(tables_root, cutoff, snapshot, figures_root)
     n = write_checksums(checksums_path, [processed_root, tables_root, figures_root])
     logger.event("report_complete", n_figures=len(written), n_checksums=n)
     return {"figures": [str(p) for p in written], "checksums": str(checksums_path), "n_checksums": n}

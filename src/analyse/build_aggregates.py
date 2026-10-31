@@ -635,7 +635,7 @@ def _write_table(tables_root: Path, name: str, columns: list[str], rows: list[Ma
             parts = [f"lower bound: {r['lower_bound_rows']}" if r.get("lower_bound_rows") else "",
                      f"excluded: {r['excluded_rows']}" if r.get("excluded_rows") else ""]
             lines.append(f"- {group_of(r)}, {r['year']}: " + "; ".join(p for p in parts if p))
-    (tables_root / f"{name}.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    (tables_root / f"{name}.md").write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
 
 
 def _load_dq(path: Path) -> list[dict[str, str]]:
@@ -976,7 +976,8 @@ def run(run_config: RunConfig, sources_config: Mapping[str, Any], platforms: lis
                        "diagnostics": a.diagnostics} for a in analyses.values()},
         "n_data_quality_issues_observed": sum(1 for r in dq_rows if r["status"] == "observed"),
     }
-    (processed_root / "analysis_manifest.json").write_text(json.dumps(analysis_manifest, indent=2, sort_keys=True) + "\n")
+    (processed_root / "analysis_manifest.json").write_text(
+        json.dumps(analysis_manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8", newline="\n")
     logger.event("analysis_complete", n_rows=len(analyses), n_works=len(works_rows),
                  blocked_rows=[a.row_id for a in analyses.values() if a.state.primary_scopes and not a.complete])
     return analysis_manifest

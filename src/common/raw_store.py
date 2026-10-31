@@ -114,7 +114,7 @@ class RawStore:
                 "raw files are immutable — start a new walk instead")
         paths.response_path.parent.mkdir(parents=True, exist_ok=True)
         # ``x`` mode makes the no-overwrite rule hold even under races.
-        with open(paths.request_path, "x", encoding="utf-8") as handle:
+        with open(paths.request_path, "x", encoding="utf-8", newline="\n") as handle:
             json.dump(request, handle, ensure_ascii=False, sort_keys=True, indent=1)
         with open(paths.response_path, "xb") as handle:
             with gzip.GzipFile(fileobj=handle, mode="wb", mtime=0) as gz:

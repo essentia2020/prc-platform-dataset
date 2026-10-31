@@ -1,0 +1,165 @@
+{
+ "status": "ok",
+ "message": {
+  "items": [
+   {
+    "DOI": "10.70744/MetaROR.12.1.rv1",
+    "type": "peer-review",
+    "prefix": "10.70744",
+    "member": "51568",
+    "title": [
+     "Synthetic review report"
+    ],
+    "container-title": [
+     "MetaROR"
+    ],
+    "created": {
+     "date-time": "2024-11-20T10:00:00Z"
+    },
+    "deposited": {
+     "date-time": "2024-11-20T10:00:00Z"
+    },
+    "indexed": {
+     "date-time": "2024-11-21T00:00:00Z"
+    },
+    "issued": {
+     "date-parts": [
+      [
+       2024,
+       11,
+       20
+      ]
+     ]
+    },
+    "relation": {
+     "is-review-of": [
+      {
+       "id": "10.31219/osf.io/abcde",
+       "id-type": "doi",
+       "asserted-by": "subject"
+      }
+     ]
+    }
+   },
+   {
+    "DOI": "10.70744/MetaROR.9.1.rv3",
+    "type": "peer-review",
+    "prefix": "10.70744",
+    "member": "51568",
+    "title": [
+     "Synthetic review report"
+    ],
+    "container-title": [
+     "MetaROR"
+    ],
+    "created": {
+     "date-time": "2025-01-10T10:00:00Z"
+    },
+    "deposited": {
+     "date-time": "2025-01-10T10:00:00Z"
+    },
+    "indexed": {
+     "date-time": "2025-01-11T00:00:00Z"
+    },
+    "issued": {
+     "date-parts": [
+      [
+       2025,
+       1,
+       10
+      ]
+     ]
+    },
+    "relation": {
+     "is-review-of": [
+      {
+       "id": "10.1101/2024.05.01.000001",
+       "id-type": "doi",
+       "asserted-by": "subject"
+      }
+     ]
+    }
+   },
+   {
+    "DOI": "10.70744/MetaROR.9.1.ea",
+    "type": "peer-review",
+    "prefix": "10.70744",
+    "member": "51568",
+    "title": [
+     "Synthetic editorial assessment"
+    ],
+    "container-title": [
+     "MetaROR"
+    ],
+    "created": {
+     "date-time": "2025-02-01T10:00:00Z"
+    },
+    "deposited": {
+     "date-time": "2025-02-01T10:00:00Z"
+    },
+    "indexed": {
+     "date-time": "2025-02-02T00:00:00Z"
+    },
+    "issued": {
+     "date-parts": [
+      [
+       2025,
+       2,
+       1
+      ]
+     ]
+    },
+    "relation": {
+     "is-review-of": [
+      {
+       "id": "10.1101/2024.05.01.000001",
+       "id-type": "doi",
+       "asserted-by": "subject"
+      }
+     ]
+    }
+   },
+   {
+    "DOI": "10.70744/MetaROR.282.1.rv1",
+    "type": "peer-review",
+    "prefix": "10.70744",
+    "member": "51568",
+    "title": [
+     "Synthetic review report with placeholder target"
+    ],
+    "container-title": [
+     "MetaROR"
+    ],
+    "created": {
+     "date-time": "2025-06-01T10:00:00Z"
+    },
+    "deposited": {
+     "date-time": "2025-06-01T10:00:00Z"
+    },
+    "indexed": {
+     "date-time": "2025-06-02T00:00:00Z"
+    },
+    "issued": {
+     "date-parts": [
+      [
+       2025,
+       6,
+       1
+      ]
+     ]
+    },
+    "relation": {
+     "is-review-of": [
+      {
+       "id": "10.70744/MetaROR.placeholder01",
+       "id-type": "doi",
+       "asserted-by": "subject"
+      }
+     ]
+    }
+   }
+  ],
+  "total-results": 4,
+  "next-cursor": null
+ }
+}

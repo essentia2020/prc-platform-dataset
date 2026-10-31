@@ -110,7 +110,13 @@ def test_other_accepted_rulings(rows):
     assert "December 2025" in rows["arcadia_science"]["model_note"]
     assert rows["peerref"]["status"] == "dormant"
     assert rows["peerref"]["coverage_end_year"] is None
-    assert rows["metaror"]["data_source"] == "sciety"
+    for name in ("metaror", "the_unjournal"):                           # D-063, D-064
+        assert rows[name]["data_source"] == "both"
+        assert rows[name]["extraction_selector"]["crossref"]["role"] == "primary"
+        assert rows[name]["extraction_selector"]["sciety"]["role"] == "cross_check"
+        assert rows[name]["review_to_object_relation"] == "crossref_is_review_of"
+    assert rows["metaror"]["data_status"] == "machine_readable"
+    assert rows["the_unjournal"]["data_status"] == "partial_coverage"
     provisional = {row_id for row_id, row in rows.items() if row["provisional"]}
     assert provisional == {"verixiv",                                   # D-051
                            "stosunki_miedzynarodowe", "nuclear_science_technology_open_research", "digital_twin",

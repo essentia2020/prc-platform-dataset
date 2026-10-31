@@ -71,7 +71,7 @@ def close_stale_walks(manifest_root: Path, run_id: str, source: str, scope: str,
                 "reason": "walk found in_progress at start of a later invocation; never resumed in place",
                 "pages_accepted": len(walk.pages), "items_total": walk.items_total,
                 "ended_at_utc": now()}
-        with path.open("a", encoding="utf-8") as handle:
+        with path.open("a", encoding="utf-8", newline="\n") as handle:
             handle.write(json.dumps(line, ensure_ascii=False, sort_keys=True) + "\n")
         closed.append(walk.walk_id)
     return closed

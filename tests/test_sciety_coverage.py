@@ -22,7 +22,10 @@ from src.extract import sciety_evaluations
 from src.extract.crossref_common import ExtractionIncomplete, http_settings
 from tests.offline import FixtureTransport, crossref_page, make_run_config, run_context, run_full_pipeline
 
-ABSENT_ROWS = ("metaror", "review_commons", "peerref", "the_unjournal")
+# Sciety-primary rows whose group is absent from the docmaps index.  metaror and the_unjournal left this
+# set with D-063 / D-064 (Crossref primary, the Sciety group kept as cross-check).
+ABSENT_ROWS = ("review_commons", "peerref")
+CROSS_CHECK_ONLY_ROWS = ("metaror", "the_unjournal")
 
 
 def _active_cells(outputs, row_id):
@@ -93,12 +96,12 @@ def test_failed_probe_leaves_coverage_unverified_and_makes_the_stage_incomplete(
     manifest = load_run_manifest(run_manifest_path(roots["manifest_root"], run_config.run_id))
     assert "sciety_index_snapshot" not in manifest
     assert manifest["scopes"]["sciety/index__all"]["extraction_status"] == "failed"
-    entry = manifest["scopes"]["sciety/evaluations__metaror"]
+    entry = manifest["scopes"]["sciety/evaluations__review-commons"]
     assert entry["extraction_status"] == "complete"
     assert entry["index_coverage"]["status"] == "unverified" and entry["index_coverage"]["docmaps_in_index"] is None
-    assert (roots["interim_root"] / "sciety_evaluations__metaror.csv").exists()
+    assert (roots["interim_root"] / "sciety_evaluations__review-commons.csv").exists()
     states = row_states(manifest, platforms)
-    assert states["metaror"].extraction_status == "complete" and not states["metaror"].source_not_covering
+    assert states["review_commons"].extraction_status == "complete" and not states["review_commons"].source_not_covering
 
 
 def test_full_index_mode_uses_the_data_walk_as_snapshot(tmp_path: Path):
@@ -167,6 +170,21 @@ def test_absent_groups_are_source_not_covering_never_zero(outputs):
         assert summary["unique_works_to_cutoff"] == ""
 
 
+def test_cross_check_only_absence_does_not_make_a_crossref_primary_row_not_covering(outputs):
+    """D-063 / D-064 with D-037: the absent Sciety group of a Crossref-primary row is recorded as not_in_index on the
+    cross-check scope and changes nothing about the row's observability."""
+    rows = outputs.analysis_manifest["rows"]
+    for row_id in CROSS_CHECK_ONLY_ROWS:
+        assert rows[row_id]["source_not_covering"] is False and rows[row_id]["selector_no_match"] is False
+        assert rows[row_id]["extraction_status"] == "complete"
+        assert set(rows[row_id]["index_coverage"].values()) == {"not_in_index"}
+        cells = _active_cells(outputs, row_id)
+        assert cells and {c["source_observability_status"] for c in cells} == {"observable"}
+        yearly = [c for c in outputs.table("works_by_row_year") if c["row_id"] == row_id and c["count"] != ""]
+        assert yearly
+    assert not [r for r in _dq(outputs) if r["issue_type"] == "source_not_covering" and r["row_id"] in CROSS_CHECK_ONLY_ROWS]
+
+
 def test_present_group_with_empty_response_stays_selector_no_match(outputs):
     row = outputs.analysis_manifest["rows"]["biophysics_colab"]
     assert row["selector_no_match"] is True and row["source_not_covering"] is False
@@ -223,7 +241,9 @@ def test_source_not_covering_rows_are_excluded_from_group_cells_not_blocking(out
     blocked = [r for r in outputs.table("works_by_class_year")
                if r["initiation_class"] == "mixed" and "biophysics_colab:selector_no_match" in r["blocking_rows"]]
     assert blocked and all(r["count"] == "" for r in blocked)
-    assert all("the_unjournal:source_not_covering" in r["excluded_rows"] for r in blocked if int(r["year"]) >= 2023)
+    # the_unjournal is a Crossref-primary lower-bound member since D-063, not an excluded one
+    assert all("the_unjournal:partial_coverage" in r["lower_bound_rows"] for r in blocked if int(r["year"]) >= 2023)
+    assert not any("the_unjournal" in r["excluded_rows"] for r in blocked)
 
 
 # ----------------------------------------------------------- http settings

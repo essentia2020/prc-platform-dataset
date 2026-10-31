@@ -95,7 +95,7 @@ but not included are in `config/excluded_candidates.yaml`.
 | `routledge_open_research` | F1000 Research Ltd / Routledge (Taylor & Francis) | `author_initiated` (medium) | `approval_threshold` (medium) | crossref | first_public_posting | 2021–cutoff | machine_readable |
 | `meded_publish` | Association for Medical Education in Europe (AMEE); platform operated by F1000 since 2021 | `author_initiated` (high) | `approval_threshold` (high) | crossref | first_public_posting | 2016–cutoff | machine_readable |
 | `emerald_open_research` | Emerald Publishing (platform operated by F1000) | `author_initiated` (high) | `approval_threshold` (medium) | crossref | first_public_posting | 2019–2023 | machine_readable |
-| `metaror` | Research on Research Institute (RoRI) and AIMOS | `author_initiated` (high) | `core_publish_first` (high) | sciety | earliest_qualifying_evaluation | 2024–cutoff | machine_readable |
+| `metaror` | Research on Research Institute (RoRI) and AIMOS | `author_initiated` (high) | `core_publish_first` (high) | both | earliest_qualifying_evaluation | 2024–cutoff | machine_readable |
 | `pci_recommendations` | Peer Community In (non-profit association) | `author_initiated` (high) | `review_or_curation_service` (high) | both | earliest_qualifying_evaluation | 2017–cutoff | machine_readable |
 | `scipost` | SciPost Foundation | `author_initiated` (high) | `hybrid_public_discussion` (high) | crossref | final_article | 2016–cutoff | machine_readable |
 | `copernicus_interactive_public_peer_review` | Copernicus Publications (Copernicus GmbH) | `author_initiated` (high) | `hybrid_public_discussion` (high) | crossref | first_public_posting | 2001–cutoff | machine_readable |
@@ -115,7 +115,7 @@ but not included are in `config/excluded_candidates.yaml`.
 | `ncrc` | Johns Hopkins Bloomberg School of Public Health | `community_initiated` (high) | `review_or_curation_service` (high) | sciety | earliest_qualifying_evaluation | 2020–2022 | defunct |
 | `life_science_editors_foundation` | Life Science Editors Foundation | `mixed` (low) | `review_or_curation_service` (medium) | sciety | earliest_qualifying_evaluation | 2022–cutoff | machine_readable |
 | `life_science_editors` | Life Science Editors | `mixed` (low) | `review_or_curation_service` (medium) | sciety | earliest_qualifying_evaluation | 2022–cutoff | machine_readable |
-| `the_unjournal` | The Unjournal | `mixed` (medium) | `review_or_curation_service` (high) | sciety | earliest_qualifying_evaluation | 2023–cutoff | machine_readable |
+| `the_unjournal` | The Unjournal | `mixed` (medium) | `review_or_curation_service` (high) | both | earliest_qualifying_evaluation | 2023–cutoff | partial_coverage |
 | `scienceopen_reviews` | ScienceOpen GmbH | `mixed` (medium) | `review_or_curation_service` (medium) | none | earliest_qualifying_evaluation | 2014–cutoff | not_machine_readable |
 | `octopus` | Octopus Publishing CIC with Jisc | `author_initiated` (high) | `core_publish_first` (medium) | none | first_public_posting | 2022–cutoff | not_machine_readable |
 | `peeriodicals` | The PubPeer Foundation | `community_initiated` (medium) | `review_or_curation_service` (high) | none | earliest_qualifying_evaluation | 2018–cutoff | not_machine_readable |
@@ -165,7 +165,7 @@ Stage order, fixed in `src/run_pipeline.py`:
 3. `extract_sciety_evaluations` — one walk of the unfiltered index per run (`index`, scope `index__all`, the coverage probe of D-058) and one paginated walk per group (`index?publisheraccount=<group page URL>`) → `data/raw/sciety/evaluations__<group_slug>/…`, `data/interim/sciety_evaluations__<group_slug>.csv`; `index_coverage` per group in the run manifest; publisher-account mismatch hard-fails normalisation
 4. `normalise` — `src/normalise/clean_and_normalise.py`: record-level layer `data/processed/records_<row_id>.csv` (work, evaluation and relation lines; canonical identifiers; evaluation identity; source-precision dates) plus `normalisation_summary.json`; rows with a blocked scope get no file
 5. `analyse` — `src/analyse/build_aggregates.py`: work-level decisions `data/processed/works_included.csv`, `analysis_manifest.json`, run counts in `data_quality_log.csv`, every table in `reports/tables/*.csv|md`
-6. `report` — `src/report/make_reports.py`: Figures 1–7 in `reports/figures/*.png|svg` (matplotlib, Agg backend) and `reports/CHECKSUMS.txt` over processed files, tables and figures. Figures 2, 3 and 6 draw group cells that are lower bounds with a dotted hatch; each such figure is a lower bound and excludes the rows named in the table footnotes and in its own footer (D-061)
+6. `report` — `src/report/make_reports.py`: Figures 1–8 in `reports/figures/*.png|svg` (matplotlib, Agg backend) and `reports/CHECKSUMS.txt` over processed files, tables and figures. Figures 2, 3, 6 and 8 draw group cells that are lower bounds with a dotted hatch; each such figure is a lower bound and excludes the rows named in the table footnotes and in its own footer (D-061). Figure 8 stacks the all-rows total by the register row of each work's earliest counting event, merging rows below 1,000 works over the whole period into `Other`
 
 Extraction is idempotent: raw HTTP responses are immutable
 (`data/raw/<source>/<scope>/<run_id>/<walk_id>/page_<n>/attempt_<k>.*`; the
@@ -280,6 +280,14 @@ Zenodo DOI: [10.5281/zenodo.23812673](https://doi.org/10.5281/zenodo.23812673).
 Citation metadata is in `CITATION.cff`. The dataset is a supplement to the
 conference presentation listed there under `references`
 (`isSupplementTo`); the dataset DOI is added at the release freeze.
+
+## Authorship and tooling
+
+The analytical code in src/, tools/ and tests/ was written with the
+assistance of Perplexity. All design, classification and data-handling
+decisions recorded in docs/decisions.md were taken by the researcher, who
+reviewed the code and its outputs and bears final responsibility for the
+integrity of the data.
 
 ## Related publications
 

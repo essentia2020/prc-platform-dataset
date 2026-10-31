@@ -27,7 +27,9 @@ from ..common.identifiers import collapse_repeated_slashes, identifier_flag, is_
 from ..common.correspondence import correspondence_index
 
 PLACEHOLDER_TARGET_RE = re.compile(
-    r"^(?:10\.\d{4,9}/(?:x+|placeholder|tbd|na|n/a|none|0+|example|test)\b.*|10\.x+/.*|10\.1234/.*)$",
+    r"^(?:10\.\d{4,9}/(?:x+|placeholder|tbd|na|n/a|none|0+|example|test)\b.*"
+    r"|10\.\d{4,9}/(?:[a-z0-9_-]+\.)+placeholder\w*"       # operator-named placeholder, e.g. MetaROR.placeholder01 (D-064)
+    r"|10\.x+/.*|10\.1234/.*)$",
     re.IGNORECASE)
 
 WORK_RECORD_TYPES = ("journal-article", "posted-content")
@@ -258,6 +260,10 @@ class CrossrefSelector:
         if self.review_doi_regex and self.review_doi_regex.match(doi):
             return True
         if self.target_filter == "external":
+            if self.review_doi_regex:
+                # A declared review-DOI shape is the selector on a shared prefix (D-063):
+                # other communities' reviews under the same prefix are not this row's.
+                return False
             under_prefix = any(doi.startswith(p.lower() + "/") for p in self.prefixes)
             if not under_prefix:
                 return False

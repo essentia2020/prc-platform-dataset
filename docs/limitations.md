@@ -18,9 +18,15 @@
   and preLights activity) is missing. The docmaps index additionally covers
   only the groups Sciety has enabled for docmaps, group by group (eleven
   groups in the index of 2026-10-28). Register rows whose only selector is a
-  Sciety group absent from the index (MetaROR, Review Commons, PeerRef, The
-  Unjournal in run_20261027_01) publish no count: `source_not_covering`
-  (D-058), never a zero, although their Sciety group pages list evaluations.
+  Sciety group absent from the index (Review Commons and PeerRef in
+  run_20261027_01) publish no count: `source_not_covering` (D-058), never a
+  zero, although their Sciety group pages list evaluations. The Unjournal
+  (D-063) and MetaROR (D-064, superseding D-025) left this set: their
+  evaluations are Crossref `peer-review` records with `is-review-of`
+  (MetaROR under its own prefix 10.70744; The Unjournal under the PubPub
+  prefix 10.21428 with the community stem `d28e8e57`), so Crossref is the
+  primary source and the absent Sciety group is kept as a cross-check only
+  (D-037).
 - **SciPost** is observed through final published works, not every submission.
   **Copernicus** instead counts discussion-preprint entry into public
   discussion (D-015), so rejected discussion preprints are not categorically
@@ -58,6 +64,16 @@
   understate activity. Other platforms may show similar, undocumented
   discontinuities; these are logged in `data/processed/data_quality_log.csv`
   as they are observed.
+- **Rows with `data_status partial_coverage`** (their series are lower
+  bounds, and the group cells they enter are lower bounds, D-061):
+  `prelights`, `prereview` and `peerref` (as recorded in the register),
+  `qeios_hosted_works` and `qeios_external_works` (the deposition
+  discontinuities above), and `the_unjournal` (D-063: only evaluations the
+  Unjournal registers as Crossref `peer-review` records with `is-review-of`
+  are observable — 42 of 105 records under the community stem on
+  2026-10-31; its `journal-article` evaluation summaries carry no relation
+  and are not counted, and evaluations published without a Crossref record
+  are missed).
 
 ## Event history and retrieval
 
@@ -107,19 +123,20 @@ Known properties of the sources do not blank a cell (D-061, amending D-038
 and D-058). The cell is published as a lower bound and names the rows:
 
 - `lower_bound_rows` — members with `data_status partial_coverage`
-  (`prelights`, `prereview`, `qeios_hosted_works`,
-  `qeios_external_works`) or a `partial_known_scope` cell (the EGUsphere
+  (`prelights`, `prereview`, `qeios_hosted_works`, `qeios_external_works`,
+  `the_unjournal` from D-063) or a `partial_known_scope` cell (the EGUsphere
   attribution of `copernicus_interactive_public_peer_review`) are counted;
   their series are lower bounds, so the group cell is one.
 - `excluded_rows` — quantified Sciety rows whose group is absent from the
-  run's docmaps index snapshot (`review_commons`, `peerref`,
-  `the_unjournal`, `metaror`; D-058) are not counted. The row keeps
+  run's docmaps index snapshot (`review_commons`, `peerref`; D-058) are not
+  counted (`the_unjournal` was in this set until D-063 and `metaror` until
+  D-064 made Crossref their primary source). The row keeps
   `register_status quantified`, its own cells stay `not_observable` with
   the D-058 note, and the group cell is published without it.
 
 Such a cell carries `coverage = partial_coverage` (or
 `partial_known_scope` when that is the only lower-bound status present and
-nothing is excluded); Figures 2, 3 and 6 draw it with a dotted hatch and
+nothing is excluded); Figures 2, 3, 6 and 8 draw it with a dotted hatch and
 name the rows once in the footer. A group cell whose in-range members are
 all excluded stays blank, never a zero. The row-level table and the
 coverage matrix remain fully populated; a complete row keeps `year_to_date`
@@ -189,6 +206,14 @@ problems) are logged in `data/processed/data_quality_log.csv` with their
 effect on counts and the handling applied; the log is summarised here at the
 release freeze.
 
+- **Placeholder review targets (MetaROR).** Reviews of a preprint whose
+  DOI is registered with DataCite (arXiv, OSF) cannot carry a Crossref
+  `is-review-of` relation to that DOI, so MetaROR points them at its own
+  placeholder DOI `10.70744/MetaROR.placeholder01` (one manuscript in the
+  probe of 2026-10-31; D-064). Such records are kept with `record_flag
+  placeholder_target`, create no work and are counted per run in the
+  `placeholder_relation` row of the data-quality log; the reviewed
+  manuscripts are absent from the `metaror` series.
 - **Owner prefix versus DOI string.** The Crossref `prefix` filter selects
   by current owner, not by the string of the DOI. Three rows in
   run_20261026_01 declared a prefix that owns none of the venue's records

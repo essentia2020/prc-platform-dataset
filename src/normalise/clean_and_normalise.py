@@ -408,5 +408,6 @@ def run(run_config: RunConfig, sources_config: Mapping[str, Any], platforms: lis
         summary["rows"][row_id] = {"status": "complete", "n_records": n, **counts, "n_flagged": flagged,
                                    "cross_check_complete": state.cross_check_complete}
         logger.event("normalise_row_written", row_id=row_id, path=str(path), n_records=n, **counts)
-    (processed_root / "normalisation_summary.json").write_text(json.dumps(summary, indent=2, sort_keys=True) + "\n")
+    (processed_root / "normalisation_summary.json").write_text(
+        json.dumps(summary, indent=2, sort_keys=True) + "\n", encoding="utf-8", newline="\n")
     return summary

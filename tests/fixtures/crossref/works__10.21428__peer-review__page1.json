@@ -1,0 +1,165 @@
+{
+ "status": "ok",
+ "message": {
+  "items": [
+   {
+    "DOI": "10.21428/d28e8e57.652a843a",
+    "type": "peer-review",
+    "prefix": "10.21428",
+    "member": "9621",
+    "title": [
+     "Synthetic evaluation"
+    ],
+    "container-title": [
+     "The Unjournal"
+    ],
+    "created": {
+     "date-time": "2023-05-10T10:00:00Z"
+    },
+    "deposited": {
+     "date-time": "2023-05-10T10:00:00Z"
+    },
+    "indexed": {
+     "date-time": "2023-05-11T00:00:00Z"
+    },
+    "issued": {
+     "date-parts": [
+      [
+       2023,
+       5,
+       10
+      ]
+     ]
+    },
+    "relation": {
+     "is-review-of": [
+      {
+       "id": "10.3386/w26775",
+       "id-type": "doi",
+       "asserted-by": "subject"
+      }
+     ]
+    }
+   },
+   {
+    "DOI": "10.21428/d28e8e57.aaaa0001",
+    "type": "peer-review",
+    "prefix": "10.21428",
+    "member": "9621",
+    "title": [
+     "Synthetic evaluation"
+    ],
+    "container-title": [
+     "The Unjournal"
+    ],
+    "created": {
+     "date-time": "2023-07-01T10:00:00Z"
+    },
+    "deposited": {
+     "date-time": "2023-07-01T10:00:00Z"
+    },
+    "indexed": {
+     "date-time": "2023-07-02T00:00:00Z"
+    },
+    "issued": {
+     "date-parts": [
+      [
+       2023,
+       7,
+       1
+      ]
+     ]
+    },
+    "relation": {
+     "is-review-of": [
+      {
+       "id": "10.3386/w26775",
+       "id-type": "doi",
+       "asserted-by": "subject"
+      }
+     ]
+    }
+   },
+   {
+    "DOI": "10.21428/d28e8e57.bbbb0002",
+    "type": "peer-review",
+    "prefix": "10.21428",
+    "member": "9621",
+    "title": [
+     "Synthetic evaluation"
+    ],
+    "container-title": [
+     "The Unjournal"
+    ],
+    "created": {
+     "date-time": "2024-03-01T10:00:00Z"
+    },
+    "deposited": {
+     "date-time": "2024-03-01T10:00:00Z"
+    },
+    "indexed": {
+     "date-time": "2024-03-02T00:00:00Z"
+    },
+    "issued": {
+     "date-parts": [
+      [
+       2024,
+       3,
+       1
+      ]
+     ]
+    },
+    "relation": {
+     "is-review-of": [
+      {
+       "id": "10.1016/j.jdeveco.2024.103000",
+       "id-type": "doi",
+       "asserted-by": "subject"
+      }
+     ]
+    }
+   },
+   {
+    "DOI": "10.21428/0f1e2d3c.cccc0003",
+    "type": "peer-review",
+    "prefix": "10.21428",
+    "member": "9621",
+    "title": [
+     "Synthetic review of another community"
+    ],
+    "container-title": [
+     "Another PubPub community"
+    ],
+    "created": {
+     "date-time": "2024-04-01T10:00:00Z"
+    },
+    "deposited": {
+     "date-time": "2024-04-01T10:00:00Z"
+    },
+    "indexed": {
+     "date-time": "2024-04-02T00:00:00Z"
+    },
+    "issued": {
+     "date-parts": [
+      [
+       2024,
+       4,
+       1
+      ]
+     ]
+    },
+    "relation": {
+     "is-review-of": [
+      {
+       "id": "10.5555/other.community.target",
+       "id-type": "doi",
+       "asserted-by": "subject"
+      }
+     ]
+    }
+   }
+  ],
+  "total-results": 4,
+  "next-cursor": null
+ }
+}

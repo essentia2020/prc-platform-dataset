@@ -1318,7 +1318,15 @@ platforms:
     status: active
     launch_year: 2024
     model_since: 2024
-    model_note: null
+    model_note: >-
+      D-064 (supersedes D-025): counted from Crossref peer-review records
+      under 10.70744 (review reports rv<n> and editorial assessments ea),
+      the counting event being the earliest such record per reviewed work
+      (issued date); the series is continuous from 2024-11-20. A record
+      whose is-review-of target is MetaROR's own placeholder DOI
+      (10.70744/MetaROR.placeholder01, used where the reviewed preprint
+      carries a DataCite DOI) is kept with record_flag placeholder_target
+      and creates no work.
     coverage_start_year: 2024
     coverage_end_year: null
     discipline_scope: metaresearch
@@ -1346,30 +1354,48 @@ platforms:
     summary_assessment: true
     reviewer_identity_disclosed: optional
     version_linked_review: true
-    review_to_object_relation: sciety_docmap
+    review_to_object_relation: crossref_is_review_of
     public_author_response: true
-    review_has_doi: unknown
-    data_source: sciety
+    review_has_doi: true
+    data_source: both
     register_status: quantified
     data_status: machine_readable
-    doi_prefix: null
-    doi_pattern: null
+    doi_prefix: "10.70744"
+    doi_pattern: "^10\\.70744/metaror\\."
     doi_version_pattern: null
     sciety_group_slug: metaror
     extraction_selector:
+      crossref:
+        # D-064: MetaROR registers its review reports (rv<n>) and editorial
+        # assessments (ea) as Crossref peer-review records under its own prefix
+        # (member 51568), each with is-review-of pointing to the reviewed
+        # preprint on an external prefix.  The stem is the selector; the
+        # record type confines the walk to peer-review, so the hosted
+        # posted-content record under 10.70744 is never fetched.
+        role: primary
+        prefix: "10.70744"
+        record_types: [peer-review]
+        review_doi_regex: "^10\\.70744/metaror\\."
+        target_filter: external
+        sample_review_doi: "10.70744/metaror.9.1.rv3"
       sciety:
+        # Kept as cross-check (D-037): the group is absent from the docmaps
+        # index (D-058) and confirms nothing until Sciety enables it.
         group_slug: metaror
         group_id: cc4c8e79-402f-40e7-80fd-1062145d24ec
         group_page_url: https://sciety.org/groups/metaror
-        role: primary
+        role: cross_check
     eligibility_events:
-      - qualifying docmap evaluation output (review report or editorial assessment) for an already-public work
+      - qualifying Crossref peer-review record (review report or editorial assessment) with is-review-of pointing to an already-public work
     counting_event: earliest_qualifying_evaluation
-    counting_event_date_field: "evaluation published"
+    counting_event_date_field: issued
     evidence_url:
       - https://metaror.org/
       - https://sciety.org/groups/metaror/about
-    verified_on: "2026-10-20"
+      - https://api.crossref.org/works?filter=prefix:10.70744,type:peer-review&rows=0
+      - https://api.crossref.org/members/51568
+      - https://metaror.org/set-of-metaror-manuscripts-with-a-datacite-doi/
+    verified_on: "2026-10-31"
 
   # ------------------------------------------------------ Peer Community In
   - row_id: pci_recommendations
@@ -3095,7 +3121,11 @@ platforms:
     status: active
     launch_year: 2022
     model_since: 2022
-    model_note: null
+    model_note: >-
+      D-063: counted from Crossref peer-review records under the PubPub
+      prefix 10.21428 whose DOI starts with the Unjournal community stem
+      d28e8e57. Evaluations the Unjournal publishes without a Crossref
+      peer-review record are not observable; the series is a lower bound.
     coverage_start_year: 2023
     coverage_end_year: null
     discipline_scope: social_sciences
@@ -3123,30 +3153,46 @@ platforms:
     summary_assessment: true
     reviewer_identity_disclosed: optional
     version_linked_review: false
-    review_to_object_relation: sciety_docmap
+    review_to_object_relation: crossref_is_review_of
     public_author_response: true
     review_has_doi: true
-    data_source: sciety
+    data_source: both
     register_status: quantified
-    data_status: machine_readable
-    doi_prefix: null
-    doi_pattern: null
+    data_status: partial_coverage
+    doi_prefix: "10.21428"
+    doi_pattern: "^10\\.21428/d28e8e57\\."
     doi_version_pattern: null
     sciety_group_slug: the-unjournal
     extraction_selector:
+      crossref:
+        # D-063: the Unjournal publishes on PubPub (member 9621, shared
+        # prefix 10.21428); its evaluations are peer-review records whose DOI
+        # starts with the community stem d28e8e57, each with is-review-of
+        # pointing to the evaluated work on an external prefix.  Other
+        # PubPub communities, and the community's own journal-article and
+        # component records, are not selected.
+        role: primary
+        prefix: "10.21428"
+        record_types: [peer-review]
+        review_doi_regex: "^10\\.21428/d28e8e57\\."
+        target_filter: external
+        sample_review_doi: "10.21428/d28e8e57.652a843a"
       sciety:
+        # Kept as cross-check (D-037): the group is absent from the docmaps
+        # index (D-058) and confirms nothing until Sciety enables it.
         group_slug: the-unjournal
         group_id: 1e6f6b49-2a9b-417e-831b-8cee5af033bd
         group_page_url: https://sciety.org/groups/the-unjournal
-        role: primary
+        role: cross_check
     eligibility_events:
-      - qualifying docmap evaluation output for an already-public work
+      - qualifying Crossref peer-review record with is-review-of pointing to an already-public work
     counting_event: earliest_qualifying_evaluation
-    counting_event_date_field: "evaluation published"
+    counting_event_date_field: issued
     evidence_url:
       - https://www.unjournal.org/about
       - https://sciety.org/groups/the-unjournal/about
-    verified_on: "2026-10-20"
+      - https://api.crossref.org/works?filter=prefix:10.21428,type:peer-review&rows=0
+    verified_on: "2026-10-31"
 
   # ------------------------------------------------- Register-only rows (D-028)
   # Candidates verified on 2026-10-20 as satisfying inclusion criteria 1-3 but

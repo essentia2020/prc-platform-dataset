@@ -21,6 +21,9 @@ allowlist:
     file: config/classification_scheme.md
     literal: "Corker, Waltman and Coates (2024)"
   - rule_id: R3
+    file: docs/analysis_plan.md
+    literal: "Corker, Waltman and Coates\n   (2024)"
+  - rule_id: R3
     file: config/classification_scheme.md
     literal: "Corker, K. S., Waltman, L., & Coates, J. (2024). Understanding the\nPublish-Review-Curate (PRC) Model of Scholarly Communication. MetaArXiv.\nhttps://doi.org/10.31222/osf.io/h7swt"
 
@@ -94,3 +97,17 @@ allowlist:
   - rule_id: R2
     file: docs/decisions.md
     literal: "https://creativecommons.org/licenses/by/4.0/"
+
+  # ---- R4: the only exemption from the voice rule ------------------------
+  # README.md, section "Authorship and tooling": the paragraph names the
+  # tool that assisted with the code and the person who took the decisions.
+  # Nothing else in the repository names the tool (D-008 keeps tool names
+  # under R4).
+  - rule_id: R4
+    file: README.md
+    literal: "The analytical code in src/, tools/ and tests/ was written with the\nassistance of Perplexity. All design, classification and data-handling\ndecisions recorded in docs/decisions.md were taken by the researcher, who\nreviewed the code and its outputs and bears final responsibility for the\nintegrity of the data."
+  # This file lists the permitted string itself (structural counterpart of
+  # the R3 entry above; it exempts nothing outside this file).
+  - rule_id: R4
+    file: config/audit_allowlist.yaml
+    yaml_path: allowlist[*].literal

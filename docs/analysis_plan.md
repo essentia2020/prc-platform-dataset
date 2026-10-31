@@ -301,9 +301,35 @@ twin carries one footnote per blank cell and one per lower-bound cell.
    (`always` / `optional` / `never` / `unknown`); separate categorical
    legends; never encoded as ordinal numbers; `binding_publication_decision`
    only as contextual annotation.
+8. Annual unique works across all rows, stacked by register row
+   (`unique_works_all_rows_by_row_year.csv`; years with a published
+   all-rows count only). One bar per year; each work sits in the segment of
+   the row holding its earliest counting event, so the segments sum to the
+   all-rows total. Rows whose whole-period total is below 1,000 works are
+   merged into one dark-grey `Other` segment whose composition is listed in
+   the footer; stack order and legend follow descending whole-period totals
+   (largest at the bottom). The cutoff year carries the `//` hatch and a
+   year whose all-rows cell is a lower bound the dotted hatch, applied to
+   the whole bar; the footer names the lower-bound and excluded rows as in
+   Figure 2.
+
+   Figure 8 is the counterpart of Figure 1 in Corker, Waltman and Coates
+   (2024) (OpenAlex-based platform counts), but the two are not comparable
+   number for number. That figure counts submissions per platform as
+   OpenAlex records them, so a work reviewed on two platforms, or posted
+   and then evaluated, enters each platform's bar; Figure 8 counts each
+   work once, in the row of its earliest counting event, from Crossref and
+   Sciety records under the register's counting rules (D-040) and only for
+   rows observable in the run. Its totals are therefore lower, and a
+   segment is the row's share of the deduplicated total, not the row's own
+   series (that series is `works_by_row_year.csv` and Figure 1). The
+   Unjournal (D-063) and MetaROR (D-064) enter Figure 8 from the first run
+   after those decisions (Crossref peer-review records as primary source);
+   until then they are named among the excluded rows in the footer.
 
 All figures are recomputed from `data/processed/` tables; no hard-coded
-values.
+values. Legend swatches are plain: hatches describe cells (partial year,
+lower bound), never categories. Small multiples use independent y-axes.
 
 ## Implementation map (Stages 4–6)
 
@@ -324,7 +350,7 @@ values.
 | Walk shape: `total_delta == 0` is necessary, the page sequence is the proof (repeated `cursor_in`, non-empty pages vs `ceil(total-results / rows)`, mid-walk short page, record on two pages; pages missing from the raw store make the last rule inconclusive, never passed) | `src/common/manifest.py::walk_shape_issues`; post-run CLI `tools/check_walk_shape.py --run <run_id> [--raw-root]` | `tests/test_walk_shape.py`, `tests/test_check_walk_shape_cli.py` |
 | Windowed walks for a scope whose single cursor walk loses records between cursor steps (D-045 option c, D-057): one cursor walk per date window at tolerance 0, unwindowed `total-results` probed before and after the pass, complete only when every window is complete and the window totals sum to both probes; recorded as one composite walk of the scope plus one walk per window sub-scope | `src/common/windows.py`, `src/common/windowed_walk.py`, `crossref_common.windowed_scope_config`; `config/sources.yaml` `pagination.windowed_scopes` | `tests/test_windowed_walk.py` |
 | Deposition diagnostics (Qeios indicators, `created`/`deposited` after cutoff) | `build_aggregates.qeios_indicators` | `tests/test_total_equals_sum_of_years.py` (via tables) |
-| Figures 1–7, hatched partial year, dotted lower-bound cells with named rows (Figures 2, 3, 6), SVG ids salted with the run id, categorical panels, checksums | `src/report/make_reports.py` | `tests/test_report_figures.py` |
+| Figures 1–8, hatched partial year, dotted lower-bound cells with named rows (Figures 2, 3, 6, 8), stacked all-rows Figure 8 with the `Other` merge, plain legend swatches, independent y-axes in small multiples, SVG ids salted with the run id, categorical panels, checksums | `src/report/make_reports.py` | `tests/test_report_figures.py` |
 
 The eligible range of a row is `[max(launch_year, coverage_start_year),
 coverage_end_year or cutoff year]`. When `coverage_start_year` is empty and

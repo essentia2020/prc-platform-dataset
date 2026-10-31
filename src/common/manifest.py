@@ -104,7 +104,7 @@ class WalkManifestWriter:
     def _append(self, payload: dict) -> None:
         if self._closed:
             raise ManifestError("walk manifest is closed")
-        with self.path.open("a", encoding="utf-8") as handle:
+        with self.path.open("a", encoding="utf-8", newline="\n") as handle:
             handle.write(json.dumps({**self.identity, **payload}, ensure_ascii=False,
                                     sort_keys=True) + "\n")
 
@@ -220,7 +220,7 @@ def write_run_manifest(path: Path, payload: dict) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     tmp = path.with_suffix(path.suffix + ".tmp")
     tmp.write_text(json.dumps(payload, ensure_ascii=False, indent=1, sort_keys=True) + "\n",
-                   encoding="utf-8")
+                   encoding="utf-8", newline="\n")
     os.replace(tmp, path)
 
 

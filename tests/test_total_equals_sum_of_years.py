@@ -129,13 +129,14 @@ def test_source_not_covering_member_publishes_group_and_is_listed_as_excluded(pi
     """D-061: a row the source does not carry is excluded from the group cell and named, the cell publishes."""
     out = pipeline_outputs
     cell = out.cell("works_by_class_year", initiation_class="mixed", year=2023)
-    assert cell["count"] == "1" and cell["blocking_rows"] == "" and cell["lower_bound_rows"] == ""
+    # biophysics_colab 1 + the_unjournal 1 (D-063: two Crossref reviews of one work give one work)
+    assert cell["count"] == "2" and cell["blocking_rows"] == ""
+    assert cell["lower_bound_rows"] == "the_unjournal:partial_coverage"
     assert cell["excluded_rows"] == ("life_science_editors:source_not_covering; "
-                                     "life_science_editors_foundation:source_not_covering; "
-                                     "the_unjournal:source_not_covering")
+                                     "life_science_editors_foundation:source_not_covering")
     assert cell["coverage"] == "partial_coverage"
     # the excluded row's own cell is untouched (D-058)
-    own = out.cell("works_by_row_year", row_id="the_unjournal", year=2023)
+    own = out.cell("works_by_row_year", row_id="life_science_editors", year=2023)
     assert own["count"] == "" and own["source_observability_status"] == "source_not_covering"
     # all in-range members excluded: nothing to publish, never a zero
     only_excluded = out.cell("works_by_class_year", initiation_class="community_initiated", year=2018)
@@ -153,7 +154,8 @@ def test_blocking_statuses_still_blank_the_group(pipeline_outputs):
     assert "scipost:selector_no_match" in cell["blocking_rows"]
     # the other lists are still filled so that the reader sees the whole picture
     assert "qeios_hosted_works:partial_coverage" in cell["lower_bound_rows"]  # D-062: gates_open_research is machine_readable
-    assert "metaror:source_not_covering" in cell["excluded_rows"]
+    assert "review_commons:source_not_covering" in cell["excluded_rows"]
+    assert "metaror" not in cell["excluded_rows"]                        # D-064: Crossref primary
     # observed_zero and not_applicable members appear in no list
     for r in out.table("works_by_class_year"):
         for column in ("blocking_rows", "lower_bound_rows", "excluded_rows"):

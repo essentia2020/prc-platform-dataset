@@ -35,7 +35,7 @@ class JsonlLogger:
         """Append one event; returns the record that was written."""
         record = {"ts_utc": utc_now_iso(), "run_id": self.run_id, "event": kind}
         record.update(payload)
-        with self.path.open("a", encoding="utf-8") as handle:
+        with self.path.open("a", encoding="utf-8", newline="\n") as handle:
             handle.write(json.dumps(record, ensure_ascii=False, sort_keys=True) + "\n")
         return record
 

@@ -101,7 +101,17 @@ publishes no count: every cell is `not_observable` with
 marks a source that does not carry the group, not a selector defect and
 not an observed zero; a group present in the index that yields zero items
 keeps `selector_no_match`. When the index walk is not complete, coverage is
-`unverified` and the D-047 rule applies unchanged.
+`unverified` and the D-047 rule applies unchanged. A row whose primary
+source is Crossref and whose Sciety group is a cross-check only (The
+Unjournal since D-063, MetaROR since D-064; `data_source = both`) records
+the absent group as `not_in_index` on the cross-check scope and is observable through
+its Crossref scopes; a cross-check never blocks a count (D-037).
+
+A `review_doi_regex` declared together with `target_filter: external` is
+the row's selector on a shared prefix: a `peer-review` record under the
+walked prefix that does not match the pattern is not the row's, whatever
+its target (D-063; the Unjournal stem `d28e8e57` under the PubPub prefix
+10.21428, the Rapid Reviews stem under the MIT Press prefix 10.1162).
 
 A first-public-posting row whose `eligibility_events` text names the
 record type `posted-content` admits a work only through a posted-content
@@ -315,7 +325,7 @@ relation at normalisation (key: `row_id`, `review_record_id`,
 |---|---|---|
 | `target_id_raw` | string | `relation.is-review-of[i].id` as asserted, or the work DOI of an inverse `has-review` edge |
 | `target_id_type` | string | `relation.is-review-of[i].id-type` (`doi`, `url`, …), or `doi` for inverse work-side evidence |
-| `target_flag` | enum or empty | `placeholder`, `malformed`, `self_reference`, `missing` (neither review-side nor usable work-side target evidence); empty when valid |
+| `target_flag` | enum or empty | `placeholder` (generic tokens such as `10.1234/…` or `…/placeholder`, and an operator-named placeholder after a dotted stem such as MetaROR's `10.70744/MetaROR.placeholder01`, matched case-insensitively; D-064), `malformed`, `self_reference`, `missing` (neither review-side nor usable work-side target evidence); empty when valid |
 | `asserted_by` | enum or empty | `relation.is-review-of[i].asserted-by` (`subject`, `object`); empty when absent |
 | `target_doi_flag` | enum or empty | `repeated_slash` when the asserted target DOI contains `//`; the target is matched on its collapsed form (D-053) |
 | `target_relation_type` | enum | `is-review-of` or `has-review`; the latter identifies inverse work-side evidence |
@@ -557,7 +567,7 @@ only.
 | `unique_works_by_class_year.csv` | `initiation_class`, `year` | `additivity = deduplicated` on `canonical_work_id`; year of earliest counting event among the class's rows |
 | `unique_works_by_configuration_year.csv` | `prc_configuration`, `year` | `additivity = deduplicated` |
 | `unique_works_all_rows_year.csv` | `year` | the only all-row total; plus `n_author_initiated_by_earliest_event`, `n_community_initiated_by_earliest_event`, `n_mixed_by_earliest_event` (each work attributed to the class of the row holding its earliest counting event; inputs of Figure 3; the three sum to `count` when the cell is published) |
-| `unique_works_all_rows_by_row_year.csv` | `row_id`, `year` | per-row attribution of the all-rows `deduplicated` series (D-059 as merged into D-061): `count` = works whose earliest counting event among all rows lies in this row and year, blank when the row's own cell is not observable; carries `initiation_class`, `prc_configuration` and the row cell's status columns; one line per quantified row and year of its eligible range; attribution is relative to the rows observable in the run, so a `blocking_rows` or `excluded_rows` entry in `unique_works_all_rows_year.csv` for the same year shifts, not removes, the attributed works; sums by class equal `n_<class>_by_earliest_event` of the all-rows table |
+| `unique_works_all_rows_by_row_year.csv` | `row_id`, `year` | per-row attribution of the all-rows `deduplicated` series (D-059 as merged into D-061): `count` = works whose earliest counting event among all rows lies in this row and year, blank when the row's own cell is not observable; carries `initiation_class`, `prc_configuration` and the row cell's status columns; one line per quantified row and year of its eligible range; attribution is relative to the rows observable in the run, so a `blocking_rows` or `excluded_rows` entry in `unique_works_all_rows_year.csv` for the same year shifts, not removes, the attributed works; sums by class equal `n_<class>_by_earliest_event` of the all-rows table; input of Figure 8 (`fig8_unique_works_by_row_stacked`: one stacked bar per published all-rows year, segments by `row_id` in descending whole-period total, rows with a whole-period total below 1,000 works merged into `Other` and listed in the footer, the year's hatch — `//` cutoff year, dotted lower bound — applied to the whole bar; segments sum to the all-rows `count`) |
 | `register_summary.csv` | `row_id` | `organisation_id`, both classes and confidences, `register_status`, `effective_register_status` (after the run-derived Copernicus fallback of D-032; equals `register_status` otherwise), `data_status`, `data_source`, `provisional`, `extraction_status`, `eligible_start_year`, `eligible_end_year`, `first_year_with_data`, `last_year_with_data`, `unique_works_to_cutoff`, `n_works_excluded`, `n_works_outside_eligible_range` (the last six are blank unless the row is quantified, complete and has a resolved coverage start; `first_year_with_data`, `last_year_with_data` and `unique_works_to_cutoff` cover the eligible range only — an included work whose counting year lies outside it enters no cell and is counted in `n_works_outside_eligible_range`, D-060) |
 | `coverage_matrix.csv` | `row_id`, `year` | `coverage` ∈ `complete`, `year_to_date`, `partial_coverage`, `partial_known_scope`, `no_data`, `not_applicable` (`year_to_date` only for a `complete` row in the cutoff year, D-061); `note` explains `partial_known_scope` (yearly lower bound) and unresolved coverage starts; EGUsphere attributed series is a yearly lower bound; `partial_year` remains independent |
 | `cross_platform_overlap.csv` | `canonical_work_id` | `row_ids` (`; `-joined), `n_rows`, `earliest_row_id`, `earliest_year`, `correspondence_basis` (`canonical_work_id`; after VeriXiv deposit confirmation and before release freeze also `is_preprint_of` / `has_preprint` for pairs resolved from the VeriXiv or the Gates Open Research record, D-041) |
