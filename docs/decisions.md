@@ -1231,6 +1231,15 @@ The descriptive `doi_pattern` of `access_microbiology` was tightened to `^10\.10
 - **Rejected:** moving the four absent Sciety rows to `register_only` (their quantified status and D-058 cells are correct); alternative sources for them in this release (Q-5).
 - **Consequences:** all cells of `unique_works_all_rows_year` 2017–2026 and of the author_initiated and community_initiated class series open as lower bounds; `mixed` 2023–2026 opens without The Unjournal; `community_initiated` 2026 keeps its count and becomes `partial_coverage`. Figures 2, 3, 6 draw lower-bound cells with a dotted hatch and name the rows. New `unique_works_all_rows_by_row_year.csv`. No re-extraction.
 
+## D-062: Gates Open Research `data_status` corrected to `machine_readable`
+
+- **Date:** 2026-10-31
+- **Status:** applied
+- decided_by: researcher
+- **Context:** `config/platforms.yaml` carried `data_status: partial_coverage` for `gates_open_research` without a recorded reason: D-013 defines the series boundary (v1 series to 2024) and its counting events, not a coverage gap; no decision, register note or data-quality row names one. Under D-061 the flag alone made the `author_initiated` and `approval_threshold` cells of 2017–2018 lower bounds. The 2017–2024 v1 series is complete in Crossref (508 works in run_20261027_01).
+- **Decision:** `data_status: machine_readable`. The series boundary stays in `model_note` (D-013). A `partial_coverage` flag requires a recorded reason in the register or the data-quality log.
+- **Consequences:** `author_initiated` and `approval_threshold` 2017–2018 become `complete`; the row leaves `lower_bound_rows` for 2017–2024. The 53 works outside the eligible range remain an open register question (series boundary), unrelated to coverage.
+
 ## Q-4: Cross-DOI work correspondence for Gates Open Research / VeriXiv
 
 - **Date:** 2026-10-20

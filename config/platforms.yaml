@@ -288,7 +288,7 @@ platforms:
     review_has_doi: true
     data_source: crossref
     register_status: quantified
-    data_status: partial_coverage
+    data_status: machine_readable
     doi_prefix: "10.12688"
     doi_pattern: "^10\\.12688/gatesopenres\\."
     doi_version_pattern: "^(10\\.12688/gatesopenres\\.\\d+)\\.\\d+$"

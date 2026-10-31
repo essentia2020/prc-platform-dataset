@@ -78,7 +78,7 @@ but not included are in `config/excluded_candidates.yaml`.
 | `elife_reviewed_preprints` | eLife Sciences Publications Ltd | `author_initiated` (high) | `core_publish_first` (high) | both | first_public_posting | 2022–cutoff | machine_readable |
 | `f1000research` | F1000 Research Ltd (Taylor & Francis) | `author_initiated` (high) | `approval_threshold` (high) | crossref | first_public_posting | 2013–cutoff | machine_readable |
 | `wellcome_open_research` | F1000 Research Ltd for Wellcome | `author_initiated` (high) | `approval_threshold` (high) | crossref | first_public_posting | 2016–cutoff | machine_readable |
-| `gates_open_research` | F1000 Research Ltd for the Gates Foundation | `author_initiated` (high) | `approval_threshold` (medium) | crossref | first_public_posting | 2017–2024 | partial_coverage |
+| `gates_open_research` | F1000 Research Ltd for the Gates Foundation | `author_initiated` (high) | `approval_threshold` (medium) | crossref | first_public_posting | 2017–2024 | machine_readable |
 | `verixiv` | F1000 Research Ltd for the Gates Foundation | `author_initiated` (high) | `approval_threshold` (medium) (provisional) | crossref | first_public_posting | 2024–cutoff | machine_readable |
 | `open_research_europe` | F1000 Research Ltd for the European Commission | `author_initiated` (high) | `approval_threshold` (high) | crossref | first_public_posting | 2021–cutoff | machine_readable |
 | `hrb_open_research` | F1000 Research Ltd for the Health Research Board (Ireland) | `author_initiated` (high) | `approval_threshold` (high) | crossref | first_public_posting | 2018–cutoff | machine_readable |

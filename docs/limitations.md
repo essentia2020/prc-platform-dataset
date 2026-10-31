@@ -107,7 +107,7 @@ Known properties of the sources do not blank a cell (D-061, amending D-038
 and D-058). The cell is published as a lower bound and names the rows:
 
 - `lower_bound_rows` — members with `data_status partial_coverage`
-  (`gates_open_research`, `prelights`, `prereview`, `qeios_hosted_works`,
+  (`prelights`, `prereview`, `qeios_hosted_works`,
   `qeios_external_works`) or a `partial_known_scope` cell (the EGUsphere
   attribution of `copernicus_interactive_public_peer_review`) are counted;
   their series are lower bounds, so the group cell is one.
