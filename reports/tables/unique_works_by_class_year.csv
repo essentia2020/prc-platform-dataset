@@ -1,43 +1,43 @@
-initiation_class,year,year_label,count,partial_year,extraction_status,source_observability_status,observation_status,coverage,temporal_coverage_status,additivity,blocking_rows
-author_initiated,2001,2001,14,false,complete,observable,observed,complete,complete,deduplicated,
-author_initiated,2002,2002,79,false,complete,observable,observed,complete,complete,deduplicated,
-author_initiated,2003,2003,180,false,complete,observable,observed,complete,complete,deduplicated,
-author_initiated,2004,2004,285,false,complete,observable,observed,complete,complete,deduplicated,
-author_initiated,2005,2005,494,false,complete,observable,observed,complete,complete,deduplicated,
-author_initiated,2006,2006,635,false,complete,observable,observed,complete,complete,deduplicated,
-author_initiated,2007,2007,816,false,complete,observable,observed,complete,complete,deduplicated,
-author_initiated,2008,2008,962,false,complete,observable,observed,complete,complete,deduplicated,
-author_initiated,2009,2009,1624,false,complete,observable,observed,complete,complete,deduplicated,
-author_initiated,2010,2010,1797,false,complete,observable,observed,complete,complete,deduplicated,
-author_initiated,2011,2011,2170,false,complete,observable,observed,complete,complete,deduplicated,
-author_initiated,2012,2012,2659,false,complete,observable,observed,complete,complete,deduplicated,
-author_initiated,2013,2013,3042,false,complete,observable,observed,complete,complete,deduplicated,
-author_initiated,2014,2014,3354,false,complete,observable,observed,complete,complete,deduplicated,
-author_initiated,2015,2015,3755,false,complete,observable,observed,complete,complete,deduplicated,
-author_initiated,2016,2016,4491,false,complete,observable,observed,complete,complete,deduplicated,
-author_initiated,2017,2017,,false,complete,not_observable,not_observable,no_data,not_assessable,deduplicated,gates_open_research:partial_coverage
-author_initiated,2018,2018,,false,complete,not_observable,not_observable,no_data,not_assessable,deduplicated,gates_open_research:partial_coverage
-author_initiated,2019,2019,,false,complete,not_observable,not_observable,no_data,not_assessable,deduplicated,gates_open_research:partial_coverage; qeios_hosted_works:partial_coverage; review_commons:source_not_covering
-author_initiated,2020,2020,,false,complete,not_observable,not_observable,no_data,not_assessable,deduplicated,gates_open_research:partial_coverage; qeios_hosted_works:partial_coverage; review_commons:source_not_covering
-author_initiated,2021,2021,,false,complete,not_observable,not_observable,no_data,not_assessable,deduplicated,gates_open_research:partial_coverage; qeios_hosted_works:partial_coverage; review_commons:source_not_covering
-author_initiated,2022,2022,,false,complete,not_observable,not_observable,no_data,not_assessable,deduplicated,gates_open_research:partial_coverage; peerref:source_not_covering; qeios_hosted_works:partial_coverage; review_commons:source_not_covering
-author_initiated,2023,2023,,false,complete,not_observable,not_observable,no_data,not_assessable,deduplicated,gates_open_research:partial_coverage; peerref:source_not_covering; qeios_hosted_works:partial_coverage; review_commons:source_not_covering
-author_initiated,2024,2024,,false,complete,not_observable,not_observable,no_data,not_assessable,deduplicated,gates_open_research:partial_coverage; metaror:source_not_covering; peerref:source_not_covering; qeios_hosted_works:partial_coverage; review_commons:source_not_covering
-author_initiated,2025,2025,,false,complete,not_observable,not_observable,no_data,not_assessable,deduplicated,metaror:source_not_covering; peerref:source_not_covering; qeios_hosted_works:partial_coverage; review_commons:source_not_covering
-author_initiated,2026,"2026 (year_to_date, cutoff 2026-09-30)",,true,complete,not_observable,not_observable,no_data,not_assessable,deduplicated,metaror:source_not_covering; peerref:source_not_covering; review_commons:source_not_covering
-community_initiated,2018,2018,,false,complete,not_observable,not_observable,no_data,not_assessable,deduplicated,prelights:partial_coverage
-community_initiated,2019,2019,,false,complete,not_observable,not_observable,no_data,not_assessable,deduplicated,prelights:partial_coverage; prereview:partial_coverage
-community_initiated,2020,2020,,false,complete,not_observable,not_observable,no_data,not_assessable,deduplicated,prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage
-community_initiated,2021,2021,,false,complete,not_observable,not_observable,no_data,not_assessable,deduplicated,prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage
-community_initiated,2022,2022,,false,complete,not_observable,not_observable,no_data,not_assessable,deduplicated,prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage
-community_initiated,2023,2023,,false,complete,not_observable,not_observable,no_data,not_assessable,deduplicated,prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage
-community_initiated,2024,2024,,false,complete,not_observable,not_observable,no_data,not_assessable,deduplicated,prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage
-community_initiated,2025,2025,,false,complete,not_observable,not_observable,no_data,not_assessable,deduplicated,prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage
-community_initiated,2026,"2026 (year_to_date, cutoff 2026-09-30)",829,true,complete,observable,observed,year_to_date,partial,deduplicated,
-mixed,2020,2020,5,false,complete,observable,observed,complete,complete,deduplicated,
-mixed,2021,2021,61,false,complete,observable,observed,complete,complete,deduplicated,
-mixed,2022,2022,45,false,complete,observable,observed,complete,complete,deduplicated,
-mixed,2023,2023,,false,complete,not_observable,not_observable,no_data,not_assessable,deduplicated,the_unjournal:source_not_covering
-mixed,2024,2024,,false,complete,not_observable,not_observable,no_data,not_assessable,deduplicated,the_unjournal:source_not_covering
-mixed,2025,2025,,false,complete,not_observable,not_observable,no_data,not_assessable,deduplicated,the_unjournal:source_not_covering
-mixed,2026,"2026 (year_to_date, cutoff 2026-09-30)",,true,complete,not_observable,not_observable,no_data,not_assessable,deduplicated,the_unjournal:source_not_covering
+initiation_class,year,year_label,count,partial_year,extraction_status,source_observability_status,observation_status,coverage,temporal_coverage_status,additivity,blocking_rows,lower_bound_rows,excluded_rows
+author_initiated,2001,2001,14,false,complete,observable,observed,complete,complete,deduplicated,,,
+author_initiated,2002,2002,79,false,complete,observable,observed,complete,complete,deduplicated,,,
+author_initiated,2003,2003,180,false,complete,observable,observed,complete,complete,deduplicated,,,
+author_initiated,2004,2004,285,false,complete,observable,observed,complete,complete,deduplicated,,,
+author_initiated,2005,2005,494,false,complete,observable,observed,complete,complete,deduplicated,,,
+author_initiated,2006,2006,635,false,complete,observable,observed,complete,complete,deduplicated,,,
+author_initiated,2007,2007,816,false,complete,observable,observed,complete,complete,deduplicated,,,
+author_initiated,2008,2008,962,false,complete,observable,observed,complete,complete,deduplicated,,,
+author_initiated,2009,2009,1624,false,complete,observable,observed,complete,complete,deduplicated,,,
+author_initiated,2010,2010,1797,false,complete,observable,observed,complete,complete,deduplicated,,,
+author_initiated,2011,2011,2170,false,complete,observable,observed,complete,complete,deduplicated,,,
+author_initiated,2012,2012,2659,false,complete,observable,observed,complete,complete,deduplicated,,,
+author_initiated,2013,2013,3042,false,complete,observable,observed,complete,complete,deduplicated,,,
+author_initiated,2014,2014,3354,false,complete,observable,observed,complete,complete,deduplicated,,,
+author_initiated,2015,2015,3755,false,complete,observable,observed,complete,complete,deduplicated,,,
+author_initiated,2016,2016,4491,false,complete,observable,observed,complete,complete,deduplicated,,,
+author_initiated,2017,2017,4610,false,complete,observable,observed,complete,complete,deduplicated,,,
+author_initiated,2018,2018,5433,false,complete,observable,observed,complete,complete,deduplicated,,,
+author_initiated,2019,2019,5628,false,complete,observable,observed,partial_coverage,partial,deduplicated,,qeios_hosted_works:partial_coverage,review_commons:source_not_covering
+author_initiated,2020,2020,6711,false,complete,observable,observed,partial_coverage,partial,deduplicated,,qeios_hosted_works:partial_coverage,review_commons:source_not_covering
+author_initiated,2021,2021,6659,false,complete,observable,observed,partial_coverage,partial,deduplicated,,qeios_hosted_works:partial_coverage,review_commons:source_not_covering
+author_initiated,2022,2022,7122,false,complete,partial_known_scope,observed,partial_coverage,partial,deduplicated,,copernicus_interactive_public_peer_review:partial_known_scope; qeios_hosted_works:partial_coverage,peerref:source_not_covering; review_commons:source_not_covering
+author_initiated,2023,2023,10203,false,complete,partial_known_scope,observed,partial_coverage,partial,deduplicated,,copernicus_interactive_public_peer_review:partial_known_scope; qeios_hosted_works:partial_coverage,peerref:source_not_covering; review_commons:source_not_covering
+author_initiated,2024,2024,10634,false,complete,partial_known_scope,observed,partial_coverage,partial,deduplicated,,copernicus_interactive_public_peer_review:partial_known_scope; qeios_hosted_works:partial_coverage,metaror:source_not_covering; peerref:source_not_covering; review_commons:source_not_covering
+author_initiated,2025,2025,10324,false,complete,partial_known_scope,observed,partial_coverage,partial,deduplicated,,copernicus_interactive_public_peer_review:partial_known_scope; qeios_hosted_works:partial_coverage,metaror:source_not_covering; peerref:source_not_covering; review_commons:source_not_covering
+author_initiated,2026,"2026 (year_to_date, cutoff 2026-09-30)",8637,true,complete,partial_known_scope,observed,partial_coverage,partial,deduplicated,,copernicus_interactive_public_peer_review:partial_known_scope; qeios_hosted_works:partial_coverage,metaror:source_not_covering; peerref:source_not_covering; review_commons:source_not_covering
+community_initiated,2018,2018,13,false,complete,observable,observed,partial_coverage,partial,deduplicated,,prelights:partial_coverage,
+community_initiated,2019,2019,265,false,complete,observable,observed,partial_coverage,partial,deduplicated,,prelights:partial_coverage; prereview:partial_coverage,
+community_initiated,2020,2020,502,false,complete,observable,observed,partial_coverage,partial,deduplicated,,prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage,
+community_initiated,2021,2021,1251,false,complete,observable,observed,partial_coverage,partial,deduplicated,,prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage,
+community_initiated,2022,2022,1244,false,complete,observable,observed,partial_coverage,partial,deduplicated,,prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage,
+community_initiated,2023,2023,601,false,complete,observable,observed,partial_coverage,partial,deduplicated,,prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage,
+community_initiated,2024,2024,756,false,complete,observable,observed,partial_coverage,partial,deduplicated,,prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage,
+community_initiated,2025,2025,978,false,complete,observable,observed,partial_coverage,partial,deduplicated,,prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage,
+community_initiated,2026,"2026 (year_to_date, cutoff 2026-09-30)",829,true,complete,observable,observed,partial_coverage,partial,deduplicated,,prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage,
+mixed,2020,2020,5,false,complete,observable,observed,complete,complete,deduplicated,,,
+mixed,2021,2021,61,false,complete,observable,observed,complete,complete,deduplicated,,,
+mixed,2022,2022,45,false,complete,observable,observed,complete,complete,deduplicated,,,
+mixed,2023,2023,20,false,complete,observable,observed,partial_coverage,partial,deduplicated,,,the_unjournal:source_not_covering
+mixed,2024,2024,40,false,complete,observable,observed,partial_coverage,partial,deduplicated,,,the_unjournal:source_not_covering
+mixed,2025,2025,69,false,complete,observable,observed,partial_coverage,partial,deduplicated,,,the_unjournal:source_not_covering
+mixed,2026,"2026 (year_to_date, cutoff 2026-09-30)",15,true,complete,observable,observed,partial_coverage,partial,deduplicated,,,the_unjournal:source_not_covering

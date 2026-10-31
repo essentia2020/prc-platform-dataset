@@ -101,14 +101,14 @@ Empty cells are not zeros: see `observation_status` and `extraction_status` in t
 | gates_open_research | 2014 | 2014 |  | false | complete | observable | not_applicable | not_applicable | not_assessable | row_series |
 | gates_open_research | 2015 | 2015 |  | false | complete | observable | not_applicable | not_applicable | not_assessable | row_series |
 | gates_open_research | 2016 | 2016 |  | false | complete | observable | not_applicable | not_applicable | not_assessable | row_series |
-| gates_open_research | 2017 | 2017 | 17 | false | complete | observable | observed | partial_coverage | partial | row_series |
-| gates_open_research | 2018 | 2018 | 59 | false | complete | observable | observed | partial_coverage | partial | row_series |
-| gates_open_research | 2019 | 2019 | 120 | false | complete | observable | observed | partial_coverage | partial | row_series |
-| gates_open_research | 2020 | 2020 | 86 | false | complete | observable | observed | partial_coverage | partial | row_series |
-| gates_open_research | 2021 | 2021 | 68 | false | complete | observable | observed | partial_coverage | partial | row_series |
-| gates_open_research | 2022 | 2022 | 63 | false | complete | observable | observed | partial_coverage | partial | row_series |
-| gates_open_research | 2023 | 2023 | 55 | false | complete | observable | observed | partial_coverage | partial | row_series |
-| gates_open_research | 2024 | 2024 | 40 | false | complete | observable | observed | partial_coverage | partial | row_series |
+| gates_open_research | 2017 | 2017 | 17 | false | complete | observable | observed | complete | complete | row_series |
+| gates_open_research | 2018 | 2018 | 59 | false | complete | observable | observed | complete | complete | row_series |
+| gates_open_research | 2019 | 2019 | 120 | false | complete | observable | observed | complete | complete | row_series |
+| gates_open_research | 2020 | 2020 | 86 | false | complete | observable | observed | complete | complete | row_series |
+| gates_open_research | 2021 | 2021 | 68 | false | complete | observable | observed | complete | complete | row_series |
+| gates_open_research | 2022 | 2022 | 63 | false | complete | observable | observed | complete | complete | row_series |
+| gates_open_research | 2023 | 2023 | 55 | false | complete | observable | observed | complete | complete | row_series |
+| gates_open_research | 2024 | 2024 | 40 | false | complete | observable | observed | complete | complete | row_series |
 | gates_open_research | 2025 | 2025 |  | false | complete | observable | not_applicable | not_applicable | not_assessable | row_series |
 | gates_open_research | 2026 | 2026 (year_to_date, cutoff 2026-09-30) |  | true | complete | observable | not_applicable | not_applicable | not_assessable | row_series |
 | verixiv | 2001 | 2001 |  | false | complete | observable | not_applicable | not_applicable | not_assessable | row_series |
@@ -786,7 +786,7 @@ Empty cells are not zeros: see `observation_status` and `extraction_status` in t
 | qeios_hosted_works | 2023 | 2023 | 1265 | false | complete | observable | observed | partial_coverage | partial | row_series |
 | qeios_hosted_works | 2024 | 2024 | 1182 | false | complete | observable | observed | partial_coverage | partial | row_series |
 | qeios_hosted_works | 2025 | 2025 | 600 | false | complete | observable | observed | partial_coverage | partial | row_series |
-| qeios_hosted_works | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 211 | true | complete | observable | observed | year_to_date | partial | row_series |
+| qeios_hosted_works | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 211 | true | complete | observable | observed | partial_coverage | partial | row_series |
 | qeios_external_works | 2001 | 2001 |  | false | complete | observable | not_applicable | not_applicable | not_assessable | row_series |
 | qeios_external_works | 2002 | 2002 |  | false | complete | observable | not_applicable | not_applicable | not_assessable | row_series |
 | qeios_external_works | 2003 | 2003 |  | false | complete | observable | not_applicable | not_applicable | not_assessable | row_series |
@@ -812,7 +812,7 @@ Empty cells are not zeros: see `observation_status` and `extraction_status` in t
 | qeios_external_works | 2023 | 2023 | 23 | false | complete | observable | observed | partial_coverage | partial | row_series |
 | qeios_external_works | 2024 | 2024 | 19 | false | complete | observable | observed | partial_coverage | partial | row_series |
 | qeios_external_works | 2025 | 2025 | 12 | false | complete | observable | observed | partial_coverage | partial | row_series |
-| qeios_external_works | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 13 | true | complete | observable | observed | year_to_date | partial | row_series |
+| qeios_external_works | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 13 | true | complete | observable | observed | partial_coverage | partial | row_series |
 | prereview | 2001 | 2001 |  | false | complete | observable | not_applicable | not_applicable | not_assessable | row_series |
 | prereview | 2002 | 2002 |  | false | complete | observable | not_applicable | not_applicable | not_assessable | row_series |
 | prereview | 2003 | 2003 |  | false | complete | observable | not_applicable | not_applicable | not_assessable | row_series |
@@ -838,7 +838,7 @@ Empty cells are not zeros: see `observation_status` and `extraction_status` in t
 | prereview | 2023 | 2023 | 176 | false | complete | observable | observed | partial_coverage | partial | row_series |
 | prereview | 2024 | 2024 | 237 | false | complete | observable | observed | partial_coverage | partial | row_series |
 | prereview | 2025 | 2025 | 546 | false | complete | observable | observed | partial_coverage | partial | row_series |
-| prereview | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 472 | true | complete | observable | observed | year_to_date | partial | row_series |
+| prereview | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 472 | true | complete | observable | observed | partial_coverage | partial | row_series |
 | prelights | 2001 | 2001 |  | false | complete | observable | not_applicable | not_applicable | not_assessable | row_series |
 | prelights | 2002 | 2002 |  | false | complete | observable | not_applicable | not_applicable | not_assessable | row_series |
 | prelights | 2003 | 2003 |  | false | complete | observable | not_applicable | not_applicable | not_assessable | row_series |
@@ -864,7 +864,7 @@ Empty cells are not zeros: see `observation_status` and `extraction_status` in t
 | prelights | 2023 | 2023 | 120 | false | complete | observable | observed | partial_coverage | partial | row_series |
 | prelights | 2024 | 2024 | 120 | false | complete | observable | observed | partial_coverage | partial | row_series |
 | prelights | 2025 | 2025 | 140 | false | complete | observable | observed | partial_coverage | partial | row_series |
-| prelights | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 111 | true | complete | observable | observed | year_to_date | partial | row_series |
+| prelights | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 111 | true | complete | observable | observed | partial_coverage | partial | row_series |
 | rapid_reviews_infectious_diseases | 2001 | 2001 |  | false | complete | observable | not_applicable | not_applicable | not_assessable | row_series |
 | rapid_reviews_infectious_diseases | 2002 | 2002 |  | false | complete | observable | not_applicable | not_applicable | not_assessable | row_series |
 | rapid_reviews_infectious_diseases | 2003 | 2003 |  | false | complete | observable | not_applicable | not_applicable | not_assessable | row_series |

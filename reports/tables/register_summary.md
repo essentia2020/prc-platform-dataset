@@ -11,7 +11,7 @@ Empty cells are not zeros: see `observation_status` and `extraction_status` in t
 | elife_reviewed_preprints | elife | author_initiated | high | core_publish_first | high | quantified | quantified | machine_readable | both | false | complete | 2022 | 2026 | 2022 | 2026 | 4815 | 16124 | 0 |
 | f1000research | f1000 | author_initiated | high | approval_threshold | high | quantified | quantified | machine_readable | crossref | false | complete | 2013 | 2026 | 2014 | 2026 | 11962 | 121 | 0 |
 | wellcome_open_research | f1000 | author_initiated | high | approval_threshold | high | quantified | quantified | machine_readable | crossref | false | complete | 2016 | 2026 | 2016 | 2026 | 4067 | 71 | 0 |
-| gates_open_research | gates_f1000 | author_initiated | high | approval_threshold | medium | quantified | quantified | partial_coverage | crossref | false | complete | 2017 | 2024 | 2017 | 2024 | 508 | 3 | 53 |
+| gates_open_research | gates_f1000 | author_initiated | high | approval_threshold | medium | quantified | quantified | machine_readable | crossref | false | complete | 2017 | 2024 | 2017 | 2024 | 508 | 3 | 53 |
 | verixiv | gates_f1000 | author_initiated | high | approval_threshold | medium | quantified | quantified | machine_readable | crossref | true | complete | 2024 | 2026 | 2024 | 2026 | 135 | 634 | 0 |
 | open_research_europe | f1000 | author_initiated | high | approval_threshold | high | quantified | quantified | machine_readable | crossref | false | complete | 2021 | 2026 | 2021 | 2026 | 1573 | 60 | 0 |
 | hrb_open_research | f1000 | author_initiated | high | approval_threshold | high | quantified | quantified | machine_readable | crossref | false | complete | 2018 | 2026 | 2018 | 2026 | 758 | 6 | 0 |
