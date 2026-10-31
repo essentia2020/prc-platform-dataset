@@ -481,7 +481,8 @@ def working_tree_files(root: Path) -> list[str]:
 def read_text(data: bytes) -> str | None:
     if b"\0" in data[:8000]:
         return None
-    return data.decode("utf-8", errors="replace")
+    text = data.decode("utf-8", errors="replace")
+    return text.replace("\r\n", "\n").replace("\r", "\n")
 
 
 # ---------------------------------------------------------------------------

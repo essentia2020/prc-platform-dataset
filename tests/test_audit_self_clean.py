@@ -56,3 +56,9 @@ def test_empty_token_file_is_rejected(tmp_path):
 def test_missing_token_file_is_rejected(tmp_path):
     with pytest.raises(audit_text.AuditConfigError, match="not found"):
         audit_text.load_tokens(str(tmp_path / "absent.txt"), env_path="")
+
+
+def test_read_text_normalises_line_endings():
+    assert audit_text.read_text(b"first line\r\nsecond line\r\n") == "first line\nsecond line\n"
+    assert audit_text.read_text(b"a\rb") == "a\nb"
+    assert audit_text.read_text(b"\0binary") is None
