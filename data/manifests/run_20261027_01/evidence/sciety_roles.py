@@ -1,4 +1,4 @@
-﻿import yaml
+import yaml
 d = yaml.safe_load(open("config/platforms.yaml", encoding="utf-8"))
 rows = d if isinstance(d, list) else next(v for v in d.values() if isinstance(v, list) and v and "row_id" in v[0])
 in_index = {"prereview","prelights","arcadia-science","rapid-reviews-covid-19","peerj","ncrc","asapbio-crowd-review","biophysics-colab","life-science-editors-foundation","asapbio-scielo-preprint-crowd-review","life-science-editors"}

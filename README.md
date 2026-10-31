@@ -1,4 +1,4 @@
-﻿# PRC Platform Dataset 1.4.0
+# PRC Platform Dataset 1.4.0
 
 An open, reproducible dataset of research works flowing through
 Publish–Review–Curate (PRC) platforms. Platforms are classified on two
