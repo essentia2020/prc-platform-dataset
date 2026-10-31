@@ -189,6 +189,23 @@ class PipelineOutputs:
         return read_csv(self.processed / f"records_{row_id}.csv")
 
 
+def _copy_preset_dq_rows(source: Path, target: Path) -> None:
+    """Seed the fixture log with the preset rows of the repository log only (D-061, defect 3).
+
+    The repository log is the single data-quality file (D-040) and carries the
+    rows of real runs; those rows must not leak into offline assertions.
+    """
+    import csv
+    with source.open(newline="", encoding="utf-8") as handle:
+        reader = csv.DictReader(handle)
+        columns = list(reader.fieldnames or [])
+        rows = [r for r in reader if r.get("origin") == "preset"]
+    with target.open("w", newline="", encoding="utf-8") as handle:
+        writer = csv.DictWriter(handle, fieldnames=columns, lineterminator="\n")
+        writer.writeheader()
+        writer.writerows(rows)
+
+
 def run_full_pipeline(tmp_path: Path, transport=None, cutoff: str = "2026-09-30", expect_incomplete: bool = False,
                       with_figures: bool = True) -> PipelineOutputs:
     import shutil
@@ -209,7 +226,7 @@ def run_full_pipeline(tmp_path: Path, transport=None, cutoff: str = "2026-09-30"
                 raise
     processed, tables, figures = tmp_path / "processed", tmp_path / "tables", tmp_path / "figures"
     processed.mkdir(parents=True, exist_ok=True)
-    shutil.copy(REPO_ROOT / "data" / "processed" / "data_quality_log.csv", processed / "data_quality_log.csv")
+    _copy_preset_dq_rows(REPO_ROOT / "data" / "processed" / "data_quality_log.csv", processed / "data_quality_log.csv")
     clean_and_normalise.run(run_config, sources, platforms, logger, interim_root=roots["interim_root"],
                             manifest_root=roots["manifest_root"], processed_root=processed)
     manifest = build_aggregates.run(run_config, sources, platforms, logger, processed_root=processed,

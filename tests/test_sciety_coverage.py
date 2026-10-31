@@ -198,11 +198,32 @@ def test_data_quality_row_names_the_snapshot(outputs):
                 and r["row_id"] in ABSENT_ROWS]
 
 
-def test_source_not_covering_blocks_group_sums(outputs):
-    for name in ("unique_works_by_class_year", "unique_works_all_rows_year"):
-        blocked = [r for r in outputs.table(name) if "source_not_covering" in r["blocking_rows"]]
-        assert blocked, name
-        assert all(r["count"] == "" for r in blocked)
+def test_source_not_covering_rows_are_excluded_from_group_cells_not_blocking(outputs):
+    """D-061 (amends D-058 for group cells): the row's own cells stay not_observable; the group cell is
+    published without the row and names it in ``excluded_rows``."""
+    for name in ("unique_works_by_class_year", "unique_works_all_rows_year", "works_by_class_year",
+                 "works_by_configuration_year", "unique_works_by_configuration_year"):
+        rows = outputs.table(name)
+        assert not [r for r in rows if "source_not_covering" in r["blocking_rows"]], name
+        excluded = [r for r in rows if r["excluded_rows"]]
+        assert excluded, name
+        for r in excluded:
+            assert {e.split(":")[1] for e in r["excluded_rows"].split("; ")} == {"source_not_covering"}
+    # community_initiated 2024: the absent Sciety-only groups are excluded, the cell publishes with the members
+    # the index does carry (prereview, qeios_external_works)
+    cell = outputs.cell("works_by_class_year", initiation_class="community_initiated", year=2024)
+    assert cell["count"] == "3" and cell["blocking_rows"] == ""
+    for row_id in ("prelights", "arcadia_science", "asapbio_crowd_review", "rapid_reviews_infectious_diseases"):
+        assert f"{row_id}:source_not_covering" in cell["excluded_rows"]
+    assert cell["coverage"] == "partial_coverage"
+    own = outputs.cell("works_by_row_year", row_id="prelights", year=2024)
+    assert own["count"] == "" and own["source_observability_status"] == "source_not_covering"
+    assert own["observation_status"] == "not_observable"
+    # a present group with an empty response (biophysics_colab, D-047) still blanks its group cells
+    blocked = [r for r in outputs.table("works_by_class_year")
+               if r["initiation_class"] == "mixed" and "biophysics_colab:selector_no_match" in r["blocking_rows"]]
+    assert blocked and all(r["count"] == "" for r in blocked)
+    assert all("the_unjournal:source_not_covering" in r["excluded_rows"] for r in blocked if int(r["year"]) >= 2023)
 
 
 # ----------------------------------------------------------- http settings

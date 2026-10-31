@@ -70,9 +70,15 @@ def cell_for(*, row_id: str, year: int, cutoff: date, register_status: str, extr
         return Cell(row_id, year, None, "not_observable", extraction_status, partial, "no_data", "not_observable")
     if n_works is None:
         raise AggregateError(f"{row_id}/{year}: complete extraction without a computed count")
-    coverage = "year_to_date" if partial else ("partial_coverage" if data_status == "partial_coverage" else "complete")
+    # D-061 (defect 2): a row's coverage status survives the cutoff year; ``partial_year``
+    # and ``year_label`` carry the year-to-date fact.  ``year_to_date`` is the coverage
+    # of a row with complete coverage in the cutoff year only.
     if partial_known_scope:
         coverage = "partial_known_scope"
+    elif data_status == "partial_coverage":
+        coverage = "partial_coverage"
+    else:
+        coverage = "year_to_date" if partial else "complete"
     status = "observed_zero" if n_works == 0 else "observed"
     return Cell(row_id, year, int(n_works), status, extraction_status, partial, coverage,
                 "partial_known_scope" if partial_known_scope else "observable")

@@ -8,7 +8,9 @@ and figure.
 
 Conventions shared by all figures:
 
-* the analysis cutoff and snapshot date appear in every footer; the cutoff
+* the analysis cutoff and snapshot date appear in every footer; group cells
+  published as a lower bound (D-061) are drawn with a dotted hatch and the
+  footer names the rows behind them; the cutoff
   year is drawn with hatched bars and labelled ``year_to_date`` unless the
   cutoff is 31 December;
 * empty cells (``count`` blank) are never drawn as zero — they are left out
@@ -27,6 +29,7 @@ from __future__ import annotations
 
 import csv
 import hashlib
+import textwrap
 from collections import defaultdict
 from datetime import date
 from pathlib import Path
@@ -88,7 +91,10 @@ def _count(value: str) -> int | None:
     return int(value) if value not in ("", None) else None
 
 
-def _footer(fig, cutoff: date, snapshot: str, extra: str = "") -> None:
+FOOTER_FONTSIZE = 7
+
+
+def _footer(fig, cutoff: date, snapshot: str, extra: str = "") -> float:
     partial = not (cutoff.month == 12 and cutoff.day == 31)
     text = f"Source: Crossref and Sciety via this repository's pipeline; snapshot {snapshot or 'n/a'}; " \
            f"analysis cutoff {cutoff.isoformat()}"
@@ -97,7 +103,12 @@ def _footer(fig, cutoff: date, snapshot: str, extra: str = "") -> None:
     text += ". Blank cells are not drawn (not zero)."
     if extra:
         text += " " + extra
-    fig.text(0.01, 0.005, text, fontsize=7, ha="left", va="bottom", wrap=True)
+    # wrap deterministically (D-061: footers may name many rows) and return the figure fraction the footer
+    # occupies, so that callers reserve it in ``tight_layout``
+    width_in, height_in = fig.get_size_inches()
+    lines = textwrap.wrap(text, width=max(40, int(width_in * 72 / (FOOTER_FONTSIZE * 0.52))))
+    fig.text(0.01, 0.005, "\n".join(lines), fontsize=FOOTER_FONTSIZE, ha="left", va="bottom", linespacing=1.25)
+    return 0.01 + len(lines) * FOOTER_FONTSIZE * 1.25 / 72 / height_in
 
 
 def _save(fig, figures_root: Path, name: str) -> list[Path]:
@@ -111,6 +122,32 @@ def _save(fig, figures_root: Path, name: str) -> list[Path]:
     import matplotlib.pyplot as plt
     plt.close(fig)
     return paths
+
+
+LOWER_BOUND_HATCH = ".."      # D-061: group cell published as a lower bound (named rows in the table footnote)
+
+
+def _is_lower_bound(r: Mapping[str, str]) -> bool:
+    return bool(r.get("lower_bound_rows") or r.get("excluded_rows"))
+
+
+def _hatch(r: Mapping[str, str]) -> str:
+    return ("//" if r.get("partial_year") == "true" else "") + (LOWER_BOUND_HATCH if _is_lower_bound(r) else "")
+
+
+def _lower_bound_note(rows: list[dict[str, str]]) -> str:
+    """One footer sentence naming the rows behind lower-bound cells, deduplicated across years (D-061)."""
+    drawn = [r for r in rows if _count(r.get("count", "")) is not None]
+    partial = sorted({e.split(":", 1)[0] for r in drawn for e in (r.get("lower_bound_rows") or "").split("; ") if e})
+    excluded = sorted({e.split(":", 1)[0] for r in drawn for e in (r.get("excluded_rows") or "").split("; ") if e})
+    if not partial and not excluded:
+        return ""
+    parts = []
+    if partial:
+        parts.append("rows with partial coverage contribute: " + ", ".join(partial))
+    if excluded:
+        parts.append("rows whose source does not carry them are excluded: " + ", ".join(excluded))
+    return "Dotted bars are lower bounds (D-061) — " + "; ".join(parts) + "."
 
 
 def _bars(ax, series: list[dict[str, str]], colour: str, label: str | None = None) -> None:
@@ -177,6 +214,8 @@ def _grouped_bar_figure(path: Path, key: str, order: list[str], title: str, cuto
         fig, axes = plt.subplots(1, max(len(cats), 1), figsize=(3.6 * max(len(cats), 1), 3.4), squeeze=False, sharey=True)
         for ax, cat in zip(axes.flat, cats):
             _bars(ax, groups[cat], colours[cat])
+            for bar, r in zip(ax.patches, [r for r in groups[cat] if _count(r["count"]) is not None]):
+                bar.set_hatch(_hatch(r))
             ax.set_title(cat, fontsize=8)
             ax.tick_params(labelsize=7)
     else:
@@ -193,7 +232,7 @@ def _grouped_bar_figure(path: Path, key: str, order: list[str], title: str, cuto
                     continue
                 xs.append(y + (i - (len(cats) - 1) / 2) * width)
                 ys.append(_count(r["count"]))
-                hs.append("//" if r["partial_year"] == "true" else "")
+                hs.append(_hatch(r))
             bars = ax.bar(xs, ys, width=width, color=colours[cat], label=cat, edgecolor="black", linewidth=0.4)
             for b, h in zip(bars, hs):
                 b.set_hatch(h)
@@ -202,8 +241,9 @@ def _grouped_bar_figure(path: Path, key: str, order: list[str], title: str, cuto
         ax.legend(fontsize=7, title=key, title_fontsize=7)
         ax.tick_params(labelsize=7)
     fig.suptitle(title, fontsize=9)
-    _footer(fig, cutoff, snapshot, "Deduplicated within each group; groups are not summed to a grand total.")
-    fig.tight_layout(rect=(0, 0.04, 1, 0.94))
+    bottom = _footer(fig, cutoff, snapshot, " ".join(p for p in ("Deduplicated within each group; groups are not "
+                                                                  "summed to a grand total.", _lower_bound_note(rows)) if p))
+    fig.tight_layout(rect=(0, bottom + 0.01, 1, 0.94))
     return _save(fig, out, name)
 
 
@@ -235,7 +275,7 @@ def figure_3(tables: Path, cutoff: date, snapshot: str, out: Path) -> list[Path]
                 continue
             xs.append(int(r["year"]))
             ys.append(part / total)
-            hs.append("//" if r["partial_year"] == "true" else "")
+            hs.append(_hatch(r))
         bars = ax.bar(xs, ys, width=0.8, bottom=[bottoms[x] for x in xs], color=colours[cls], label=cls,
                       edgecolor="black", linewidth=0.4)
         for b, h in zip(bars, hs):
@@ -252,8 +292,11 @@ def figure_3(tables: Path, cutoff: date, snapshot: str, out: Path) -> list[Path]
     ax.legend(fontsize=7, title="initiation class (earliest counting event)", title_fontsize=7)
     ax.tick_params(labelsize=7)
     fig.suptitle("Figure 3 — Share of initiation classes per year within unique_works_all_rows_year", fontsize=9)
-    _footer(fig, cutoff, snapshot, "Years with a blank or zero all-row total are not drawn.")
-    fig.tight_layout(rect=(0, 0.04, 1, 0.94))
+    bottom = _footer(fig, cutoff, snapshot, " ".join(p for p in ("Years with a blank or zero all-row total are not "
+                                                                  "drawn. Attribution to a class is relative to the "
+                                                                  "rows observable in this run.",
+                                                                  _lower_bound_note(rows)) if p))
+    fig.tight_layout(rect=(0, bottom + 0.01, 1, 0.94))
     return _save(fig, out, "fig3_class_shares")
 
 
@@ -388,6 +431,9 @@ def run(run_config: RunConfig, sources_config: Mapping[str, Any], platforms: lis
     except ImportError as exc:  # pragma: no cover - environment dependent
         raise ReportError("matplotlib is required for the report stage: pip install -r requirements.txt") from exc
     matplotlib.use("Agg")
+    # D-059 (merged into D-061): stable SVG element ids, so that an SVG re-drawn from
+    # unchanged tables is byte-identical (ids only; no geometry change).
+    matplotlib.rcParams["svg.hashsalt"] = run_config.run_id
     processed_root = Path(processed_root or DEFAULT_PROCESSED_ROOT)
     tables_root = Path(tables_root or DEFAULT_TABLES_ROOT)
     figures_root = Path(figures_root or DEFAULT_FIGURES_ROOT)

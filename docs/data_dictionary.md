@@ -501,7 +501,9 @@ applicable, `year` (integer), `year_label` (`2026 (year_to_date, cutoff
 `not_observable`; `selector_no_match` marks a quantified row whose complete
 scopes matched no record (D-047) and `source_not_covering` a quantified
 Sciety row whose group is absent from the run's docmaps index snapshot
-(D-058); both block every group the row belongs to; `pending_run` is the
+(D-058); `selector_no_match` blocks every group the row belongs to, a
+`source_not_covering` row is excluded from its group cells and named there
+(D-061); `pending_run` is the
 transient state of a run-deferred coverage start before the first complete
 run and must be absent from released tables, D-039), `observation_status` (`observed` /
 `observed_zero` / `not_observable` / `register_only` / `not_applicable`),
@@ -510,17 +512,42 @@ run and must be absent from released tables, D-039), `observation_status` (`obse
 `row_summed` / `deduplicated`). Every CSV has a Markdown twin with the same
 rows, headed by the cutoff, the additivity and the snapshot window.
 
-Group cells (`row_summed` and `deduplicated`) are blank only when a member
-row whose eligible range covers the year carries `unknown_scope` or
-`pending_run` (source observability) or `partial_coverage` (coverage), or
-when that member's extraction is not complete; `not_applicable` and
-`observed_zero` members never block the sum (D-038). Group tables carry
-`blocking_rows` (`row_id:status; …`, empty when the cell is published) and
-their Markdown twins list every blank cell with its blocking row and status.
-A group cell is `complete` only when every contributing row cell is
-`complete`. The `deduplicated` series counts each `canonical_work_id` once
-per group, in the year of its earliest counting event among the group's
-rows.
+Group cells (`row_summed` and `deduplicated`) are blank only for states the
+pipeline can and must resolve before release (D-061, amending D-038 and
+D-058): a member row whose eligible range covers the year carries
+`unknown_scope`, `pending_run` or `selector_no_match` (source
+observability), or that member's extraction is `incomplete` or `failed`.
+Known properties of the sources do not blank a cell; they are published as a
+lower bound with the affected rows named in the cell. `not_applicable` and
+`observed_zero` members never block the sum. Group tables carry three list
+columns of the form `row_id:status; …` (sorted by `row_id`):
+
+- `blocking_rows` — the members above; non-empty exactly when the cell is
+  blank;
+- `lower_bound_rows` — contributing members in range whose row cell is
+  `partial_coverage` or `partial_known_scope`; they are counted, and the cell
+  is a lower bound;
+- `excluded_rows` — quantified members in range whose source does not carry
+  them (`source_not_covering`, D-058); they are not counted, the row keeps
+  `register_status quantified` and its own cells stay `not_observable`.
+
+A published group cell's `coverage` is `complete` (or `year_to_date` in the
+cutoff year) when both the lower-bound and the excluded list are empty;
+`partial_known_scope` when that is the only lower-bound status present and
+nothing is excluded; otherwise `partial_coverage`. `temporal_coverage_status`
+follows the existing rule. When every member in range is excluded the cell
+is blank with `source_observability_status = source_not_covering`, never a
+zero. The Markdown twins list every blank cell with its blocking rows
+("Blank group cells (D-038)") and every lower-bound cell with its named
+rows ("Lower-bound group cells (D-061)"). The `deduplicated` series counts
+each `canonical_work_id` once per group, in the year of its earliest
+counting event among the group's rows.
+
+Cutoff-year rule (D-061): a row cell keeps its coverage status
+(`partial_coverage`, `partial_known_scope`, `complete`) in the cutoff year;
+`partial_year = true` and `year_label` carry the year-to-date fact.
+`year_to_date` is the `coverage` of a `complete` row cell in the cutoff year
+only.
 
 | Table | Key columns | Notes |
 |---|---|---|
@@ -529,9 +556,10 @@ rows.
 | `works_by_configuration_year.csv` | `prc_configuration`, `year` | `additivity = row_summed` |
 | `unique_works_by_class_year.csv` | `initiation_class`, `year` | `additivity = deduplicated` on `canonical_work_id`; year of earliest counting event among the class's rows |
 | `unique_works_by_configuration_year.csv` | `prc_configuration`, `year` | `additivity = deduplicated` |
-| `unique_works_all_rows_year.csv` | `year` | the only all-row total; plus `n_author_initiated_by_earliest_event`, `n_community_initiated_by_earliest_event`, `n_mixed_by_earliest_event` (each work attributed to the class of the row holding its earliest counting event; inputs of Figure 3) |
+| `unique_works_all_rows_year.csv` | `year` | the only all-row total; plus `n_author_initiated_by_earliest_event`, `n_community_initiated_by_earliest_event`, `n_mixed_by_earliest_event` (each work attributed to the class of the row holding its earliest counting event; inputs of Figure 3; the three sum to `count` when the cell is published) |
+| `unique_works_all_rows_by_row_year.csv` | `row_id`, `year` | per-row attribution of the all-rows `deduplicated` series (D-059 as merged into D-061): `count` = works whose earliest counting event among all rows lies in this row and year, blank when the row's own cell is not observable; carries `initiation_class`, `prc_configuration` and the row cell's status columns; one line per quantified row and year of its eligible range; attribution is relative to the rows observable in the run, so a `blocking_rows` or `excluded_rows` entry in `unique_works_all_rows_year.csv` for the same year shifts, not removes, the attributed works; sums by class equal `n_<class>_by_earliest_event` of the all-rows table |
 | `register_summary.csv` | `row_id` | `organisation_id`, both classes and confidences, `register_status`, `effective_register_status` (after the run-derived Copernicus fallback of D-032; equals `register_status` otherwise), `data_status`, `data_source`, `provisional`, `extraction_status`, `eligible_start_year`, `eligible_end_year`, `first_year_with_data`, `last_year_with_data`, `unique_works_to_cutoff`, `n_works_excluded`, `n_works_outside_eligible_range` (the last six are blank unless the row is quantified, complete and has a resolved coverage start; `first_year_with_data`, `last_year_with_data` and `unique_works_to_cutoff` cover the eligible range only — an included work whose counting year lies outside it enters no cell and is counted in `n_works_outside_eligible_range`, D-060) |
-| `coverage_matrix.csv` | `row_id`, `year` | `coverage` ∈ `complete`, `year_to_date`, `partial_coverage`, `partial_known_scope`, `no_data`, `not_applicable`; `note` explains `partial_known_scope` (yearly lower bound) and unresolved coverage starts; EGUsphere attributed series is a yearly lower bound; `partial_year` remains independent |
+| `coverage_matrix.csv` | `row_id`, `year` | `coverage` ∈ `complete`, `year_to_date`, `partial_coverage`, `partial_known_scope`, `no_data`, `not_applicable` (`year_to_date` only for a `complete` row in the cutoff year, D-061); `note` explains `partial_known_scope` (yearly lower bound) and unresolved coverage starts; EGUsphere attributed series is a yearly lower bound; `partial_year` remains independent |
 | `cross_platform_overlap.csv` | `canonical_work_id` | `row_ids` (`; `-joined), `n_rows`, `earliest_row_id`, `earliest_year`, `correspondence_basis` (`canonical_work_id`; after VeriXiv deposit confirmation and before release freeze also `is_preprint_of` / `has_preprint` for pairs resolved from the VeriXiv or the Gates Open Research record, D-041) |
 | `qeios_indicators_by_year.csv` | `year` | `new_hosted_works` (hosted works by first posting year on or before the cutoff, withdrawn excluded, review not required), `hosted_works_with_review`, `review_dois` (distinct review identifiers dated in the year, both Qeios rows), `external_works_reviewed`, `events_registered_after_cutoff_counted`, `events_redeposited_after_cutoff_counted`, `extraction_status`; blank until both Qeios scopes are complete |
 | `evidence_features_by_platform.csv` | `row_id` | register fields `row_label`, `organisation_id`, `prc_role`, both classes and confidences, `publish_arrangement`, `review_arrangement`, `curation_arrangement`, `output_types`, the six recognition signals (`public_review_reports`, `approval_status_public`, `summary_assessment`, `version_linked_review`, `public_author_response`, `review_has_doi`), `reviewer_identity_disclosed`, `review_to_object_relation`, `register_status`, `data_status`, `data_source`, `provisional`, and the derived `binding_publication_decision` (`hybrid_public_discussion` → `true`, otherwise `false`; empty for provisional rows) |

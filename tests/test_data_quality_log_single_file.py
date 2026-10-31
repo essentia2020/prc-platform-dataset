@@ -29,3 +29,14 @@ def test_run_rows_carry_run_identity(pipeline_outputs):
     assert own
     for r in own + foreign:
         assert r["run_id"] and r["walk_id"] and r["status"] == "observed"
+
+def test_fixture_log_is_seeded_with_preset_rows_only(pipeline_outputs):
+    """D-061, defect 3: rows of real runs in the repository log never reach the offline fixture."""
+    after = _rows(pipeline_outputs.processed / "data_quality_log.csv")
+    run_id = pipeline_outputs.run_config.run_id
+    foreign = [r for r in after if r["origin"] == "run" and r["run_id"] != run_id]
+    assert foreign == []
+    assert {r["run_id"] for r in after} <= {"", run_id}
+    repo_run_rows = [r for r in _rows(REPO_LOG) if r["origin"] == "run"]
+    if repo_run_rows:  # the working-tree log may carry rows of a real run
+        assert not {r["issue_id"] for r in repo_run_rows} & {r["issue_id"] for r in after}

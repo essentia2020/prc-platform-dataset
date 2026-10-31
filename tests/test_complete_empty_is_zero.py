@@ -54,8 +54,12 @@ def test_unresolved_coverage_start_is_never_zero_filled(pipeline_outputs):
 def test_cutoff_year_is_year_to_date_not_annualised(pipeline_outputs):
     out = pipeline_outputs
     cell = out.cell("works_by_row_year", row_id="qeios_hosted_works", year=2026)
-    assert cell["partial_year"] == "true" and cell["coverage"] == "year_to_date"
+    # D-061 (defect 2): a partial_coverage row keeps its coverage status in the cutoff year;
+    # partial_year and year_label carry the year-to-date fact.
+    assert cell["partial_year"] == "true" and cell["coverage"] == "partial_coverage"
     assert "year_to_date" in cell["year_label"]
     assert cell["count"] == "0"      # complete scope, no 2026 qualifying work in the fixture
+    complete_row = out.cell("works_by_row_year", row_id="f1000research", year=2026)
+    assert complete_row["partial_year"] == "true" and complete_row["coverage"] == "year_to_date"
     for c in out.cells("works_by_row_year", year=2025):
         assert c["partial_year"] == "false"

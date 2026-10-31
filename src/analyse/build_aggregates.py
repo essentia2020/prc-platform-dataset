@@ -88,9 +88,14 @@ RECOGNITION_SIGNALS = ["public_review_reports", "approval_status_public", "summa
                        "version_linked_review", "public_author_response", "review_has_doi"]
 DQ_COLUMNS = ["issue_id", "row_id", "issue_type", "description", "evidence", "effect_on_counts", "handling",
               "n_records_affected", "status", "origin", "run_id", "walk_id"]
-GROUP_BLOCKING_SOURCE_STATUSES = ("unknown_scope", "pending_run", "selector_no_match",
-                                  "source_not_covering")            # D-038 (amended), D-039, D-047, D-058
-GROUP_BLOCKING_COVERAGE = ("partial_coverage",)                     # D-038 (amended)
+# D-061: a group cell is blank only for states the pipeline can and must resolve
+# before release (D-038 as amended, D-039, D-047); known properties of the
+# sources are published as a lower bound with the affected rows named in the cell.
+GROUP_BLOCKING_SOURCE_STATUSES = ("unknown_scope", "pending_run", "selector_no_match")
+GROUP_LOWER_BOUND_COVERAGE = ("partial_coverage", "partial_known_scope")   # D-013/D-032, D-061
+GROUP_EXCLUDED_SOURCE_STATUSES = ("source_not_covering",)                 # D-058, D-061
+GROUP_LIST_COLUMNS = ["blocking_rows", "lower_bound_rows", "excluded_rows"]
+BY_ROW_COLUMNS = ["row_id", "initiation_class", "prc_configuration", *CELL_COLUMNS]
 PENDING_RUN = "pending_run"
 SELECTOR_NO_MATCH = "selector_no_match"
 SOURCE_NOT_COVERING = "source_not_covering"
@@ -450,48 +455,72 @@ def _cell_fields(cell: Cell, cutoff: date, additivity: str) -> dict[str, Any]:
             "temporal_coverage_status": _temporal(cell), "additivity": additivity}
 
 
-def _group_members(analyses: list[RowAnalysis], cells: dict[str, dict[int, Cell]], year: int
-                   ) -> tuple[list[Cell], list[str]]:
-    """In-range member cells of a group for one year and the list of blocking ``row_id:status`` entries.
+@dataclass
+class GroupMembers:
+    """In-range member cells of a group for one year, sorted into their D-061 roles."""
+    members: list[Cell] = field(default_factory=list)          # every in-range member
+    contributing: list[Cell] = field(default_factory=list)     # cells whose count enters the group
+    blocking: list[str] = field(default_factory=list)          # ``row_id:status`` — cell stays blank
+    lower_bound: list[str] = field(default_factory=list)       # ``row_id:coverage`` — contributes a lower bound
+    excluded: list[str] = field(default_factory=list)          # ``row_id:source_not_covering`` — published without
 
-    D-038 (amended): a group cell is blank only when a member row carries
-    ``unknown_scope`` / ``pending_run`` (source observability) or
-    ``partial_coverage`` (coverage) for that year, or when the member's
-    extraction is not complete (an incomplete scope never contributes to any
-    output, §9.4).  ``not_applicable`` and ``observed_zero`` members never
-    block the sum.
+    def lists(self) -> dict[str, str]:
+        return {"blocking_rows": "; ".join(self.blocking), "lower_bound_rows": "; ".join(self.lower_bound),
+                "excluded_rows": "; ".join(self.excluded)}
+
+
+def _group_members(analyses: list[RowAnalysis], cells: dict[str, dict[int, Cell]], year: int) -> GroupMembers:
+    """Sort the in-range member cells of a group for one year (D-038 as amended by D-061).
+
+    * ``blocking``: ``unknown_scope`` / ``pending_run`` / ``selector_no_match``
+      (source observability) or an extraction that is not complete — the group
+      cell stays blank and names the row.
+    * ``excluded``: ``source_not_covering`` (D-058) — the source does not carry
+      the row; the group cell is published without it and names it.
+    * ``lower_bound``: a contributing cell with coverage ``partial_coverage``
+      or ``partial_known_scope`` — the group cell is a lower bound and names it.
+    * ``not_applicable`` and ``register_only`` members are not members at all;
+      ``observed_zero`` members contribute zero and appear in no list.
     """
-    members: list[Cell] = []
-    blocking: list[str] = []
+    out = GroupMembers()
     for a in analyses:
         cell = cells[a.row_id][year]
         if cell.observation_status in ("not_applicable", "register_only"):
             continue
-        members.append(cell)
+        out.members.append(cell)
         if cell.source_observability_status in GROUP_BLOCKING_SOURCE_STATUSES:
-            blocking.append(f"{a.row_id}:{cell.source_observability_status}")
-        elif cell.coverage in GROUP_BLOCKING_COVERAGE:
-            blocking.append(f"{a.row_id}:{cell.coverage}")
+            out.blocking.append(f"{a.row_id}:{cell.source_observability_status}")
+        elif cell.source_observability_status in GROUP_EXCLUDED_SOURCE_STATUSES:
+            out.excluded.append(f"{a.row_id}:{cell.source_observability_status}")
         elif cell.count is None:
-            blocking.append(f"{a.row_id}:{cell.extraction_status}")
-    return members, sorted(blocking)
+            out.blocking.append(f"{a.row_id}:{cell.extraction_status}")
+        else:
+            out.contributing.append(cell)
+            if cell.coverage in GROUP_LOWER_BOUND_COVERAGE:
+                out.lower_bound.append(f"{a.row_id}:{cell.coverage}")
+    out.blocking.sort(), out.lower_bound.sort(), out.excluded.sort()
+    return out
 
 
-def _group_cell(value: str, year: int, members: list[Cell], blocking: list[str], count: int | None,
-                cutoff: date) -> Cell:
-    statuses = {m.extraction_status for m in members}
+def _group_cell(value: str, year: int, members: GroupMembers, count: int | None, cutoff: date) -> Cell:
+    statuses = {m.extraction_status for m in members.members}
     ext = "complete" if statuses == {"complete"} else ("failed" if statuses == {"failed"} else "incomplete")
-    if blocking or count is None:
-        return Cell(value, year, None, "not_observable", ext, is_partial_year(year, cutoff), "no_data",
-                    "not_observable")
-    covs = {m.coverage for m in members}
-    cov = "year_to_date" if is_partial_year(year, cutoff) else ("complete" if covs == {"complete"} else
-                                                                 "partial_known_scope" if "partial_known_scope" in covs
-                                                                 else "complete")
-    src = "partial_known_scope" if "partial_known_scope" in {m.source_observability_status for m in members} \
+    partial = is_partial_year(year, cutoff)
+    if not members.blocking and not members.contributing:
+        # every in-range member is excluded (source_not_covering): nothing observed, never a zero (D-058)
+        return Cell(value, year, None, "not_observable", ext, partial, "no_data", SOURCE_NOT_COVERING)
+    if members.blocking or count is None:
+        return Cell(value, year, None, "not_observable", ext, partial, "no_data", "not_observable")
+    lower_bound_statuses = {e.split(":", 1)[1] for e in members.lower_bound}
+    if members.excluded or "partial_coverage" in lower_bound_statuses:
+        cov = "partial_coverage"
+    elif lower_bound_statuses:
+        cov = "partial_known_scope"
+    else:
+        cov = "year_to_date" if partial else "complete"
+    src = "partial_known_scope" if "partial_known_scope" in {m.source_observability_status for m in members.contributing} \
         else "observable"
-    return Cell(value, year, count, "observed" if count else "observed_zero", ext, is_partial_year(year, cutoff),
-                cov, src)
+    return Cell(value, year, count, "observed" if count else "observed_zero", ext, partial, cov, src)
 
 
 def _group_cells(analyses: list[RowAnalysis], cells: dict[str, dict[int, Cell]], years: list[int], cutoff: date,
@@ -503,18 +532,26 @@ def _group_cells(analyses: list[RowAnalysis], cells: dict[str, dict[int, Cell]],
     out = []
     for value in sorted(groups):
         for year in years:
-            members, blocking = _group_members(groups[value], cells, year)
-            if not members:
+            members = _group_members(groups[value], cells, year)
+            if not members.members:
                 continue
-            total = None if blocking else sum(int(m.count) for m in members)  # type: ignore[arg-type]
-            cell = _group_cell(value, year, members, blocking, total, cutoff)
-            out.append({key: value, **_cell_fields(cell, cutoff, "row_summed"), "blocking_rows": "; ".join(blocking)})
+            total = None if members.blocking else sum(int(m.count) for m in members.contributing)  # type: ignore[arg-type]
+            cell = _group_cell(value, year, members, total, cutoff)
+            out.append({key: value, **_cell_fields(cell, cutoff, "row_summed"), **members.lists()})
     return out
 
 
 def _dedup_cells(analyses: list[RowAnalysis], cells: dict[str, dict[int, Cell]], years: list[int], cutoff: date,
-                 key: str | None) -> list[dict[str, Any]]:
-    """``deduplicated`` series: a canonical work counts once per group at its earliest counting year."""
+                 key: str | None, by_row: list[dict[str, Any]] | None = None) -> list[dict[str, Any]]:
+    """``deduplicated`` series: a canonical work counts once per group at its earliest counting year.
+
+    With ``key=None`` (all rows) and a ``by_row`` list, the same ``earliest``
+    pass also yields the per-row attribution table
+    ``unique_works_all_rows_by_row_year`` (D-059 as merged into D-061): one
+    line per quantified row and year of its range; ``count`` = works whose
+    earliest counting event among all rows lies in that row and year, blank
+    when the row's own cell is not observable.
+    """
     groups: dict[str, list[RowAnalysis]] = defaultdict(list)
     for a in analyses:
         groups[str(a.row[key]) if key else "all"].append(a)
@@ -529,22 +566,34 @@ def _dedup_cells(analyses: list[RowAnalysis], cells: dict[str, dict[int, Cell]],
                     earliest[w.canonical_work_id] = item
         per_year: dict[int, int] = defaultdict(int)
         per_year_class: dict[int, dict[str, int]] = defaultdict(lambda: defaultdict(int))
-        by_row = {a.row_id: a for a in groups[value]}
+        per_year_row: dict[int, dict[str, int]] = defaultdict(lambda: defaultdict(int))
+        by_row_a = {a.row_id: a for a in groups[value]}
         for cwid, (year, _, row_id) in earliest.items():
             per_year[year] += 1
-            per_year_class[year][str(by_row[row_id].row["initiation_class"])] += 1
+            per_year_class[year][str(by_row_a[row_id].row["initiation_class"])] += 1
+            per_year_row[year][row_id] += 1
         for year in years:
-            members, blocking = _group_members(groups[value], cells, year)
-            if not members:
+            members = _group_members(groups[value], cells, year)
+            if not members.members:
                 continue
-            blank = bool(blocking)
+            blank = bool(members.blocking) or not members.contributing
             count = None if blank else per_year.get(year, 0)
-            cell = _group_cell(value, year, members, blocking, count, cutoff)
-            line = {**({key: value} if key else {}), **_cell_fields(cell, cutoff, "deduplicated"),
-                    "blocking_rows": "; ".join(blocking)}
+            cell = _group_cell(value, year, members, count, cutoff)
+            line = {**({key: value} if key else {}), **_cell_fields(cell, cutoff, "deduplicated"), **members.lists()}
             if key is None:
                 for cls in ("author_initiated", "community_initiated", "mixed"):
                     line[f"n_{cls}_by_earliest_event"] = "" if blank else per_year_class[year].get(cls, 0)
+                if by_row is not None:
+                    for a in groups[value]:
+                        rc = cells[a.row_id][year]
+                        if rc.observation_status in ("not_applicable", "register_only"):
+                            continue
+                        attributed = per_year_row[year].get(a.row_id, 0) if rc.count is not None else None
+                        by_row.append({"row_id": a.row_id, "initiation_class": a.row.get("initiation_class", ""),
+                                       "prc_configuration": a.row.get("prc_configuration", ""),
+                                       **_cell_fields(Cell(a.row_id, year, attributed, rc.observation_status,
+                                                           rc.extraction_status, rc.partial_year, rc.coverage,
+                                                           rc.source_observability_status), cutoff, "deduplicated")})
             out.append(line)
     return out
 
@@ -569,13 +618,23 @@ def _write_table(tables_root: Path, name: str, columns: list[str], rows: list[Ma
     for r in rows:
         lines.append("| " + " | ".join(str(r.get(c, "")) for c in columns) + " |")
     if footnotes:
+        def group_of(r: Mapping[str, Any]) -> str:
+            return next((str(r[c]) for c in columns if c in ("initiation_class", "prc_configuration")), "all rows")
         blanks = [r for r in rows if r.get("blocking_rows")]
         lines += ["", "Blank group cells (D-038): the member row and status that block the sum."]
         if not blanks:
             lines.append("None in this table.")
         for r in blanks:
-            group = next((str(r[c]) for c in columns if c in ("initiation_class", "prc_configuration")), "all rows")
-            lines.append(f"- {group}, {r['year']}: {r['blocking_rows']}")
+            lines.append(f"- {group_of(r)}, {r['year']}: {r['blocking_rows']}")
+        bounded = [r for r in rows if r.get("lower_bound_rows") or r.get("excluded_rows")]
+        lines += ["", "Lower-bound group cells (D-061): members contributing a partial series (`lower_bound_rows`) "
+                      "and quantified members in range whose source does not carry them (`excluded_rows`)."]
+        if not bounded:
+            lines.append("None in this table.")
+        for r in bounded:
+            parts = [f"lower bound: {r['lower_bound_rows']}" if r.get("lower_bound_rows") else "",
+                     f"excluded: {r['excluded_rows']}" if r.get("excluded_rows") else ""]
+            lines.append(f"- {group_of(r)}, {r['year']}: " + "; ".join(p for p in parts if p))
     (tables_root / f"{name}.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
@@ -785,22 +844,31 @@ def run(run_config: RunConfig, sources_config: Mapping[str, Any], platforms: lis
                  additivity="row_series", snapshot=snapshot)
     for key, name in (("initiation_class", "works_by_class_year"), ("prc_configuration", "works_by_configuration_year")):
         check_no_group_total(name, "row_summed", [key])
-        _write_table(tables_root, name, [key, *CELL_COLUMNS, "blocking_rows"],
+        _write_table(tables_root, name, [key, *CELL_COLUMNS, *GROUP_LIST_COLUMNS],
                      _group_cells(headline, cells, years, cutoff, key), cutoff=cutoff, additivity="row_summed",
                      snapshot=snapshot, note="Provisional and register-only rows are excluded from this table.",
                      footnotes=True)
     for key, name in (("initiation_class", "unique_works_by_class_year"),
                       ("prc_configuration", "unique_works_by_configuration_year")):
-        _write_table(tables_root, name, [key, *CELL_COLUMNS, "blocking_rows"],
+        _write_table(tables_root, name, [key, *CELL_COLUMNS, *GROUP_LIST_COLUMNS],
                      _dedup_cells(headline, cells, years, cutoff, key), cutoff=cutoff, additivity="deduplicated",
                      snapshot=snapshot, footnotes=True,
                      note="A canonical work counts once per group, in the year of its earliest counting event.")
-    all_rows = _dedup_cells(headline, cells, years, cutoff, None)
+    all_rows_by_row: list[dict[str, Any]] = []
+    all_rows = _dedup_cells(headline, cells, years, cutoff, None, by_row=all_rows_by_row)
     _write_table(tables_root, "unique_works_all_rows_year",
                  [*CELL_COLUMNS, "n_author_initiated_by_earliest_event", "n_community_initiated_by_earliest_event",
-                  "n_mixed_by_earliest_event", "blocking_rows"], all_rows, cutoff=cutoff, additivity="deduplicated",
+                  "n_mixed_by_earliest_event", *GROUP_LIST_COLUMNS], all_rows, cutoff=cutoff, additivity="deduplicated",
                  snapshot=snapshot, footnotes=True,
-                 note="The only all-row total; overlapping works are attributed to the class of their earliest event.")
+                 note="The only all-row total; overlapping works are attributed to the class of their earliest event. "
+                      "A cell with `lower_bound_rows` or `excluded_rows` is a lower bound (D-061).")
+    _write_table(tables_root, "unique_works_all_rows_by_row_year", BY_ROW_COLUMNS, all_rows_by_row, cutoff=cutoff,
+                 additivity="deduplicated", snapshot=snapshot,
+                 note="Attribution of each work in `unique_works_all_rows_year` to the row holding its earliest "
+                      "counting event (ties: earlier interval start, then row_id); the same pass as the "
+                      "`n_<class>_by_earliest_event` columns. Attribution is relative to the rows observable in "
+                      "this run (D-059, merged into D-061). `count` is blank when the row's own cell is not "
+                      "observable; the all-rows cell of a year may be blank while row lines carry attributions.")
 
     # register summary
     summary_rows = []

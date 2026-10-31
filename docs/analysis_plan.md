@@ -216,11 +216,20 @@ with specific methodology:
 |---|---:|---:|---|
 | `register_only` | empty | empty | register metadata only |
 | completed extraction, selector matched no record in any complete scope | empty | empty | blocked: `selector_no_match` plus data-quality row (D-047) |
-| completed extraction, zero records, every primary scope a Sciety group absent from the run's docmaps index snapshot | empty | empty | blocked: `source_not_covering` plus data-quality row (D-058) |
+| completed extraction, zero records, every primary scope a Sciety group absent from the run's docmaps index snapshot | empty | empty | row blocked: `source_not_covering` plus data-quality row (D-058); its group cells publish without the row and name it in `excluded_rows` (D-061) |
 | completed extraction, matching records but none in a year of the eligible range | 0 | 0 for that year | may publish |
 | completed extraction, no qualifying works after valid exclusions | 0 | 0 for the eligible range only | may publish with quality-log entry |
 | incomplete or failed extraction | empty | empty | affected outputs blocked |
 | completed extraction with `partial_known_scope` / `unknown_scope` | observed | observed | may publish with coverage limitation |
+| completed extraction, row `data_status partial_coverage` or cell `partial_known_scope` | observed | observed | row publishes with coverage limitation; its group cells publish as a lower bound and name it in `lower_bound_rows` (D-061) |
+
+Group cells (class, configuration, all rows) are blank only for states the
+pipeline can and must resolve before release: `unknown_scope`,
+`pending_run`, `selector_no_match`, extraction `incomplete` or `failed`
+(`blocking_rows`). Known properties of the sources — a row with partial
+coverage, a yearly lower bound, a source that does not carry the row — are
+published as a lower bound with the affected rows named in the cell
+(`lower_bound_rows`, `excluded_rows`; D-061, amending D-038 and D-058).
 
 A failed or incomplete cursor walk never produces a count, provisional or
 otherwise; downstream analysis stops for every affected register row.
@@ -235,8 +244,9 @@ blank for those years, and `tools/check_register_prefixes.py` is run
 before the next extraction. A quantified Sciety row whose group is absent
 from the unfiltered docmaps index retrieved by the same run is a source
 that does not cover the group, never an observed zero: its cells are
-`not_observable` / `source_not_covering`, the group series stay blank, and
-a count needs an admissible source named in the register (D-058).
+`not_observable` / `source_not_covering`, the group series are published
+without the row and name it, and a count for the row needs an admissible
+source named in the register (D-058, D-061).
 
 ## Current partial year
 
@@ -244,7 +254,9 @@ The cutoff year is labelled `year_to_date` with the exact cutoff date in
 every table header and figure footer, unless the cutoff is 31 December.
 Figures draw the partial year with hatched bars. A lower value in the
 partial year is never read as a decline. Q-1 fixes the cutoff at
-2026-09-30: 2026 is `year_to_date` with `partial_year: true`.
+2026-09-30: 2026 has `partial_year: true`; a `complete` row cell is labelled
+`year_to_date`, a `partial_coverage` or `partial_known_scope` row cell keeps
+its coverage status (D-061).
 
 ## Planned tables (`reports/tables/`)
 
@@ -255,28 +267,35 @@ partial year is never read as a decline. Q-1 fixes the cutoff at
 | `works_by_configuration_year.csv` | sum of row series within each configuration | `row_summed` |
 | `unique_works_by_class_year.csv` | deduplicated on `canonical_work_id` within class; year of earliest counting event among the class's rows | `deduplicated` |
 | `unique_works_by_configuration_year.csv` | same, within configuration | `deduplicated` |
-| `unique_works_all_rows_year.csv` | the only all-row total (deduplicated) | `deduplicated` |
+| `unique_works_all_rows_year.csv` | the only all-row total (deduplicated); `blocking_rows`, `lower_bound_rows`, `excluded_rows` as in every group table | `deduplicated` |
+| `unique_works_all_rows_by_row_year.csv` | per-row attribution of the all-rows total: works whose earliest counting event lies in the row and year (D-059 as merged into D-061); sums by class equal the `n_<class>_by_earliest_event` columns | `deduplicated` |
 | `register_summary.csv` | one line per row: both classes, confidences, first/last year with data, `unique_works_to_cutoff`, source, `register_status`, `data_status` | — |
-| `coverage_matrix.csv` | row × year: `complete` / `year_to_date` / `partial_coverage` / `no_data` / `not_applicable` | — |
+| `coverage_matrix.csv` | row × year: `complete` / `year_to_date` / `partial_coverage` / `partial_known_scope` / `no_data` / `not_applicable` | — |
 | `cross_platform_overlap.csv` | works present in more than one row; empty by construction for the two Qeios rows | — |
 | `qeios_indicators_by_year.csv` | new hosted works; hosted works with ≥1 public review; all review DOIs; external works reviewed; with deposit-date diagnostics | — |
 | `evidence_features_by_platform.csv` | row × configuration, arrangement and evidence fields with confidences | — |
 
 Neither family of class or configuration tables may be summed across
 classes or configurations to obtain a grand total. Every table header and
-the data dictionary state the `additivity` convention.
+the data dictionary state the `additivity` convention. Each group table
+carries `blocking_rows` (non-empty exactly when the cell is blank),
+`lower_bound_rows` and `excluded_rows` (`row_id:status; …`); the Markdown
+twin carries one footnote per blank cell and one per lower-bound cell.
 
 ## Planned figures (`reports/figures/`, PNG 300 dpi + SVG, colour-blind-safe)
 
 1. Annual evaluated works, small multiples by register row, grouped by
    initiation class.
-2. Annual totals by initiation class (deduplicated).
+2. Annual totals by initiation class (deduplicated); lower-bound cells
+   drawn with a dotted hatch, one footer sentence naming the rows.
 3. Share of each initiation class per year (shares within
    `unique_works_all_rows_year.csv`; overlapping works attributed to the
-   class of their earliest counting event).
+   class of their earliest counting event; attribution relative to the rows
+   observable in the run); lower-bound years hatched and named as in 2.
 4. Coverage heatmap (row × year).
 5. Qeios indicator comparison by year.
-6. Annual totals by workflow configuration, small multiples (deduplicated).
+6. Annual totals by workflow configuration, small multiples (deduplicated);
+   lower-bound convention as in 2.
 7. Recognition-signal panels by register row: Panel A three-valued signals
    (`true` / `false` / `unknown`); Panel B `reviewer_identity_disclosed`
    (`always` / `optional` / `never` / `unknown`); separate categorical
@@ -298,13 +317,14 @@ values.
 | Copernicus register-only fallback applied only to a complete run (D-032) | `build_aggregates.effective_register_status` | `tests/test_binding_decision_consistent.py` |
 | Blank vs zero; register-only; incomplete scope; unresolved coverage start | `src/common/aggregates.py::cell_for`, `build_aggregates.row_cells` | `tests/test_register_only_is_blank.py`, `tests/test_incomplete_extraction_blocks_outputs.py`, `tests/test_complete_empty_is_zero.py` |
 | Group additivity (D-038 blocking statuses, `blocking_rows`, footnotes), deduplication, no grand total, overlap reporting, Qeios disjointness | `build_aggregates._group_members`, `_group_cells`, `_dedup_cells` | `tests/test_total_equals_sum_of_years.py` |
+| Lower-bound group cells (D-061): `partial_coverage` / `partial_known_scope` members counted and named in `lower_bound_rows`, `source_not_covering` members excluded and named in `excluded_rows`, group `coverage` rule, cutoff-year rule for row cells, per-row attribution table, offline fixture seeded with preset data-quality rows only | `build_aggregates.GroupMembers`, `_group_cell`, `_dedup_cells`; `src/common/aggregates.py::cell_for`; `tests/offline.py` | `tests/test_total_equals_sum_of_years.py`, `tests/test_aggregate_conventions.py`, `tests/test_sciety_coverage.py`, `tests/test_data_quality_log_single_file.py`, `tests/test_complete_empty_is_zero.py` |
 | Sciety index coverage (D-058): one `index__all` walk per run, `index_coverage` per group scope, `source_not_covering` for rows whose groups are absent from the snapshot; rule 6 of the walk-shape check | `src/extract/sciety_evaluations.py::index_coverage_counts`, `src/common/run_state.py::RowState.source_not_covering`, `build_aggregates.row_cells`; `tools/check_walk_shape.py` (`--sciety-index`) | `tests/test_sciety_coverage.py`, `tests/test_check_walk_shape_sciety.py` |
 | Transient `pending_run` absent from released tables (D-039) | `build_aggregates.row_cells` | `tests/test_release_no_pending_run.py` |
 | Single data-quality log, preset rows immutable, run rows identified (D-040) | `build_aggregates.update_data_quality_log` | `tests/test_data_quality_log_single_file.py` |
 | Walk shape: `total_delta == 0` is necessary, the page sequence is the proof (repeated `cursor_in`, non-empty pages vs `ceil(total-results / rows)`, mid-walk short page, record on two pages; pages missing from the raw store make the last rule inconclusive, never passed) | `src/common/manifest.py::walk_shape_issues`; post-run CLI `tools/check_walk_shape.py --run <run_id> [--raw-root]` | `tests/test_walk_shape.py`, `tests/test_check_walk_shape_cli.py` |
 | Windowed walks for a scope whose single cursor walk loses records between cursor steps (D-045 option c, D-057): one cursor walk per date window at tolerance 0, unwindowed `total-results` probed before and after the pass, complete only when every window is complete and the window totals sum to both probes; recorded as one composite walk of the scope plus one walk per window sub-scope | `src/common/windows.py`, `src/common/windowed_walk.py`, `crossref_common.windowed_scope_config`; `config/sources.yaml` `pagination.windowed_scopes` | `tests/test_windowed_walk.py` |
 | Deposition diagnostics (Qeios indicators, `created`/`deposited` after cutoff) | `build_aggregates.qeios_indicators` | `tests/test_total_equals_sum_of_years.py` (via tables) |
-| Figures 1–7, hatched partial year, categorical panels, checksums | `src/report/make_reports.py` | `tests/test_report_figures.py` |
+| Figures 1–7, hatched partial year, dotted lower-bound cells with named rows (Figures 2, 3, 6), SVG ids salted with the run id, categorical panels, checksums | `src/report/make_reports.py` | `tests/test_report_figures.py` |
 
 The eligible range of a row is `[max(launch_year, coverage_start_year),
 coverage_end_year or cutoff year]`. When `coverage_start_year` is empty and

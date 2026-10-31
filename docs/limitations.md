@@ -92,20 +92,39 @@ machine-readable records; quantitative coverage is restricted to rows with
 reproducible selectors in Crossref or Sciety. Counts therefore describe the
 machine-readable part of the PRC landscape, not the whole of it.
 
-## Blank cells in group series
+## Lower-bound group cells
 
-A class or configuration cell is blank only when a member row whose
-eligible range covers that year carries `unknown_scope` or `pending_run`
-(coverage start not yet observed), `partial_coverage` (a series known to be
-a lower bound), or an incomplete extraction scope. Rows outside their
+A class, configuration or all-rows cell is blank only for states the
+pipeline can and must resolve before release: a member row whose eligible
+range covers that year carries `unknown_scope` or `pending_run` (coverage
+start not yet observed) or `selector_no_match` (a selector defect, D-047),
+or that member's extraction is incomplete or failed. Rows outside their
 eligible range and rows with an observed zero never block the sum (D-038).
-Every blank group cell names the blocking row and status in the
-`blocking_rows` column and in a footnote of the Markdown table. Because
-several community-initiated and author-initiated rows carry
-`partial_coverage` (Qeios, PREreview, preLights, Gates Open Research,
-PeerRef), their group series are blank for the years those
-rows are in range; the row-level table and the coverage matrix remain fully
-populated.
+Every blank group cell names the blocking rows and statuses in the
+`blocking_rows` column and in a footnote of the Markdown table.
+
+Known properties of the sources do not blank a cell (D-061, amending D-038
+and D-058). The cell is published as a lower bound and names the rows:
+
+- `lower_bound_rows` — members with `data_status partial_coverage`
+  (`gates_open_research`, `prelights`, `prereview`, `qeios_hosted_works`,
+  `qeios_external_works`) or a `partial_known_scope` cell (the EGUsphere
+  attribution of `copernicus_interactive_public_peer_review`) are counted;
+  their series are lower bounds, so the group cell is one.
+- `excluded_rows` — quantified Sciety rows whose group is absent from the
+  run's docmaps index snapshot (`review_commons`, `peerref`,
+  `the_unjournal`, `metaror`; D-058) are not counted. The row keeps
+  `register_status quantified`, its own cells stay `not_observable` with
+  the D-058 note, and the group cell is published without it.
+
+Such a cell carries `coverage = partial_coverage` (or
+`partial_known_scope` when that is the only lower-bound status present and
+nothing is excluded); Figures 2, 3 and 6 draw it with a dotted hatch and
+name the rows once in the footer. A group cell whose in-range members are
+all excluded stays blank, never a zero. The row-level table and the
+coverage matrix remain fully populated; a complete row keeps `year_to_date`
+in the cutoff year, a `partial_coverage` row keeps `partial_coverage`
+there, with `partial_year = true` in both cases.
 
 ## Platforms and services not covered quantitatively
 

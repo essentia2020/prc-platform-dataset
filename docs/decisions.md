@@ -844,7 +844,7 @@ completion of its evidence checks; outstanding checks are stated explicitly.
 ## D-038: Group cells, blocking statuses and deduplication by earliest event
 
 - **Date:** 2026-10-20
-- **Status:** decided (user ruling, 2026-10-20: option (b) accepted with amendments)
+- **Status:** decided; amended by D-061 (group cells): `partial_coverage` members no longer blank a group cell, they are counted and named in `lower_bound_rows`.
 - decided_by: researcher
 - **Question:** How are class and configuration cells formed when a member
   row cannot contribute, and to which row is a work shared by several rows
@@ -1175,7 +1175,7 @@ commit of each extension.
 ## D-058: Source coverage of a Sciety group is verified per run; an absent group is `source_not_covering`, never a zero
 
 - **Date:** 2026-10-28
-- **Status:** proposed (reply from Sciety, connect@sciety.org, 2026-10-28, pending)
+- **Status:** decided; amended by D-061 (group cells): a `source_not_covering` row is excluded from its group cells and named in `excluded_rows`; its own cells are unchanged.
 - decided_by: researcher
 - **Question:** How is an empty per-group Sciety response distinguished from a group the docmaps index does not carry?
 - **Options:** (a) treat as observed zero; (b) treat as `selector_no_match` (D-047); (c) verify against the unfiltered index per run and record `source_not_covering`.
@@ -1198,6 +1198,9 @@ for such rows are register decisions, not analysis defaults. Rule 6 of
 - **Evidence:** run_20261027_01; index snapshot 2026-10-28 ~05:10 UTC, 5,398 docmaps, 11 groups, SHA-256 a9eba43264284203fe0d0605ec22ab927a490ab281cc330a1ab19f599bc3ed77; sciety/sciety#2161, #1088. Affected rows: `metaror`, `review_commons`, `peerref`, `the_unjournal`.
 - **Authority:** instruction §9.4, §9.6; D-037, D-047.
 
+## D-059: merged into D-061, not implemented separately.
+Its mechanism (per-row attribution table, `svg.hashsalt`, limitation sentence) is implemented under D-061 for every group table and Figures 2, 3, 6, with one `count` column published as the lower bound and `rows_not_observable` split into `blocking_rows` and `excluded_rows`.
+
 ## D-060: Posting-record gate, alternative selector signals, eligible-range totals
 
 Date: 2026-10-28
@@ -1214,6 +1217,20 @@ In run_20261027_01 two first-public-posting rows counted the wrong population. e
 eLife ≈ 4.9k works 2022–2026 instead of 20,877; Access Microbiology ≤ 880 works from the first preprint year; early all-row and class dedup cells lose works counted outside their rows' ranges; the D-017 start is re-derived in the re-run. Rows whose `first_year_with_data` preceded the start for date reasons only (PREreview, Qeios hosted works, MedEdPublish, PCI) are unaffected in their cells; their register start years remain open register questions.
 The descriptive `doi_pattern` of `access_microbiology` was tightened to `^10\.1099/acmi\.0\.\d+` in the same hunk (accepted 2026-10-30). Test `test_data_quality_row_names_the_snapshot` now filters the single-file data-quality log by the fixture `run_id` (D-040 keeps rows of other runs, so the test was sensitive to the working-tree log).
 
+## D-061: Group cells as lower bounds; source_not_covering excluded, partial_coverage counted
+
+- **Date:** 2026-10-30
+- **Status:** applied
+- decided_by: researcher
+- **Context:** Finding 1 of the run_20261027_01 review: every all-rows cell 2017–2026 and most class cells were blank because `partial_coverage` members (D-038) and `source_not_covering` members (D-058) blocked the sum, although both states are known properties of the sources that no further run resolves. Two defects accompanied it: the cutoff year replaced a row's `partial_coverage` by `year_to_date` (so the 2026 group cells opened while 2025 stayed blank), and the offline fixture copied run rows of the repository data-quality log.
+- **Decision:**
+  - A group cell is blank only for states the pipeline can and must resolve before release: `unknown_scope`, `pending_run`, `selector_no_match`, extraction `incomplete` or `failed` (`blocking_rows`).
+  - `partial_coverage` is treated exactly like `partial_known_scope`: the member is counted and named in `lower_bound_rows`; the cell is a lower bound. Amends D-038.
+  - `source_not_covering` rows keep `register_status quantified` and their own cells stay `not_observable` with the D-058 note; the group cell is published without the row and names it in `excluded_rows`. Amends D-058.
+  - Group `coverage`: `complete` / `year_to_date` when both lists are empty; `partial_known_scope` when that is the only lower-bound status present and nothing is excluded; otherwise `partial_coverage`. A row cell keeps its coverage status in the cutoff year; `partial_year` and `year_label` carry the year-to-date fact. The offline fixture is seeded with preset data-quality rows only.
+- **Rejected:** moving the four absent Sciety rows to `register_only` (their quantified status and D-058 cells are correct); alternative sources for them in this release (Q-5).
+- **Consequences:** all cells of `unique_works_all_rows_year` 2017–2026 and of the author_initiated and community_initiated class series open as lower bounds; `mixed` 2023–2026 opens without The Unjournal; `community_initiated` 2026 keeps its count and becomes `partial_coverage`. Figures 2, 3, 6 draw lower-bound cells with a dotted hatch and name the rows. New `unique_works_all_rows_by_row_year.csv`. No re-extraction.
+
 ## Q-4: Cross-DOI work correspondence for Gates Open Research / VeriXiv
 
 - **Date:** 2026-10-20
@@ -1229,3 +1246,10 @@ The descriptive `doi_pattern` of `access_microbiology` was tightened to `^10\.10
   the VeriXiv selector is confirmed.
 - **Ruling:** (a). OpenAlex only as a diagnostic in the data-quality log.
 
+## Q-5: alternative sources for Sciety groups absent from the docmaps index
+
+- **Date:** 2026-10-30
+- **Status:** open; not for this release
+- decided_by: researcher
+- **Question:** MetaROR, Review Commons, PeerRef and The Unjournal list evaluations on their Sciety group pages and own sites, but are absent from the docmaps index. Which admissible source, if any, would carry them, and under what register entry?
+- **Decision so far:** none in 1.4.0. The rows stay `quantified` / `source_not_covering`; group cells exclude and name them (D-061).

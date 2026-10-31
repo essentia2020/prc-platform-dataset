@@ -134,7 +134,8 @@ rather than an assumed 2023 boundary. The three `register_only` rows with
 inclusion criteria but have no selector in the two permitted sources. A
 quantified Sciety row whose group is absent from the docmaps index
 retrieved by the same run publishes no count either (`source_not_covering`,
-D-058): the index lists only groups enabled for docmaps by Sciety.
+D-058): the index lists only groups enabled for docmaps by Sciety; the
+group cells it belongs to are published without it and name it (D-061).
 The approved cutoff is 2026-09-30; 2026 is `year_to_date`.
 
 ## How to run
@@ -164,7 +165,7 @@ Stage order, fixed in `src/run_pipeline.py`:
 3. `extract_sciety_evaluations` — one walk of the unfiltered index per run (`index`, scope `index__all`, the coverage probe of D-058) and one paginated walk per group (`index?publisheraccount=<group page URL>`) → `data/raw/sciety/evaluations__<group_slug>/…`, `data/interim/sciety_evaluations__<group_slug>.csv`; `index_coverage` per group in the run manifest; publisher-account mismatch hard-fails normalisation
 4. `normalise` — `src/normalise/clean_and_normalise.py`: record-level layer `data/processed/records_<row_id>.csv` (work, evaluation and relation lines; canonical identifiers; evaluation identity; source-precision dates) plus `normalisation_summary.json`; rows with a blocked scope get no file
 5. `analyse` — `src/analyse/build_aggregates.py`: work-level decisions `data/processed/works_included.csv`, `analysis_manifest.json`, run counts in `data_quality_log.csv`, every table in `reports/tables/*.csv|md`
-6. `report` — `src/report/make_reports.py`: Figures 1–7 in `reports/figures/*.png|svg` (matplotlib, Agg backend) and `reports/CHECKSUMS.txt` over processed files, tables and figures
+6. `report` — `src/report/make_reports.py`: Figures 1–7 in `reports/figures/*.png|svg` (matplotlib, Agg backend) and `reports/CHECKSUMS.txt` over processed files, tables and figures. Figures 2, 3 and 6 draw group cells that are lower bounds with a dotted hatch; each such figure is a lower bound and excludes the rows named in the table footnotes and in its own footer (D-061)
 
 Extraction is idempotent: raw HTTP responses are immutable
 (`data/raw/<source>/<scope>/<run_id>/<walk_id>/page_<n>/attempt_<k>.*`; the
@@ -203,12 +204,17 @@ analysed only when every primary scope has a selected complete walk;
 cross-check scopes never block a row but are required for
 `cross_source_confirmed` evaluation identity. Blank cells in the tables are
 never zeros — `observation_status`, `extraction_status` and
-`source_observability_status` say why a cell is blank. A class or
-configuration cell is blank only when a member row in range carries
-`unknown_scope`, `pending_run` or `partial_coverage`, or its scope is not
-complete; `not_applicable` and `observed_zero` members never block the sum,
-and the `blocking_rows` column names the blocking row (D-038). The only
-all-row total is the deduplicated `unique_works_all_rows_year.csv`.
+`source_observability_status` say why a cell is blank. A class,
+configuration or all-rows cell is blank only when a member row in range
+carries `unknown_scope`, `pending_run` or `selector_no_match`, or its scope
+is not complete; `not_applicable` and `observed_zero` members never block
+the sum, and the `blocking_rows` column names the blocking row (D-038,
+D-061). Members with partial coverage are counted and named in
+`lower_bound_rows`; Sciety rows whose group is absent from the index are
+left out and named in `excluded_rows`; such a cell is a lower bound
+(`coverage = partial_coverage`, D-061). The only all-row total is the
+deduplicated `unique_works_all_rows_year.csv`; its per-row attribution is
+`unique_works_all_rows_by_row_year.csv`.
 
 Copernicus attribution uses any of three signals: `is-preprint-of`, a
 verified journal title, or an incoming Crossref peer-review `is-review-of`.

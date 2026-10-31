@@ -62,6 +62,16 @@ def test_partial_coverage_rows_are_labelled_in_full_years():
     assert _cell(data_status="partial_coverage").coverage == "partial_coverage"
 
 
+def test_partial_coverage_row_keeps_its_coverage_in_the_cutoff_year():
+    """D-061 (defect 2): coverage status survives the cutoff year; partial_year carries the year-to-date fact."""
+    cell = _cell(data_status="partial_coverage", year=2026)
+    assert cell.partial_year and cell.coverage == "partial_coverage"
+    assert year_label(2026, CUTOFF).startswith("2026 (year_to_date")
+    # a complete row in the cutoff year is the only case labelled year_to_date
+    assert _cell(year=2026).coverage == "year_to_date"
+    assert _cell(data_status="partial_coverage", year=2026, n_works=0).observation_status == "observed_zero"
+
+
 def test_provisional_rows_leave_headline_tables_but_stay_in_register():
     rows = load_platforms()
     kept = {r["row_id"] for r in headline_rows(rows)}

@@ -24,6 +24,26 @@ def test_footer_mentions_cutoff_and_year_to_date(pipeline_outputs):
     assert "2026-09-30" in svg and "year_to_date" in svg and "not annualised" in svg
 
 
+def test_lower_bound_cells_are_named_in_the_figure_footer(pipeline_outputs):
+    """D-061: figures 2, 3, 6 name the rows behind lower-bound cells once, deduplicated across years."""
+    fig2 = (pipeline_outputs.figures / "fig2_unique_works_by_class.svg").read_text(encoding="utf-8")
+    assert "lower bounds (D-061)" in fig2
+    assert fig2.count("qeios_external_works") == 1 and "prereview" in fig2
+    assert "prelights" in fig2            # excluded (source_not_covering) rows are named too
+    fig6 = (pipeline_outputs.figures / "fig6_unique_works_by_configuration.svg").read_text(encoding="utf-8")
+    assert "lower bounds (D-061)" in fig6
+    # figure 3 draws only years with a published all-rows total; none in the fixture, so no sentence
+    fig3 = (pipeline_outputs.figures / "fig3_class_shares.svg").read_text(encoding="utf-8")
+    assert "Attribution to a class is relative" in fig3
+
+
+def test_svg_ids_are_salted_with_the_run_id(pipeline_outputs):
+    """D-059 (merged into D-061): ``svg.hashsalt`` is the run_id, so unchanged tables give identical SVGs."""
+    assert matplotlib.rcParams["svg.hashsalt"] == pipeline_outputs.run_config.run_id
+    svg = (pipeline_outputs.figures / "fig2_unique_works_by_class.svg").read_text(encoding="utf-8")
+    assert "<dc:date>" not in svg
+
+
 def test_categorical_colour_maps_are_distinct_and_non_ordinal():
     cmap = category_colour_map(["a", "b", "c", "d"])
     assert len(set(cmap.values())) == 4
