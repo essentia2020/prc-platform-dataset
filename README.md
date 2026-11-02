@@ -263,15 +263,18 @@ logs/        extraction_<run_id>.jsonl (outside Git)
 The repository tracks configuration, documentation, the data-quality log,
 the page manifests, the published tables and figures and `reports/CHECKSUMS.txt`
 (D-056). Harvested records are not tracked: for each run they are deposited
-as a release archive. For `run_20261027_01` the archive
-`prc-platform-dataset_run_20261027_01.zip` (97.2 MB) contains
+as a release archive. For `run_20261102_01` the archive
+`prc-platform-dataset_run_20261102_01.zip` (99.4 MB) contains
 `data/processed/records_*.csv`, `works_included.csv`,
-`normalisation_summary.json`, `analysis_manifest.json`, `data/interim/*` and a
-copy of `data/manifests/run_20261027_01/` — 273 files; their SHA-256 sums and
-the sum of the archive itself are in
-`reports/release_archive_run_20261027_01.sha256`. Archive SHA-256:
-`e02045e9371b5d665c9d5a4a121505b78807c378e67cbc7c1f9aa1e0459afa51`.
-Zenodo DOI: [10.5281/zenodo.23812673](https://doi.org/10.5281/zenodo.23812673).
+`normalisation_summary.json`, `analysis_manifest.json`, `data/interim/*`, a
+copy of `data/manifests/run_20261102_01/` and `SHA256SUMS.txt` with the digest
+of each file — 631 files; the same sums and the sum of the archive itself are
+in `reports/release_archive_run_20261102_01.sha256`. Archive SHA-256:
+`a1783244b25b202ac1f824a7f454ec31f96631569746270f41dfb55a291bf627`.
+Zenodo DOI: [10.5281/zenodo.23891928](https://doi.org/10.5281/zenodo.23891928).
+The archive of the preceding run, `run_20261027_01`, remains available under
+[10.5281/zenodo.23812673](https://doi.org/10.5281/zenodo.23812673) and is
+superseded by this one.
 
 ## Licensing
 
