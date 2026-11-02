@@ -87,7 +87,7 @@ def test_window_configuration_errors_are_explicit():
 def test_shipped_windowed_scopes_are_pinned():
     pagination = load_sources_config()["sources"]["crossref"]["pagination"]
     windowed = pagination.get("windowed_scopes") or {}
-    assert set(windowed) == {SCOPE}, "windowed scopes are decided per scope (D-057); document a new one first"
+    assert set(windowed) == {SCOPE, "works__10.5194__peer-review", "works__10.7554__peer-review"}, "windowed scopes are decided per scope (D-057); document a new one first"
     entry = windowed[SCOPE]
     assert (entry["date_field"], entry["granularity"], str(entry["first_window_start"])) == \
         ("issued", "quarter", "2012-07-01")
@@ -252,7 +252,7 @@ def test_failed_probe_fails_the_scope_without_walking_windows(tmp_path: Path):
     run_config, roots, transport, _, error = _run(tmp_path, transport=transport)
     walk = _composite(roots, run_config)[0]
     assert walk.state == "failed" and "probe failed before the window pass" in walk.reason
-    assert not any("from-issued-date" in r["url"] for r in transport.requests)
+    assert not any("from-issued-date" in r["url"] and "prefix:10.5256" in r["url"] for r in transport.requests)
     assert walk.completion["windows"] == [] and walk.pages == []
 
 

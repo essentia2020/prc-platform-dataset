@@ -49,10 +49,6 @@ sources:
         works__10.5194__posted-content:
           total_tolerance: 25
           reason: "Same cause; EGUsphere registers preprints continuously. Observed delta +4 of 238,421 on 2026-10-26."
-        works__10.7554__peer-review:
-          total_tolerance: 25
-          reason: "eLife deposits peer-review records continuously during working hours. 
-          Observed delta +11 of 84,253 on 2026-10-27: total-results rose monotonically from 84,253 to 84,264 during the 86-page walk and the accepted item total equals the final total-results, so no record was lost."
       # Scopes walked in date windows instead of one cursor walk (D-045
       # option c, D-057). Each window is its own cursor walk at tolerance 0;
       # the scope is complete only when every window is complete and the
@@ -66,6 +62,16 @@ sources:
           granularity: quarter
           first_window_start: "2012-07-01"
           reason: "Single cursor walks of this scope lose records between cursor steps (2026-10-27: -31 of 30,197 with a stable total-results, -205 with a moving one) although a yearly created-date probe sums to the unwindowed total, so the set is retrievable; a tolerance would hide the loss, windows of at most two pages avoid it. Quarters by issued date: created dates cluster in 2025-2026 (bulk registration) and would give windows of thousands of records."
+        works__10.5194__peer-review:
+          date_field: issued
+          granularity: month
+          first_window_start: "2016-01-01"
+          reason: "Single cursor walk of 2026-11-02 lost 39 of 212,958 records with a stable total-results (w01 of run_20261102_01), the cursor-step loss of D-057; a tolerance would hide the loss. Monthly windows by issued date hold about 1,800-2,300 records (2-3 pages) in 2025-2026; quarters would hold 5,400-6,700. No peer-review record under this prefix is issued before 2016 (probe of 2026-11-02: 0 through 2015, 14,968 through 2016)."
+        works__10.7554__peer-review:
+          date_field: issued
+          granularity: month
+          first_window_start: "2012-01-01"
+          reason: "Single cursor walk of 2026-11-02 lost 30 of 84,395 records with a stable total-results (w01 of run_20261102_01), beyond the former tolerance of 25 whose stated cause, deposition during the walk, did not occur; the override is withdrawn. Monthly windows hold about 1,000-1,600 records (1-2 pages) in 2025-2026; quarters would hold 3,200-4,700. Records exist from the journal's launch year (probe of 2026-11-02: 3,542 through 2015)."
       # Only the elements that the Crossref REST API enumerates as selectable
       # may appear here; any other name makes /works answer HTTP 400 for the
       # whole page (the enumeration is returned by the API itself on an

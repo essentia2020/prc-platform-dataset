@@ -111,6 +111,9 @@ def test_attribution_records_all_three_signals_and_pattern():
 
 def test_review_signal_is_joined_and_unattributed_records_retained(tmp_path):
     config, sources, _, logger, roots = run_context(tmp_path)
+    import copy
+    sources = copy.deepcopy(sources)
+    sources["sources"]["crossref"]["pagination"]["windowed_scopes"].pop("works__10.5194__peer-review")
     rows = [copernicus()]
     crossref_works.run(config, sources, rows, logger, transport=FixtureTransport(), sleeper=lambda _: None, **roots)
     interim = roots["interim_root"] / f"crossref_works__{rows[0]['row_id']}.csv"
@@ -133,6 +136,9 @@ def test_review_signal_is_joined_and_unattributed_records_retained(tmp_path):
 
 def test_no_signals_is_the_only_register_only_fallback(tmp_path):
     config, sources, _, logger, roots = run_context(tmp_path)
+    import copy
+    sources = copy.deepcopy(sources)
+    sources["sources"]["crossref"]["pagination"]["windowed_scopes"].pop("works__10.5194__peer-review")
     rows = [copernicus()]
     item = {"DOI": "10.5194/egusphere-2025-999", "type": "posted-content",
             "posted": {"date-parts": [[2025]]}}

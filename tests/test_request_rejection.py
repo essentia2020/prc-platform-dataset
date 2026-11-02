@@ -184,7 +184,6 @@ def test_scope_tolerance_defaults_and_overrides():
 PINNED_TOLERANCE_OVERRIDES = {
     "works__10.12688__journal-article": 50,
     "works__10.5194__posted-content": 25,
-    "works__10.7554__peer-review": 25,
 }
 
 
