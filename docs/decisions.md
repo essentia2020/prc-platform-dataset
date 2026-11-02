@@ -1194,6 +1194,17 @@ rules (windows complete, partition deltas 0, no DOI on two pages across windows)
 scope. `run_20261026_01` is extended, not replaced: cutoff, register and policy
 are unchanged; the per-scope `software` record in the run manifest documents the
 commit of each extension.
+- Extended 2026-11-02 (run_20261102_01): `works__10.5194__peer-review`
+  (delta −39 of 212,958) and `works__10.7554__peer-review` (delta −30 of
+  84,395 against a tolerance of 25) both closed with a stable total-results,
+  the cursor-step loss of this decision, and are retrieved from this run on
+  as monthly issued-date windows (quarters would hold 5,400–6,700 and
+  3,200–4,700 records; months hold 1,800–2,300 and 1,000–1,600). The D-045
+  override for `works__10.7554__peer-review` is withdrawn: its stated cause,
+  deposition during the walk, is not what the walk observed; two overrides
+  remain (`works__10.12688__journal-article`, `works__10.5194__posted-content`).
+  `works__10.21956__peer-review` (delta +1, total-results 22,652 → 22,653)
+  is a deposition during the walk and is re-walked without a rule change.
 
 ## D-058: Source coverage of a Sciety group is verified per run; an absent group is `source_not_covering`, never a zero
 
