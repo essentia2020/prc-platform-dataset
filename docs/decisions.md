@@ -1476,8 +1476,22 @@ The descriptive `doi_pattern` of `access_microbiology` was tightened to `^10\.10
       Research works resolved, 0 pairs share an OpenAlex work id. 
       OpenAlex does not merge a VeriXiv preprint with its Gates version; 
       the residual cannot be reduced from this source.
-      Follow-ups. (1) Row text for rows where the walk returned near as many works as DOIs requested but few matched, naming the merge; (2) fill openalex.source_ids for Copernicus discussion journals, Access Microbiology and eLife if a source-level check is wanted; (3) docs/limitations.md: one sentence that "not found" in the OpenAlex volume check means "no record under this DOI", which for versioned and merged records is expected.
-
+    - Follow-ups. (1) Row text for rows where the walk returned near as many 
+      works as DOIs requested but few matched, naming the merge; (2) fill 
+      openalex.source_ids for Copernicus discussion journals, Access Microbiology and 
+      eLife if a source-level check is wanted; (3) docs/limitations.md: one 
+      sentence that "not found" in the OpenAlex volume check means "no record 
+      under this DOI", which for versioned and merged records is expected.
+      Follow-up (2) deferred, 2026-11-02. Source-year counts add nothing for 
+      F1000-type rows (the DOI resolution already finds 99.9% with the year 
+      agreeing), are not comparable for Access Microbiology and eLife (the 
+      OpenAlex source is the whole journal, the row counts posted-content works 
+      only, D-060), and for Copernicus would repeat the merge problem: source_years 
+      filters on primary_location.source.id, and a merged record's primary location 
+      is the final article. A Copernicus check would need locations.source.id, 
+      some 40 verified source ids for 29 journals in three DOI regimes, and would 
+      still compare different objects. openalex.source_ids stays empty for 1.4.0; 
+      README "Future work" keeps the item.
 
 - **Access:** OpenAlex requires an API key since 2026-02-13 (`mailto` is
   ignored). The key is read from `PRC_OPENALEX_API_KEY`, never from a

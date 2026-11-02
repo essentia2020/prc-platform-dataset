@@ -28,3 +28,9 @@ def test_every_stage_module_exposes_run():
     import importlib
     for _, module_path, _ in rp.STAGES:
         assert callable(getattr(importlib.import_module(module_path), "run"))
+
+def test_force_new_walk_reaches_walk_based_stages_only():
+    names = [stage[0] for stage in rp.STAGES]
+    walk_based = {n for n in names if n.startswith("extract_")} | {"openalex_diagnostics"}
+    assert rp.FORCE_WALK_STAGES == frozenset(walk_based)
+    assert not any(n in rp.FORCE_WALK_STAGES for n in ("normalise", "analyse", "report"))
