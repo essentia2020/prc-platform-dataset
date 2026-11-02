@@ -344,6 +344,6 @@ discussion for individually verified journals. Full statement:
    side(s) observed in `correspondence_basis`); the share of pairs asserted
    from one side only and the OpenAlex residual signal (D-066) are to be
    reported in the limitations.
-6. Resolution of the Access Microbiology coverage start from a completed
-   run (`model_since` = first observed counting year); until then its cells
-   carry `pending_run` and the group cells it belongs to stay blank.
+6. Access Microbiology coverage start: resolved by `run_20261102_01` 
+  (D-017, D-060); the start is re-derived from every complete run, and a run 
+  without qualifying events would return the row to `unknown_scope`.

@@ -175,10 +175,11 @@ with specific methodology:
   pair. The residual — included works of both rows with no Crossref
   relation from either side — is the input of the OpenAlex pair signal
   (D-066), which is a data-quality row and never a pair.
-- **Access Microbiology.** D-017 takes the start year from qualifying events
-  in the completed local run, not an assumed 2023 boundary. Keep the
-  approved classification separate from this unresolved coverage field;
-  no eligible-range zero filling is permitted until the start is resolved.
+- **Access Microbiology.** D-017 takes the start year from qualifying events 
+  in the completed local run, not an assumed 2023 boundary; 
+  `run_20261102_01` resolved it (see `register_summary.csv`, `first_year_with_data`), 
+  and every complete run re-derives it. The approved classification stays 
+  separate from this coverage field; eligible-range zero filling applies only from the derived start.
   D-060: the qualifying event is the posted-content record of an
   `acmi.0.NNNNNN` stem (`.v1`, `.v2` for a revised preprint; empty
   container-title in Crossref); accepted versions are `journal-article`
@@ -395,7 +396,7 @@ contributes to (D-038, D-039).
   evaluation-identity, observability-priority, partial-year, provisional-
   exclusion, Qeios-intersection and additivity tests.
 - End-to-end offline run (extraction from fixtures → normalisation →
-  analysis → report) shared by the Stage 4–6 tests, once with every scope
+  analysis → report) shared by the Stage 4–7 tests, once with every scope
   complete and once with a failed scope.
 - Manifest checksum verification against a local raw store when present.
 - Repository text audit (`tools/audit_text.py --history`) with zero

@@ -18,8 +18,8 @@
   and preLights activity) is missing. The docmaps index additionally covers
   only the groups Sciety has enabled for docmaps, group by group (eleven
   groups in the index of 2026-10-28). Register rows whose only selector is a
-  Sciety group absent from the index (Review Commons and PeerRef in
-  run_20261027_01) publish no count: `source_not_covering` (D-058), never a
+  Sciety group absent from the index (Review Commons and PeerRef in run_20261027_01; 
+  PeerRef alone in run_20261102_01) publish no count: `source_not_covering` (D-058), never a
   zero, although their Sciety group pages list evaluations. The Unjournal
   (D-063), MetaROR (D-064, superseding D-025) and Review Commons (D-065)
   left this set: their evaluations are Crossref `peer-review` records with
@@ -83,9 +83,9 @@ coverage are open; no outcome is claimed here.
   index and, if no obstacle, MetaROR, Review Commons and The Unjournal for
   the cross-check scopes. The Sciety docmaps allow-list is the only machine
   route for PeerRef; a direct request to PeerRef follows if Sciety declines.
-- The Unjournal (e-mail of 2026-10-31): `is-review-of` on the evaluation
-  summaries deposited as `journal-article` records and the ISSN in the
-  deposited metadata.
+- The Unjournal (e-mail of 2026-10-31, answered 2026-10-31, D-063): 
+  the service confirmed the composition of the 13 journal-article records; 
+  whether is-review-of and the ISSN will be added to the existing deposits is not yet decided on their side.
 
 ## Event history and retrieval
 
@@ -251,12 +251,11 @@ release freeze.
   manuscripts are absent from the `metaror` series.
 - **Evaluation summaries without a relation (The Unjournal).** Thirteen 
   journal-article records under the community stem d28e8e57 (10 author 
-  responses and 3 evaluation summaries, per the service's reply of 
-  2026-10-31) carry no relation at all and no ISSN; author responses 
-  are not evaluations and would never add a work, so the uncounted 
-  evaluations are the three summaries at all and
-  no ISSN, so they lie outside the `peer-review` walk and are neither
-  counted nor flagged (probe of 2026-10-31: 106 records under the stem
+  responses and 3 evaluation summaries, per the service's reply of 2026-10-31) 
+  carry no relation at all and no ISSN, so they lie outside the peer-review 
+  walk and are neither counted nor flagged; author responses are not evaluations 
+  and would never add a work, so the uncounted evaluations are the three summaries 
+  (probe of 2026-10-31: 106 records under the stem
   including the title-level `journal` record, 42 `peer-review` with
   `is-review-of` to 36 distinct external targets; DQ-016); the evaluation
   count per work is a lower bound.
