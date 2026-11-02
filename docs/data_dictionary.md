@@ -162,6 +162,8 @@ data/raw/sciety/<scope>/<run_id>/<walk_id>/page_<n>/attempt_<k>.response.json.gz
 data/raw/sciety/<scope>/<run_id>/<walk_id>/page_<n>/attempt_<k>.request.json
 data/manifests/<run_id>/<run_id>.json                                   # run-level manifest
 data/manifests/<run_id>/<source>__<scope>__<walk_id>.manifest.jsonl     # walk manifest
+data/manifests/probes/<name>_<date>.{json,txt}                          # one-off probe outputs cited as evidence
+data/manifests/probes/SHA256SUMS                                        # checksums of the probe files
 ```
 
 `scope` = `works__<prefix>__<record_type>` (Crossref; one walk per owner
@@ -178,6 +180,15 @@ membership, never the bare prefix.
 Nothing under `data/raw/` is ever overwritten (files are created in
 exclusive mode); retries increment `attempt_<k>`; a rejected cursor or an
 interrupted walk starts a new `walk_id` from the first page.
+
+`data/manifests/probes/` holds one-off probe outputs that decision entries
+cite by file name (API responses, sampled records, slug counts of a range
+walk). The files are kept byte for byte as retrieved — including a byte
+order mark or CRLF line ends where the retrieving shell wrote them — because
+`docs/decisions.md` records their SHA-256; `.gitattributes` exempts
+`data/manifests/**` from end-of-line normalisation, and `SHA256SUMS` in the
+directory lists the expected digests (checked by the test suite). Probe
+files are evidence for a decision, not inputs to any pipeline stage.
 
 ### 3.1 Request sidecar `attempt_<k>.request.json`
 

@@ -1,0 +1,25 @@
+﻿Crossref probes 2026-10-31 (polite pool, UA with mailto)
+Unjournal: filter=issn:3071-2173 -> total-results 0
+Unjournal: filter=prefix:10.21428 -> total-results 14048 (PubPub, member 9621)
+Unjournal stem d28e8e57: 105 records {peer-review 42, component 49, journal-article 13, posted-content 1}
+  peer-review with is-review-of: 42; unique targets 36; by year 2023:17 2024:12 2025:11 2026:2
+  target prefixes 10.3386:28 10.2139:7 10.1257:6 10.1038:1 10.1080:1 10.3200:1
+  sample peer-review 10.21428/d28e8e57.652a843a -> is-review-of 10.3386/w26775
+  counter-example journal-article 10.21428/d28e8e57.ad95c497 (relation empty)
+MetaROR: members?query=Research+on+Research+Institute -> id 51568, prefix 10.70744
+MetaROR: filter=prefix:10.70744 -> 278 records {Peer Review 277, Posted Content 1}, container-title none
+  DOI pattern 10.70744/metaror.<ms>.<round>.rv<N> | .ea ; every sample carries is-review-of to an external preprint
+  earliest issued 2024-11-20 (metaror.9.1.rv3 -> 10.31235/osf.io/b2ra3); latest 2026-10-15 (metaror.417.1.rv1-3 -> 10.64898/2026.04.07.26350286)
+  placeholder target observed: 10.70744/MetaROR.placeholder01 (ms 282)
+
+EEB range walk 2022-01-01..2023-12-31 (eeb.embo.org/api/v2/docmap/<from>/<to>/<page>): docmap slugs saved in eeb_slugs_2022-2023.txt
+  reviewcommons 390; peerref 9; peercommunityin 136; peercommunityjournal 105; journal slugs dominate (elife, mitpressjournals, ...)
+  Review Commons consistent with Crossref at manuscript level (2020 report records for the same years); PeerRef partial (~35 works on Sciety)
+
+EEB range walk 2022-01-01..2023-12-31 (eeb.embo.org/api/v2/docmap/<from>/<to>/<page>): slugs in eeb_slugs_2022-2023.txt
+  reviewcommons 390; peerref 9; peercommunityin 136; peercommunityjournal 105
+  Review Commons consistent with Crossref at manuscript level (2,020 report records 2022-2023); PeerRef partial (~35 works on Sciety group page)
+
+Unjournal probe 2026-10-31 (prefix 10.21428, stem d28e8e57, 16 pages of 14048 prefix records): unjournal_probe_2026-10-31.json
+  106 records: component 49, peer-review 42, journal-article 13, posted-content 1, journal 1
+  peer-review with is-review-of 42 -> 36 distinct targets; journal-article without relation 13; ISSN 3071-2173 in 0 records

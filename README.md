@@ -156,6 +156,7 @@ python tools/check_register_prefixes.py      # one-off register check: resolves 
 PRC_RAW_STORE=<raw store root> python -m pytest tests/test_manifest_checksums_match.py
 python tools/check_walk_shape.py --run <run_id> --raw-root <raw store root>   # walk-shape check after a run: repeated cursor, page count vs total-results, mid-walk short page, record on two pages (rule 5 reads the raw store; --no-raw for the manifest-only rules); rule 6 checks zero-item Sciety walks against the run's docmaps index snapshot (or --sciety-index <stored index response>); exit 1 on an issue, 2 when inconclusive
 python tools/audit_text.py --tokens <path outside the repository> --history
+python tools/append_dq_rows.py <rows.csv> [--dry-run]   # insert preset rows into data/processed/data_quality_log.csv after the last preset row, written by the same CSV writer as the analysis stage (minimal quoting, LF); rows arrive as a CSV with the log's header or as the + lines of a unified diff
 ```
 
 Stage order, fixed in `src/run_pipeline.py`:
@@ -243,9 +244,12 @@ src/         run_pipeline.py; common/ (config, register, identifiers, log, dates
 tools/       audit_text.py (repository text audit), check_register_prefixes.py
              (owner-prefix and member check of the register against Crossref),
              check_walk_shape.py (post-run cursor-walk shape check against the
-             walk manifests and the local raw store; Sciety index coverage)
+             walk manifests and the local raw store; Sciety index coverage),
+             append_dq_rows.py (inserts preset rows into the data-quality log)
 tests/       pytest suite and fixtures
 data/        raw/ (outside Git), interim/ (outside Git), processed/, manifests/
+             (walk manifests per run; probes/ with one-off probe outputs cited
+             in docs/decisions.md)
 reports/     tables/, figures/, CHECKSUMS.txt
 logs/        extraction_<run_id>.jsonl (outside Git)
 ```

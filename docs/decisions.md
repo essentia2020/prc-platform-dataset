@@ -1,6 +1,6 @@
 # Decision log — PRC Platform Dataset 1.4.0
 
-Numbered record of every design, classification and process decision. Each entry states the date, the question, the options considered, the decision, the evidence URL(s) and who decided. Every entry, D-001 through D-065 and Q-1 through Q-5, carries decided_by: researcher. D-027 through D-031 document preparation choices; D-032 through D-035 record the decisions on extraction, 2026-10-20, and govern their implementation; D-036 through D-041 record the decisions on normalisation, analysis and reporting, 2026-10-20; D-042 records the decision on repository history, 2026-10-20; D-043 and D-044 record the decisions of 2026-10-26 on two register rows whose Crossref records changed owner or primary identifier; D-045 records the decision of 2026-10-26 on Crossref walk completion and per-scope tolerance; D-046 through D-054 record the decisions of 2026-10-27 on the structural findings of run_20261026_01 (withdrawn review records, owner prefixes and the selector_no_match guard, evaluation records deposited under work types, companion items, VeriXiv, seven provisional F1000-infrastructure rows, repeated-slash DOIs, the Rapid Reviews cross-check); D-055 and D-056 record the decisions of 2026-10-27 on the audit boundary for harvested text and on keeping harvested records outside the repository; D-058 records the decision of 2026-10-28 on verifying Sciety index coverage per run; D-060 through D-062 record the decisions of 2026-10-29 on the posting-record gate, group cells as lower bounds and the Gates Open Research data_status (D-059 was merged into D-061); D-063 through D-065 record the decisions of 2026-10-31 on Crossref peer-review records as the primary source for The Unjournal, MetaROR and Review Commons. Confidence and decision status are independent: a decided classification may retain medium or low confidence without being provisional.
+Numbered record of every design, classification and process decision. Each entry states the date, the question, the options considered, the decision, the evidence URL(s) and who decided. Every entry, D-001 through D-065 and Q-1 through Q-5, carries decided_by: researcher. D-027 through D-031 document preparation choices; D-032 through D-035 record the decisions on extraction, 2026-10-20, and govern their implementation; D-036 through D-041 record the decisions on normalisation, analysis and reporting, 2026-10-20; D-042 records the decision on repository history, 2026-10-20; D-043 and D-044 record the decisions of 2026-10-26 on two register rows whose Crossref records changed owner or primary identifier; D-045 records the decision of 2026-10-26 on Crossref walk completion and per-scope tolerance; D-046 through D-054 record the decisions of 2026-10-27 on the structural findings of run_20261026_01 (withdrawn review records, owner prefixes and the selector_no_match guard, evaluation records deposited under work types, companion items, VeriXiv, seven provisional F1000-infrastructure rows, repeated-slash DOIs, the Rapid Reviews cross-check); D-055 and D-056 record the decisions of 2026-10-27 on the audit boundary for harvested text and on keeping harvested records outside the repository; D-058 records the decision of 2026-10-28 on verifying Sciety index coverage per run; D-060 through D-062 record the decisions of 2026-10-28 to 2026-10-31 on the posting-record gate, group cells as lower bounds and the Gates Open Research data_status (D-059 was merged into D-061); D-063 through D-065 record the decisions of 2026-10-31 on Crossref peer-review records as the primary source for The Unjournal, MetaROR and Review Commons. Confidence and decision status are independent: a decided classification may retain medium or low confidence without being provisional.
 Decision entries in this log are identified by decision number, date and subject.
 
 ---
@@ -1272,12 +1272,15 @@ The descriptive `doi_pattern` of `access_microbiology` was tightened to `^10\.10
   type peer-review, review_doi_regex ^10\.21428/d28e8e57\., target_filter
   external. On a shared prefix the declared review_doi_regex together
   with target_filter external is the selector; a bare prefix never is
-  (D-054 lineage). Counting event unchanged: earliest_qualifying_evaluation
-  on issued. data_status machine_readable; coverage_start_year 2023.
-  Evaluation summaries and manager reports deposited as journal-article
-  records without a relation are outside the walk and are not counted;
-  the evaluation count per work is therefore a lower bound (DQ-016). An
-  ISSN-based scope is not possible: ISSN 3071-2173 is absent from every
+  (D-054 lineage).   Counting event unchanged: earliest_qualifying_evaluation
+  on issued. data_status partial_coverage: only evaluations deposited as
+  Crossref peer-review records with is-review-of are observable (42 of
+  106 records under the stem on 2026-10-31); evaluation summaries and
+  manager reports deposited as journal-article records without a relation
+  are outside the walk and are not counted, and evaluations published
+  without a Crossref record are missed, so the series and the group cells
+  it enters are lower bounds (D-061, DQ-016). coverage_start_year 2023.
+  An ISSN-based scope is not possible: ISSN 3071-2173 is absent from every
   record, including the title-level record of the series. The Sciety
   scope stays as cross-check and never blocks the row (D-037).
 - **Evidence:** api.crossref.org/members/9621;
@@ -1289,9 +1292,10 @@ The descriptive `doi_pattern` of `access_microbiology` was tightened to `^10\.10
   carry is-review-of -> 36 distinct external targets (10.3386: 28,
   10.2139: 7, 10.1257: 6, 10.1038/10.1080/10.3200: 1 each; by year
   2023:17 2024:12 2025:11 2026:2); 13 journal-article records without
-  relation; ISSN 3071-2173 in 0 records; unjournal_probe_2026-10-31.json;
-  crossref_probes_2026-10-31.txt. Request to the service for is-review-of
-  on summaries and for the ISSN sent 2026-10-31.
+  relation; ISSN 3071-2173 in 0 records;
+  data/manifests/probes/unjournal_probe_2026-10-31.json;
+  data/manifests/probes/crossref_probes_2026-10-31.txt. Request to the
+  service for is-review-of on summaries and for the ISSN sent 2026-10-31.
 
 ## D-064: MetaROR — Crossref peer-review records are the primary source
 
@@ -1323,7 +1327,7 @@ The descriptive `doi_pattern` of `access_microbiology` was tightened to `^10\.10
   api.crossref.org/works?filter=prefix:10.70744 (278 on 2026-10-31:
   277 peer-review, 1 posted-content);
   https://metaror.org/set-of-metaror-manuscripts-with-a-datacite-doi/;
-  https://sciety.org/groups/metaror; crossref_probes_2026-10-31.txt.
+  https://sciety.org/groups/metaror; data/manifests/probes/crossref_probes_2026-10-31.txt.
 
 ## D-065: Review Commons — Crossref peer-review records are the primary source
 
@@ -1353,8 +1357,10 @@ The descriptive `doi_pattern` of `access_microbiology` was tightened to `^10\.10
   (5,629 on 2026-10-31; by year 2020:312 2021:519 2022:912 2023:1108
   2024:998 2025:1018 2026:762); api.crossref.org/members/79;
   api.crossref.org/works/10.15252/rc.2023168736;
-  crossref_probes_2026-10-31.txt; reviewcommons_sample200_2026-10-31.json
-  (SHA-256 7B22A6F4…76A7); eeb_slugs_2022-2023.txt.
+  data/manifests/probes/crossref_probes_2026-10-31.txt;
+  data/manifests/probes/reviewcommons_sample200_2026-10-31.json
+  (SHA-256 7B22A6F4…76A7, data/manifests/probes/SHA256SUMS);
+  data/manifests/probes/eeb_slugs_2022-2023.txt.
 
 ## Q-4: Cross-DOI work correspondence for Gates Open Research / VeriXiv
 
