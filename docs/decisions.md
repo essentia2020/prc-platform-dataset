@@ -915,8 +915,9 @@ completion of its evidence checks; outstanding checks are stated explicitly.
 ## D-041: Overlap correspondence basis and the Gates / VeriXiv pair
 
 - **Date:** 2026-10-20
-- **Status:** decided (user ruling, 2026-10-20 on Q-4: option (a), implemented
-  after VeriXiv deposit confirmation and before release freeze)
+- **Status:** applied 2026-11-02 (user ruling, 2026-10-20 on Q-4: option a;
+  implemented after VeriXiv deposit confirmation, D-051, and before
+  release freeze; run_20261102_01 onwards)
 - decided_by: researcher
 - **Question:** On what basis does `cross_platform_overlap.csv` establish
   that two rows count the same work?
@@ -929,6 +930,28 @@ completion of its evidence checks; outstanding checks are stated explicitly.
   side counts, and the side(s) observed are recorded in
   `correspondence_basis`. OpenAlex may be used only as a diagnostic in the
   data-quality log, never as a source for `cross_platform_overlap.csv`.
+- **Implementation (2026-11-02):** pairs come from Crossref relations only:
+  `is-preprint-of` on the VeriXiv posted-content record and `has-preprint`
+  on the Gates Open Research version-1 record. A pair asserted by either
+  side counts; `correspondence_basis` records the sides observed
+  (`is_preprint_of`, `has_preprint`, `is_preprint_of+has_preprint`). The
+  paired work takes the article's canonical identifier on both rows and
+  its evaluation relations follow it, so the preprint keeps its qualifying
+  review. Row series are unchanged; the deduplicated tables count the pair
+  once, on the row of its earliest counting event (while VeriXiv is
+  provisional it is outside those tables, so the pair sits with the Gates
+  Open Research row there); `cross_platform_overlap.csv` carries one line
+  per pair. Targets outside either row's DOI pattern, non-DOI targets and
+  records related to several counterparts (conflicts, logged) never pair;
+  titles never pair. Declared in `extraction_selector.crossref.preprint_pair`
+  on the VeriXiv row; built in `src/common/preprint_pairs.py` from
+  `relation_json` of both rows' interim work records. The residual (no
+  relation from either side) is the input of the OpenAlex pair signal of
+  D-066, which never establishes a pair.
+- **Evidence:** `tests/test_preprint_pairs.py` (7 tests: one side each,
+  both sides, no relation with identical titles, conflict, foreign and
+  non-version-1 targets); `normalisation_summary.json` → `preprint_pairs`
+  (n_pairs, by_basis, n_conflicts).
 - **Authority:** D-013; docs/data_dictionary.md §6; user ruling, 2026-10-20.
 
 ## D-042: Repository history starts at the first published commit
@@ -1361,6 +1384,80 @@ The descriptive `doi_pattern` of `access_microbiology` was tightened to `^10\.10
   data/manifests/probes/reviewcommons_sample200_2026-10-31.json
   (SHA-256 7B22A6F4…76A7, data/manifests/probes/SHA256SUMS);
   data/manifests/probes/eeb_slugs_2022-2023.txt.
+
+## D-066: OpenAlex: three permitted functions
+
+- **Date:** 2026-11-02
+- **Status:** decided; (a) and (b) applied as stage `openalex_diagnostics`,
+  run_20261102_01 onwards
+- decided_by: researcher
+- **Question:** Which uses of OpenAlex are permitted, and where do their
+  results appear?
+- **Options considered:** (a) OpenAlex as a diagnostic only, results confined
+  to the data-quality log (D-040, D-041); (b) OpenAlex as a secondary
+  counting source for rows the two permitted sources do not cover (Q-5);
+  (c) no OpenAlex use before release.
+- **Decision:** a. Exactly three functions. Each diagnostic result is one row
+  in `data_quality_log.csv`; nothing from OpenAlex enters `records_*.csv`,
+  `works_included.csv`, any table or figure.
+  - (a) Volume check. For every quantified Crossref row, the included
+    works of the run are resolved in OpenAlex by DOI (batches of at most
+    100 per request) and counted per row and counting year; where
+    `config/sources.yaml` lists an OpenAlex source id for the row
+    (`openalex.source_ids`), the source's yearly work count is retrieved
+    as well. The deltas against the row series are recorded as one run row
+    per row (`issue_type: openalex_volume_check`, `status: observed`,
+    `n_records_affected` = works not found in OpenAlex; 0 is a valid
+    observation). A delta is a diagnostic: it never corrects a series, a
+    coverage status or a register field.
+  - (b) Gates Open Research / VeriXiv pair signal. For every included
+    VeriXiv preprint and Gates Open Research v1 article that carries no
+    Crossref correspondence after D-041 (empty `correspondence_basis`),
+    the DOIs resolved under (a) are compared; when a preprint and an
+    article map to one OpenAlex work id, the fact is recorded as one run
+    row on the Gates Open Research row (`issue_type: openalex_pair_signal`,
+    `n_records_affected` = number of such pairs; both residual sizes and
+    the DOI pairs in `description`). The pair is not added to
+    `cross_platform_overlap.csv`; `correspondence_basis` keeps the Crossref
+    values only.
+  - (c) Enrichment for the article (topics, countries, citations) is done
+    outside the release pipeline on the CWTS OpenAlex dump, carries its own
+    snapshot date and is not part of the 1.4.0 outputs. One preset row
+    (`issue_type: other`, `status: template`, inserted with
+    `tools/append_dq_rows.py`) names the snapshot date and the dump
+    location once the enrichment is run; no run row exists for it, because
+    no `run_id` applies.
+- **Access:** OpenAlex requires an API key since 2026-02-13 (`mailto` is
+  ignored). The key is read from `PRC_OPENALEX_API_KEY`, never from a
+  tracked file, and is sent in the `Authorization` header; the request
+  sidecar records the header name only, and a test asserts that the key
+  string is absent from every file under `data/raw/openalex`, the
+  manifests, the logs and the processed layer. Rate 5 requests/s
+  (configured; the API allows 30 with a key); cost 0.10 USD per 1 000
+  list calls, within the 1 USD/day free budget for the volume at hand
+  (≈150 k DOIs → ≈1 550 calls); hard cap
+  `openalex.budget.max_requests_per_run: 4000`; a capped walk is closed as
+  failed and yields no row. Raw responses go to
+  `data/raw/openalex/<scope>/<run_id>/…` under D-031 (immutable, SHA-256
+  per page in the walk manifest); the summary sits under
+  `openalex_diagnostics` in the run manifest, not under `scopes`, so the
+  row-state logic of D-037 never sees these scopes and a failed walk blocks
+  nothing. The stage runs after `analyse` and must be run again after any
+  re-run of `analyse`; complete walks are reused without requests.
+- **Vocabulary:** two `issue_type` values in `docs/data_dictionary.md`
+  (`openalex_volume_check`, `openalex_pair_signal`); `append_dq_rows.py`
+  reads the enum from the dictionary. `config/sources.yaml` gains an
+  `openalex` block (base URL, auth header, per-request cap 100, rate,
+  budget, source-id map, pair rows, `role: diagnostic`, terms URL).
+  README "Future work" item 3 and D-041 point to this entry.
+- **Rejected:** (b) would make OpenAlex a counting source, contrary to the
+  permitted-source rule of the analysis plan; (c) would leave D-041 without
+  the residual check the limitations need.
+- **Evidence:** `src/extract/openalex_diagnostics.py`;
+  `tests/test_openalex_diagnostics.py` (11 tests);
+  https://help.openalex.org/api/authentication/ ;
+  https://help.openalex.org/access/pricing/ ;
+  https://help.openalex.org/api/deprecations/ (read 2026-11-02).
 
 ## Q-4: Cross-DOI work correspondence for Gates Open Research / VeriXiv
 

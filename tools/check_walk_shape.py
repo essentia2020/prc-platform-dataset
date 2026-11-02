@@ -79,6 +79,7 @@ from src.common.register import load_platforms  # noqa: E402
 from src.extract.selectors import ScietyScope, sciety_scopes  # noqa: E402
 
 INCONCLUSIVE_MARKER = "inconclusive"
+JUDGED_SOURCES = ("crossref", "sciety")      # OpenAlex walks (D-066) are diagnostic batches: listed, not judged
 SCIETY_SOURCE = "sciety"
 SCIETY_GROUP_SCOPE_PREFIX = "evaluations__"
 SCIETY_NON_GROUP_SCOPES = ("evaluations__full_index",)
@@ -304,7 +305,10 @@ def run_check(run_id: str, manifest_root: Path, raw_root: Path | None, rows: int
             errors.append(str(exc))
             reports.append(WalkReport(source, scope, walk_id, "unreadable", judged=False, selected=is_selected))
             continue
-        judge_this = walk.state == "complete" and (all_walks or not run_manifest or is_selected)
+        # Rules 1-6 describe Crossref cursor walks and Sciety index walks; the
+        # OpenAlex diagnostic walks (D-066) are batch requests and are listed only.
+        judge_this = (walk.state == "complete" and walk.source in JUDGED_SOURCES
+                      and (all_walks or not run_manifest or is_selected))
         report = judge(walk, rows, raw_root, is_selected, verify_digests, sciety_index)
         if not judge_this:
             report.judged = False

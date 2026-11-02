@@ -160,6 +160,21 @@ with specific methodology:
   Confirmed Version-of-Record/preprint overlap is expected, reported and
   never a disjointness failure. Preserve both source DOIs and the evidence
   linking them; shared titles alone do not establish work identity.
+  The pairing follows D-041 (`extraction_selector.crossref.preprint_pair`
+  on the VeriXiv row): a pair is asserted by `is-preprint-of` on the
+  VeriXiv `posted-content` record, by `has-preprint` on the Gates Open
+  Research version-1 record, or by both; either side suffices and
+  `correspondence_basis` names the side(s). The paired work takes the
+  article's canonical identifier on both rows and its evaluation relations
+  follow it, so the preprint keeps its qualifying review; a record related
+  to several counterparts is a conflict, logged and left unpaired. Row
+  series are unchanged; the deduplicated tables count the pair once, on
+  the row of its earliest counting event (while VeriXiv is provisional it
+  is outside the deduplicated tables, so the pair sits with the Gates Open
+  Research row there); `cross_platform_overlap.csv` carries one line per
+  pair. The residual — included works of both rows with no Crossref
+  relation from either side — is the input of the OpenAlex pair signal
+  (D-066), which is a data-quality row and never a pair.
 - **Access Microbiology.** D-017 takes the start year from qualifying events
   in the completed local run, not an assumed 2023 boundary. Keep the
   approved classification separate from this unresolved coverage field;
@@ -332,7 +347,7 @@ All figures are recomputed from `data/processed/` tables; no hard-coded
 values. Legend swatches are plain: hatches describe cells (partial year,
 lower bound), never categories. Small multiples use independent y-axes.
 
-## Implementation map (Stages 4–6)
+## Implementation map (Stages 4–7)
 
 | Rule | Module | Test file |
 |---|---|---|
@@ -351,6 +366,8 @@ lower bound), never categories. Small multiples use independent y-axes.
 | Walk shape: `total_delta == 0` is necessary, the page sequence is the proof (repeated `cursor_in`, non-empty pages vs `ceil(total-results / rows)`, mid-walk short page, record on two pages; pages missing from the raw store make the last rule inconclusive, never passed) | `src/common/manifest.py::walk_shape_issues`; post-run CLI `tools/check_walk_shape.py --run <run_id> [--raw-root]` | `tests/test_walk_shape.py`, `tests/test_check_walk_shape_cli.py` |
 | Windowed walks for a scope whose single cursor walk loses records between cursor steps (D-045 option c, D-057): one cursor walk per date window at tolerance 0, unwindowed `total-results` probed before and after the pass, complete only when every window is complete and the window totals sum to both probes; recorded as one composite walk of the scope plus one walk per window sub-scope | `src/common/windows.py`, `src/common/windowed_walk.py`, `crossref_common.windowed_scope_config`; `config/sources.yaml` `pagination.windowed_scopes` | `tests/test_windowed_walk.py` |
 | Deposition diagnostics (Qeios indicators, `created`/`deposited` after cutoff) | `build_aggregates.qeios_indicators` | `tests/test_total_equals_sum_of_years.py` (via tables) |
+| Gates Open Research / VeriXiv pairs from Crossref relations, either side, sides recorded in `correspondence_basis`, one work in the deduplicated tables and one overlap line, row series unchanged (D-041) | `src/common/preprint_pairs.py`, `src/common/correspondence.py::canonical_work_doi`, `clean_and_normalise.build_pair_indexes`, `build_aggregates.run` (overlap basis) | `tests/test_preprint_pairs.py` |
+| OpenAlex diagnostics after `analyse` (D-066): per-row volume check by DOI batches, source yearly counts, residual pair signal; rows in `data_quality_log.csv` only; key from the environment, redacted in sidecars; per-run request cap; complete walks reused | `src/extract/openalex_diagnostics.py`, `src/common/http.py` (`secret_headers`) | `tests/test_openalex_diagnostics.py` |
 | Figures 1–8, hatched partial year, dotted lower-bound cells with named rows (Figures 2, 3, 6, 8), stacked all-rows Figure 8 with the `Other` merge, plain legend swatches, independent y-axes in small multiples, SVG ids salted with the run id, categorical panels, checksums | `src/report/make_reports.py` | `tests/test_report_figures.py` |
 
 The eligible range of a row is `[max(launch_year, coverage_start_year),

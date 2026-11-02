@@ -151,6 +151,7 @@ python -m src.run_pipeline --list            # show the stage order
 python -m src.run_pipeline --stages all      # run every stage
 python -m src.run_pipeline --stages extract_crossref_works --force-new-walk   # new walk despite a complete one
 python -m src.run_pipeline --stages normalise,analyse,report                 # offline stages only, from existing interim files
+PRC_OPENALEX_API_KEY=<key> python -m src.run_pipeline --stages openalex_diagnostics   # D-066 diagnostics after analyse (contacts the OpenAlex API; rows in data_quality_log.csv only)
 python -m pytest                             # test suite (offline; no API is contacted)
 python tools/check_register_prefixes.py      # one-off register check: resolves one known work and one known review DOI per quantified Crossref row and compares owner prefix and member with the declared scopes (contacts the Crossref API; run by the maintainer before an extraction)
 PRC_RAW_STORE=<raw store root> python -m pytest tests/test_manifest_checksums_match.py
@@ -166,7 +167,8 @@ Stage order, fixed in `src/run_pipeline.py`:
 3. `extract_sciety_evaluations` — one walk of the unfiltered index per run (`index`, scope `index__all`, the coverage probe of D-058) and one paginated walk per group (`index?publisheraccount=<group page URL>`) → `data/raw/sciety/evaluations__<group_slug>/…`, `data/interim/sciety_evaluations__<group_slug>.csv`; `index_coverage` per group in the run manifest; publisher-account mismatch hard-fails normalisation
 4. `normalise` — `src/normalise/clean_and_normalise.py`: record-level layer `data/processed/records_<row_id>.csv` (work, evaluation and relation lines; canonical identifiers; evaluation identity; source-precision dates) plus `normalisation_summary.json`; rows with a blocked scope get no file
 5. `analyse` — `src/analyse/build_aggregates.py`: work-level decisions `data/processed/works_included.csv`, `analysis_manifest.json`, run counts in `data_quality_log.csv`, every table in `reports/tables/*.csv|md`
-6. `report` — `src/report/make_reports.py`: Figures 1–8 in `reports/figures/*.png|svg` (matplotlib, Agg backend) and `reports/CHECKSUMS.txt` over processed files, tables and figures. Figures 2, 3, 6 and 8 draw group cells that are lower bounds with a dotted hatch; each such figure is a lower bound and excludes the rows named in the table footnotes and in its own footer (D-061). Figure 8 stacks the all-rows total by the register row of each work's earliest counting event, merging rows below 1,000 works over the whole period into `Other`
+6. `openalex_diagnostics` — `src/extract/openalex_diagnostics.py` (D-041, D-066): resolves the included works of every quantified Crossref row in OpenAlex by DOI (batches of at most 100) and, where a source id is configured, retrieves the source's yearly counts; tests the residual Gates Open Research / VeriXiv works (no Crossref relation from either side) for a shared OpenAlex work id. Output: `openalex_volume_check` and `openalex_pair_signal` rows in `data_quality_log.csv`, raw responses under `data/raw/openalex/…`, a summary under `openalex_diagnostics` in the run manifest. Nothing from OpenAlex enters a record file, `works_included.csv`, a table or a figure; a failed or capped walk yields no row and blocks nothing. Requires `PRC_OPENALEX_API_KEY` (never read from a tracked file, never written to a sidecar); per-run request cap in `config/sources.yaml`. Run it again after any re-run of `analyse` (complete walks are reused without requests)
+7. `report` — `src/report/make_reports.py`: Figures 1–8 in `reports/figures/*.png|svg` (matplotlib, Agg backend) and `reports/CHECKSUMS.txt` over processed files, tables and figures. Figures 2, 3, 6 and 8 draw group cells that are lower bounds with a dotted hatch; each such figure is a lower bound and excludes the rows named in the table footnotes and in its own footer (D-061). Figure 8 stacks the all-rows total by the register row of each work's earliest counting event, merging rows below 1,000 works over the whole period into `Other`
 
 Extraction is idempotent: raw HTTP responses are immutable
 (`data/raw/<source>/<scope>/<run_id>/<walk_id>/page_<n>/attempt_<k>.*`; the
@@ -199,7 +201,7 @@ totals sum to both probes.
 Sciety follows continuation links
 until exhaustion, independently of Crossref's total check (D-034).
 
-Stages 4–6 read only local files (interim CSVs, run manifest, register).
+Stages 4, 5 and 7 read only local files (interim CSVs, run manifest, register).
 They derive each row's technical state from the run manifest: a row is
 analysed only when every primary scope has a selected complete walk;
 cross-check scopes never block a row but are required for
@@ -238,9 +240,11 @@ config/      platforms.yaml|csv, excluded_candidates.yaml|csv, classification_sc
              sources.yaml, run.yaml, audit_allowlist.yaml
 docs/        analysis_plan.md, data_dictionary.md, decisions.md, limitations.md
 src/         run_pipeline.py; common/ (config, register, identifiers, log, dates,
-             http, raw_store, manifest, walk, interim, eligibility, aggregates),
+             http, raw_store, manifest, walk, interim, eligibility, aggregates,
+             correspondence, preprint_pairs),
              extract/ (selectors, crossref_common, crossref_works,
-             crossref_peer_reviews, sciety_evaluations), normalise/, analyse/, report/
+             crossref_peer_reviews, sciety_evaluations, openalex_diagnostics),
+             normalise/, analyse/, report/
 tools/       audit_text.py (repository text audit), check_register_prefixes.py
              (owner-prefix and member check of the register against Crossref),
              check_walk_shape.py (post-run cursor-walk shape check against the
@@ -321,15 +325,22 @@ discussion for individually verified journals. Full statement:
 3. Cross-checking against additional data sources, first of all OpenAlex
    (work types `peer-review` / `preprint`, discipline enrichment,
    journal-version linkage), explicitly as a cross-check rather than a
-   primary counting source.
+   primary counting source. D-066 fixes the three permitted uses: the
+   per-row volume check and the residual pair signal run as the
+   `openalex_diagnostics` stage and leave rows in the data-quality log only;
+   topic, country and citation enrichment for the article is done outside
+   the release pipeline on the CWTS OpenAlex dump and is recorded by one
+   preset row naming the snapshot.
 4. Extension of the platform register with additional attributes describing
    outputs and review-transparency features of each platform.
-5. Cross-DOI work correspondence for the Gates Open Research / VeriXiv pair
-   (deposit confirmed, D-051) before release freeze, resolved from both sides (`is-preprint-of` on the VeriXiv
-   record, `has-preprint` on the Gates Open Research record; D-041);
-   `cross_platform_overlap.csv` currently reports overlap on
-   `canonical_work_id` only. OpenAlex serves only as a diagnostic in the
-   data-quality log.
+5. Review of the Gates Open Research / VeriXiv pairs after the first
+   complete run: the pairing itself is implemented (D-041, `preprint_pair`
+   on the VeriXiv row; `is-preprint-of` on the VeriXiv record,
+   `has-preprint` on the Gates Open Research version-1 record, either side
+   suffices; one line per pair in `cross_platform_overlap.csv` with the
+   side(s) observed in `correspondence_basis`); the share of pairs asserted
+   from one side only and the OpenAlex residual signal (D-066) are to be
+   reported in the limitations.
 6. Resolution of the Access Microbiology coverage start from a completed
    run (`model_since` = first observed counting year); until then its cells
    carry `pending_run` and the group cells it belongs to stay blank.

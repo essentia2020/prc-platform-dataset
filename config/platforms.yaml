@@ -368,10 +368,24 @@ platforms:
         review_doi_regex: "^10\\.21956/verixiv\\.\\d+\\.r\\d+$"
         sample_work_doi: "10.12688/verixiv.989.1"
         sample_review_doi: "10.21956/verixiv.1007.r1195"
+        # D-041: a VeriXiv preprint and its Gates Open Research Version of
+        # Record are one work. Pairs come from Crossref relations only —
+        # is-preprint-of on the preprint record, has-preprint on the
+        # version-1 article record; either side suffices and the side(s)
+        # observed are recorded in correspondence_basis. Titles never pair.
+        preprint_pair:
+          article_row: gates_open_research
+          relation_from_preprint: is-preprint-of
+          relation_from_article: has-preprint
+          article_version: 1
         notes: >-
           Selection by DOI regex only. The row stays provisional until the
-          first VeriXiv flattening has been reviewed (D-051); the Gates /
-          VeriXiv correspondence of D-041 is scheduled after that review.
+          first VeriXiv flattening has been reviewed (D-051). The Gates /
+          VeriXiv correspondence follows D-041 (preprint_pair above): the
+          paired work takes the article's canonical identifier on both rows,
+          is attributed to the row of its earliest counting event in the
+          deduplicated tables and appears once in cross_platform_overlap.csv;
+          the row series are unchanged.
     eligibility_events:
       - first public preprint posting dated on or before the analysis cutoff
       - at least one qualifying public review dated on or before the cutoff and present in the completed retrieval

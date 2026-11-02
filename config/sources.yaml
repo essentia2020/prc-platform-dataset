@@ -146,6 +146,59 @@ sources:
       immutably (scope index__all) and records per group whether it is
       present there (index_coverage in the run manifest).
 
+  openalex:
+    # D-066: diagnostic source only. Nothing retrieved here enters
+    # records_*.csv, works_included.csv, a table or a figure; the three
+    # permitted functions each leave one row in data_quality_log.csv.
+    name: OpenAlex API
+    role: diagnostic
+    base_url: https://api.openalex.org
+    endpoints:
+      works: /works
+    # Authentication: required since 2026-02-13 (mailto is ignored). The key
+    # is read from the environment variable named below, never from a tracked
+    # file, and is sent in the request header named below; the request
+    # sidecars record the header name, never its value.
+    auth:
+      api_key_env: PRC_OPENALEX_API_KEY
+      header: Authorization
+      header_value_template: "Bearer {key}"
+    query_templates:
+      # ``select`` keeps the stored responses small; primary_location carries the source id.
+      works_by_doi: "/works?filter=doi:{dois}&per-page={per_page}&select=id,doi,publication_year,primary_location"
+      source_years: "/works?filter=primary_location.source.id:{source_id},publication_year:{year_from}-{year_to}&group_by=publication_year"
+    per_request_cap: 100      # DOIs per filter value (API limit: 100 OR terms); also per-page
+    rate_limit:
+      max_requests_per_second: 5   # API allows 30 with a key; 5 keeps one run well inside the daily free budget window
+    budget:
+      # Hard cap per invocation of the stage: once reached, the remaining
+      # walks are closed as failed and produce no row. A list+filter call
+      # costs 0.10 USD per 1 000 calls; the free budget is 1 USD per day.
+      max_requests_per_run: 4000
+    # Register rows whose OpenAlex source id is known; a row absent here gets
+    # the DOI-resolution part of the volume check only. Values are OpenAlex
+    # source ids (S followed by digits); leave empty until verified.
+    source_ids: {}
+    pair_signal:
+      preprint_row: verixiv
+      article_row: gates_open_research
+    http:
+      timeout_seconds: 120
+    licence: >-
+      OpenAlex metadata is released under CC0; the stored responses are
+      diagnostics and are not redistributed with the dataset.
+    licence_url: https://openalex.org/about
+    terms_url: https://help.openalex.org/access/pricing/
+    coverage_limits: >-
+      OpenAlex indexes works by its own ingestion schedule; a DOI absent from
+      OpenAlex is a diagnostic observation, never a correction to a Crossref
+      series, a coverage status or a register field (D-041, D-066).
+    reproducibility: >-
+      Current index state; every request and response is stored immutably
+      under data/raw/openalex/<scope>/<run_id>/ and listed in the walk
+      manifests, so a re-run of the stage for the same run_id costs no API
+      calls.
+
 http_defaults:
   user_agent_template: "{label}/1.4.0 (mailto:{mailto})"
   timeout_seconds: 60

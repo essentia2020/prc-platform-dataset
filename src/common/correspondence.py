@@ -41,10 +41,20 @@ def correspondence_index(row: Mapping[str, Any]) -> dict[str, tuple[str, str]]:
     return out
 
 
-def canonical_work_doi(row: Mapping[str, Any], doi: str) -> tuple[str, str]:
-    """Return canonical DOI and correspondence basis without supplying a date."""
+def canonical_work_doi(row: Mapping[str, Any], doi: str, pairs=None) -> tuple[str, str]:
+    """Return canonical DOI and correspondence basis without supplying a date.
+
+    ``pairs`` (a ``preprint_pairs.PairIndexes``) adds the relation-asserted
+    preprint/article pairs of D-041: on the preprint row the paired work takes
+    the article's canonical DOI, and both rows record the side(s) observed.
+    """
     doi = normalise_doi(doi)
     explicit = correspondence_index(row).get(doi)
     if explicit:
         return explicit
-    return canonical_doi(doi, row.get("doi_version_pattern") or None), ""
+    canonical = canonical_doi(doi, row.get("doi_version_pattern") or None)
+    if pairs is not None:
+        paired = pairs.lookup(str(row.get("row_id", "")), canonical)
+        if paired:
+            return paired
+    return canonical, ""

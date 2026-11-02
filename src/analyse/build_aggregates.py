@@ -924,9 +924,13 @@ def run(run_config: RunConfig, sources_config: Mapping[str, Any], platforms: lis
             continue
         earliest = min(ws, key=lambda w: (w.counting_record.interval.start if w.counting_record and
                                            w.counting_record.interval else date.max, w.row_id))
+        # D-041: a relation-asserted preprint/article pair carries the side(s)
+        # observed; every other overlap rests on canonical_work_id equality.
+        bases = sorted({b for w in ws for b in (w.correspondence_basis or "").split(";") if b})
         overlap_rows.append({"canonical_work_id": cw, "row_ids": "; ".join(sorted({w.row_id for w in ws})),
                              "n_rows": len({w.row_id for w in ws}), "earliest_row_id": earliest.row_id,
-                             "earliest_year": earliest.counting_year, "correspondence_basis": "canonical_work_id"})
+                             "earliest_year": earliest.counting_year,
+                             "correspondence_basis": "; ".join(bases) if bases else "canonical_work_id"})
     _write_table(tables_root, "cross_platform_overlap",
                  ["canonical_work_id", "row_ids", "n_rows", "earliest_row_id", "earliest_year", "correspondence_basis"],
                  overlap_rows, cutoff=cutoff, additivity="row_series", snapshot=snapshot,

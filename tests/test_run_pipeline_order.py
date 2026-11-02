@@ -10,6 +10,7 @@ def test_stage_order_is_fixed():
         "extract_sciety_evaluations",
         "normalise",
         "analyse",
+        "openalex_diagnostics",
         "report",
     ]
 

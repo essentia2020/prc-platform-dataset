@@ -189,6 +189,24 @@ list is completed before the release freeze.
   row is quantified and remains provisional until its first flattening.
   Pending source selectors cannot publish quantitative values even when
   the classification itself is approved.
+- A VeriXiv preprint and its Gates Open Research Version of Record are
+  paired only through the Crossref relations `is-preprint-of` (on the
+  preprint) and `has-preprint` (on the version-1 article); either side
+  suffices and the side(s) observed are recorded (D-041). Pairs that
+  neither record asserts stay two works in the row series and in the
+  overlap table; the OpenAlex pair signal (D-066) counts how many of these
+  residual works share one OpenAlex work id and reports the number in the
+  data-quality log without pairing them. While VeriXiv is provisional, the
+  deduplicated tables leave it out, so a paired work is counted there on
+  the Gates Open Research row.
+- OpenAlex is a diagnostic source (D-041, D-066). The volume check
+  compares each quantified Crossref row's included works with OpenAlex by
+  DOI and, where a source id is configured, with the source's own yearly
+  counts; a difference is recorded in the data-quality log and never
+  corrects a series, a coverage status or a register field. OpenAlex's
+  ingestion lag and its own source assignment mean that a work absent
+  from OpenAlex or counted under another year is expected for recent
+  years; the rows are observations, not errors.
 - Seven venues on the F1000 infrastructure entered the register as
   provisional rows after run_20261026_01 found their works and reviews in
   the complete 10.12688 / 10.21956 walks (D-052): Stosunki Międzynarodowe –

@@ -17,6 +17,7 @@ line `# snapshot: <run_id>, cutoff <analysis_cutoff_date>, additivity <…>`.
 |---|---|---|---|---|---|---|
 | Crossref REST API | `https://api.crossref.org/works` | `prefix:<doi_prefix>`, `type:journal-article` / `posted-content` / `peer-review`; cursor pagination, `rows=1000`, `mailto` polite pool | metadata reusable without restriction (see `licence_url` in `config/sources.yaml`) | polite pool; honour `Retry-After` and rate-limit headers | only Crossref-registered DOIs; `peer-review` only where deposited with `is-review-of`; member-supplied dates of year/month/day precision | current index state; raw store + manifests fix a run |
 | Sciety docmaps | `https://sciety.org/docmaps/v1/index` | by group (`publisheraccount`) where supported | open; evaluation texts stay with the groups | 1 request/s | only groups that joined Sciety, from their join date | current state; full index stored per run |
+| OpenAlex API (diagnostic only, D-041, D-066) | `https://api.openalex.org/works` | `filter=doi:<a>|<b>|…` (at most `per_request_cap` = 100 DOIs per request, `select` of four fields); `filter=primary_location.source.id:<S…>&group_by=publication_year` | CC0 metadata; API key required since 2026-02-13, read from `PRC_OPENALEX_API_KEY` and sent in a header, never stored | `rate_limit.max_requests_per_second` (5; the API allows 30 with a key) and `budget.max_requests_per_run` (hard cap, 4 000) | OpenAlex's own ingestion state; a DOI absent there is a diagnostic observation, never a correction | current index state; responses stored immutably per run; nothing enters a record file, table or figure — results are rows in `data_quality_log.csv` only |
 
 ## 2. Register tables
 
@@ -137,6 +138,23 @@ version-relation edge to an aliased DOI and its primary; only those
 explicitly listed identifiers map to that primary. No title matching,
 network lookup or event-date imputation is performed by this mapping.
 
+`extraction_selector.crossref.preprint_pair` (on a preprint row; D-013,
+D-041) names the row that publishes the Version of Record
+(`article_row`) and the Crossref relation read on each side
+(`relation_from_preprint`, default `is-preprint-of`, on this row's
+`posted-content` records; `relation_from_article`, default `has-preprint`,
+on the article row's records of version `article_version`, default 1). A
+pair asserted by either side counts; a target that matches neither row's
+`doi_regex`, a non-DOI target and a record related to several
+counterparts (conflict, logged by the normalisation stage) never pair.
+The paired work takes the article's canonical identifier on both rows
+(`canonical_work_id`, `work_doi`), and `correspondence_basis` records the
+side(s) observed: `is_preprint_of`, `has_preprint` or
+`is_preprint_of+has_preprint`. Row series are unchanged; the deduplicated
+tables count the pair once, on the row of its earliest counting event, and
+`cross_platform_overlap.csv` carries one line per pair. Titles never pair,
+and OpenAlex is never consulted for pairing.
+
 ### 2.2 `config/excluded_candidates.yaml` → `config/excluded_candidates.csv`
 
 | Column | Type | Allowed values | Example |
@@ -160,6 +178,8 @@ data/raw/crossref/<scope>/<run_id>/<walk_id>/page_<n>/attempt_<k>.response.json.
 data/raw/crossref/<scope>/<run_id>/<walk_id>/page_<n>/attempt_<k>.request.json
 data/raw/sciety/<scope>/<run_id>/<walk_id>/page_<n>/attempt_<k>.response.json.gz
 data/raw/sciety/<scope>/<run_id>/<walk_id>/page_<n>/attempt_<k>.request.json
+data/raw/openalex/<scope>/<run_id>/<walk_id>/page_<n>/attempt_<k>.response.json.gz   # diagnostic (D-066)
+data/raw/openalex/<scope>/<run_id>/<walk_id>/page_<n>/attempt_<k>.request.json
 data/manifests/<run_id>/<run_id>.json                                   # run-level manifest
 data/manifests/<run_id>/<source>__<scope>__<walk_id>.manifest.jsonl     # walk manifest
 data/manifests/probes/<name>_<date>.{json,txt}                          # one-off probe outputs cited as evidence
@@ -173,7 +193,12 @@ and record type, for rows whose records are owned by a shared prefix or
 whose original DOIs are aliases of re-registered primaries) or
 `evaluations__<group_slug>` (Sciety; one paginated walk per group) or
 `index__all` (Sciety; the unfiltered docmaps index, one walk per run as the
-coverage probe of D-058). The Crossref `prefix` filter selects by current owner prefix, so records that
+coverage probe of D-058) or `works_by_doi__<row_id>` / `source_years__<row_id>`
+(OpenAlex, D-066; one walk per register row, each page one batch of at
+most 100 DOIs or one `group_by` response; completion rules
+`openalex_batches_exhausted` and `openalex_group_by_single_page`; the
+request sidecar records the authorisation header name with the value
+redacted). The Crossref `prefix` filter selects by current owner prefix, so records that
 changed owner with a title transfer appear under the acquiring member's
 prefix while keeping their DOI string; the row's `doi_regex` decides
 membership, never the bare prefix.
@@ -285,6 +310,7 @@ without a complete walk have `extraction_status` `incomplete` or `failed`.
 | `selected_walk_policy` | string | from `config/run.yaml` |
 | `scopes` | object | keyed `<source>/<scope>`; per scope: `walk_ids` (all), `walk_states`, `selected_walk_id`, `selection_reason`, `extraction_status` (`complete` / `incomplete` / `failed`), `completed_at`, `pages`, `items`, `completion`, `anomalies`, `recorded_at`, `software` (as below, in effect when the entry was written); a windowed scope (D-057) adds `window_set` (`date_field`, `granularity`, `first_window_start`, `reason`, `windows`) and each window sub-scope has its own entry with `window_of` and `window`; a Sciety group scope adds `index_coverage` (`status`: `in_index` / `not_in_index` / `unverified`, `docmaps_in_index`, `docmaps_walked`, `index_walk_id`, `index_retrieved_at`; D-058) and the probe scope `sciety/index__all` carries `role: coverage_probe` |
 | `sciety_index_snapshot` | object | written by the Sciety stage when the index walk is complete (D-058): `scope`, `walk_id`, `retrieved_at`, `pages`, `docmaps_total`, `page_sha256` (one digest per stored page), `groups` (docmaps per `publisher.account.id` as served, register groups and others alike) |
+| `openalex_diagnostics` | object | written by the OpenAlex diagnostics stage (D-066): `role: diagnostic`, `scopes` (per OpenAlex scope: `walk_id`, `state` `complete` / `reused` / `failed`, `reason`, `pages`, `requests`, `sha256` of every stored page), `rows_written`, `requests_used`, `request_cap`, `recorded_at`. OpenAlex scopes are not listed under `scopes` and never set a row's `extraction_status` (D-037) |
 | `software` | object | recorded at run start: `python`, `implementation`, `platform`, `executable`, `git_commit` and `git_worktree` (`clean` / `dirty`; `unavailable` when the working copy is not a Git repository). A run extended by later invocations may have been written under several commits; the per-scope `software` field records which |
 
 ## 4. Interim layer (`data/interim/`, outside Git)
@@ -409,7 +435,7 @@ gets no file and an older file is removed). Column order is fixed by
 | `reviewed_canonical_work_id` | string or empty | canonical target (`doi:10.32388/abc`) |
 | `reviewed_work_doi` | string or empty | bare lowercased canonical DOI of the target; empty for `url:`/`id:` targets |
 | `work_id`, `canonical_work_id`, `work_doi` | string | for `work_record` rows; `work_id` keeps the DOI as asserted |
-| `correspondence_basis` | string or empty | `version_stem+alias+relation` for an explicitly documented primary correspondence; empty otherwise; also applies to evaluation targets |
+| `correspondence_basis` | string or empty | `version_stem+alias+relation` for an explicitly documented primary correspondence; `is_preprint_of`, `has_preprint` or `is_preprint_of+has_preprint` for a preprint/article pair asserted by Crossref relations (D-041; the side(s) observed); empty otherwise; also applies to evaluation targets |
 | `source_evaluation_id`, `evaluation_doi`, `canonical_evaluation_id` | string or empty | evaluation identity (`doi:` when a DOI exists, otherwise `id:sciety:…`) |
 | `evaluation_url` | string or empty | Sciety output URL; never a counting key |
 | `evaluation_identity_status` | enum | `source_only`, `doi_confirmed`, `cross_source_confirmed`, `unresolved` |
@@ -455,7 +481,7 @@ counts.
 |---|---|---|
 | `row_id` | string | — |
 | `canonical_work_id`, `work_doi` | string | — |
-| `correspondence_basis` | string or empty | documented record-level correspondence basis carried from contributing work records |
+| `correspondence_basis` | string or empty | documented record-level correspondence basis carried from contributing work records (`version_stem+alias+relation`, or the D-041 pair sides `is_preprint_of` / `has_preprint` / `is_preprint_of+has_preprint`); empty when no explicit correspondence applies |
 | `included` | boolean | — |
 | `in_eligible_range` | boolean or empty | included works only: `true` when `counting_year` lies in the row's eligible range (the work enters a cell, the register summary and the deduplicated group series), `false` when it lies before `eligible_start_year` or after `eligible_end_year` (the cell is `not_applicable`; the work enters no count); empty for excluded works (D-060) |
 | `exclusion_reason` | enum or empty | `missing_event_date`, `ambiguous_cutoff_date`, `future_event`, `no_qualifying_review`, `withdrawn`, `later_version`, `register_only`, `no_journal_attribution`, `companion_item` (review report or author response deposited as a work-type record, D-050), `no_posting_record` (gated row without a posted-content record, D-060) |
@@ -496,7 +522,7 @@ remains the conservative interval of the chosen record;
 |---|---|---|
 | `issue_id` | string | unique (`DQ-001`, …) |
 | `row_id` | string | register row or `all` |
-| `issue_type` | enum | `deposition_discontinuity`, `no_review_records`, `partial_source_coverage`, `placeholder_relation`, `retrospective_deposit`, `date_semantics`, `missing_event_date`, `ambiguous_cutoff_date`, `malformed_doi`, `withdrawn_record`, `selector_no_match`, `source_not_covering`, `companion_record`, `other` |
+| `issue_type` | enum | `deposition_discontinuity`, `no_review_records`, `partial_source_coverage`, `placeholder_relation`, `retrospective_deposit`, `date_semantics`, `missing_event_date`, `ambiguous_cutoff_date`, `malformed_doi`, `withdrawn_record`, `selector_no_match`, `source_not_covering`, `companion_record`, `openalex_volume_check`, `openalex_pair_signal`, `other` |
 | `description` | string | neutral description of the issue |
 | `evidence` | string | URL, record id or test name |
 | `effect_on_counts` | string | expected direction and scope of the effect |
@@ -513,6 +539,34 @@ appends one `run` row per observed (`row_id`, `issue_type`) with
 keeping rows of other runs. `analysis_manifest.json` (same directory)
 records the cutoff, snapshot window, per-row technical state and
 diagnostics.
+
+The OpenAlex diagnostics stage (D-066; runs after `analyse`) adds its own
+`run` rows with `issue_id = DQ-<run_id>-oa-<nnn>`, `status` `observed`
+and `effect_on_counts` `none (diagnostic)`, replacing only rows of its two
+issue types for the same `run_id`:
+
+* `openalex_volume_check` — one row per quantified Crossref register row
+  whose included works were resolved in OpenAlex by DOI;
+  `n_records_affected` = included works not found in OpenAlex (0 is a
+  valid observation); `description` gives, per counting year, the row
+  count, the works found, the works whose OpenAlex `publication_year`
+  equals the counting year and — where `config/sources.yaml` lists an
+  OpenAlex source id for the row — the source's own yearly work count;
+  `walk_id` names the OpenAlex walks. A delta is a diagnostic; it never
+  corrects a series, a coverage status or a register field.
+* `openalex_pair_signal` — one row on the article row of a declared
+  `preprint_pair`: among the included works of both rows that carry no
+  Crossref correspondence (empty `correspondence_basis`, the residual
+  after D-041), the number of preprint/article pairs that map to one
+  OpenAlex work id, with the DOI pairs listed in `description`. The pair
+  is not added to `cross_platform_overlap.csv`; `correspondence_basis`
+  keeps the Crossref values only.
+
+A failed or capped OpenAlex walk produces no row (D-037: a diagnostic
+never blocks a row); the outcome is recorded in the run manifest. Because
+`analyse` replaces every run row of its `run_id`, the OpenAlex stage must
+be run again after any re-run of `analyse`; complete OpenAlex walks are
+reused, so the re-run costs no API request.
 
 ## 6. Analytical tables (`reports/tables/`)
 
@@ -585,7 +639,7 @@ only.
 | `unique_works_all_rows_by_row_year.csv` | `row_id`, `year` | per-row attribution of the all-rows `deduplicated` series (D-059 as merged into D-061): `count` = works whose earliest counting event among all rows lies in this row and year, blank when the row's own cell is not observable; carries `initiation_class`, `prc_configuration` and the row cell's status columns; one line per quantified row and year of its eligible range; attribution is relative to the rows observable in the run, so a `blocking_rows` or `excluded_rows` entry in `unique_works_all_rows_year.csv` for the same year shifts, not removes, the attributed works; sums by class equal `n_<class>_by_earliest_event` of the all-rows table; input of Figure 8 (`fig8_unique_works_by_row_stacked`: one stacked bar per published all-rows year, segments by `row_id` in descending whole-period total, rows with a whole-period total below 1,000 works merged into `Other` and listed in the footer, the year's hatch — `//` cutoff year, dotted lower bound — applied to the whole bar; segments sum to the all-rows `count`) |
 | `register_summary.csv` | `row_id` | `organisation_id`, both classes and confidences, `register_status`, `effective_register_status` (after the run-derived Copernicus fallback of D-032; equals `register_status` otherwise), `data_status`, `data_source`, `provisional`, `extraction_status`, `eligible_start_year`, `eligible_end_year`, `first_year_with_data`, `last_year_with_data`, `unique_works_to_cutoff`, `n_works_excluded`, `n_works_outside_eligible_range` (the last six are blank unless the row is quantified, complete and has a resolved coverage start; `first_year_with_data`, `last_year_with_data` and `unique_works_to_cutoff` cover the eligible range only — an included work whose counting year lies outside it enters no cell and is counted in `n_works_outside_eligible_range`, D-060) |
 | `coverage_matrix.csv` | `row_id`, `year` | `coverage` ∈ `complete`, `year_to_date`, `partial_coverage`, `partial_known_scope`, `no_data`, `not_applicable` (`year_to_date` only for a `complete` row in the cutoff year, D-061); `note` explains `partial_known_scope` (yearly lower bound) and unresolved coverage starts; EGUsphere attributed series is a yearly lower bound; `partial_year` remains independent |
-| `cross_platform_overlap.csv` | `canonical_work_id` | `row_ids` (`; `-joined), `n_rows`, `earliest_row_id`, `earliest_year`, `correspondence_basis` (`canonical_work_id`; after VeriXiv deposit confirmation and before release freeze also `is_preprint_of` / `has_preprint` for pairs resolved from the VeriXiv or the Gates Open Research record, D-041) |
+| `cross_platform_overlap.csv` | `canonical_work_id` | `row_ids` (`; `-joined), `n_rows`, `earliest_row_id`, `earliest_year`, `correspondence_basis` (`canonical_work_id` for identity by canonical identifier alone; `is_preprint_of`, `has_preprint` or `is_preprint_of+has_preprint` for a Gates Open Research / VeriXiv pair asserted by the Crossref relation on the VeriXiv record, on the Gates Open Research record or on both, D-041; `version_stem+alias+relation` where a documented alias correspondence spans rows) |
 | `qeios_indicators_by_year.csv` | `year` | `new_hosted_works` (hosted works by first posting year on or before the cutoff, withdrawn excluded, review not required), `hosted_works_with_review`, `review_dois` (distinct review identifiers dated in the year, both Qeios rows), `external_works_reviewed`, `events_registered_after_cutoff_counted`, `events_redeposited_after_cutoff_counted`, `extraction_status`; blank until both Qeios scopes are complete |
 | `evidence_features_by_platform.csv` | `row_id` | register fields `row_label`, `organisation_id`, `prc_role`, both classes and confidences, `publish_arrangement`, `review_arrangement`, `curation_arrangement`, `output_types`, the six recognition signals (`public_review_reports`, `approval_status_public`, `summary_assessment`, `version_linked_review`, `public_author_response`, `review_has_doi`), `reviewer_identity_disclosed`, `review_to_object_relation`, `register_status`, `data_status`, `data_source`, `provisional`, and the derived `binding_publication_decision` (`hybrid_public_discussion` → `true`, otherwise `false`; empty for provisional rows) |
 

@@ -111,7 +111,7 @@ class PoliteClient:
                  min_interval_seconds: float = 1.0, accept: str = "application/json",
                  transport: Transport = default_transport, sleeper: Callable[[float], None] = time.sleep,
                  clock: Callable[[], float] = time.monotonic, now_utc: Callable[[], str] | None = None,
-                 logger=None) -> None:
+                 logger=None, secret_headers: dict[str, str] | None = None) -> None:
         self.user_agent = user_agent
         self.timeout = timeout_seconds
         self.max_attempts = max_attempts_per_page
@@ -124,10 +124,18 @@ class PoliteClient:
         self._now_utc = now_utc or (lambda: time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()))
         self._last_request_at: float | None = None
         self._logger = logger
+        # Credentials travel only in the transport call.  ``headers`` (the
+        # property) is what the request sidecars persist, so a key given here
+        # never reaches the raw store, the manifests or the logs.
+        self._secret_headers = dict(secret_headers or {})
 
     @property
     def headers(self) -> dict[str, str]:
         return {"User-Agent": self.user_agent, "Accept": self.accept}
+
+    @property
+    def secret_header_names(self) -> tuple[str, ...]:
+        return tuple(sorted(self._secret_headers))
 
     def _throttle(self) -> None:
         if self._last_request_at is None:
@@ -156,7 +164,8 @@ class PoliteClient:
             sent_at = self._now_utc()
             self._last_request_at = self._clock()
             try:
-                status, headers, body = self._transport(url, self.headers, self.timeout)
+                status, headers, body = self._transport(url, {**self.headers, **self._secret_headers},
+                                                        self.timeout)
                 attempt = Attempt(number, url, sent_at, status, dict(headers), body)
             except Exception as exc:  # transport-level failure
                 attempt = Attempt(number, url, sent_at, None, {}, b"", error=f"{type(exc).__name__}: {exc}")

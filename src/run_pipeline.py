@@ -40,6 +40,9 @@ STAGES: Sequence[tuple[str, str, bool]] = (
     ("extract_sciety_evaluations", "src.extract.sciety_evaluations", False),
     ("normalise", "src.normalise.clean_and_normalise", False),
     ("analyse", "src.analyse.build_aggregates", False),
+    # D-066: diagnostic rows in data_quality_log.csv only; needs PRC_OPENALEX_API_KEY.
+    # Run it again after any re-run of analyse (which replaces the run rows of its run_id).
+    ("openalex_diagnostics", "src.extract.openalex_diagnostics", False),
     ("report", "src.report.make_reports", False),
 )
 

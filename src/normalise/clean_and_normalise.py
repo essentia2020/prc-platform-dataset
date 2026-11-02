@@ -53,6 +53,7 @@ from typing import Any, Mapping
 
 from ..common.config import RunConfig
 from ..common.correspondence import canonical_work_doi
+from ..common.preprint_pairs import PairIndexes, build_pair_index, pair_specs
 from ..common.dates import DateError, parse_partial_date
 from ..common.eligibility import canonical_evaluation_id, evaluation_identity_status, unresolved_relations
 from ..common.identifiers import IdentifierError, bare_doi, canonical_doi, canonicalise_url, normalise_doi
@@ -137,7 +138,8 @@ def _blank_record(row_id: str, entity: str, source: str) -> dict[str, str]:
 
 
 # -------------------------------------------------------------- Crossref works
-def work_records(row: Mapping[str, Any], interim_rows: list[Mapping[str, str]]) -> list[dict[str, str]]:
+def work_records(row: Mapping[str, Any], interim_rows: list[Mapping[str, str]],
+                 pairs: PairIndexes | None = None) -> list[dict[str, str]]:
     row_id = str(row["row_id"])
     pattern = row.get("doi_version_pattern") or None
     chain = _date_field_chain(row.get("counting_event_date_field"), ("posted", "issued"))
@@ -147,7 +149,7 @@ def work_records(row: Mapping[str, Any], interim_rows: list[Mapping[str, str]]) 
             continue
         doi = normalise_doi(r["doi"])
         asserted = normalise_doi(r.get("doi_original") or r["doi"])  # keeps a repeated slash if deposited so
-        canonical, basis = canonical_work_doi(row, doi)
+        canonical, basis = canonical_work_doi(row, doi, pairs)
         rec = _blank_record(row_id, "work_record", "crossref")
         # The event kind follows the row's counting event, not the Crossref
         # type: an F1000-style version-1 article and a Copernicus discussion
@@ -208,8 +210,8 @@ def _target_identifier(r: Mapping[str, str], pattern: str | None) -> tuple[str, 
     return _doi_id(doi), _doi_id(canonical_doi(doi, pattern)), ""
 
 
-def review_records(row: Mapping[str, Any], interim_rows: list[Mapping[str, str]],
-                   cross_source_dois: set[str]) -> list[dict[str, str]]:
+def review_records(row: Mapping[str, Any], interim_rows: list[Mapping[str, str]], cross_source_dois: set[str],
+                   pairs: PairIndexes | None = None) -> list[dict[str, str]]:
     row_id = str(row["row_id"])
     pattern = row.get("doi_version_pattern") or None
     out: list[dict[str, str]] = []
@@ -243,7 +245,7 @@ def review_records(row: Mapping[str, Any], interim_rows: list[Mapping[str, str]]
         wid, cwid, flag = _target_identifier(r, pattern)
         basis = ""
         if not flag and wid.startswith("doi:"):
-            canonical, basis = canonical_work_doi(row, bare_doi(wid))
+            canonical, basis = canonical_work_doi(row, bare_doi(wid), pairs)
             cwid = _doi_id(canonical)
         rel.update(
             source_record_id=doi, source_record_type=r.get("type") or "peer-review", review_record_id=doi,
@@ -350,7 +352,8 @@ def _cross_source_dois(row: Mapping[str, Any], state: RowState, interim_root: Pa
     return crossref, sciety
 
 
-def build_row_records(row: Mapping[str, Any], state: RowState, interim_root: Path) -> list[dict[str, str]]:
+def build_row_records(row: Mapping[str, Any], state: RowState, interim_root: Path,
+                      pairs: PairIndexes | None = None) -> list[dict[str, str]]:
     """All record lines of one row from its complete scopes (primary sources only)."""
     row_id = str(row["row_id"])
     crossref_dois, sciety_dois = _cross_source_dois(row, state, interim_root)
@@ -360,9 +363,9 @@ def build_row_records(row: Mapping[str, Any], state: RowState, interim_root: Pat
     sciety_role = (selector.get("sciety") or {}).get("role", "primary") if isinstance(selector, Mapping) else "primary"
     if crossref_role != "cross_check" and any(k.startswith("crossref/") for k in state.primary_scopes):
         works = _read_if_exists(interim_root / f"crossref_works__{row_id}.csv")
-        records.extend(work_records(row, works))
+        records.extend(work_records(row, works, pairs))
         reviews = _read_if_exists(interim_root / f"crossref_peer_reviews__{row_id}.csv")
-        records.extend(review_records(row, reviews, sciety_dois))
+        records.extend(review_records(row, reviews, sciety_dois, pairs))
     if sciety_role != "cross_check" and any(k.startswith("sciety/") for k in state.primary_scopes):
         for path in _sciety_files(row, interim_root):
             records.extend(sciety_records(row, _read_if_exists(path), crossref_dois))
@@ -376,6 +379,24 @@ def build_row_records(row: Mapping[str, Any], state: RowState, interim_root: Pat
     return records
 
 
+def build_pair_indexes(platforms: list[Mapping[str, Any]], states: Mapping[str, RowState],
+                       interim_root: Path) -> PairIndexes:
+    """D-041 pair indexes from the interim work records of both rows of each declared pair.
+
+    A row contributes edges only when its extraction is complete; a pair
+    asserted by the complete side alone still counts (either side suffices).
+    """
+    indexes = []
+    for spec in pair_specs(platforms):
+        def works(row_id: str) -> list[Mapping[str, str]]:
+            state = states.get(row_id)
+            if state is None or state.extraction_status != "complete":
+                return []
+            return _read_if_exists(interim_root / f"crossref_works__{row_id}.csv")
+        indexes.append(build_pair_index(spec, works(spec.preprint_row), works(spec.article_row)))
+    return PairIndexes(indexes)
+
+
 def run(run_config: RunConfig, sources_config: Mapping[str, Any], platforms: list[Mapping[str, Any]], logger, *,
         interim_root=None, manifest_root: Path | None = None, processed_root: Path | None = None,
         **_ignored) -> dict[str, Any]:
@@ -384,7 +405,12 @@ def run(run_config: RunConfig, sources_config: Mapping[str, Any], platforms: lis
     processed_root = Path(processed_root or DEFAULT_PROCESSED_ROOT)
     processed_root.mkdir(parents=True, exist_ok=True)
     _, states = load_row_states(manifest_root, run_config.run_id, platforms)
-    summary: dict[str, Any] = {"run_id": run_config.run_id, "rows": {}}
+    pairs = build_pair_indexes(platforms, states, interim_root)
+    summary: dict[str, Any] = {"run_id": run_config.run_id, "rows": {}, "preprint_pairs": pairs.summary()}
+    for index in pairs.indexes:
+        logger.event("normalise_preprint_pairs", **{k: v for k, v in index.summary().items() if k != "conflicts"})
+        for conflict in index.conflicts:
+            logger.event("normalise_preprint_pair_conflict", **conflict)
     for row in platforms:
         row_id = str(row["row_id"])
         state = states[row_id]
@@ -400,7 +426,7 @@ def run(run_config: RunConfig, sources_config: Mapping[str, Any], platforms: lis
             logger.event("normalise_row_blocked", row_id=row_id, extraction_status=state.extraction_status,
                          blocking_scopes=state.blocking_scopes)
             continue
-        records = build_row_records(row, state, interim_root)
+        records = build_row_records(row, state, interim_root, pairs)
         n = write_csv(path, RECORD_COLUMNS, records)
         counts = {k: sum(1 for r in records if r["row_entity_type"] == k)
                   for k in ("work_record", "evaluation_record", "evaluation_relation")}

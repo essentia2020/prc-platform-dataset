@@ -106,7 +106,7 @@ def test_unknown_flag_is_a_hard_failure(tmp_path, monkeypatch):
     row = {"row_id": "x", "extraction_selector": {"crossref": {}}, "counting_event": "first_public_posting"}
     state = RowState(row_id="x", register_status="quantified", primary_scopes={"crossref/works__10.1__posted-content": "complete"})
     (tmp_path / "crossref_works__x.csv").write_text("")
-    monkeypatch.setattr(mod, "work_records", lambda row, rows: [dict.fromkeys(RECORD_COLUMNS, "") | {
+    monkeypatch.setattr(mod, "work_records", lambda row, rows, pairs=None: [dict.fromkeys(RECORD_COLUMNS, "") | {
         "row_id": "x", "row_entity_type": "work_record", "source": "crossref", "record_flag": "bogus"}])
     with pytest.raises(NormalisationError):
         build_row_records(row, state, tmp_path)
