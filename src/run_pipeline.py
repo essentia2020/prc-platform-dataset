@@ -48,6 +48,8 @@ STAGES: Sequence[tuple[str, str, bool]] = (
 
 STAGE_NAMES: Sequence[str] = tuple(name for name, _, _ in STAGES)
 
+FORCE_WALK_STAGES = frozenset(stage[0] for stage in STAGES if stage[0].startswith("extract_")) | {"openalex_diagnostics"}
+
 
 def _resolve(module_path: str, optional: bool) -> Callable | None:
     try:
@@ -101,7 +103,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             continue
         logger.event("stage_start", stage=name)
         print(f"[run ] {name}")
-        options = {"force_new_walk": True} if (args.force_new_walk and name.startswith("extract_")) else {}
+        options = {"force_new_walk": True} if (args.force_new_walk and name in FORCE_WALK_STAGES) else {}
         try:
             run(run_config, sources_config, platforms, logger, **options)
         except Exception as exc:  # a stage failure stops the pipeline loudly
