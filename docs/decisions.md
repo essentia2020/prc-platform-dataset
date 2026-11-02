@@ -553,6 +553,9 @@ completion of its evidence checks; outstanding checks are stated explicitly.
   reserved DOI before release freeze. Omit these fields until their real values are available;
   no placeholders in `CITATION.cff`.
 - **Evidence:** not applicable (release metadata decision).
+- **Amended 2026-11-02:** the repository was published before the release
+  freeze (D-056 note below), so `repository-code` is added to
+  `CITATION.cff` now; the `doi` field still waits for the reserved DOI.
 
 ## Q-3: Provisional flag
 
@@ -1167,12 +1170,12 @@ The Crossref role of the row stays `cross_check`; Sciety remains primary.
   commit dbb648e.
 
 ## D-056: Harvested records leave the repository; a release archive per run
-**Context:** `data/processed/records_*.csv`, `works_included.csv`,
+- **Context:** `data/processed/records_*.csv`, `works_included.csv`,
 `analysis_manifest.json` and `normalisation_summary.json` were never
 tracked; `git add -A` after the structural fixes would have committed them.
 They are third-party content of tens of megabytes per run, not the
 repository's own text, and D-005 already keeps raw responses outside Git.
-**Decision:** tracked: `config/`, `docs/`, `data/processed/data_quality_log.csv`
+- **Decision:** tracked: `config/`, `docs/`, `data/processed/data_quality_log.csv`
 (presets and run rows), `data/manifests/` (page digests), `reports/tables/`,
 `reports/figures/`, the checksums file. Release archive, one per run,
 deposited on Zenodo and linked to the release: `data/processed/records_*.csv`,
@@ -1181,6 +1184,12 @@ deposited on Zenodo and linked to the release: `data/processed/records_*.csv`,
 and the SHA-256 of every file go into README (Data availability) and the
 checksums file. `.gitignore` lists the four processed-layer families. No
 history rewrite is involved (D-004, D-042): the files were never committed.
+- Repository published 2026-11-02 at
+  https://github.com/essentia2020/prc-platform-dataset; HEAD at
+  publication d0b4806. Release archive of `run_20261102_01` under
+  10.5281/zenodo.23891928 (`isSupplementTo` the repository, resource type
+  Software). Branch ruleset on `main`: no force pushes, no deletions,
+  linear history.
 
 ## D-057: Windowed retrieval for `works__10.5256__peer-review` (D-045 option c)
 Two shape-consistent walks of this scope on 2026-10-27 (31 non-empty pages and an

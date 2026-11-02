@@ -288,9 +288,12 @@ superseded by this one.
 
 ## Citation
 
-Citation metadata is in `CITATION.cff`. The dataset is a supplement to the
-conference presentation listed there under `references`
-(`isSupplementTo`); the dataset DOI is added at the release freeze.
+Citation metadata is in `CITATION.cff`. Source code and documentation:
+<https://github.com/essentia2020/prc-platform-dataset>; the release
+archive of each run is on Zenodo (see Data availability). The dataset is
+a supplement to the seminar presentation listed there under
+`references` (`isSupplementTo`); the dataset DOI is added at the release
+freeze.
 
 ## Authorship and tooling
 

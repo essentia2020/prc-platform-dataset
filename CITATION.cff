@@ -8,8 +8,10 @@ authors:
     given-names: Dmitry
     orcid: "https://orcid.org/0000-0001-7890-7532"
     affiliation: "Centre for Science and Technology Studies (CWTS), Leiden University"
-license: "CC-BY-4.0"
-license-url: "https://creativecommons.org/licenses/by/4.0/"
+license:
+    - CC-BY-4.0
+    - MIT
+repository-code: "https://github.com/essentia2020/prc-platform-dataset"
 abstract: >-
   An open, reproducible dataset of research works flowing through
   Publish-Review-Curate (PRC) platforms. Platforms are classified on two
