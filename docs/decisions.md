@@ -1198,9 +1198,10 @@ commit of each extension.
   (delta −39 of 212,958) and `works__10.7554__peer-review` (delta −30 of
   84,395 against a tolerance of 25) both closed with a stable total-results,
   the cursor-step loss of this decision, and are retrieved from this run on
-  as monthly issued-date windows (quarters would hold 5,400–6,700 and
-  3,200–4,700 records; months hold 1,800–2,300 and 1,000–1,600). The D-045
-  override for `works__10.7554__peer-review` is withdrawn: its stated cause,
+    as monthly issued-date windows (quarters were projected at 5,400–6,700
+  and 3,200–4,700 records; the 131 and 179 monthly windows walked in this
+  run hold at most 2,618 and 1,758 records, at most three non-empty pages
+  each). The D-045 override for `works__10.7554__peer-review` is withdrawn: its stated cause,
   deposition during the walk, is not what the walk observed; two overrides
   remain (`works__10.12688__journal-article`, `works__10.5194__posted-content`).
   `works__10.21956__peer-review` (delta +1, total-results 22,652 → 22,653)
