@@ -545,15 +545,16 @@ The OpenAlex diagnostics stage (D-066; runs after `analyse`) adds its own
 and `effect_on_counts` `none (diagnostic)`, replacing only rows of its two
 issue types for the same `run_id`:
 
-* `openalex_volume_check` — one row per quantified Crossref register row
-  whose included works were resolved in OpenAlex by DOI;
-  `n_records_affected` = included works not found in OpenAlex (0 is a
-  valid observation); `description` gives, per counting year, the row
-  count, the works found, the works whose OpenAlex `publication_year`
-  equals the counting year and — where `config/sources.yaml` lists an
-  OpenAlex source id for the row — the source's own yearly work count;
-  `walk_id` names the OpenAlex walks. A delta is a diagnostic; it never
-  corrects a series, a coverage status or a register field.
+* `openalex_volume_check` — one row per quantified Crossref register 
+  row whose included works were resolved in OpenAlex by the DOI of their 
+  counting record (`counting_record_id`, version suffix included); 
+  `n_records_affected` (0 is a valid observation) is the number of 
+  included works with no OpenAlex record 
+  under that primary DOI. A missing record is expected where OpenAlex keeps 
+  one record per work rather than per version (Access Microbiology, eLife 
+  reviewed preprints) or merges a record into its final version (Copernicus 
+  discussion papers), so the figure is read together with the walk's 
+  `items_total` and is a diagnostic only.
 * `openalex_pair_signal` — one row on the article row of a declared
   `preprint_pair`: among the included works of both rows that carry no
   Crossref correspondence (empty `correspondence_basis`, the residual

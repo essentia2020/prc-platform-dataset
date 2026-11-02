@@ -931,7 +931,8 @@ completion of its evidence checks; outstanding checks are stated explicitly.
 - **Question:** On what basis does `cross_platform_overlap.csv` establish
   that two rows count the same work?
 - **Decision:** `canonical_work_id` equality now, recorded in the
-  `correspondence_basis` column. After VeriXiv deposit confirmation and before release freeze the Gates Open Research /
+  `correspondence_basis` column. After VeriXiv deposit confirmation and before 
+  release freeze the Gates Open Research /
   VeriXiv pairs are resolved from both sides — `is-preprint-of` on the
   VeriXiv record and `has-preprint` on the Gates Open Research record —
   because reciprocal relations were partially missing from the Crossref REST
@@ -940,7 +941,7 @@ completion of its evidence checks; outstanding checks are stated explicitly.
   `correspondence_basis`. OpenAlex may be used only as a diagnostic in the
   data-quality log, never as a source for `cross_platform_overlap.csv`.
 - **Implementation (2026-11-02):** pairs come from Crossref relations only:
-  `is-preprint-of` on the VeriXiv posted-content record and `has-preprint`
+- `is-preprint-of` on the VeriXiv posted-content record and `has-preprint`
   on the Gates Open Research version-1 record. A pair asserted by either
   side counts; `correspondence_basis` records the sides observed
   (`is_preprint_of`, `has_preprint`, `is_preprint_of+has_preprint`). The
@@ -956,7 +957,8 @@ completion of its evidence checks; outstanding checks are stated explicitly.
   on the VeriXiv row; built in `src/common/preprint_pairs.py` from
   `relation_json` of both rows' interim work records. The residual (no
   relation from either side) is the input of the OpenAlex pair signal of
-  D-066, which never establishes a pair.
+  D-066, which never establishes a pair and in run_20261102_01 found none
+  on the residual.
 - **Evidence:** `tests/test_preprint_pairs.py` (7 tests: one side each,
   both sides, no relation with identical titles, conflict, foreign and
   non-version-1 targets); `normalisation_summary.json` → `preprint_pairs`
@@ -1421,9 +1423,10 @@ The descriptive `doi_pattern` of `access_microbiology` was tightened to `^10\.10
 - **Decision:** a. Exactly three functions. Each diagnostic result is one row
   in `data_quality_log.csv`; nothing from OpenAlex enters `records_*.csv`,
   `works_included.csv`, any table or figure.
-  - (a) Volume check. For every quantified Crossref row, the included
-    works of the run are resolved in OpenAlex by DOI (batches of at most
-    100 per request) and counted per row and counting year; where
+  - (a) Volume check. For every quantified Crossref row, the included works 
+    of the run are resolved in OpenAlex by the DOI of their counting record 
+    (counting_record_id; version suffix included — OpenAlex has no record for 
+    a version-stripped stem) and counted per row and counting year; where
     `config/sources.yaml` lists an OpenAlex source id for the row
     (`openalex.source_ids`), the source's yearly work count is retrieved
     as well. The deltas against the row series are recorded as one run row
@@ -1448,6 +1451,34 @@ The descriptive `doi_pattern` of `access_microbiology` was tightened to `^10\.10
     `tools/append_dq_rows.py`) names the snapshot date and the dump
     location once the enrichment is run; no run row exists for it, because
     no `run_id` applies.
+- **Implemented 2026-11-02 (run_20261102_01).** Code 78e64cd (lookup by 
+  counting-record DOI), 668b95a (--force-new-walk reaches the stage). 
+  The first pass of the stage (walks w01) resolved the canonical stems 
+  from work_doi and found nothing for every row with versioned DOIs; 
+  its rows were discarded, the walks stay in the manifests as the trace. 
+  Results come from walks w02.
+  - Findings.
+    - (a) Volume check, 32 rows. F1000-type rows resolve almost completely: 
+      Wellcome Open Research 6 of 4 067 not found, Open Research Europe 3 
+      of 1 577, F1000Research 33 of 11 964; publication year agrees with the 
+      counting year in 99.9% of the found works. Rows counted on versioned 
+      DOIs resolve partially: Access Microbiology 563 of 850 not found, eLife 
+      reviewed preprints 209 of 4 043 — OpenAlex carries one record per work, 
+      not per version. Copernicus: 67 054 DOIs requested, 66 852 works returned, 
+      9 835 matched. OpenAlex answers a discussion-paper DOI with the record of 
+      the merged final article (primary DOI 10.5194/acp-…, 95 of 100 on the 
+      first page); the unmatched 57 219 are therefore merges, not gaps, and the 
+      matched 9 835 are discussion papers without a published article. A volume 
+      check for Copernicus needs the source-year counts, i.e. OpenAlex source 
+      ids of the discussion journals in openalex.source_ids. The map is still 
+      empty, so no row has source counts yet.
+    - (b) Pair signal on the residual of D-041: 80 VeriXiv and 509 Gates Open 
+      Research works resolved, 0 pairs share an OpenAlex work id. 
+      OpenAlex does not merge a VeriXiv preprint with its Gates version; 
+      the residual cannot be reduced from this source.
+      Follow-ups. (1) Row text for rows where the walk returned near as many works as DOIs requested but few matched, naming the merge; (2) fill openalex.source_ids for Copernicus discussion journals, Access Microbiology and eLife if a source-level check is wanted; (3) docs/limitations.md: one sentence that "not found" in the OpenAlex volume check means "no record under this DOI", which for versioned and merged records is expected.
+
+
 - **Access:** OpenAlex requires an API key since 2026-02-13 (`mailto` is
   ignored). The key is read from `PRC_OPENALEX_API_KEY`, never from a
   tracked file, and is sent in the `Authorization` header; the request

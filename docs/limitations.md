@@ -206,7 +206,12 @@ list is completed before the release freeze.
   corrects a series, a coverage status or a register field. OpenAlex's
   ingestion lag and its own source assignment mean that a work absent
   from OpenAlex or counted under another year is expected for recent
-  years; the rows are observations, not errors.
+  years; the rows are observations, not errors. "Not found" in the 
+  OpenAlex volume check means "no record under this DOI", which for 
+  versioned and merged records is expected: Access Microbiology and 
+  eLife reviewed preprints are counted on versioned DOIs, and OpenAlex 
+  answers a Copernicus discussion-paper DOI with the record of the merged 
+  final article (run_20261102_01: 57 219 of 67 054).
 - Seven venues on the F1000 infrastructure entered the register as
   provisional rows after run_20261026_01 found their works and reviews in
   the complete 10.12688 / 10.21956 walks (D-052): Stosunki Międzynarodowe –
