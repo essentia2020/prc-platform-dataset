@@ -2,7 +2,7 @@
 
 Analysis cutoff: 2026-09-30; year 2026 is year_to_date (not annualised).
 Additivity: `row_series`. No all-row total is published in this table.
-Snapshot: Crossref/Sciety retrieval finished 2026-10-30T14:28:37Z.
+Snapshot: Crossref/Sciety retrieval finished 2026-11-02T12:08:34Z.
 Empty cells are not zeros: see `observation_status` and `extraction_status` in the CSV.
 
 | row_id | year | year_label | count | partial_year | extraction_status | source_observability_status | observation_status | coverage | temporal_coverage_status | additivity |
@@ -58,7 +58,7 @@ Empty cells are not zeros: see `observation_status` and `extraction_status` in t
 | f1000research | 2023 | 2023 | 1308 | false | complete | observable | observed | complete | complete | row_series |
 | f1000research | 2024 | 2024 | 1223 | false | complete | observable | observed | complete | complete | row_series |
 | f1000research | 2025 | 2025 | 1157 | false | complete | observable | observed | complete | complete | row_series |
-| f1000research | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 1348 | true | complete | observable | observed | year_to_date | partial | row_series |
+| f1000research | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 1350 | true | complete | observable | observed | year_to_date | partial | row_series |
 | wellcome_open_research | 2001 | 2001 |  | false | complete | observable | not_applicable | not_applicable | not_assessable | row_series |
 | wellcome_open_research | 2002 | 2002 |  | false | complete | observable | not_applicable | not_applicable | not_assessable | row_series |
 | wellcome_open_research | 2003 | 2003 |  | false | complete | observable | not_applicable | not_applicable | not_assessable | row_series |
@@ -161,8 +161,8 @@ Empty cells are not zeros: see `observation_status` and `extraction_status` in t
 | open_research_europe | 2022 | 2022 | 147 | false | complete | observable | observed | complete | complete | row_series |
 | open_research_europe | 2023 | 2023 | 220 | false | complete | observable | observed | complete | complete | row_series |
 | open_research_europe | 2024 | 2024 | 275 | false | complete | observable | observed | complete | complete | row_series |
-| open_research_europe | 2025 | 2025 | 395 | false | complete | observable | observed | complete | complete | row_series |
-| open_research_europe | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 380 | true | complete | observable | observed | year_to_date | partial | row_series |
+| open_research_europe | 2025 | 2025 | 397 | false | complete | observable | observed | complete | complete | row_series |
+| open_research_europe | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 382 | true | complete | observable | observed | year_to_date | partial | row_series |
 | hrb_open_research | 2001 | 2001 |  | false | complete | observable | not_applicable | not_applicable | not_assessable | row_series |
 | hrb_open_research | 2002 | 2002 |  | false | complete | observable | not_applicable | not_applicable | not_assessable | row_series |
 | hrb_open_research | 2003 | 2003 |  | false | complete | observable | not_applicable | not_applicable | not_assessable | row_series |
@@ -550,9 +550,9 @@ Empty cells are not zeros: see `observation_status` and `extraction_status` in t
 | metaror | 2021 | 2021 |  | false | complete | observable | not_applicable | not_applicable | not_assessable | row_series |
 | metaror | 2022 | 2022 |  | false | complete | observable | not_applicable | not_applicable | not_assessable | row_series |
 | metaror | 2023 | 2023 |  | false | complete | observable | not_applicable | not_applicable | not_assessable | row_series |
-| metaror | 2024 | 2024 |  | false | complete | source_not_covering | not_observable | no_data | not_assessable | row_series |
-| metaror | 2025 | 2025 |  | false | complete | source_not_covering | not_observable | no_data | not_assessable | row_series |
-| metaror | 2026 | 2026 (year_to_date, cutoff 2026-09-30) |  | true | complete | source_not_covering | not_observable | no_data | not_assessable | row_series |
+| metaror | 2024 | 2024 | 3 | false | complete | observable | observed | complete | complete | row_series |
+| metaror | 2025 | 2025 | 17 | false | complete | observable | observed | complete | complete | row_series |
+| metaror | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 21 | true | complete | observable | observed | year_to_date | partial | row_series |
 | pci_recommendations | 2001 | 2001 |  | false | complete | observable | not_applicable | not_applicable | not_assessable | row_series |
 | pci_recommendations | 2002 | 2002 |  | false | complete | observable | not_applicable | not_applicable | not_assessable | row_series |
 | pci_recommendations | 2003 | 2003 |  | false | complete | observable | not_applicable | not_applicable | not_assessable | row_series |
@@ -630,7 +630,7 @@ Empty cells are not zeros: see `observation_status` and `extraction_status` in t
 | copernicus_interactive_public_peer_review | 2023 | 2023 | 4216 | false | complete | partial_known_scope | observed | partial_known_scope | partial | row_series |
 | copernicus_interactive_public_peer_review | 2024 | 2024 | 4330 | false | complete | partial_known_scope | observed | partial_known_scope | partial | row_series |
 | copernicus_interactive_public_peer_review | 2025 | 2025 | 5110 | false | complete | partial_known_scope | observed | partial_known_scope | partial | row_series |
-| copernicus_interactive_public_peer_review | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 4246 | true | complete | partial_known_scope | observed | partial_known_scope | partial | row_series |
+| copernicus_interactive_public_peer_review | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 4294 | true | complete | partial_known_scope | observed | partial_known_scope | partial | row_series |
 | jmirx_med | 2001 | 2001 |  | false | complete | observable | not_applicable | not_applicable | not_assessable | row_series |
 | jmirx_med | 2002 | 2002 |  | false | complete | observable | not_applicable | not_applicable | not_assessable | row_series |
 | jmirx_med | 2003 | 2003 |  | false | complete | observable | not_applicable | not_applicable | not_assessable | row_series |
@@ -701,14 +701,14 @@ Empty cells are not zeros: see `observation_status` and `extraction_status` in t
 | review_commons | 2016 | 2016 |  | false | complete | observable | not_applicable | not_applicable | not_assessable | row_series |
 | review_commons | 2017 | 2017 |  | false | complete | observable | not_applicable | not_applicable | not_assessable | row_series |
 | review_commons | 2018 | 2018 |  | false | complete | observable | not_applicable | not_applicable | not_assessable | row_series |
-| review_commons | 2019 | 2019 |  | false | complete | source_not_covering | not_observable | no_data | not_assessable | row_series |
-| review_commons | 2020 | 2020 |  | false | complete | source_not_covering | not_observable | no_data | not_assessable | row_series |
-| review_commons | 2021 | 2021 |  | false | complete | source_not_covering | not_observable | no_data | not_assessable | row_series |
-| review_commons | 2022 | 2022 |  | false | complete | source_not_covering | not_observable | no_data | not_assessable | row_series |
-| review_commons | 2023 | 2023 |  | false | complete | source_not_covering | not_observable | no_data | not_assessable | row_series |
-| review_commons | 2024 | 2024 |  | false | complete | source_not_covering | not_observable | no_data | not_assessable | row_series |
-| review_commons | 2025 | 2025 |  | false | complete | source_not_covering | not_observable | no_data | not_assessable | row_series |
-| review_commons | 2026 | 2026 (year_to_date, cutoff 2026-09-30) |  | true | complete | source_not_covering | not_observable | no_data | not_assessable | row_series |
+| review_commons | 2019 | 2019 |  | false | complete | observable | not_applicable | not_applicable | not_assessable | row_series |
+| review_commons | 2020 | 2020 | 82 | false | complete | observable | observed | complete | complete | row_series |
+| review_commons | 2021 | 2021 | 138 | false | complete | observable | observed | complete | complete | row_series |
+| review_commons | 2022 | 2022 | 234 | false | complete | observable | observed | complete | complete | row_series |
+| review_commons | 2023 | 2023 | 290 | false | complete | observable | observed | complete | complete | row_series |
+| review_commons | 2024 | 2024 | 257 | false | complete | observable | observed | complete | complete | row_series |
+| review_commons | 2025 | 2025 | 262 | false | complete | observable | observed | complete | complete | row_series |
+| review_commons | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 183 | true | complete | observable | observed | year_to_date | partial | row_series |
 | peerref | 2001 | 2001 |  | false | complete | observable | not_applicable | not_applicable | not_assessable | row_series |
 | peerref | 2002 | 2002 |  | false | complete | observable | not_applicable | not_applicable | not_assessable | row_series |
 | peerref | 2003 | 2003 |  | false | complete | observable | not_applicable | not_applicable | not_assessable | row_series |
@@ -1069,10 +1069,10 @@ Empty cells are not zeros: see `observation_status` and `extraction_status` in t
 | the_unjournal | 2020 | 2020 |  | false | complete | observable | not_applicable | not_applicable | not_assessable | row_series |
 | the_unjournal | 2021 | 2021 |  | false | complete | observable | not_applicable | not_applicable | not_assessable | row_series |
 | the_unjournal | 2022 | 2022 |  | false | complete | observable | not_applicable | not_applicable | not_assessable | row_series |
-| the_unjournal | 2023 | 2023 |  | false | complete | source_not_covering | not_observable | no_data | not_assessable | row_series |
-| the_unjournal | 2024 | 2024 |  | false | complete | source_not_covering | not_observable | no_data | not_assessable | row_series |
-| the_unjournal | 2025 | 2025 |  | false | complete | source_not_covering | not_observable | no_data | not_assessable | row_series |
-| the_unjournal | 2026 | 2026 (year_to_date, cutoff 2026-09-30) |  | true | complete | source_not_covering | not_observable | no_data | not_assessable | row_series |
+| the_unjournal | 2023 | 2023 | 11 | false | complete | observable | observed | partial_coverage | partial | row_series |
+| the_unjournal | 2024 | 2024 | 12 | false | complete | observable | observed | partial_coverage | partial | row_series |
+| the_unjournal | 2025 | 2025 | 11 | false | complete | observable | observed | partial_coverage | partial | row_series |
+| the_unjournal | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 2 | true | complete | observable | observed | partial_coverage | partial | row_series |
 | scienceopen_reviews | 2001 | 2001 |  | false | not_applicable | observable | register_only | not_applicable | not_assessable | row_series |
 | scienceopen_reviews | 2002 | 2002 |  | false | not_applicable | observable | register_only | not_applicable | not_assessable | row_series |
 | scienceopen_reviews | 2003 | 2003 |  | false | not_applicable | observable | register_only | not_applicable | not_assessable | row_series |

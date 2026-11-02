@@ -2,7 +2,7 @@
 
 Analysis cutoff: 2026-09-30; year 2026 is year_to_date (not annualised).
 Additivity: `deduplicated`. No all-row total is published in this table.
-Snapshot: Crossref/Sciety retrieval finished 2026-10-30T14:28:37Z.
+Snapshot: Crossref/Sciety retrieval finished 2026-11-02T12:08:34Z.
 Empty cells are not zeros: see `observation_status` and `extraction_status` in the CSV.
 A canonical work counts once per group, in the year of its earliest counting event.
 
@@ -26,14 +26,14 @@ A canonical work counts once per group, in the year of its earliest counting eve
 | author_initiated | 2016 | 2016 | 4491 | false | complete | observable | observed | complete | complete | deduplicated |  |  |  |
 | author_initiated | 2017 | 2017 | 4610 | false | complete | observable | observed | complete | complete | deduplicated |  |  |  |
 | author_initiated | 2018 | 2018 | 5433 | false | complete | observable | observed | complete | complete | deduplicated |  |  |  |
-| author_initiated | 2019 | 2019 | 5628 | false | complete | observable | observed | partial_coverage | partial | deduplicated |  | qeios_hosted_works:partial_coverage | review_commons:source_not_covering |
-| author_initiated | 2020 | 2020 | 6711 | false | complete | observable | observed | partial_coverage | partial | deduplicated |  | qeios_hosted_works:partial_coverage | review_commons:source_not_covering |
-| author_initiated | 2021 | 2021 | 6659 | false | complete | observable | observed | partial_coverage | partial | deduplicated |  | qeios_hosted_works:partial_coverage | review_commons:source_not_covering |
-| author_initiated | 2022 | 2022 | 7122 | false | complete | partial_known_scope | observed | partial_coverage | partial | deduplicated |  | copernicus_interactive_public_peer_review:partial_known_scope; qeios_hosted_works:partial_coverage | peerref:source_not_covering; review_commons:source_not_covering |
-| author_initiated | 2023 | 2023 | 10203 | false | complete | partial_known_scope | observed | partial_coverage | partial | deduplicated |  | copernicus_interactive_public_peer_review:partial_known_scope; qeios_hosted_works:partial_coverage | peerref:source_not_covering; review_commons:source_not_covering |
-| author_initiated | 2024 | 2024 | 10634 | false | complete | partial_known_scope | observed | partial_coverage | partial | deduplicated |  | copernicus_interactive_public_peer_review:partial_known_scope; qeios_hosted_works:partial_coverage | metaror:source_not_covering; peerref:source_not_covering; review_commons:source_not_covering |
-| author_initiated | 2025 | 2025 | 10324 | false | complete | partial_known_scope | observed | partial_coverage | partial | deduplicated |  | copernicus_interactive_public_peer_review:partial_known_scope; qeios_hosted_works:partial_coverage | metaror:source_not_covering; peerref:source_not_covering; review_commons:source_not_covering |
-| author_initiated | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 8637 | true | complete | partial_known_scope | observed | partial_coverage | partial | deduplicated |  | copernicus_interactive_public_peer_review:partial_known_scope; qeios_hosted_works:partial_coverage | metaror:source_not_covering; peerref:source_not_covering; review_commons:source_not_covering |
+| author_initiated | 2019 | 2019 | 5628 | false | complete | observable | observed | partial_coverage | partial | deduplicated |  | qeios_hosted_works:partial_coverage |  |
+| author_initiated | 2020 | 2020 | 6793 | false | complete | observable | observed | partial_coverage | partial | deduplicated |  | qeios_hosted_works:partial_coverage |  |
+| author_initiated | 2021 | 2021 | 6797 | false | complete | observable | observed | partial_coverage | partial | deduplicated |  | qeios_hosted_works:partial_coverage |  |
+| author_initiated | 2022 | 2022 | 7356 | false | complete | partial_known_scope | observed | partial_coverage | partial | deduplicated |  | copernicus_interactive_public_peer_review:partial_known_scope; qeios_hosted_works:partial_coverage | peerref:source_not_covering |
+| author_initiated | 2023 | 2023 | 10493 | false | complete | partial_known_scope | observed | partial_coverage | partial | deduplicated |  | copernicus_interactive_public_peer_review:partial_known_scope; qeios_hosted_works:partial_coverage | peerref:source_not_covering |
+| author_initiated | 2024 | 2024 | 10894 | false | complete | partial_known_scope | observed | partial_coverage | partial | deduplicated |  | copernicus_interactive_public_peer_review:partial_known_scope; qeios_hosted_works:partial_coverage | peerref:source_not_covering |
+| author_initiated | 2025 | 2025 | 10605 | false | complete | partial_known_scope | observed | partial_coverage | partial | deduplicated |  | copernicus_interactive_public_peer_review:partial_known_scope; qeios_hosted_works:partial_coverage | peerref:source_not_covering |
+| author_initiated | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 8893 | true | complete | partial_known_scope | observed | partial_coverage | partial | deduplicated |  | copernicus_interactive_public_peer_review:partial_known_scope; qeios_hosted_works:partial_coverage | peerref:source_not_covering |
 | community_initiated | 2018 | 2018 | 13 | false | complete | observable | observed | partial_coverage | partial | deduplicated |  | prelights:partial_coverage |  |
 | community_initiated | 2019 | 2019 | 265 | false | complete | observable | observed | partial_coverage | partial | deduplicated |  | prelights:partial_coverage; prereview:partial_coverage |  |
 | community_initiated | 2020 | 2020 | 502 | false | complete | observable | observed | partial_coverage | partial | deduplicated |  | prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage |  |
@@ -46,23 +46,23 @@ A canonical work counts once per group, in the year of its earliest counting eve
 | mixed | 2020 | 2020 | 5 | false | complete | observable | observed | complete | complete | deduplicated |  |  |  |
 | mixed | 2021 | 2021 | 61 | false | complete | observable | observed | complete | complete | deduplicated |  |  |  |
 | mixed | 2022 | 2022 | 45 | false | complete | observable | observed | complete | complete | deduplicated |  |  |  |
-| mixed | 2023 | 2023 | 20 | false | complete | observable | observed | partial_coverage | partial | deduplicated |  |  | the_unjournal:source_not_covering |
-| mixed | 2024 | 2024 | 40 | false | complete | observable | observed | partial_coverage | partial | deduplicated |  |  | the_unjournal:source_not_covering |
-| mixed | 2025 | 2025 | 69 | false | complete | observable | observed | partial_coverage | partial | deduplicated |  |  | the_unjournal:source_not_covering |
-| mixed | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 15 | true | complete | observable | observed | partial_coverage | partial | deduplicated |  |  | the_unjournal:source_not_covering |
+| mixed | 2023 | 2023 | 31 | false | complete | observable | observed | partial_coverage | partial | deduplicated |  | the_unjournal:partial_coverage |  |
+| mixed | 2024 | 2024 | 52 | false | complete | observable | observed | partial_coverage | partial | deduplicated |  | the_unjournal:partial_coverage |  |
+| mixed | 2025 | 2025 | 80 | false | complete | observable | observed | partial_coverage | partial | deduplicated |  | the_unjournal:partial_coverage |  |
+| mixed | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 17 | true | complete | observable | observed | partial_coverage | partial | deduplicated |  | the_unjournal:partial_coverage |  |
 
 Blank group cells (D-038): the member row and status that block the sum.
 None in this table.
 
 Lower-bound group cells (D-061): members contributing a partial series (`lower_bound_rows`) and quantified members in range whose source does not carry them (`excluded_rows`).
-- author_initiated, 2019: lower bound: qeios_hosted_works:partial_coverage; excluded: review_commons:source_not_covering
-- author_initiated, 2020: lower bound: qeios_hosted_works:partial_coverage; excluded: review_commons:source_not_covering
-- author_initiated, 2021: lower bound: qeios_hosted_works:partial_coverage; excluded: review_commons:source_not_covering
-- author_initiated, 2022: lower bound: copernicus_interactive_public_peer_review:partial_known_scope; qeios_hosted_works:partial_coverage; excluded: peerref:source_not_covering; review_commons:source_not_covering
-- author_initiated, 2023: lower bound: copernicus_interactive_public_peer_review:partial_known_scope; qeios_hosted_works:partial_coverage; excluded: peerref:source_not_covering; review_commons:source_not_covering
-- author_initiated, 2024: lower bound: copernicus_interactive_public_peer_review:partial_known_scope; qeios_hosted_works:partial_coverage; excluded: metaror:source_not_covering; peerref:source_not_covering; review_commons:source_not_covering
-- author_initiated, 2025: lower bound: copernicus_interactive_public_peer_review:partial_known_scope; qeios_hosted_works:partial_coverage; excluded: metaror:source_not_covering; peerref:source_not_covering; review_commons:source_not_covering
-- author_initiated, 2026: lower bound: copernicus_interactive_public_peer_review:partial_known_scope; qeios_hosted_works:partial_coverage; excluded: metaror:source_not_covering; peerref:source_not_covering; review_commons:source_not_covering
+- author_initiated, 2019: lower bound: qeios_hosted_works:partial_coverage
+- author_initiated, 2020: lower bound: qeios_hosted_works:partial_coverage
+- author_initiated, 2021: lower bound: qeios_hosted_works:partial_coverage
+- author_initiated, 2022: lower bound: copernicus_interactive_public_peer_review:partial_known_scope; qeios_hosted_works:partial_coverage; excluded: peerref:source_not_covering
+- author_initiated, 2023: lower bound: copernicus_interactive_public_peer_review:partial_known_scope; qeios_hosted_works:partial_coverage; excluded: peerref:source_not_covering
+- author_initiated, 2024: lower bound: copernicus_interactive_public_peer_review:partial_known_scope; qeios_hosted_works:partial_coverage; excluded: peerref:source_not_covering
+- author_initiated, 2025: lower bound: copernicus_interactive_public_peer_review:partial_known_scope; qeios_hosted_works:partial_coverage; excluded: peerref:source_not_covering
+- author_initiated, 2026: lower bound: copernicus_interactive_public_peer_review:partial_known_scope; qeios_hosted_works:partial_coverage; excluded: peerref:source_not_covering
 - community_initiated, 2018: lower bound: prelights:partial_coverage
 - community_initiated, 2019: lower bound: prelights:partial_coverage; prereview:partial_coverage
 - community_initiated, 2020: lower bound: prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage
@@ -72,7 +72,7 @@ Lower-bound group cells (D-061): members contributing a partial series (`lower_b
 - community_initiated, 2024: lower bound: prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage
 - community_initiated, 2025: lower bound: prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage
 - community_initiated, 2026: lower bound: prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage
-- mixed, 2023: excluded: the_unjournal:source_not_covering
-- mixed, 2024: excluded: the_unjournal:source_not_covering
-- mixed, 2025: excluded: the_unjournal:source_not_covering
-- mixed, 2026: excluded: the_unjournal:source_not_covering
+- mixed, 2023: lower bound: the_unjournal:partial_coverage
+- mixed, 2024: lower bound: the_unjournal:partial_coverage
+- mixed, 2025: lower bound: the_unjournal:partial_coverage
+- mixed, 2026: lower bound: the_unjournal:partial_coverage

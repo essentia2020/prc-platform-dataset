@@ -2,7 +2,7 @@
 
 Analysis cutoff: 2026-09-30; year 2026 is year_to_date (not annualised).
 Additivity: `row_series`. No all-row total is published in this table.
-Snapshot: Crossref/Sciety retrieval finished 2026-10-30T14:28:37Z.
+Snapshot: Crossref/Sciety retrieval finished 2026-11-02T12:08:34Z.
 Empty cells are not zeros: see `observation_status` and `extraction_status` in the CSV.
 Deposition diagnostics: `created`/`deposited` after the cutoff is reported, never used to infer that a record was absent at the cutoff.
 
@@ -30,7 +30,7 @@ Deposition diagnostics: `created`/`deposited` after the cutoff is reported, neve
 | 2020 | 2020 | 71 | 23 | 52 | 1 | 0 | 0 | complete |
 | 2021 | 2021 | 159 | 47 | 1154 | 855 | 0 | 0 | complete |
 | 2022 | 2022 | 359 | 269 | 3878 | 771 | 0 | 0 | complete |
-| 2023 | 2023 | 1611 | 1265 | 26981 | 23 | 0 | 0 | complete |
+| 2023 | 2023 | 1611 | 1265 | 26981 | 23 | 0 | 1 | complete |
 | 2024 | 2024 | 1868 | 1182 | 20528 | 19 | 0 | 0 | complete |
-| 2025 | 2025 | 993 | 600 | 3227 | 12 | 0 | 0 | complete |
-| 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 324 | 211 | 1660 | 13 | 0 | 1 | complete |
+| 2025 | 2025 | 993 | 600 | 3227 | 12 | 0 | 1 | complete |
+| 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 324 | 211 | 1660 | 13 | 0 | 2 | complete |

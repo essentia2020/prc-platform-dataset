@@ -2,7 +2,7 @@
 
 Analysis cutoff: 2026-09-30; year 2026 is year_to_date (not annualised).
 Additivity: `row_series`. No all-row total is published in this table.
-Snapshot: Crossref/Sciety retrieval finished 2026-10-30T14:28:37Z.
+Snapshot: Crossref/Sciety retrieval finished 2026-11-02T12:08:34Z.
 Empty cells are not zeros: see `observation_status` and `extraction_status` in the CSV.
 
 | row_id | year | year_label | coverage | partial_year | extraction_status | source_observability_status | observation_status | note |
@@ -550,9 +550,9 @@ Empty cells are not zeros: see `observation_status` and `extraction_status` in t
 | metaror | 2021 | 2021 | not_applicable | false | complete | observable | not_applicable |  |
 | metaror | 2022 | 2022 | not_applicable | false | complete | observable | not_applicable |  |
 | metaror | 2023 | 2023 | not_applicable | false | complete | observable | not_applicable |  |
-| metaror | 2024 | 2024 | no_data | false | complete | source_not_covering | not_observable | group absent from the Sciety docmaps index retrieved 2026-10-28T12:54:15Z; no zero filling (D-058) |
-| metaror | 2025 | 2025 | no_data | false | complete | source_not_covering | not_observable | group absent from the Sciety docmaps index retrieved 2026-10-28T12:54:15Z; no zero filling (D-058) |
-| metaror | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | no_data | true | complete | source_not_covering | not_observable | group absent from the Sciety docmaps index retrieved 2026-10-28T12:54:15Z; no zero filling (D-058) |
+| metaror | 2024 | 2024 | complete | false | complete | observable | observed |  |
+| metaror | 2025 | 2025 | complete | false | complete | observable | observed |  |
+| metaror | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | year_to_date | true | complete | observable | observed |  |
 | pci_recommendations | 2001 | 2001 | not_applicable | false | complete | observable | not_applicable |  |
 | pci_recommendations | 2002 | 2002 | not_applicable | false | complete | observable | not_applicable |  |
 | pci_recommendations | 2003 | 2003 | not_applicable | false | complete | observable | not_applicable |  |
@@ -701,14 +701,14 @@ Empty cells are not zeros: see `observation_status` and `extraction_status` in t
 | review_commons | 2016 | 2016 | not_applicable | false | complete | observable | not_applicable |  |
 | review_commons | 2017 | 2017 | not_applicable | false | complete | observable | not_applicable |  |
 | review_commons | 2018 | 2018 | not_applicable | false | complete | observable | not_applicable |  |
-| review_commons | 2019 | 2019 | no_data | false | complete | source_not_covering | not_observable | group absent from the Sciety docmaps index retrieved 2026-10-28T12:54:15Z; no zero filling (D-058) |
-| review_commons | 2020 | 2020 | no_data | false | complete | source_not_covering | not_observable | group absent from the Sciety docmaps index retrieved 2026-10-28T12:54:15Z; no zero filling (D-058) |
-| review_commons | 2021 | 2021 | no_data | false | complete | source_not_covering | not_observable | group absent from the Sciety docmaps index retrieved 2026-10-28T12:54:15Z; no zero filling (D-058) |
-| review_commons | 2022 | 2022 | no_data | false | complete | source_not_covering | not_observable | group absent from the Sciety docmaps index retrieved 2026-10-28T12:54:15Z; no zero filling (D-058) |
-| review_commons | 2023 | 2023 | no_data | false | complete | source_not_covering | not_observable | group absent from the Sciety docmaps index retrieved 2026-10-28T12:54:15Z; no zero filling (D-058) |
-| review_commons | 2024 | 2024 | no_data | false | complete | source_not_covering | not_observable | group absent from the Sciety docmaps index retrieved 2026-10-28T12:54:15Z; no zero filling (D-058) |
-| review_commons | 2025 | 2025 | no_data | false | complete | source_not_covering | not_observable | group absent from the Sciety docmaps index retrieved 2026-10-28T12:54:15Z; no zero filling (D-058) |
-| review_commons | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | no_data | true | complete | source_not_covering | not_observable | group absent from the Sciety docmaps index retrieved 2026-10-28T12:54:15Z; no zero filling (D-058) |
+| review_commons | 2019 | 2019 | not_applicable | false | complete | observable | not_applicable |  |
+| review_commons | 2020 | 2020 | complete | false | complete | observable | observed |  |
+| review_commons | 2021 | 2021 | complete | false | complete | observable | observed |  |
+| review_commons | 2022 | 2022 | complete | false | complete | observable | observed |  |
+| review_commons | 2023 | 2023 | complete | false | complete | observable | observed |  |
+| review_commons | 2024 | 2024 | complete | false | complete | observable | observed |  |
+| review_commons | 2025 | 2025 | complete | false | complete | observable | observed |  |
+| review_commons | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | year_to_date | true | complete | observable | observed |  |
 | peerref | 2001 | 2001 | not_applicable | false | complete | observable | not_applicable |  |
 | peerref | 2002 | 2002 | not_applicable | false | complete | observable | not_applicable |  |
 | peerref | 2003 | 2003 | not_applicable | false | complete | observable | not_applicable |  |
@@ -730,11 +730,11 @@ Empty cells are not zeros: see `observation_status` and `extraction_status` in t
 | peerref | 2019 | 2019 | not_applicable | false | complete | observable | not_applicable |  |
 | peerref | 2020 | 2020 | not_applicable | false | complete | observable | not_applicable |  |
 | peerref | 2021 | 2021 | not_applicable | false | complete | observable | not_applicable |  |
-| peerref | 2022 | 2022 | no_data | false | complete | source_not_covering | not_observable | group absent from the Sciety docmaps index retrieved 2026-10-28T12:54:15Z; no zero filling (D-058) |
-| peerref | 2023 | 2023 | no_data | false | complete | source_not_covering | not_observable | group absent from the Sciety docmaps index retrieved 2026-10-28T12:54:15Z; no zero filling (D-058) |
-| peerref | 2024 | 2024 | no_data | false | complete | source_not_covering | not_observable | group absent from the Sciety docmaps index retrieved 2026-10-28T12:54:15Z; no zero filling (D-058) |
-| peerref | 2025 | 2025 | no_data | false | complete | source_not_covering | not_observable | group absent from the Sciety docmaps index retrieved 2026-10-28T12:54:15Z; no zero filling (D-058) |
-| peerref | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | no_data | true | complete | source_not_covering | not_observable | group absent from the Sciety docmaps index retrieved 2026-10-28T12:54:15Z; no zero filling (D-058) |
+| peerref | 2022 | 2022 | no_data | false | complete | source_not_covering | not_observable | group absent from the Sciety docmaps index retrieved 2026-11-02T12:06:09Z; no zero filling (D-058) |
+| peerref | 2023 | 2023 | no_data | false | complete | source_not_covering | not_observable | group absent from the Sciety docmaps index retrieved 2026-11-02T12:06:09Z; no zero filling (D-058) |
+| peerref | 2024 | 2024 | no_data | false | complete | source_not_covering | not_observable | group absent from the Sciety docmaps index retrieved 2026-11-02T12:06:09Z; no zero filling (D-058) |
+| peerref | 2025 | 2025 | no_data | false | complete | source_not_covering | not_observable | group absent from the Sciety docmaps index retrieved 2026-11-02T12:06:09Z; no zero filling (D-058) |
+| peerref | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | no_data | true | complete | source_not_covering | not_observable | group absent from the Sciety docmaps index retrieved 2026-11-02T12:06:09Z; no zero filling (D-058) |
 | biophysics_colab | 2001 | 2001 | not_applicable | false | complete | observable | not_applicable |  |
 | biophysics_colab | 2002 | 2002 | not_applicable | false | complete | observable | not_applicable |  |
 | biophysics_colab | 2003 | 2003 | not_applicable | false | complete | observable | not_applicable |  |
@@ -1069,10 +1069,10 @@ Empty cells are not zeros: see `observation_status` and `extraction_status` in t
 | the_unjournal | 2020 | 2020 | not_applicable | false | complete | observable | not_applicable |  |
 | the_unjournal | 2021 | 2021 | not_applicable | false | complete | observable | not_applicable |  |
 | the_unjournal | 2022 | 2022 | not_applicable | false | complete | observable | not_applicable |  |
-| the_unjournal | 2023 | 2023 | no_data | false | complete | source_not_covering | not_observable | group absent from the Sciety docmaps index retrieved 2026-10-28T12:54:15Z; no zero filling (D-058) |
-| the_unjournal | 2024 | 2024 | no_data | false | complete | source_not_covering | not_observable | group absent from the Sciety docmaps index retrieved 2026-10-28T12:54:15Z; no zero filling (D-058) |
-| the_unjournal | 2025 | 2025 | no_data | false | complete | source_not_covering | not_observable | group absent from the Sciety docmaps index retrieved 2026-10-28T12:54:15Z; no zero filling (D-058) |
-| the_unjournal | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | no_data | true | complete | source_not_covering | not_observable | group absent from the Sciety docmaps index retrieved 2026-10-28T12:54:15Z; no zero filling (D-058) |
+| the_unjournal | 2023 | 2023 | partial_coverage | false | complete | observable | observed |  |
+| the_unjournal | 2024 | 2024 | partial_coverage | false | complete | observable | observed |  |
+| the_unjournal | 2025 | 2025 | partial_coverage | false | complete | observable | observed |  |
+| the_unjournal | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | partial_coverage | true | complete | observable | observed |  |
 | scienceopen_reviews | 2001 | 2001 | not_applicable | false | not_applicable | observable | register_only |  |
 | scienceopen_reviews | 2002 | 2002 | not_applicable | false | not_applicable | observable | register_only |  |
 | scienceopen_reviews | 2003 | 2003 | not_applicable | false | not_applicable | observable | register_only |  |

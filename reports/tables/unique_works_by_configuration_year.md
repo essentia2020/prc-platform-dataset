@@ -2,7 +2,7 @@
 
 Analysis cutoff: 2026-09-30; year 2026 is year_to_date (not annualised).
 Additivity: `deduplicated`. No all-row total is published in this table.
-Snapshot: Crossref/Sciety retrieval finished 2026-10-30T14:28:37Z.
+Snapshot: Crossref/Sciety retrieval finished 2026-11-02T12:08:34Z.
 Empty cells are not zeros: see `observation_status` and `extraction_status` in the CSV.
 A canonical work counts once per group, in the year of its earliest counting event.
 
@@ -20,15 +20,15 @@ A canonical work counts once per group, in the year of its earliest counting eve
 | approval_threshold | 2022 | 2022 | 2269 | false | complete | observable | observed | partial_coverage | partial | deduplicated |  | qeios_hosted_works:partial_coverage |  |
 | approval_threshold | 2023 | 2023 | 3711 | false | complete | observable | observed | partial_coverage | partial | deduplicated |  | qeios_hosted_works:partial_coverage |  |
 | approval_threshold | 2024 | 2024 | 3711 | false | complete | observable | observed | partial_coverage | partial | deduplicated |  | qeios_hosted_works:partial_coverage |  |
-| approval_threshold | 2025 | 2025 | 3164 | false | complete | observable | observed | partial_coverage | partial | deduplicated |  | qeios_hosted_works:partial_coverage |  |
-| approval_threshold | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 2871 | true | complete | observable | observed | partial_coverage | partial | deduplicated |  | qeios_hosted_works:partial_coverage |  |
+| approval_threshold | 2025 | 2025 | 3166 | false | complete | observable | observed | partial_coverage | partial | deduplicated |  | qeios_hosted_works:partial_coverage |  |
+| approval_threshold | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 2875 | true | complete | observable | observed | partial_coverage | partial | deduplicated |  | qeios_hosted_works:partial_coverage |  |
 | core_publish_first | 2020 | 2020 | 5 | false | complete | observable | observed | complete | complete | deduplicated |  |  |  |
 | core_publish_first | 2021 | 2021 | 55 | false | complete | observable | observed | complete | complete | deduplicated |  |  |  |
 | core_publish_first | 2022 | 2022 | 38 | false | complete | observable | observed | complete | complete | deduplicated |  |  |  |
 | core_publish_first | 2023 | 2023 | 1198 | false | complete | observable | observed | complete | complete | deduplicated |  |  |  |
-| core_publish_first | 2024 | 2024 | 1757 | false | complete | observable | observed | partial_coverage | partial | deduplicated |  |  | metaror:source_not_covering |
-| core_publish_first | 2025 | 2025 | 1206 | false | complete | observable | observed | partial_coverage | partial | deduplicated |  |  | metaror:source_not_covering |
-| core_publish_first | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 757 | true | complete | observable | observed | partial_coverage | partial | deduplicated |  |  | metaror:source_not_covering |
+| core_publish_first | 2024 | 2024 | 1760 | false | complete | observable | observed | complete | complete | deduplicated |  |  |  |
+| core_publish_first | 2025 | 2025 | 1223 | false | complete | observable | observed | complete | complete | deduplicated |  |  |  |
+| core_publish_first | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 778 | true | complete | observable | observed | year_to_date | partial | deduplicated |  |  |  |
 | hybrid_public_discussion | 2001 | 2001 | 14 | false | complete | observable | observed | complete | complete | deduplicated |  |  |  |
 | hybrid_public_discussion | 2002 | 2002 | 79 | false | complete | observable | observed | complete | complete | deduplicated |  |  |  |
 | hybrid_public_discussion | 2003 | 2003 | 180 | false | complete | observable | observed | complete | complete | deduplicated |  |  |  |
@@ -54,17 +54,17 @@ A canonical work counts once per group, in the year of its earliest counting eve
 | hybrid_public_discussion | 2023 | 2023 | 5179 | false | complete | partial_known_scope | observed | partial_known_scope | partial | deduplicated |  | copernicus_interactive_public_peer_review:partial_known_scope |  |
 | hybrid_public_discussion | 2024 | 2024 | 5036 | false | complete | partial_known_scope | observed | partial_known_scope | partial | deduplicated |  | copernicus_interactive_public_peer_review:partial_known_scope |  |
 | hybrid_public_discussion | 2025 | 2025 | 5896 | false | complete | partial_known_scope | observed | partial_known_scope | partial | deduplicated |  | copernicus_interactive_public_peer_review:partial_known_scope |  |
-| hybrid_public_discussion | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 4864 | true | complete | partial_known_scope | observed | partial_known_scope | partial | deduplicated |  | copernicus_interactive_public_peer_review:partial_known_scope |  |
+| hybrid_public_discussion | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 4912 | true | complete | partial_known_scope | observed | partial_known_scope | partial | deduplicated |  | copernicus_interactive_public_peer_review:partial_known_scope |  |
 | review_or_curation_service | 2017 | 2017 | 23 | false | complete | observable | observed | complete | complete | deduplicated |  |  |  |
 | review_or_curation_service | 2018 | 2018 | 35 | false | complete | observable | observed | partial_coverage | partial | deduplicated |  | prelights:partial_coverage |  |
-| review_or_curation_service | 2019 | 2019 | 310 | false | complete | observable | observed | partial_coverage | partial | deduplicated |  | prelights:partial_coverage; prereview:partial_coverage | review_commons:source_not_covering |
-| review_or_curation_service | 2020 | 2020 | 561 | false | complete | observable | observed | partial_coverage | partial | deduplicated |  | prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage | review_commons:source_not_covering |
-| review_or_curation_service | 2021 | 2021 | 1297 | false | complete | observable | observed | partial_coverage | partial | deduplicated |  | prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage | review_commons:source_not_covering |
-| review_or_curation_service | 2022 | 2022 | 1292 | false | complete | observable | observed | partial_coverage | partial | deduplicated |  | prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage | peerref:source_not_covering; review_commons:source_not_covering |
-| review_or_curation_service | 2023 | 2023 | 734 | false | complete | observable | observed | partial_coverage | partial | deduplicated |  | prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage | peerref:source_not_covering; review_commons:source_not_covering; the_unjournal:source_not_covering |
-| review_or_curation_service | 2024 | 2024 | 926 | false | complete | observable | observed | partial_coverage | partial | deduplicated |  | prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage | peerref:source_not_covering; review_commons:source_not_covering; the_unjournal:source_not_covering |
-| review_or_curation_service | 2025 | 2025 | 1102 | false | complete | observable | observed | partial_coverage | partial | deduplicated |  | prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage | peerref:source_not_covering; review_commons:source_not_covering; the_unjournal:source_not_covering |
-| review_or_curation_service | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 989 | true | complete | observable | observed | partial_coverage | partial | deduplicated |  | prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage | peerref:source_not_covering; review_commons:source_not_covering; the_unjournal:source_not_covering |
+| review_or_curation_service | 2019 | 2019 | 310 | false | complete | observable | observed | partial_coverage | partial | deduplicated |  | prelights:partial_coverage; prereview:partial_coverage |  |
+| review_or_curation_service | 2020 | 2020 | 639 | false | complete | observable | observed | partial_coverage | partial | deduplicated |  | prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage |  |
+| review_or_curation_service | 2021 | 2021 | 1432 | false | complete | observable | observed | partial_coverage | partial | deduplicated |  | prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage |  |
+| review_or_curation_service | 2022 | 2022 | 1516 | false | complete | observable | observed | partial_coverage | partial | deduplicated |  | prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage | peerref:source_not_covering |
+| review_or_curation_service | 2023 | 2023 | 1023 | false | complete | observable | observed | partial_coverage | partial | deduplicated |  | prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage; the_unjournal:partial_coverage | peerref:source_not_covering |
+| review_or_curation_service | 2024 | 2024 | 1191 | false | complete | observable | observed | partial_coverage | partial | deduplicated |  | prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage; the_unjournal:partial_coverage | peerref:source_not_covering |
+| review_or_curation_service | 2025 | 2025 | 1371 | false | complete | observable | observed | partial_coverage | partial | deduplicated |  | prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage; the_unjournal:partial_coverage | peerref:source_not_covering |
+| review_or_curation_service | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 1171 | true | complete | observable | observed | partial_coverage | partial | deduplicated |  | prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage; the_unjournal:partial_coverage | peerref:source_not_covering |
 
 Blank group cells (D-038): the member row and status that block the sum.
 None in this table.
@@ -78,20 +78,17 @@ Lower-bound group cells (D-061): members contributing a partial series (`lower_b
 - approval_threshold, 2024: lower bound: qeios_hosted_works:partial_coverage
 - approval_threshold, 2025: lower bound: qeios_hosted_works:partial_coverage
 - approval_threshold, 2026: lower bound: qeios_hosted_works:partial_coverage
-- core_publish_first, 2024: excluded: metaror:source_not_covering
-- core_publish_first, 2025: excluded: metaror:source_not_covering
-- core_publish_first, 2026: excluded: metaror:source_not_covering
 - hybrid_public_discussion, 2022: lower bound: copernicus_interactive_public_peer_review:partial_known_scope
 - hybrid_public_discussion, 2023: lower bound: copernicus_interactive_public_peer_review:partial_known_scope
 - hybrid_public_discussion, 2024: lower bound: copernicus_interactive_public_peer_review:partial_known_scope
 - hybrid_public_discussion, 2025: lower bound: copernicus_interactive_public_peer_review:partial_known_scope
 - hybrid_public_discussion, 2026: lower bound: copernicus_interactive_public_peer_review:partial_known_scope
 - review_or_curation_service, 2018: lower bound: prelights:partial_coverage
-- review_or_curation_service, 2019: lower bound: prelights:partial_coverage; prereview:partial_coverage; excluded: review_commons:source_not_covering
-- review_or_curation_service, 2020: lower bound: prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage; excluded: review_commons:source_not_covering
-- review_or_curation_service, 2021: lower bound: prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage; excluded: review_commons:source_not_covering
-- review_or_curation_service, 2022: lower bound: prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage; excluded: peerref:source_not_covering; review_commons:source_not_covering
-- review_or_curation_service, 2023: lower bound: prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage; excluded: peerref:source_not_covering; review_commons:source_not_covering; the_unjournal:source_not_covering
-- review_or_curation_service, 2024: lower bound: prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage; excluded: peerref:source_not_covering; review_commons:source_not_covering; the_unjournal:source_not_covering
-- review_or_curation_service, 2025: lower bound: prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage; excluded: peerref:source_not_covering; review_commons:source_not_covering; the_unjournal:source_not_covering
-- review_or_curation_service, 2026: lower bound: prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage; excluded: peerref:source_not_covering; review_commons:source_not_covering; the_unjournal:source_not_covering
+- review_or_curation_service, 2019: lower bound: prelights:partial_coverage; prereview:partial_coverage
+- review_or_curation_service, 2020: lower bound: prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage
+- review_or_curation_service, 2021: lower bound: prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage
+- review_or_curation_service, 2022: lower bound: prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage; excluded: peerref:source_not_covering
+- review_or_curation_service, 2023: lower bound: prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage; the_unjournal:partial_coverage; excluded: peerref:source_not_covering
+- review_or_curation_service, 2024: lower bound: prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage; the_unjournal:partial_coverage; excluded: peerref:source_not_covering
+- review_or_curation_service, 2025: lower bound: prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage; the_unjournal:partial_coverage; excluded: peerref:source_not_covering
+- review_or_curation_service, 2026: lower bound: prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage; the_unjournal:partial_coverage; excluded: peerref:source_not_covering
