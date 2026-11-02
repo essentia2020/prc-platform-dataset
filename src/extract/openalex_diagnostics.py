@@ -423,10 +423,12 @@ def run(run_config: RunConfig, sources_config: Mapping[str, Any], platforms: lis
         note(outcome)
         if not outcome.ok:
             continue
-        found: dict[str, dict[str, Any]] = {}
+        requested = set(dois)
+        returned: dict[str, dict[str, Any]] = {}
         for payload in outcome.payloads:
-            found.update(parse_works(payload))
-        found = {d: v for d, v in found.items() if d in set(dois)}
+            returned.update(parse_works(payload))
+        found = {d: v for d, v in returned.items() if d in requested}
+        other_doi = len(returned) - len(found)
         resolved_by_row[row_id] = found
         source_years: dict[str, int] | None = None
         walks = f"works_by_doi__{row_id}={outcome.walk_id}"
@@ -444,6 +446,10 @@ def run(run_config: RunConfig, sources_config: Mapping[str, Any], platforms: lis
         counter += 1
         head = (f"OpenAlex volume check: {len(dois)} included works resolved by DOI, {len(found)} found, "
                 f"{missing} not found")
+        if other_doi:
+            head += (f"; OpenAlex answered with {len(returned)} distinct works, {other_doi} of them under a "
+                     f"different primary DOI (OpenAlex keeps one record per work and lists the requested DOI "
+                     f"as an alternate identifier; counted as not found)")
         if row_id in source_ids:
             head += (f"; source {source_ids[row_id]} yearly counts "
                      + ("retrieved" if source_years is not None else "not retrieved (walk failed)"))

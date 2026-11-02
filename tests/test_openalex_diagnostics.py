@@ -33,6 +33,7 @@ OPENALEX = {
     # f1000research.101.1 is absent from OpenAlex; verixiv.51/gates 3011 are a Crossref pair (D-041)
     "10.12688/verixiv.51.1": ("W5", 2024, "S2"),
     "10.12688/gatesopenres.3011.1": ("W5", 2024, "S1"),
+    "10.12688/f1000research.103.1": ("W6", 2023, "S3", "10.12688/f1000research.900.1"),  # served under another DOI
 }
 SOURCE_YEARS = {"S3": {"2022": 500, "2023": 620}}
 
@@ -66,6 +67,7 @@ WORKS = [
     _included(VERIXIV, "10.12688/verixiv.51.1", 2024, "is_preprint_of+has_preprint"),
     _included(F1000, "10.12688/f1000research.100.1", 2023),
     _included(F1000, "10.12688/f1000research.101.1", 2023),
+    _included(F1000, "10.12688/f1000research.103.1", 2023),
     {**{c: "" for c in WORK_COLUMNS}, "row_id": F1000, "canonical_work_id": "doi:10.12688/f1000research.102",
      "work_doi": "10.12688/f1000research.102", "counting_record_id": "10.12688/f1000research.102.1",
      "included": "false"},
@@ -99,8 +101,9 @@ class OpenAlexTransport:
         for doi in dois:
             hit = OPENALEX.get(doi)
             if hit:
-                wid, year, source = hit
-                results.append({"id": f"https://openalex.org/{wid}", "doi": f"https://doi.org/{doi}",
+                wid, year, source, *served = hit
+                served_doi = served[0] if served else doi
+                results.append({"id": f"https://openalex.org/{wid}", "doi": f"https://doi.org/{served_doi}",
                                 "publication_year": year,
                                 "primary_location": {"source": {"id": f"https://openalex.org/{source}"}}})
         return 200, {}, json.dumps({"meta": {"count": len(results)}, "results": results}).encode()
@@ -151,8 +154,8 @@ def test_volume_check_rows_per_quantified_crossref_row(tmp_path):
     assert set(rows) == {(GATES, "openalex_volume_check"), (VERIXIV, "openalex_volume_check"),
                          (F1000, "openalex_volume_check"), (GATES, "openalex_pair_signal")}
     f1000 = rows[(F1000, "openalex_volume_check")]
-    assert f1000["n_records_affected"] == "1"                         # 101.1 is not in OpenAlex
-    assert "2023: row=2 found=1 year_agree=1 source=620" in f1000["description"]
+    assert f1000["n_records_affected"] == "2"  # 101.1 absent, 103.1 served under another DOI
+    assert "2023: row=3 found=1 year_agree=1 source=620" in f1000["description"]
     assert f1000["status"] == "observed" and f1000["origin"] == "run" and f1000["run_id"] == run_config.run_id
     assert f1000["effect_on_counts"] == "none (diagnostic)"
     assert f1000["issue_id"].startswith(f"DQ-{run_config.run_id}-oa-")
@@ -279,3 +282,11 @@ def test_tracked_configuration_carries_no_key():
     for path in (Path("config/sources.yaml"), Path("config/run.yaml")):
         text = path.read_text(encoding="utf-8")
         assert "api_key:" not in text and "Bearer " not in text.replace("Bearer {key}", "")
+
+def test_works_served_under_another_doi_are_counted_as_not_found_and_named(tmp_path):
+    _, _, _, result = _run(tmp_path, source_ids={F1000: "S3"})
+    rows = {(r["row_id"], r["issue_type"]): r for r in result["rows"]}
+    f1000 = rows[(F1000, "openalex_volume_check")]
+    assert f1000["n_records_affected"] == "2"
+    assert "OpenAlex answered with 2 distinct works, 1 of them under a different primary DOI" in f1000["description"]
+    assert "different primary DOI" not in rows[(GATES, "openalex_volume_check")]["description"]
