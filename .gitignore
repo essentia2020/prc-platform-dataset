@@ -32,3 +32,6 @@ data/processed/analysis_manifest.json
 data/processed/normalisation_summary.json
 
 data/manifests/*/evidence/*.json
+
+# release archives are deposited on Zenodo, never tracked (D-056)
+/prc-platform-dataset_*.zip
