@@ -1359,7 +1359,7 @@ The descriptive `doi_pattern` of `access_microbiology` was tightened to `^10\.10
   updating existing deposits is unconfirmed. Author responses never add a work
   (as for Review Commons, D-065); only the 3 summaries are uncounted
   evaluations. The service asked for the dataset link and the counting rules;
-  answered once the repository is public.
+  both were sent to The Unjournal on 2026-11-02, after repository publication.
 
 ## D-064: MetaROR — Crossref peer-review records are the primary source
 

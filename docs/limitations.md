@@ -76,16 +76,24 @@
   and are not counted, and evaluations published without a Crossref record
   are missed).
 
-**Pending external requests (as of 2026-10-31).** Two requests about source
-coverage are open; no outcome is claimed here.
+### Pending external requests
+
+As of 2026-11-02, sciety/sciety#4254 is the only open request about source
+coverage. No outcome is claimed for that request.
 
 - sciety/sciety#4254 (opened 2026-10-31): PeerRef into the Sciety docmaps
   index and, if no obstacle, MetaROR, Review Commons and The Unjournal for
   the cross-check scopes. The Sciety docmaps allow-list is the only machine
   route for PeerRef; a direct request to PeerRef follows if Sciety declines.
-- The Unjournal (e-mail of 2026-10-31, answered 2026-10-31, D-063): 
-  the service confirmed the composition of the 13 journal-article records; 
-  whether is-review-of and the ISSN will be added to the existing deposits is not yet decided on their side.
+
+### Answered external requests
+
+- The Unjournal (e-mail of 2026-10-31, answered 2026-10-31, D-063):
+  the service confirmed the composition of the 13 journal-article records.
+  The requested dataset link and counting rules were sent on 2026-11-02,
+  after repository publication. Whether is-review-of and the ISSN will be
+  added to the existing deposits remains unconfirmed; the correspondence
+  is answered, not evidence that those corrections have been made.
 
 ## Event history and retrieval
 
