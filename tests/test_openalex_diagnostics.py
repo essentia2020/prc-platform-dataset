@@ -37,9 +37,24 @@ OPENALEX = {
 SOURCE_YEARS = {"S3": {"2022": 500, "2023": 620}}
 
 
+WORK_COLUMNS = ["row_id", "canonical_work_id", "work_doi", "counting_record_id", "posting_record_id",
+                "included", "counting_year", "correspondence_basis"]
+
+
 def _included(row_id, doi, year, basis=""):
-    return {"row_id": row_id, "canonical_work_id": "doi:" + doi.rsplit(".", 1)[0], "work_doi": doi, "included": "true",
-            "counting_year": str(year), "correspondence_basis": basis}
+    stem = doi.rsplit(".", 1)[0]
+    row = {c: "" for c in WORK_COLUMNS}
+    row.update({
+        "row_id": row_id,
+        "canonical_work_id": f"doi:{stem}",
+        "work_doi": stem,
+        "counting_record_id": doi,
+        "posting_record_id": doi,
+        "included": "true",
+        "counting_year": str(year),
+        "correspondence_basis": basis,
+    })
+    return row
 
 
 WORKS = [
@@ -51,10 +66,10 @@ WORKS = [
     _included(VERIXIV, "10.12688/verixiv.51.1", 2024, "is_preprint_of+has_preprint"),
     _included(F1000, "10.12688/f1000research.100.1", 2023),
     _included(F1000, "10.12688/f1000research.101.1", 2023),
-    {"row_id": F1000, "canonical_work_id": "doi:10.12688/f1000research.102", "work_doi": "10.12688/f1000research.102.1",
-     "included": "false", "counting_year": "", "correspondence_basis": ""},
+    {**{c: "" for c in WORK_COLUMNS}, "row_id": F1000, "canonical_work_id": "doi:10.12688/f1000research.102",
+     "work_doi": "10.12688/f1000research.102", "counting_record_id": "10.12688/f1000research.102.1",
+     "included": "false"},
 ]
-WORK_COLUMNS = ["row_id", "canonical_work_id", "work_doi", "included", "counting_year", "correspondence_basis"]
 
 
 class OpenAlexTransport:
@@ -147,6 +162,17 @@ def test_volume_check_rows_per_quantified_crossref_row(tmp_path):
     assert "2025: row=1 found=1 year_agree=1" in verixiv["description"] and "source=" not in verixiv["description"]
     # the excluded work (102.1) is never sent
     assert not any("f1000research.102" in r["url"] for r in transport.requests)
+
+
+def test_volume_check_resolves_counting_record_doi_not_stem(tmp_path):
+    # work_doi is the version-stripped stem; OpenAlex only knows the record DOI.
+    run_config, roots, transport, result = _run(tmp_path)
+    rows = {(r["row_id"], r["issue_type"]): r for r in result["rows"]}
+    gates = rows[(GATES, "openalex_volume_check")]
+    assert gates["n_records_affected"] == "0"
+    assert "found=0" not in gates["description"]
+    assert all("gatesopenres.3003.1" in r["url"] or "gatesopenres" not in r["url"] for r in transport.requests)
+    assert not any(r["url"].rstrip("&").endswith("gatesopenres.3003") for r in transport.requests)
 
 
 def test_pair_signal_runs_on_the_residual_only(tmp_path):

@@ -1,4 +1,4 @@
-"""OpenAlex diagnostics (D-041, D-066) — a stage after ``analyse``.
+"""OpenAlex diagnostics (D-041, D-066) РІР‚вЂќ a stage after ``analyse``.
 
 OpenAlex is a diagnostic source only.  This stage reads
 ``data/processed/works_included.csv`` and writes rows to
@@ -7,15 +7,15 @@ record file, ``works_included.csv``, a table or a figure.
 
 Two diagnostics are produced per run:
 
-* ``openalex_volume_check`` — for every quantified Crossref row, the DOIs
-  of the included works are resolved in OpenAlex (``filter=doi:a|b|…``,
+* ``openalex_volume_check`` РІР‚вЂќ for every quantified Crossref row, the DOIs
+  of the included works are resolved in OpenAlex (``filter=doi:a|b|РІР‚В¦``,
   at most ``per_request_cap`` DOIs per request) and compared with the row
   series per counting year; where ``config/sources.yaml`` lists an OpenAlex
   source id for the row, the source's own yearly work counts are retrieved
   as well (one ``group_by=publication_year`` request).  One row per
   register row; ``n_records_affected`` = included works not found in
   OpenAlex.
-* ``openalex_pair_signal`` — for the preprint/article pair named in the
+* ``openalex_pair_signal`` РІР‚вЂќ for the preprint/article pair named in the
   configuration (VeriXiv / Gates Open Research), included works that carry
   no Crossref correspondence (empty ``correspondence_basis``) are matched on
   their OpenAlex work id.  One row; ``n_records_affected`` = number of
@@ -147,6 +147,15 @@ def normalise_doi(value: str) -> str:
             text = text[len(prefix):]
     return text
 
+def _lookup_doi(work: Mapping[str, str]) -> str:
+    """DOI resolved in OpenAlex: the counting record's own DOI (version suffix
+    included), falling back to the canonical work DOI when the record id is
+    empty or not a DOI. OpenAlex has no record for a version-stripped stem."""
+    for key in ("counting_record_id", "posting_record_id", "work_doi"):
+        value = normalise_doi(work.get(key, ""))
+        if value and value.startswith("10."):
+            return value
+    return ""
 
 def chunks(items: list[str], size: int) -> list[list[str]]:
     return [items[i:i + size] for i in range(0, len(items), size)]
@@ -266,7 +275,7 @@ class ScopeFetcher:
         return on_attempt
 
     def fetch(self, scope: str, urls: list[tuple[str, str]], rule: str, **completion_extra) -> WalkOutcome:
-        """``urls`` = ``[(label, url), …]`` — one page per entry."""
+        """``urls`` = ``[(label, url), РІР‚В¦]`` РІР‚вЂќ one page per entry."""
         reused = self._reuse(scope)
         if reused is not None:
             return reused
@@ -345,7 +354,7 @@ def _year_summary(works: list[dict[str, str]], found: Mapping[str, Mapping[str, 
     parts = []
     for year in sorted(row_years):
         in_year = [w for w in works if w["counting_year"] == year]
-        resolved = [found[normalise_doi(w["work_doi"])] for w in in_year if normalise_doi(w["work_doi"]) in found]
+        resolved = [found[_lookup_doi(w)] for w in in_year if _lookup_doi(w) in found]
         agree = sum(1 for r in resolved if str(r.get("publication_year") or "") == year)
         text = f"{year}: row={len(in_year)} found={len(resolved)} year_agree={agree}"
         if source_years is not None:
@@ -406,7 +415,7 @@ def run(run_config: RunConfig, sources_config: Mapping[str, Any], platforms: lis
     # (a) volume check --------------------------------------------------------
     for row_id in _crossref_rows(platforms):
         works = works_by_row.get(row_id, [])
-        dois = sorted({normalise_doi(w["work_doi"]) for w in works if normalise_doi(w["work_doi"])})
+        dois = sorted({_lookup_doi(w) for w in works if _lookup_doi(w)})
         if not dois:
             continue
         urls = [(f"batch:{i}", _works_url(settings, batch)) for i, batch in enumerate(chunks(dois, cap), start=1)]
@@ -449,7 +458,7 @@ def run(run_config: RunConfig, sources_config: Mapping[str, Any], platforms: lis
     pre_row, art_row = str(pair["preprint_row"]), str(pair["article_row"])
     if pre_row in resolved_by_row and art_row in resolved_by_row:
         def residual(row_id: str) -> dict[str, str]:
-            return {normalise_doi(w["work_doi"]): resolved_by_row[row_id].get(normalise_doi(w["work_doi"]), {}).get("id", "")
+            return {_lookup_doi(w): resolved_by_row[row_id].get(_lookup_doi(w), {}).get("id", "")
                     for w in works_by_row.get(row_id, []) if not (w.get("correspondence_basis") or "").strip()}
         pre, art = residual(pre_row), residual(art_row)
         by_id: dict[str, list[str]] = defaultdict(list)
