@@ -1198,7 +1198,7 @@ commit of each extension.
   (delta −39 of 212,958) and `works__10.7554__peer-review` (delta −30 of
   84,395 against a tolerance of 25) both closed with a stable total-results,
   the cursor-step loss of this decision, and are retrieved from this run on
-    as monthly issued-date windows (quarters were projected at 5,400–6,700
+  as monthly issued-date windows (quarters were projected at 5,400–6,700
   and 3,200–4,700 records; the 131 and 179 monthly windows walked in this
   run hold at most 2,618 and 1,758 records, at most three non-empty pages
   each). The D-045 override for `works__10.7554__peer-review` is withdrawn: its stated cause,
