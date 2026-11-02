@@ -56,16 +56,16 @@
   }
  },
  "openalex_diagnostics": {
-  "recorded_at": "2026-11-02T15:01:22Z",
+  "recorded_at": "2026-11-02T17:18:07Z",
   "request_cap": 4000,
-  "requests_used": 1085,
+  "requests_used": 0,
   "role": "diagnostic",
   "rows_written": 32,
   "scopes": {
    "works_by_doi__access_microbiology": {
     "pages": 9,
-    "reason": "",
-    "requests": 9,
+    "reason": "complete walk with latest ended_at_utc 2026-11-02T15:31:10Z",
+    "requests": 0,
     "sha256": [
      "134eb4feaed18948fcec74121d94c3ee5e841c5cf095b30d6555bb88b91c0d85",
      "734bdd974395d5e93f7ba3b6e7fd0a2a34909781b502c36ca96cb27662afdded",
@@ -77,33 +77,33 @@
      "a825615245ce8b5d26b49caf3ae02d66a3945f5e6cd230b2d3a122b38aae619d",
      "e113d41750b40dc50afa6cef13c494b157d9d5407a04dfc09f4e8099c80b976c"
     ],
-    "state": "complete",
+    "state": "reused",
     "walk_id": "w02"
    },
    "works_by_doi__bioethics_open_research": {
     "pages": 1,
-    "reason": "",
-    "requests": 1,
+    "reason": "complete walk with latest ended_at_utc 2026-11-02T15:07:06Z",
+    "requests": 0,
     "sha256": [
      "85b5d358ee99258ca7daf256e5b54db51de8df05d0d2cd59de3962d95b81c32a"
     ],
-    "state": "complete",
+    "state": "reused",
     "walk_id": "w02"
    },
    "works_by_doi__cobot": {
     "pages": 1,
-    "reason": "",
-    "requests": 1,
+    "reason": "complete walk with latest ended_at_utc 2026-11-02T15:07:06Z",
+    "requests": 0,
     "sha256": [
      "ec507f115218b5d42421e26597fdf690e099fbe223c8c65dda2e1caba093934c"
     ],
-    "state": "complete",
+    "state": "reused",
     "walk_id": "w02"
    },
    "works_by_doi__copernicus_interactive_public_peer_review": {
     "pages": 671,
-    "reason": "",
-    "requests": 680,
+    "reason": "complete walk with latest ended_at_utc 2026-11-02T15:26:57Z",
+    "requests": 0,
     "sha256": [
      "b8ca213e111883e7f831cd4fcf974bf821b9c17772aedf09ae39254077dba5bb",
      "bb358b5eef0e9cbbfc2124b87832a023dc782cb06e53d8e8177ca49e76abd2b2",
@@ -777,23 +777,23 @@
      "35f0c975bd83c9128eb4f5801cdbf002137f134953779945e4a3aa7a99871910",
      "6db7824bb3a1692c0dcffc422b0f8283cc4e2dbaebfa7a6fe97a6bc42113f5c4"
     ],
-    "state": "complete",
+    "state": "reused",
     "walk_id": "w02"
    },
    "works_by_doi__digital_twin": {
     "pages": 1,
-    "reason": "",
-    "requests": 1,
+    "reason": "complete walk with latest ended_at_utc 2026-11-02T15:07:05Z",
+    "requests": 0,
     "sha256": [
      "6b18a741e138aea413a4c77b9d1e6b541fae5e2a50a304d1998ed84741b27cd1"
     ],
-    "state": "complete",
+    "state": "reused",
     "walk_id": "w02"
    },
    "works_by_doi__elife_reviewed_preprints": {
     "pages": 49,
-    "reason": "",
-    "requests": 49,
+    "reason": "complete walk with latest ended_at_utc 2026-11-02T15:02:27Z",
+    "requests": 0,
     "sha256": [
      "45259dc2764e76efd72679b388e95f2e293f6fe7a2c4a659b8c08b58a83b1bc7",
      "486d3229f7a204520d6cda07d4aefb1a4a8b9b978b6e69f2c71c790b3829298c",
@@ -845,24 +845,24 @@
      "e9b011511118fa0979feeab97f4735be21803c37ed2b6237e7de5f343ac54f5a",
      "d9d9bbdb64e8d5fb6e10e79f2d05e8a335052bbc455f0d10a1704e8a3d028199"
     ],
-    "state": "complete",
+    "state": "reused",
     "walk_id": "w02"
    },
    "works_by_doi__emerald_open_research": {
     "pages": 2,
-    "reason": "",
-    "requests": 2,
+    "reason": "complete walk with latest ended_at_utc 2026-11-02T15:07:28Z",
+    "requests": 0,
     "sha256": [
      "7ff9eb1d7f57fc23e9d2fc8490b9e0e3ea72e7a2f4845a6b3181c625875d8612",
      "7e9019988432d30e97c00856bf2f49a54c69c4e8d40486557dab374d4c6b8ae3"
     ],
-    "state": "complete",
+    "state": "reused",
     "walk_id": "w02"
    },
    "works_by_doi__f1000research": {
     "pages": 120,
-    "reason": "",
-    "requests": 120,
+    "reason": "complete walk with latest ended_at_utc 2026-11-02T15:05:24Z",
+    "requests": 0,
     "sha256": [
      "146a2f4cf14c47e29b9130784f497f426b74b96c6b8f70f4471c9dcdb9ec8d54",
      "0277a952dd7ea8f986e95ce6ec93765a71000ccaf84169767d003a9fe00eea5f",
@@ -985,13 +985,13 @@
      "0922a0ec09554f040716ea5ba0bf69a7d5d025da13c9e6ea4aca2b5a97ca3604",
      "3c39baf37c57178ca821b2093b86a00fcc26c7d9efc628694578a44b196801a6"
     ],
-    "state": "complete",
+    "state": "reused",
     "walk_id": "w02"
    },
    "works_by_doi__gates_open_research": {
     "pages": 6,
-    "reason": "",
-    "requests": 6,
+    "reason": "complete walk with latest ended_at_utc 2026-11-02T15:06:35Z",
+    "requests": 0,
     "sha256": [
      "1a94307c91b66401d0293a02750312bf24b9c74d9f6ee7c48e24352a41389fe1",
      "c097a81a270f6dcfa845f15e897b57794fc0cbdec2f172cc3c11050227b71b59",
@@ -1000,23 +1000,23 @@
      "02039e354495543c76e9532db85264ea20ff9e90edd12aaedf3d2b872fab6370",
      "6bec1542018ac2ad8aa3c97aa2b6ce07aa577fe74c0307f731af83d40ed58f55"
     ],
-    "state": "complete",
+    "state": "reused",
     "walk_id": "w02"
    },
    "works_by_doi__health_open_research": {
     "pages": 1,
-    "reason": "",
-    "requests": 1,
+    "reason": "complete walk with latest ended_at_utc 2026-11-02T15:07:10Z",
+    "requests": 0,
     "sha256": [
      "a3649e123e00167ff99f11e90c240bd706568b15984a6c68e81ce7fb847c93c6"
     ],
-    "state": "complete",
+    "state": "reused",
     "walk_id": "w02"
    },
    "works_by_doi__hrb_open_research": {
     "pages": 8,
-    "reason": "",
-    "requests": 8,
+    "reason": "complete walk with latest ended_at_utc 2026-11-02T15:07:03Z",
+    "requests": 0,
     "sha256": [
      "6955e16a2a7aca3041e347563c6dd2859f9bfe45f7342f228803aeb1fbff46ff",
      "bf24a0c7bef3bf34ddcde7e0e9c4ea3d07c556c38aae52186d668b54f81cc927",
@@ -1027,35 +1027,35 @@
      "7af3682f75ba90792c5d59869c0753e3c9ef5485bcec77e17f51e25916d7c280",
      "207a8df161b7a91291150861be0213b7f49fc92ba1a7cd61ae7e32b683e00db9"
     ],
-    "state": "complete",
+    "state": "reused",
     "walk_id": "w02"
    },
    "works_by_doi__jmirx_med": {
     "pages": 3,
-    "reason": "",
-    "requests": 4,
+    "reason": "complete walk with latest ended_at_utc 2026-11-02T15:31:04Z",
+    "requests": 0,
     "sha256": [
      "52ac1a25fd7308b67966e6941d76b574c7645160e36ffb72bea5007189056bc9",
      "206341f25b873b5099b1db4b73c3e2348ff8234609d5b16fa9d01e15e5df7c37",
      "249cc8c92ef895329ae363565f1d4b1fbf12f34eeae06f86585afa428bfff861"
     ],
-    "state": "complete",
+    "state": "reused",
     "walk_id": "w02"
    },
    "works_by_doi__materials_open_research": {
     "pages": 1,
-    "reason": "",
-    "requests": 1,
+    "reason": "complete walk with latest ended_at_utc 2026-11-02T15:07:06Z",
+    "requests": 0,
     "sha256": [
      "2daa55868684824c57470d2f878658d987211a21265bcc166efaa94b864386ec"
     ],
-    "state": "complete",
+    "state": "reused",
     "walk_id": "w02"
    },
    "works_by_doi__meded_publish": {
     "pages": 14,
-    "reason": "",
-    "requests": 14,
+    "reason": "complete walk with latest ended_at_utc 2026-11-02T15:07:27Z",
+    "requests": 0,
     "sha256": [
      "754d63fddcbaa5d63bf2c219d6233ab3bf1b3708ba430868ab58037b2e8db816",
      "357063e32e1a2ddf9e906a6bb38b16636d1b4cd84dda44c94604328a7c6df5f6",
@@ -1072,68 +1072,68 @@
      "909db768ee816b179869b17212d7222fedfd8f9de85c44d5ac9026147fe78dd1",
      "0db167b8d5f558d8e8c92624f7b9d5fa74430224232fddceb9ad2acc373462c9"
     ],
-    "state": "complete",
+    "state": "reused",
     "walk_id": "w02"
    },
    "works_by_doi__metaror": {
     "pages": 1,
-    "reason": "",
-    "requests": 1,
+    "reason": "complete walk with latest ended_at_utc 2026-11-02T15:07:29Z",
+    "requests": 0,
     "sha256": [
      "2ab80bccf0ecf76bc4556a980e5d2fed9f4b2b5e8e00bbf3d31b9da3cb9b9c76"
     ],
-    "state": "complete",
+    "state": "reused",
     "walk_id": "w02"
    },
    "works_by_doi__molecular_psychology": {
     "pages": 1,
-    "reason": "",
-    "requests": 1,
+    "reason": "complete walk with latest ended_at_utc 2026-11-02T15:07:05Z",
+    "requests": 0,
     "sha256": [
      "63a2eb3b85548e07e35092fcb91ddec9631b7f89a2a6188f4ba00359878d6081"
     ],
-    "state": "complete",
+    "state": "reused",
     "walk_id": "w02"
    },
    "works_by_doi__nihr_open_research": {
     "pages": 4,
-    "reason": "",
-    "requests": 4,
+    "reason": "complete walk with latest ended_at_utc 2026-11-02T15:07:09Z",
+    "requests": 0,
     "sha256": [
      "353a5cc5f36d86b912a330d1a719dc76d1ed735d1fcf27dce1e8ffa2e4b5ff5b",
      "3a59a6bec1009551d348763e4dc78b7f9926e4d9e6c50ef015797f35ca3d0668",
      "d9be9865bd36897f1e408ef67471e58a14e9964610ff1d3b28e3528f35c89aeb",
      "02c5e55596cebd744c953c3dd391f87545c00052aabda7d93ec4174583b9006c"
     ],
-    "state": "complete",
+    "state": "reused",
     "walk_id": "w02"
    },
    "works_by_doi__nuclear_science_technology_open_research": {
     "pages": 1,
-    "reason": "",
-    "requests": 1,
+    "reason": "complete walk with latest ended_at_utc 2026-11-02T15:07:04Z",
+    "requests": 0,
     "sha256": [
      "fb5c130c090209cc9c1f885bf9d1f55b2849240861105025d275cee23dbe7faa"
     ],
-    "state": "complete",
+    "state": "reused",
     "walk_id": "w02"
    },
    "works_by_doi__open_research_africa": {
     "pages": 3,
-    "reason": "",
-    "requests": 3,
+    "reason": "complete walk with latest ended_at_utc 2026-11-02T15:07:12Z",
+    "requests": 0,
     "sha256": [
      "4307f068e9a1ead8cfd793d4b6a86f1ad1024467da7c206bc2bbd139ca7cd57f",
      "989d75fe1ac8a4f4c9007f0ebc9434a3844848f6b46cb2724d56fe8bae6a4878",
      "0a7bfe4d3f6309ae23c04391bb02fb08198ce44dd31327dfca23aa2b56b6f82d"
     ],
-    "state": "complete",
+    "state": "reused",
     "walk_id": "w02"
    },
    "works_by_doi__open_research_europe": {
     "pages": 16,
-    "reason": "",
-    "requests": 16,
+    "reason": "complete walk with latest ended_at_utc 2026-11-02T15:06:56Z",
+    "requests": 0,
     "sha256": [
      "f85b527d85d47c80c8b78dc7e01fbe51406dec5634d9ee8f85d5f8885fa14eaa",
      "b871654f7ae9f75d28f8571956ac473a9070baf6a9cc667391c2d60518209a08",
@@ -1152,13 +1152,13 @@
      "d966afcff5ba8ed1bb08b7156ae8d1ad58b2debe350b2b54d286aa438b179b7b",
      "8d8fcdddee5fe940576d9f75e6a6f1d396e28298d88c4fc35aaaef711f0a2e2c"
     ],
-    "state": "complete",
+    "state": "reused",
     "walk_id": "w02"
    },
    "works_by_doi__pci_recommendations": {
     "pages": 8,
-    "reason": "",
-    "requests": 8,
+    "reason": "complete walk with latest ended_at_utc 2026-11-02T15:07:35Z",
+    "requests": 0,
     "sha256": [
      "b29b94d72a48a849178e0171e8f96a70024d43a499df83ce2ef1e03d827f1fe5",
      "1adb60ae1624f160975c3687f3dad17c198817402376ebf11d27fab38c60d11e",
@@ -1169,13 +1169,13 @@
      "d632dcabe231c994542e0b0a2dbfceb99bcfbf086248906533545c3e6c873561",
      "b2861ea26d6a28c63e2015207f1d47fa9bf7ca2e586727d326683291d6ab0573"
     ],
-    "state": "complete",
+    "state": "reused",
     "walk_id": "w02"
    },
    "works_by_doi__qeios_external_works": {
     "pages": 17,
-    "reason": "",
-    "requests": 17,
+    "reason": "complete walk with latest ended_at_utc 2026-11-02T15:33:02Z",
+    "requests": 0,
     "sha256": [
      "2d16318917c8cb6937f016d899144965891a5dda70226f87b2c87b86894d7534",
      "15f8de71d972c0562606a0814a4f925c5fa363f1fad7d0943a942a491fd27fed",
@@ -1195,13 +1195,13 @@
      "1dd40eb33b3cd0458231d784114d0aaabeaf39c632738d63830ebb71e724bc4d",
      "f3dfa76e973a0bf511acb4848de9d73249dda6dfa962a13bcba0f1f1d60d9d7d"
     ],
-    "state": "complete",
+    "state": "reused",
     "walk_id": "w02"
    },
    "works_by_doi__qeios_hosted_works": {
     "pages": 37,
-    "reason": "",
-    "requests": 37,
+    "reason": "complete walk with latest ended_at_utc 2026-11-02T15:32:52Z",
+    "requests": 0,
     "sha256": [
      "5ce27d1465908f16b83d324c7561c4c7d97fcb9361897ee0c80964cce3dae2e6",
      "fa9bdb52ceb6feccd673181db30ca678af38ee39337a7f63fa83e55c0673c5b2",
@@ -1241,13 +1241,13 @@
      "ea49f6e109ed7d1a28183c2296d3d8b5e543ad37389f1414e99279ce3aa5073c",
      "cf881dc4546adf1c91d81406071cf7532d1781543c80457fa52e47083996e911"
     ],
-    "state": "complete",
+    "state": "reused",
     "walk_id": "w02"
    },
    "works_by_doi__rapid_reviews_infectious_diseases": {
     "pages": 7,
-    "reason": "",
-    "requests": 7,
+    "reason": "complete walk with latest ended_at_utc 2026-11-02T15:33:09Z",
+    "requests": 0,
     "sha256": [
      "6c1c9f320bfbe6a7be7df443ad35fe0e21a1fd9de59b3eb3d8517bcdc92c4bc1",
      "0dfa38dcf42d06a19becb477f0a6b17910c551c28ba97cb27b3b11e6282c5b55",
@@ -1257,13 +1257,13 @@
      "78b0004f0ee9261f212b84745ad2176881d7707fefedb01625ad5881db8825f4",
      "1cbe9c1bedbe885f9c7b270dfc36bb49f579bb2f00f450a31432746d91a7f688"
     ],
-    "state": "complete",
+    "state": "reused",
     "walk_id": "w02"
    },
    "works_by_doi__review_commons": {
     "pages": 15,
-    "reason": "",
-    "requests": 16,
+    "reason": "complete walk with latest ended_at_utc 2026-11-02T15:32:25Z",
+    "requests": 0,
     "sha256": [
      "81c2d723ad8d2fc9013d267d1e42bea52bd9ab054607e6e23097ec5055baad47",
      "801ee5d13494170289e73626c455cbc1bd6def8a419fd539e2724b6ed7240a37",
@@ -1281,24 +1281,24 @@
      "637755b376806cf4aa243ed2177ceaa586af7c5bcbdbd78e0565e39e3a7e0f7d",
      "315d86046fd1c4919def2f4315029edb57bde1fbf170a39ea55a224cecf61201"
     ],
-    "state": "complete",
+    "state": "reused",
     "walk_id": "w02"
    },
    "works_by_doi__routledge_open_research": {
     "pages": 2,
-    "reason": "",
-    "requests": 2,
+    "reason": "complete walk with latest ended_at_utc 2026-11-02T15:07:14Z",
+    "requests": 0,
     "sha256": [
      "98b191835b8aa2fa2c33dafbd4519d520d723f239a34aae57176becd35a3fba0",
      "210c0620e67e2787fd66d23b14f9bc7e4116598006333998f6ed60b64ace98ea"
     ],
-    "state": "complete",
+    "state": "reused",
     "walk_id": "w02"
    },
    "works_by_doi__scipost": {
     "pages": 41,
-    "reason": "",
-    "requests": 41,
+    "reason": "complete walk with latest ended_at_utc 2026-11-02T15:08:07Z",
+    "requests": 0,
     "sha256": [
      "36c2df0d1c70c360dfd0f23da0ffd8d0f001106020c3911875b24efa698ad390",
      "fc6f9828d72266746956e3cd05fb7e8c08b1c63d72bfb45a78b21c4b0b339332",
@@ -1342,44 +1342,44 @@
      "a6b9926c3072d9446f7f2fad5ef7861019eb2981060ee7afb2b7cb4ee4fed1ef",
      "0dc9565e5adf9a70ed407ed23053ddb25c24e2fbe339f3fd37ffe245e0512afb"
     ],
-    "state": "complete",
+    "state": "reused",
     "walk_id": "w02"
    },
    "works_by_doi__stosunki_miedzynarodowe": {
     "pages": 1,
-    "reason": "",
-    "requests": 1,
+    "reason": "complete walk with latest ended_at_utc 2026-11-02T15:07:03Z",
+    "requests": 0,
     "sha256": [
      "3489d566bd1be0376dddbc7753ada6c5a1f0354d5d12a827e748b7311c7a74b6"
     ],
-    "state": "complete",
+    "state": "reused",
     "walk_id": "w02"
    },
    "works_by_doi__the_unjournal": {
     "pages": 1,
-    "reason": "",
-    "requests": 1,
+    "reason": "complete walk with latest ended_at_utc 2026-11-02T15:33:09Z",
+    "requests": 0,
     "sha256": [
      "4b4a584f65e02a0e16a52236df84eee99c64f3c6547978b5d70d05478f63fb28"
     ],
-    "state": "complete",
+    "state": "reused",
     "walk_id": "w02"
    },
    "works_by_doi__verixiv": {
     "pages": 2,
-    "reason": "",
-    "requests": 2,
+    "reason": "complete walk with latest ended_at_utc 2026-11-02T15:06:36Z",
+    "requests": 0,
     "sha256": [
      "0ce9d7c38c52ca1679f8bd76acb06ac4bfaba4e0a36c7704d50f6cc7a411370e",
      "41db8df180b89ae92504bc404241798b19cb0ca21bf3c27e6354b9f1d980eeb6"
     ],
-    "state": "complete",
+    "state": "reused",
     "walk_id": "w02"
    },
    "works_by_doi__wellcome_open_research": {
     "pages": 41,
-    "reason": "",
-    "requests": 41,
+    "reason": "complete walk with latest ended_at_utc 2026-11-02T15:06:28Z",
+    "requests": 0,
     "sha256": [
      "2304d8ea402ab1a372db0b34b68eb27356e9282d500db8675455976f0ab11e75",
      "dfc98456d9181131a0b9449f56cf5a8ea4db825000903e8dd89884987dbcc6f0",
@@ -1423,13 +1423,13 @@
      "f20eeab688d2de23af102587235c63b766489254806230ce87a95478019a41fb",
      "f380add17a1a848142802d4a6435cb1c3b1ce3eff5ffe8fd53edd19fad3f6626"
     ],
-    "state": "complete",
+    "state": "reused",
     "walk_id": "w02"
    }
   },
   "stage": "openalex_diagnostics"
  },
- "retrieval_finished_at": "2026-11-02T15:33:09Z",
+ "retrieval_finished_at": "2026-11-02T17:18:09Z",
  "retrieval_started_at": "2026-11-02T08:38:40Z",
  "run_id": "run_20261102_01",
  "sciety_index_snapshot": {

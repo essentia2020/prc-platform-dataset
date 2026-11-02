@@ -1457,18 +1457,19 @@ The descriptive `doi_pattern` of `access_microbiology` was tightened to `^10\.10
   from work_doi and found nothing for every row with versioned DOIs; 
   its rows were discarded, the walks stay in the manifests as the trace. 
   Results come from walks w02.
-  - Findings.
+  - **Findings.**
     - (a) Volume check, 32 rows. F1000-type rows resolve almost completely: 
       Wellcome Open Research 6 of 4 067 not found, Open Research Europe 3 
       of 1 577, F1000Research 33 of 11 964; publication year agrees with the 
       counting year in 99.9% of the found works. Rows counted on versioned 
       DOIs resolve partially: Access Microbiology 563 of 850 not found, eLife 
       reviewed preprints 209 of 4 043 — OpenAlex carries one record per work, 
-      not per version. Copernicus: 67 054 DOIs requested, 66 852 works returned, 
-      9 835 matched. OpenAlex answers a discussion-paper DOI with the record of 
-      the merged final article (primary DOI 10.5194/acp-…, 95 of 100 on the 
-      first page); the unmatched 57 219 are therefore merges, not gaps, and the 
-      matched 9 835 are discussion papers without a published article. A volume 
+      not per version. Copernicus: 67 054 DOIs requested, 9 835 found, 57 219 
+      not found; OpenAlex answered with 66 783 distinct works, 56 948 of them 
+      under a different primary DOI (the record of the merged final article, 
+      10.5194/acp-…; 95 of 100 on the first page), so 271 DOIs have no record 
+      at all and the remaining 56 948 are merges, not gaps; the 9 835 found 
+      are discussion papers without a published article. A volume 
       check for Copernicus needs the source-year counts, i.e. OpenAlex source 
       ids of the discussion journals in openalex.source_ids. The map is still 
       empty, so no row has source counts yet.
@@ -1476,22 +1477,30 @@ The descriptive `doi_pattern` of `access_microbiology` was tightened to `^10\.10
       Research works resolved, 0 pairs share an OpenAlex work id. 
       OpenAlex does not merge a VeriXiv preprint with its Gates version; 
       the residual cannot be reduced from this source.
-    - Follow-ups. (1) Row text for rows where the walk returned near as many 
-      works as DOIs requested but few matched, naming the merge; (2) fill 
-      openalex.source_ids for Copernicus discussion journals, Access Microbiology and 
-      eLife if a source-level check is wanted; (3) docs/limitations.md: one 
-      sentence that "not found" in the OpenAlex volume check means "no record 
-      under this DOI", which for versioned and merged records is expected.
-      Follow-up (2) deferred, 2026-11-02. Source-year counts add nothing for 
-      F1000-type rows (the DOI resolution already finds 99.9% with the year 
-      agreeing), are not comparable for Access Microbiology and eLife (the 
-      OpenAlex source is the whole journal, the row counts posted-content works 
-      only, D-060), and for Copernicus would repeat the merge problem: source_years 
-      filters on primary_location.source.id, and a merged record's primary location 
-      is the final article. A Copernicus check would need locations.source.id, 
-      some 40 verified source ids for 29 journals in three DOI regimes, and would 
-      still compare different objects. openalex.source_ids stays empty for 1.4.0; 
+  - **Follow-ups.** (1) Row text for rows where the walk returned near as many 
+    works as DOIs requested but few matched, naming the merge; (2) fill 
+    openalex.source_ids for Copernicus discussion journals, Access Microbiology and 
+    eLife if a source-level check is wanted; (3) docs/limitations.md: one 
+    sentence that "not found" in the OpenAlex volume check means "no record 
+    under this DOI", which for versioned and merged records is expected.
+    - Follow-up (1) done 2026-11-02, commit 7e57d45: the volume-check row states
+      the number of distinct works returned and how many carry another primary DOI
+      (run_20261102_01, requests_used 0 on the reused w02 walks). Ten rows carry
+      the clause; apart from Copernicus the largest are Access Microbiology 563,
+      Rapid Reviews 368, Qeios hosted works 277, eLife 209 — version merges, as
+      expected.
+    - Follow-up (2) deferred, 2026-11-02. Source-year counts add nothing for
+      F1000-type rows (the DOI resolution already finds 99.9% with the year
+      agreeing), are not comparable for Access Microbiology and eLife (the
+      OpenAlex source is the whole journal, the row counts posted-content works
+      only, D-060), and for Copernicus would repeat the merge problem: source_years
+      filters on primary_location.source.id, and a merged record's primary location
+      is the final article. A Copernicus check would need locations.source.id,
+      some 40 verified source ids for 29 journals in three DOI regimes, and would
+      still compare different objects. openalex.source_ids stays empty for 1.4.0;
       README "Future work" keeps the item.
+    - Follow-up (3) done 2026-11-02: the sentence is in docs/limitations.md
+      (Classification).
 
 - **Access:** OpenAlex requires an API key since 2026-02-13 (`mailto` is
   ignored). The key is read from `PRC_OPENALEX_API_KEY`, never from a
