@@ -2168,6 +2168,9 @@ platforms:
       qualifying event is a posted-content record (preprint version .v1/.v2 of
       an acmi.0 stem); conference abstracts and journal-article records without
       a posted-content record of the same stem never set the start.
+      Resolved in run_20261102_01: first posted-content posting year 2022
+      (DQ-run_20261102_01-025, 850 unique works to the cutoff); the start
+      stays run-derived.
     coverage_start_year: null
     coverage_end_year: null
     discipline_scope: life_sciences

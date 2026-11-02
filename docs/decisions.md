@@ -358,7 +358,7 @@ completion of its evidence checks; outstanding checks are stated explicitly.
 ## D-017: Access Microbiology: configuration and `model_since`
 
 - **Date:** 2026-10-20
-- **Status:** decided; coverage start awaits the local run
+- **Status:** decided; coverage start resolved in run_20261102_01 (2022, see below).
 - decided_by: researcher
 - **Question:** Preprint posted before review, reports and decision
   published with DOIs after a conventional accept decision; the start year of
@@ -374,6 +374,15 @@ completion of its evidence checks; outstanding checks are stated explicitly.
   year or registration timestamps; do not infer unobserved zeros.
 - **Evidence:** https://sciety.org/groups/access-microbiology/about ;
   https://www.microbiologyresearch.org/content/journal/acmi/about
+- **Resolved 2026-11-02 (run_20261102_01):** the first posted-content posting
+  year is 2022 (DQ-run_20261102_01-025; 850 unique works to the cutoff, none
+  outside the eligible range); 2019–2021 are `not_applicable` (pre-model
+  articles and abstracts, D-060), not observed zeros. `model_since` and
+  `coverage_start_year` stay null under `coverage_start_policy`
+  `first_qualifying_event_year_from_completed_run`: every complete run
+  re-derives the start and records it in the data-quality log, so a register
+  value would duplicate it. The register is amended only if a later run
+  resolves a different year.
 
 ## D-018: PREreview: `community_initiated` (medium) versus `mixed`
 
