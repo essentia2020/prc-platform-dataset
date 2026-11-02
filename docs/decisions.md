@@ -1342,6 +1342,15 @@ The descriptive `doi_pattern` of `access_microbiology` was tightened to `^10\.10
   data/manifests/probes/unjournal_probe_2026-10-31.json;
   data/manifests/probes/crossref_probes_2026-10-31.txt. Request to the
   service for is-review-of on summaries and for the ISSN sent 2026-10-31.
+- Reply received 2026-10-31 (co-director of the service): the 13 journal-article
+  records are 10 author responses and 3 evaluation summaries; the service 
+  confirms 42 peer-review records, 36 distinct targets and the missing ISSN,
+  agrees that evaluation summaries should carry is-review-of, and has an open
+  ISSN request with PubPub (knowledgefutures/pubpub#3483); the route for
+  updating existing deposits is unconfirmed. Author responses never add a work
+  (as for Review Commons, D-065); only the 3 summaries are uncounted
+  evaluations. The service asked for the dataset link and the counting rules;
+  answered once the repository is public.
 
 ## D-064: MetaROR — Crossref peer-review records are the primary source
 

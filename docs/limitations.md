@@ -249,9 +249,12 @@ release freeze.
   placeholder_target`, create no work and are counted per run in the
   `placeholder_relation` row of the data-quality log; the reviewed
   manuscripts are absent from the `metaror` series.
-- **Evaluation summaries without a relation (The Unjournal).** Thirteen
-  `journal-article` records under the community stem `d28e8e57`
-  (evaluation summaries and manager reports) carry no relation at all and
+- **Evaluation summaries without a relation (The Unjournal).** Thirteen 
+  journal-article records under the community stem d28e8e57 (10 author 
+  responses and 3 evaluation summaries, per the service's reply of 
+  2026-10-31) carry no relation at all and no ISSN; author responses 
+  are not evaluations and would never add a work, so the uncounted 
+  evaluations are the three summaries at all and
   no ISSN, so they lie outside the `peer-review` walk and are neither
   counted nor flagged (probe of 2026-10-31: 106 records under the stem
   including the title-level `journal` record, 42 `peer-review` with
