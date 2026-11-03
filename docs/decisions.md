@@ -1,6 +1,30 @@
 # Decision log — PRC Platform Dataset 1.4.0
 
-Numbered record of every design, classification and process decision. Each entry states the date, the question, the options considered, the decision, the evidence URL(s) and who decided. Every entry, D-001 through D-065 and Q-1 through Q-5, carries decided_by: researcher. D-027 through D-031 document preparation choices; D-032 through D-035 record the decisions on extraction, 2026-10-20, and govern their implementation; D-036 through D-041 record the decisions on normalisation, analysis and reporting, 2026-10-20; D-042 records the decision on repository history, 2026-10-20; D-043 and D-044 record the decisions of 2026-10-26 on two register rows whose Crossref records changed owner or primary identifier; D-045 records the decision of 2026-10-26 on Crossref walk completion and per-scope tolerance; D-046 through D-054 record the decisions of 2026-10-27 on the structural findings of run_20261026_01 (withdrawn review records, owner prefixes and the selector_no_match guard, evaluation records deposited under work types, companion items, VeriXiv, seven provisional F1000-infrastructure rows, repeated-slash DOIs, the Rapid Reviews cross-check); D-055 and D-056 record the decisions of 2026-10-27 on the audit boundary for harvested text and on keeping harvested records outside the repository; D-058 records the decision of 2026-10-28 on verifying Sciety index coverage per run; D-060 through D-062 record the decisions of 2026-10-28 to 2026-10-31 on the posting-record gate, group cells as lower bounds and the Gates Open Research data_status (D-059 was merged into D-061); D-063 through D-065 record the decisions of 2026-10-31 on Crossref peer-review records as the primary source for The Unjournal, MetaROR and Review Commons. Confidence and decision status are independent: a decided classification may retain medium or low confidence without being provisional.
+Numbered record of every design, classification and process decision. 
+Each entry states the date, the question, the options considered, the 
+decision, the evidence URL(s) and who decided. Every entry, D-001 through 
+D-066 and Q-1 through Q-5, carries decided_by: researcher. D-027 through 
+D-031 document preparation choices; D-032 through D-035 record the decisions 
+on extraction, 2026-10-20, and govern their implementation; D-036 through D-041 
+record the decisions on normalisation, analysis and reporting, 2026-10-20; D-042 
+records the decision on repository history, 2026-10-20; D-043 and D-044 record 
+the decisions of 2026-10-26 on two register rows whose Crossref records changed 
+owner or primary identifier; D-045 records the decision of 2026-10-26 on 
+Crossref walk completion and per-scope tolerance; D-046 through D-054 record the 
+decisions of 2026-10-27 on the structural findings of run_20261026_01 (withdrawn 
+review records, owner prefixes and the selector_no_match guard, evaluation records 
+deposited under work types, companion items, VeriXiv, seven provisional 
+F1000-infrastructure rows, repeated-slash DOIs, the Rapid Reviews cross-check); 
+D-055 and D-056 record the decisions of 2026-10-27 on the audit boundary for harvested 
+text and on keeping harvested records outside the repository; D-058 records the decision 
+of 2026-10-28 on verifying Sciety index coverage per run; D-060 through D-062 record 
+the decisions of 2026-10-28 to 2026-10-31 on the posting-record gate, group cells as 
+lower bounds and the Gates Open Research data_status (D-059 was merged into D-061); 
+D-063 through D-065 record the decisions of 2026-10-31 on Crossref peer-review records 
+as the primary source for The Unjournal, MetaROR and Review Commons. D-066 records the 
+decision of 2026-11-02 on the three permitted uses of OpenAlex.Confidence and 
+decision status are independent: a decided classification may retain medium or low 
+confidence without being provisional.
 Decision entries in this log are identified by decision number, date and subject.
 
 ---
@@ -151,6 +175,9 @@ Decision entries in this log are identified by decision number, date and subject
   `config/audit_allowlist.yaml`, relation `isSupplementTo`. The presentation
   is outside the repository audit and its content is not quoted.
 - **Evidence:** https://doi.org/10.5281/zenodo.22787722
+- **Note 2026-11-03:** the related work is a seminar presentation (CWTS Research
+  Seminars, Peer Review Week 2026, 18 September 2026; seminar page with the
+  recording: https://www.universiteitleiden.nl/en/events/2026/09/crossing-the-chasm-the-publish-review-curate-model-and-the-future-of-peer-review).
 
 ## D-007: Project structure
 
@@ -856,7 +883,11 @@ completion of its evidence checks; outstanding checks are stated explicitly.
 ## D-038: Group cells, blocking statuses and deduplication by earliest event
 
 - **Date:** 2026-10-20
-- **Status:** decided; amended by D-061 (group cells): `partial_coverage` members no longer blank a group cell, they are counted and named in `lower_bound_rows`.
+- **Status:** decided; amended by D-061 (group cells: `partial_coverage` 
+  members no longer blank a group cell, they are counted and named in 
+  `lower_bound_rows`); amended by D-017 (resolved 2026-11-02: the Access 
+  Microbiology start is re-derived by every complete run and is not written 
+  to the register as `model_since` / `coverage_start_year`).
 - decided_by: researcher
 - **Question:** How are class and configuration cells formed when a member
   row cannot contribute, and to which row is a work shared by several rows

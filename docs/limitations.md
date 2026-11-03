@@ -43,8 +43,8 @@
   deposited, so the most recent year is dominated by publication lag rather
   than by a change in attribution quality.
   JMIRx Med retains final-article counting despite its `core_publish_first`
-  classification ruling; Access Microbiology counts preprint posting, with
-  its coverage start to be established by the completed local run.
+  classification ruling; Access Microbiology counts preprint posting, with 
+  its coverage start re-derived from every complete run (2022 in `run_20261102_01`; D-017).
 - **Two rows count only works with a posted-content record (D-060).** eLife
   deposits Reviewed Preprints as `posted-content` and the version of record
   of the same stem as `journal-article`; the prefix also carries the

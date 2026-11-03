@@ -375,9 +375,9 @@ The eligible range of a row is `[max(launch_year, coverage_start_year),
 coverage_end_year or cutoff year]`. When `coverage_start_year` is empty and
 `extraction_selector.coverage_start_policy` is
 `first_qualifying_event_year_from_completed_run`, the start is the earliest
-`counting_year` of the row's included works in a complete run (then written
-to the register as `model_since` / `coverage_start_year`, earlier years
-becoming `not_applicable`). Before the first complete run the row's cells
+`counting_year` of the row's included works in a complete run, recorded in 
+the data-quality log and never written to the register (D-017); earlier years 
+become `not_applicable`. Before the first complete run the row's cells
 carry the transient `pending_run`; after a complete run without qualifying
 events they carry `unknown_scope`. Both block the group cells the row
 contributes to (D-038, D-039).

@@ -290,10 +290,10 @@ superseded by this one.
 
 Citation metadata is in `CITATION.cff`. Source code and documentation:
 <https://github.com/essentia2020/prc-platform-dataset>; the release
-archive of each run is on Zenodo (see Data availability). The dataset is
-a supplement to the seminar presentation listed there under
-`references` (`isSupplementTo`); the dataset DOI is added at the release
-freeze.
+archive of each run is on Zenodo (see Data availability). The dataset is a supplement to the seminar presentation listed there under
+`references` (`isSupplementTo`; seminar page with the recording:
+<https://www.universiteitleiden.nl/en/events/2026/09/crossing-the-chasm-the-publish-review-curate-model-and-the-future-of-peer-review>);
+the dataset DOI is added at the release freeze.
 
 ## Authorship and tooling
 
@@ -328,15 +328,18 @@ discussion for individually verified journals. Full statement:
    for example the ASAPbio, Sciety, PCI, eLife and PREreview teams).
 2. Verification of the extracted counts directly with the platforms
    (per-platform data confirmation).
-3. Cross-checking against additional data sources, first of all OpenAlex
-   (work types `peer-review` / `preprint`, discipline enrichment,
-   journal-version linkage), explicitly as a cross-check rather than a
-   primary counting source. D-066 fixes the three permitted uses: the
-   per-row volume check and the residual pair signal run as the
-   `openalex_diagnostics` stage and leave rows in the data-quality log only;
-   topic, country and citation enrichment for the article is done outside
-   the release pipeline on the CWTS OpenAlex dump and is recorded by one
-   preset row naming the snapshot.
+3. OpenAlex as a diagnostic source (D-066). Two of the three permitted
+   uses ran in `run_20261102_01` as the `openalex_diagnostics` stage: the
+   per-row volume check (32 rows resolved by counting-record DOI) and the
+   Gates Open Research–VeriXiv pair signal on the D-041 residual (0 shared
+   OpenAlex work ids); both leave rows in the data-quality log only. Still
+   open: source-level yearly counts (`openalex.source_ids` is empty for
+   1.4.0 — deferred because the OpenAlex source of a merged Copernicus
+   record is the final article, D-066 follow-up 2), and the topic, country
+   and citation enrichment for the article, which is done outside the
+   release pipeline on the CWTS OpenAlex dump and will be recorded by one
+   preset data-quality row naming the snapshot. OpenAlex never enters a
+   record file, table or figure.
 4. Extension of the platform register with additional attributes describing
    outputs and review-transparency features of each platform.
 5. Review of the Gates Open Research / VeriXiv pairs after the first

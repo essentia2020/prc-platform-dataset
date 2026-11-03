@@ -39,7 +39,7 @@ allowlist:
     file: config/classification_scheme.md
     literal: "Kochetkov, D. (2026). Peer Review at the Crossroads. Learned Publishing,\n39(2), e2046. https://doi.org/10.1002/leap.2046"
 
-  # Source 3: conference presentation (CITATION.cff references only).
+  # Source 3: seminar presentation (CITATION.cff references only).
   - rule_id: R3
     file: docs/decisions.md
     literal: "https://doi.org/10.5281/zenodo.22787722"
