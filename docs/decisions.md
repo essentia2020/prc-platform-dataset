@@ -22,7 +22,7 @@ the decisions of 2026-10-28 to 2026-10-31 on the posting-record gate, group cell
 lower bounds and the Gates Open Research data_status (D-059 was merged into D-061); 
 D-063 through D-065 record the decisions of 2026-10-31 on Crossref peer-review records 
 as the primary source for The Unjournal, MetaROR and Review Commons. D-066 records the 
-decision of 2026-11-02 on the three permitted uses of OpenAlex.Confidence and 
+decision of 2026-11-02 on the three permitted uses of OpenAlex. Confidence and 
 decision status are independent: a decided classification may retain medium or low 
 confidence without being provisional.
 Decision entries in this log are identified by decision number, date and subject.
@@ -178,6 +178,9 @@ Decision entries in this log are identified by decision number, date and subject
 - **Note 2026-11-03:** the related work is a seminar presentation (CWTS Research
   Seminars, Peer Review Week 2026, 18 September 2026; seminar page with the
   recording: https://www.universiteitleiden.nl/en/events/2026/09/crossing-the-chasm-the-publish-review-curate-model-and-the-future-of-peer-review).
+  The dataset's README and CITATION.cff say "seminar presentation"; the R3
+  allow-list string, the Zenodo record 22787722 and the `isSupplementTo`
+  link are unchanged.
 
 ## D-007: Project structure
 
