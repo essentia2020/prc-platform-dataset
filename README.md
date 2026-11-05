@@ -353,3 +353,7 @@ discussion for individually verified journals. Full statement:
 6. Access Microbiology coverage start: resolved by `run_20261102_01` 
   (D-017, D-060); the start is re-derived from every complete run, and a run 
   without qualifying events would return the row to `unknown_scope`.
+7. Generalised preprint–article pairing: extend D-041 to `has-preprint`
+   on eLife Reviewed Preprint records (and the matching `is-version-of`
+   assertions) so that the 105 cross-row pairs of DQ-019 are counted once
+   in the deduplicated tables (D-068).

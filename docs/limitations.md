@@ -207,6 +207,37 @@ list is completed before the release freeze.
   data-quality log without pairing them. While VeriXiv is provisional, the
   deduplicated tables leave it out, so a paired work is counted there on
   the Gates Open Research row.
+- Cross-row preprint and version pairs other than VeriXiv / Gates Open
+  Research are not paired (D-068). In run_20261102_01, 105 distinct
+  canonical-identifier pairs are linked by `has-preprint` and/or
+  `is-version-of` relations deposited on work records of different
+  register rows (87 pairs by `has-preprint`, 104 by `is-version-of`; the
+  two sets overlap). Deduplication works on canonical work identifiers, so
+  each side is a separate work in the deduplicated group tables and the
+  all-rows series is overstated by at most 105 works over 2017–2026; row
+  series are unaffected. The pairs by row combination (107 row-specific
+  occurrences, because two identifier pairs appear in two row
+  combinations):
+
+  | Row A | Row B | Pairs |
+  |---|---|---|
+  | arcadia_science | elife_reviewed_preprints | 30 |
+  | review_commons | elife_reviewed_preprints | 34 |
+  | prelights | elife_reviewed_preprints | 17 |
+  | prereview | elife_reviewed_preprints | 13 |
+  | rapid_reviews_infectious_diseases | elife_reviewed_preprints | 5 |
+  | biophysics_colab | elife_reviewed_preprints | 2 |
+  | life_science_editors | elife_reviewed_preprints | 1 |
+  | life_science_editors_foundation | elife_reviewed_preprints | 1 |
+  | pci_recommendations | elife_reviewed_preprints | 1 |
+  | qeios_external_works | elife_reviewed_preprints | 1 |
+  | ncrc | wellcome_open_research | 1 |
+  | rapid_reviews_infectious_diseases | wellcome_open_research | 1 |
+
+  The relations are correspondence candidates, not a ruling that every
+  version or preprint assertion warrants a merge; the preset row DQ-019
+  records the count and the generalised pairing is listed under Future
+  work.
 - OpenAlex is a diagnostic source (D-041, D-066). The volume check
   compares each quantified Crossref row's included works with OpenAlex by
   DOI and, where a source id is configured, with the source's own yearly

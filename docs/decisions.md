@@ -1652,6 +1652,54 @@ The descriptive `doi_pattern` of `access_microbiology` was tightened to `^10\.10
   re-extraction is needed: the records are recovered from the existing
   complete walk.
 
+## D-068: Cross-row preprint and version pairs are recorded, not merged
+
+- **Date:** 2026-11-05
+- **Status:** applied (documentation and data-quality row; no change to
+  tables or figures in this release)
+- decided_by: researcher
+- **Trigger:** external review 2026-11, comment K3 (the same manuscript
+  observed by several rows is counted more than once in the deduplicated
+  tables).
+- **Question:** Work records of different register rows carry
+  `has-preprint`, `is-preprint-of`, `is-version-of` and `has-version`
+  relations to each other. Should these relations merge the two sides into
+  one work in the deduplicated tables of this release?
+- **Options considered:** (a) generalise the D-041 pairing to every
+  relation type and row combination before release; (b) record the size of
+  the effect as a data-quality row and a limitation and defer the
+  generalised pairing to the next release; (c) ignore the relations.
+- **Decision:** (b). In run_20261102_01, 105 distinct canonical-identifier
+  pairs are linked by `has-preprint` and/or `is-version-of` relations
+  across different rows (87 pairs by `has-preprint`, 104 by
+  `is-version-of`; overlapping sets; 107 row-specific occurrences), after
+  excluding the VeriXiv / Gates Open Research pair that D-041 already
+  records. They are counted as separate works in the deduplicated group
+  tables, so the all-rows deduplicated series is overstated by at most 105
+  works over 2017–2026. The pairing mechanism of D-041 stays declared per
+  row and is not generalised in this release; preset row DQ-019 (`row_id:
+  all`, `issue_type: other`, `status: observed`) records the count, the
+  limitations list the pairs by row combination, and README "Future work"
+  item 7 names the generalised pairing (extension of D-041 to
+  `has-preprint` on eLife Reviewed Preprint records). (a) is rejected for
+  this release because the merge rule (which relation types suffice, and
+  whether a reviewed preprint and a later version are one work for every
+  row) needs its own ruling and tests; (c) would leave the overstatement
+  undocumented.
+- **Evidence:** `data/processed/records_*.csv` of run_20261102_01
+  (`relation_json` of included work records; targets resolved through the
+  rows' version patterns, never through titles); row-pair breakdown in
+  `docs/limitations.md` (arcadia_science/elife_reviewed_preprints 30,
+  review_commons/elife_reviewed_preprints 34,
+  prelights/elife_reviewed_preprints 17, prereview/elife_reviewed_preprints
+  13, and eight smaller combinations); `data/processed/data_quality_log.csv`
+  row DQ-019; `tools/append_dq_rows.py` accepts `row_id: all` as the data
+  dictionary already allows.
+- **Consequences:** none on the published tables and figures of this
+  release; the limitation and DQ-019 accompany them. The generalised
+  pairing, when adopted, will lower `unique_works_all_rows_year` and the
+  affected class and configuration group cells by at most 105 works.
+
 ## Q-4: Cross-DOI work correspondence for Gates Open Research / VeriXiv
 
 - **Date:** 2026-10-20

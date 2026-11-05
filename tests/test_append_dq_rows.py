@@ -147,3 +147,8 @@ def test_issue_types_come_from_the_data_dictionary() -> None:
     types = append_dq_rows.issue_types()
     assert {"companion_record", "date_semantics", "source_not_covering", "other"} <= types
     assert "qeios_hosted_works" in append_dq_rows.register_row_ids()
+
+
+def test_row_id_all_is_accepted_for_cross_row_issues() -> None:
+    # The data dictionary (§5.3) allows ``row_id = all``; DQ-019 (D-068) uses it.
+    assert "all" in append_dq_rows.register_row_ids()

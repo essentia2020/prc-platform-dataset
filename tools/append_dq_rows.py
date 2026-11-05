@@ -20,7 +20,8 @@ Every row is checked before anything is written: twelve columns; ``issue_id``
 of the form ``DQ-<three digits>``; ``origin = preset``; ``status`` in
 ``template`` / ``observed``; empty ``run_id`` and ``walk_id``; ``issue_type``
 among the values listed for the column in ``docs/data_dictionary.md``;
-``row_id`` present in ``config/platforms.yaml``.  A row whose ``issue_id`` is
+``row_id`` present in ``config/platforms.yaml`` or ``all`` (the value the data
+dictionary allows for cross-row issues).  A row whose ``issue_id`` is
 already in the log is skipped when it is identical and rejected when it
 differs, unless ``--replace`` is given.
 
@@ -79,7 +80,7 @@ def issue_types(dictionary: Path = DATA_DICTIONARY) -> set[str]:
 
 def register_row_ids(platforms: Path = PLATFORMS) -> set[str]:
     """Row identifiers of the validated register."""
-    return {str(r["row_id"]) for r in load_platforms(platforms)}
+    return {str(r["row_id"]) for r in load_platforms(platforms)} | {"all"}
 
 
 def read_rows(source: Path) -> list[dict[str, str]]:
@@ -130,7 +131,7 @@ def validate(rows: list[dict[str, str]], types: set[str], row_ids: set[str]) -> 
         if r["issue_type"] not in types:
             raise RowError(f"{iid}: issue_type {r['issue_type']!r} is not in the data dictionary")
         if r["row_id"] not in row_ids:
-            raise RowError(f"{iid}: row_id {r['row_id']!r} is not in config/platforms.yaml")
+            raise RowError(f"{iid}: row_id {r['row_id']!r} is neither 'all' nor in config/platforms.yaml")
         if r["n_records_affected"] and not r["n_records_affected"].isdigit():
             raise RowError(f"{iid}: n_records_affected must be an integer or empty")
         for col in ("description", "effect_on_counts", "handling"):
