@@ -18,11 +18,25 @@ def test_register_only_rows_are_blank_in_every_table(pipeline_outputs):
             assert r.get("row_id") is None
 
 
-def test_provisional_row_is_excluded_from_headline_tables(pipeline_outputs):
+def test_provisional_row_is_excluded_from_headline_tables(pipeline_outputs, tmp_path):
+    # No register row is provisional since D-071; the gate is exercised on a copy of the register.
+    from copy import deepcopy
+    from src.analyse import build_aggregates
+    from src.common.config import load_sources_config
+    from src.common.log import JsonlLogger
+    from src.common.interim import read_csv
     out = pipeline_outputs
-    provisional = [str(p["row_id"]) for p in out.platforms if p.get("provisional")]
-    assert "verixiv" in provisional
-    assert out.cells("works_by_row_year", row_id="verixiv")          # present in the row table
-    assert out.cell("register_summary", row_id="verixiv")["provisional"] == "true"
+    assert not [str(p["row_id"]) for p in out.platforms if p.get("provisional")]
+    platforms = deepcopy(out.platforms)
+    next(r for r in platforms if r["row_id"] == "verixiv")["provisional"] = True
+    logger = JsonlLogger(out.run_config.run_id, log_dir=tmp_path / "logs")
+    build_aggregates.run(out.run_config, load_sources_config(), platforms, logger, processed_root=out.processed,
+                         manifest_root=out.roots["manifest_root"], tables_root=tmp_path / "tables")
+    tables = tmp_path / "tables"
+    assert [c for c in read_csv(tables / "works_by_row_year.csv") if c["row_id"] == "verixiv"]   # row table
+    assert [c for c in read_csv(tables / "unique_works_all_rows_by_row_year.csv") if c["row_id"] == "verixiv"] == []
+    summary = next(c for c in read_csv(tables / "register_summary.csv") if c["row_id"] == "verixiv")
+    assert summary["provisional"] == "true"
     # evidence table carries no binding decision for a provisional row
-    assert out.cell("evidence_features_by_platform", row_id="verixiv")["binding_publication_decision"] == ""
+    features = next(c for c in read_csv(tables / "evidence_features_by_platform.csv") if c["row_id"] == "verixiv")
+    assert features["binding_publication_decision"] == ""

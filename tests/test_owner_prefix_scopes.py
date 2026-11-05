@@ -212,17 +212,18 @@ def test_jmirx_row_declares_no_peer_review_type():
     assert "companion_title_regex" in rows["jmirx_med"]["extraction_selector"]["crossref"]
 
 
-# ----------------------------------------------------------- VeriXiv (D-051)
-def test_verixiv_selector_is_enabled_and_provisional(pipeline_outputs):
+# ----------------------------------------------------------- VeriXiv (D-051, D-071)
+def test_verixiv_selector_is_enabled_and_not_provisional(pipeline_outputs):
     rows = {r["row_id"]: r for r in load_platforms()}
     v = rows["verixiv"]
     assert "selector_status" not in v["extraction_selector"]["crossref"]
-    assert v["register_status"] == "quantified" and v["provisional"] is True
+    assert v["register_status"] == "quantified" and v["provisional"] is False   # D-071
     assert v["extraction_selector"]["crossref"]["record_types"] == ["posted-content", "peer-review"]
     out = pipeline_outputs
     assert out.analysis_manifest["rows"]["verixiv"]["extraction_status"] == "complete"
-    # provisional: present in the row table, absent from the headline group tables
+    # present in the row table and in the deduplicated by-row table (headline rows)
     assert out.cells("works_by_row_year", row_id="verixiv")
+    assert out.cells("unique_works_all_rows_by_row_year", row_id="verixiv")
     for name in ("works_by_class_year", "unique_works_by_class_year"):
         assert all(r.get("row_id") is None for r in out.table(name))
 

@@ -194,7 +194,7 @@ list is completed before the release freeze.
 - Confidence is separate from ruling status. D-012 through D-026 are
   decided, and medium or low confidence alone does not set `provisional`.
   VeriXiv's review deposit was confirmed in run_20261026_01 (D-051); the
-  row is quantified and remains provisional until its first flattening.
+  row is quantified and its provisional flag was cleared by D-071.
   Pending source selectors cannot publish quantitative values even when
   the classification itself is approved.
 - A VeriXiv preprint and its Gates Open Research Version of Record are
@@ -204,9 +204,11 @@ list is completed before the release freeze.
   neither record asserts stay two works in the row series and in the
   overlap table; the OpenAlex pair signal (D-066) counts how many of these
   residual works share one OpenAlex work id and reports the number in the
-  data-quality log without pairing them. While VeriXiv is provisional, the
-  deduplicated tables leave it out, so a paired work is counted there on
-  the Gates Open Research row.
+  data-quality log without pairing them. Since D-071 cleared the VeriXiv
+  flag, the deduplicated tables count a paired work once, on the row of
+  its earliest counting event (in the published tables of
+  run_20261102_01, produced while the flag was set, the paired works sit
+  on the Gates Open Research row; the local re-run moves them).
 - Cross-row preprint and version pairs other than VeriXiv / Gates Open
   Research are not paired (D-068). In run_20261102_01, 105 distinct
   canonical-identifier pairs are linked by `has-preprint` and/or
@@ -252,7 +254,7 @@ list is completed before the release freeze.
   answers a Copernicus discussion-paper DOI with the record of the merged 
   final article (run_20261102_01: 57 219 of 67 054).
 - Seven venues on the F1000 infrastructure entered the register as
-  provisional rows after run_20261026_01 found their works and reviews in
+  provisional rows (flags cleared by D-071 on 2026-11-05) after run_20261026_01 found their works and reviews in
   the complete 10.12688 / 10.21956 walks (D-052): Stosunki Międzynarodowe –
   International Relations, Nuclear Science and Technology Open Research,
   Digital Twin, Molecular Psychology, Materials Open Research, Cobot and
@@ -266,7 +268,11 @@ list is completed before the release freeze.
   & Francis journal under 10.1080; only the platform period (about 90
   records, 38 of them now owned by the continuing journal) is counted and
   the row is selected by ISSN because part of its 10.12688 DOIs changed
-  owner. The rows stay provisional until their first flattening.
+  owner. D-071 cleared the provisional flags after the venues' own
+  workflow pages were re-read on 2026-11-05 and recorded Molecular
+  Psychology as closed (closure date not stated; open series to the
+  cutoff) and the Taylor & Francis continuation of Digital Twin as a
+  single-anonymous workflow outside the row.
 - Some platform websites could not be read automatically at verification
   (robots restrictions or parsing failures); for those rows the notes name
   the secondary evidence used (operator pages, Sciety group descriptions)

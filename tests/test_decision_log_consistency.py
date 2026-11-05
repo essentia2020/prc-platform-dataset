@@ -49,8 +49,8 @@ def test_gates_and_verixiv_are_separate_series(rows):
     assert preprint["counting_event"] == "first_public_posting"
     assert len(preprint["eligibility_events"]) == 2
     assert "public review" in preprint["eligibility_events"][1]
-    assert preprint["provisional"] is True
-    # D-051: deposit confirmed in run_20261026_01, selector enabled, row quantified and provisional
+    assert preprint["provisional"] is False                             # cleared by D-071
+    # D-051: deposit confirmed in run_20261026_01, selector enabled, row quantified
     assert preprint["register_status"] == "quantified"
     assert preprint["extraction_selector"]["crossref"].get("selector_status", "") == ""
     assert preprint["extraction_selector"]["crossref"]["record_types"] == ["posted-content", "peer-review"]
@@ -118,10 +118,10 @@ def test_other_accepted_rulings(rows):
     assert rows["metaror"]["data_status"] == "machine_readable"
     assert rows["the_unjournal"]["data_status"] == "partial_coverage"
     provisional = {row_id for row_id, row in rows.items() if row["provisional"]}
-    assert provisional == {"verixiv",                                   # D-051
-                           "stosunki_miedzynarodowe", "nuclear_science_technology_open_research", "digital_twin",
-                           "molecular_psychology", "materials_open_research", "cobot",
-                           "bioethics_open_research"}                   # D-052
+    assert provisional == set()                                         # D-051/D-052 flags cleared by D-071
+    assert rows["molecular_psychology"]["status"] == "closed"           # D-071: closure date not stated
+    assert rows["molecular_psychology"]["coverage_end_year"] is None
+    assert "closure date not stated" in rows["molecular_psychology"]["model_note"]
 
 
 def test_cutoff_and_release_metadata(repo_root):

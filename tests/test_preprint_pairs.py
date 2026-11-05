@@ -162,27 +162,30 @@ def test_row_series_unchanged_and_each_pair_counted_once(outputs):
     assert overlap["doi:10.12688/gatesopenres.3010"]["correspondence_basis"] == SIDE_PREPRINT
     assert overlap["doi:10.12688/gatesopenres.3011"]["correspondence_basis"] == SIDE_BOTH
     assert overlap["doi:10.12688/gatesopenres.3012"]["correspondence_basis"] == SIDE_ARTICLE
-    # deduplicated: each paired work counts once. While VeriXiv is provisional it is outside
-    # the deduplicated tables (headline rows), so the pairs sit with the article row.
+    # deduplicated: each paired work counts once, attributed to the earliest counting event.
+    # VeriXiv is a headline row since D-071, so the pairs sit with the preprint row.
     unique = {(c["row_id"], c["year"]): c for c in read_csv(outputs.tables / "unique_works_all_rows_by_row_year.csv")}
-    assert ("verixiv", "2024") not in unique
-    assert unique[("gates_open_research", "2024")]["count"] == "4"
+    assert unique[("verixiv", "2024")]["count"] == "3"                  # the three pairs: preprint posted first
+    assert unique[("gates_open_research", "2024")]["count"] == "1"      # 3003 only
+    cells = {(c["row_id"], c["year"]): c for c in read_csv(outputs.tables / "works_by_row_year.csv")}
+    assert cells[("gates_open_research", "2024")]["count"] == "4"       # row series unchanged
     assert [c for c in read_csv(outputs.tables / "unique_works_all_rows_year.csv") if c["year"] == "2024"][0]["count"] \
         in ("", "4")   # blank when another headline row blocks the all-rows cell; never 7
 
 
-def test_pairs_follow_the_earliest_counting_event_once_verixiv_is_not_provisional(outputs, tmp_path):
+def test_pairs_sit_with_the_article_row_while_the_preprint_row_is_provisional(outputs, tmp_path):
     from copy import deepcopy
     from src.analyse import build_aggregates
     from src.common.log import JsonlLogger
     platforms = deepcopy(outputs.platforms)
-    next(r for r in platforms if r["row_id"] == "verixiv")["provisional"] = False
+    next(r for r in platforms if r["row_id"] == "verixiv")["provisional"] = True
     logger = JsonlLogger(outputs.run_config.run_id, log_dir=tmp_path / "logs")
     build_aggregates.run(outputs.run_config, load_sources_config(), platforms, logger, processed_root=outputs.processed,
                          manifest_root=outputs.roots["manifest_root"], tables_root=tmp_path / "tables")
+    # a provisional row is outside the deduplicated tables (headline rows): the pairs count with the article row
     unique = {(c["row_id"], c["year"]): c for c in read_csv(tmp_path / "tables" / "unique_works_all_rows_by_row_year.csv")}
-    assert unique[("verixiv", "2024")]["count"] == "3"                  # the three pairs: preprint posted first
-    assert unique[("gates_open_research", "2024")]["count"] == "1"      # 3003 only
+    assert ("verixiv", "2024") not in unique
+    assert unique[("gates_open_research", "2024")]["count"] == "4"
     cells = {(c["row_id"], c["year"]): c for c in read_csv(tmp_path / "tables" / "works_by_row_year.csv")}
     assert cells[("gates_open_research", "2024")]["count"] == "4"       # row series unchanged
 

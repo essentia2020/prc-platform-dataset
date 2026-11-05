@@ -73,13 +73,19 @@ def test_partial_coverage_row_keeps_its_coverage_in_the_cutoff_year():
 
 
 def test_provisional_rows_leave_headline_tables_but_stay_in_register():
+    """D-071 cleared every provisional flag; the gate is exercised on a copy with one flag re-set."""
+    import copy
+
     rows = load_platforms()
+    assert not any(r["provisional"] for r in rows)
     kept = {r["row_id"] for r in headline_rows(rows)}
-    provisional = {r["row_id"] for r in rows if r["provisional"]}
+    assert "verixiv" in kept
     register_only = {r["row_id"] for r in rows if r["register_status"] == "register_only"}
-    assert provisional and provisional.isdisjoint(kept)
     assert register_only.isdisjoint(kept)
-    assert "verixiv" in provisional
+    flagged = copy.deepcopy(rows)
+    next(r for r in flagged if r["row_id"] == "verixiv")["provisional"] = True
+    kept_flagged = {r["row_id"] for r in headline_rows(flagged)}
+    assert "verixiv" not in kept_flagged and kept_flagged == kept - {"verixiv"}
 
 
 def test_row_summed_additivity_propagates_blanks():

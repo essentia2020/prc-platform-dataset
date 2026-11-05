@@ -38,7 +38,7 @@ One line per register row (observation series). Lists are joined with `; `;
 | `model_since` | integer or empty | year | `2023` |
 | `model_note` | string or empty | workflow, site-renaming or venue-change notes | D-012 site-renaming note |
 | `coverage_start_year` | integer or empty | ≥ `launch_year`; empty requires explicit run-derived policy | `2019` |
-| `coverage_end_year` | integer or empty | empty = open series to cutoff | `` |
+| `coverage_end_year` | integer or empty | empty = open series to cutoff; a `closed` row leaves it empty only when its `model_note` states "closure date not stated" (D-071, D-024 convention) | `` |
 | `discipline_scope` | enum | `life_sciences`, `physical_sciences`, `social_sciences`, `metaresearch`, `multidisciplinary` | `life_sciences` |
 | `country_of_operator` | string | free text | `United Kingdom` |
 | `initiation_class` | enum | `author_initiated`, `community_initiated`, `mixed` | `author_initiated` |

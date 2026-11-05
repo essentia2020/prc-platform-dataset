@@ -70,7 +70,9 @@ is generated from it (`python -m src.common.register --export`) and never
 edited by hand. Medium or low confidence alone does not set `provisional`.
 Decisions clear that flag. VeriXiv (deposit confirmed in run_20261026_01,
 D-051) and the seven F1000-infrastructure venues added after that run
-(D-052) are provisional until their first flattening. Candidates audited
+(D-052) were provisional until their first flattening; D-071 cleared the
+eight flags on 2026-11-05 after the venues' own workflow pages were
+re-read, so no row is provisional in this release. Candidates audited
 but not included are in `config/excluded_candidates.yaml`.
 
 | Row (`row_id`) | Organisation | Axis 1 (confidence) | Axis 2 (confidence) | Source | Counting event | Coverage | Data status |
@@ -79,16 +81,16 @@ but not included are in `config/excluded_candidates.yaml`.
 | `f1000research` | F1000 Research Ltd (Taylor & Francis) | `author_initiated` (high) | `approval_threshold` (high) | crossref | first_public_posting | 2013–cutoff | machine_readable |
 | `wellcome_open_research` | F1000 Research Ltd for Wellcome | `author_initiated` (high) | `approval_threshold` (high) | crossref | first_public_posting | 2016–cutoff | machine_readable |
 | `gates_open_research` | F1000 Research Ltd for the Gates Foundation | `author_initiated` (high) | `approval_threshold` (medium) | crossref | first_public_posting | 2017–2024 | machine_readable |
-| `verixiv` | F1000 Research Ltd for the Gates Foundation | `author_initiated` (high) | `approval_threshold` (medium) (provisional) | crossref | first_public_posting | 2024–cutoff | machine_readable |
+| `verixiv` | F1000 Research Ltd for the Gates Foundation | `author_initiated` (high) | `approval_threshold` (medium) | crossref | first_public_posting | 2024–cutoff | machine_readable |
 | `open_research_europe` | F1000 Research Ltd for the European Commission | `author_initiated` (high) | `approval_threshold` (high) | crossref | first_public_posting | 2021–cutoff | machine_readable |
 | `hrb_open_research` | F1000 Research Ltd for the Health Research Board (Ireland) | `author_initiated` (high) | `approval_threshold` (high) | crossref | first_public_posting | 2018–cutoff | machine_readable |
-| `stosunki_miedzynarodowe` | F1000 Research Ltd for the University of Warsaw (Faculty of Political Science and International Studies) | `author_initiated` (high) | `approval_threshold` (high) (provisional) | crossref | first_public_posting | 2021–cutoff | machine_readable |
-| `nuclear_science_technology_open_research` | F1000 Research Ltd for the American Nuclear Society | `author_initiated` (high) | `approval_threshold` (high) (provisional) | crossref | first_public_posting | 2023–cutoff | machine_readable |
-| `digital_twin` | F1000 Research Ltd (Taylor & Francis) | `author_initiated` (high) | `approval_threshold` (high) (provisional) | crossref | first_public_posting | 2021–2025 | machine_readable |
-| `molecular_psychology` | F1000 Research Ltd (Taylor & Francis) | `author_initiated` (high) | `approval_threshold` (high) (provisional) | crossref | first_public_posting | 2022–cutoff | machine_readable |
-| `materials_open_research` | F1000 Research Ltd (Taylor & Francis) | `author_initiated` (high) | `approval_threshold` (high) (provisional) | crossref | first_public_posting | 2021–cutoff | machine_readable |
-| `cobot` | F1000 Research Ltd (Taylor & Francis) | `author_initiated` (high) | `approval_threshold` (high) (provisional) | crossref | first_public_posting | 2022–cutoff | machine_readable |
-| `bioethics_open_research` | F1000 Research Ltd (Taylor & Francis, with the American Journal of Bioethics) | `author_initiated` (high) | `approval_threshold` (high) (provisional) | crossref | first_public_posting | 2023–cutoff | machine_readable |
+| `stosunki_miedzynarodowe` | F1000 Research Ltd for the University of Warsaw (Faculty of Political Science and International Studies) | `author_initiated` (high) | `approval_threshold` (high) | crossref | first_public_posting | 2021–cutoff | machine_readable |
+| `nuclear_science_technology_open_research` | F1000 Research Ltd for the American Nuclear Society | `author_initiated` (high) | `approval_threshold` (high) | crossref | first_public_posting | 2023–cutoff | machine_readable |
+| `digital_twin` | F1000 Research Ltd (Taylor & Francis) | `author_initiated` (high) | `approval_threshold` (high) | crossref | first_public_posting | 2021–2025 | machine_readable |
+| `molecular_psychology` | F1000 Research Ltd (Taylor & Francis) | `author_initiated` (high) | `approval_threshold` (high) | crossref | first_public_posting | 2022–cutoff | machine_readable |
+| `materials_open_research` | F1000 Research Ltd (Taylor & Francis) | `author_initiated` (high) | `approval_threshold` (high) | crossref | first_public_posting | 2021–cutoff | machine_readable |
+| `cobot` | F1000 Research Ltd (Taylor & Francis) | `author_initiated` (high) | `approval_threshold` (high) | crossref | first_public_posting | 2022–cutoff | machine_readable |
+| `bioethics_open_research` | F1000 Research Ltd (Taylor & Francis, with the American Journal of Bioethics) | `author_initiated` (high) | `approval_threshold` (high) | crossref | first_public_posting | 2023–cutoff | machine_readable |
 | `nihr_open_research` | F1000 Research Ltd for the National Institute for Health and Care Research | `author_initiated` (high) | `approval_threshold` (high) | crossref | first_public_posting | 2021–cutoff | machine_readable |
 | `health_open_research` | F1000 Research Ltd with the Association of Medical Research Charities | `author_initiated` (high) | `approval_threshold` (high) | crossref | first_public_posting | 2019–cutoff | machine_readable |
 | `open_research_africa` | F1000 Research Ltd with the Science for Africa Foundation | `author_initiated` (high) | `approval_threshold` (high) | crossref | first_public_posting | 2018–cutoff | machine_readable |

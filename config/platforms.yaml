@@ -344,7 +344,7 @@ platforms:
       The Gates Open Research workflow describes a passed-peer-review
       threshold on VeriXiv followed by a Version of Record on Gates Open
       Research. The preprint remains the counted object.
-    provisional: true
+    provisional: false
     publish_arrangement: platform_own
     review_arrangement: platform_own
     curation_arrangement: partner_journal
@@ -549,7 +549,7 @@ platforms:
     prc_configuration: approval_threshold
     configuration_confidence: high
     configuration_note: "Articles that pass peer review are indexed; F1000 approval statuses apply."
-    provisional: true
+    provisional: false
     publish_arrangement: platform_own
     review_arrangement: platform_own
     curation_arrangement: platform_own
@@ -608,7 +608,7 @@ platforms:
     prc_configuration: approval_threshold
     configuration_confidence: high
     configuration_note: "Articles that pass peer review are indexed; F1000 approval statuses apply."
-    provisional: true
+    provisional: false
     publish_arrangement: platform_own
     review_arrangement: platform_own
     curation_arrangement: platform_own
@@ -657,6 +657,11 @@ platforms:
     model_since: 2021
     model_note: >-
       D-052: F1000-hosted venue 2021–2025, closed; about 90 platform-period records 10.12688/digitaltwin.* (52 still owned under 10.12688, 38 transferred to 10.1080; last issued 2025-07-18). From 2025 the title continues as a conventional Taylor & Francis journal (10.1080/27525783.*, received/accepted dates; 106 articles to 2026-10-20), outside the row. Because part of the platform-period records changed owner, the selector is the ISSN scope with a DOI regex, which keeps all 90 regardless of owner; 79 of the 10.21956/digitaltwin review records are likewise owned under 10.1080 (member 301), so 10.1080 is walked as a second review prefix. Platform period and closure confirmed against Crossref and the venue site on 2026-10-27.
+      D-071: the continuing Taylor & Francis journal page describes editor
+      screening followed by single-anonymous peer review
+      (https://www.tandfonline.com/journals/tdtw20/about-this-journal,
+      retrieved 2026-11-05), i.e. not the platform-period workflow; the row
+      ends in 2025.
     coverage_start_year: 2021
     coverage_end_year: 2025
     discipline_scope: physical_sciences
@@ -667,7 +672,7 @@ platforms:
     prc_configuration: approval_threshold
     configuration_confidence: high
     configuration_note: "Articles that pass peer review are indexed; F1000 approval statuses apply."
-    provisional: true
+    provisional: false
     publish_arrangement: platform_own
     review_arrangement: platform_own
     curation_arrangement: platform_own
@@ -712,11 +717,15 @@ platforms:
     organisation_id: f1000
     organisation_name: "F1000 Research Ltd (Taylor & Francis)"
     prc_role: integrated_platform
-    status: dormant
+    status: closed
     launch_year: 2022
     model_since: 2022
     model_note: >-
       D-052: F1000-hosted venue; 44 journal-article records 2022–2025 (last new submission 2025-01-27, last issued 2025-06-17). Dormant: not listed on the F1000 venues page and no Taylor & Francis continuation (no 10.1080-owned record under ISSN 2752-8286); confirmed against Crossref and the venue site on 2026-10-27.
+      D-071: own About page states that the journal is closed to all
+      submissions (https://molecularpsychology.org/about, retrieved
+      2026-11-05); closure date not stated; open series to the cutoff under
+      the D-024 convention.
     coverage_start_year: 2022
     coverage_end_year: null
     discipline_scope: life_sciences
@@ -727,7 +736,7 @@ platforms:
     prc_configuration: approval_threshold
     configuration_confidence: high
     configuration_note: "Articles that pass peer review are indexed; F1000 approval statuses apply."
-    provisional: true
+    provisional: false
     publish_arrangement: platform_own
     review_arrangement: platform_own
     curation_arrangement: platform_own
@@ -785,7 +794,7 @@ platforms:
     prc_configuration: approval_threshold
     configuration_confidence: high
     configuration_note: "Articles that pass peer review are indexed; F1000 approval statuses apply."
-    provisional: true
+    provisional: false
     publish_arrangement: platform_own
     review_arrangement: platform_own
     curation_arrangement: platform_own
@@ -845,7 +854,7 @@ platforms:
     prc_configuration: approval_threshold
     configuration_confidence: high
     configuration_note: "Articles that pass peer review are indexed; F1000 approval statuses apply."
-    provisional: true
+    provisional: false
     publish_arrangement: platform_own
     review_arrangement: platform_own
     curation_arrangement: platform_own
@@ -904,7 +913,7 @@ platforms:
     prc_configuration: approval_threshold
     configuration_confidence: high
     configuration_note: "Articles that pass peer review are indexed; F1000 approval statuses apply."
-    provisional: true
+    provisional: false
     publish_arrangement: platform_own
     review_arrangement: platform_own
     curation_arrangement: platform_own

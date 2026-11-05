@@ -322,8 +322,12 @@ def validate_platforms(rows: Sequence[Mapping[str, Any]], meta: Mapping[str, Any
             "not_machine_readable", "defunct", "partial_coverage",
         ):
             errors.append(f"{label}: register_only rows must state data_status as the reason")
-        if row.get("status") == "closed" and row.get("coverage_end_year") is None:
-            errors.append(f"{label}: closed rows need coverage_end_year")
+        if (row.get("status") == "closed" and row.get("coverage_end_year") is None
+                and "closure date not stated" not in str(row.get("model_note") or "")):
+            # D-071: a closed row whose closure date is not stated on the platform's own
+            # pages keeps an open series to the cutoff (D-024 convention) and says so.
+            errors.append(f"{label}: closed rows need coverage_end_year, or a model_note stating "
+                          "'closure date not stated' (D-071)")
     if errors:
         raise RegisterError("platform register invalid:\n  " + "\n  ".join(errors))
 

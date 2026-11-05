@@ -1800,6 +1800,73 @@ The descriptive `doi_pattern` of `access_microbiology` was tightened to `^10\.10
   totals, the class tables and the row series are unchanged. The README
   register table and `config/platforms.csv` are updated now.
 
+## D-071: Provisional flags cleared for VeriXiv and the seven F1000-infrastructure venues
+
+- **Date:** 2026-11-05
+- **Status:** applied at the local re-run (register applied; the eight rows
+  enter the deduplicated tables when analyse/report are re-run)
+- decided_by: researcher
+- **Trigger:** external review 2026-11, comment K8 (eight rows carry
+  `provisional: true` although extraction is complete and their counts are
+  published).
+- **Question:** D-051 and D-052 kept VeriXiv and the seven venues added
+  from the complete 10.12688 / 10.21956 walks provisional "until their first
+  flattening". All eight rows have `extraction_status: complete` and a
+  nonblank `unique_works_to_cutoff` in run_20261102_01
+  (`reports/tables/register_summary.csv`). Does any unresolved issue
+  justify keeping them out of the deduplicated tables?
+- **Options considered:** (a) clear the eight flags, re-reading each
+  venue's own workflow page against criteria 1–3 of
+  `config/classification_scheme.md` and recording status changes; (b) keep
+  the flags until the next run; (c) clear the flags for the active venues
+  only.
+- **Decision:** (a). The first flattening that D-051 and D-052 asked for
+  has happened (run_20261027_01 and run_20261102_01); the workflow pages
+  re-read on 2026-11-05 support criteria 1–3 for every venue
+  (table below). Two notes are added: `molecular_psychology` becomes
+  `status: closed` with `coverage_end_year: null` ("own About page states
+  the journal is closed to all submissions, retrieved 2026-11-05; closure
+  date not stated; open series to the cutoff under the D-024 convention"),
+  and `digital_twin` records that the continuing Taylor & Francis journal
+  page describes editor screening followed by single-anonymous review,
+  i.e. not the platform-period workflow (the row already ends in 2025). A
+  current closure statement is not retroactive evidence against a
+  historical observation series. The register validator now accepts a
+  `closed` row without `coverage_end_year` only when its `model_note`
+  states "closure date not stated". (b) and (c) would keep complete,
+  published series out of the deduplicated tables for no recorded reason.
+
+  | Row | Criterion 1 (public before or independently of evaluation) | Criterion 2 (public, attributable evaluation output) | Criterion 3 (own-site documented workflow) | Operating status, 2026-11-05 |
+  |---|---|---|---|---|
+  | `verixiv` | screened preprint with DOI precedes optional review | names, reports and author responses with the preprint | https://verixiv.org/about/how-it-works/ | active; optional open review offered |
+  | `stosunki_miedzynarodowe` | DOI publication after prechecks, before invited review | reviewer names and reports with the article | https://internationalrelations-publishing.org/about | active; continuous publication, no closure notice |
+  | `nuclear_science_technology_open_research` | prechecks, publication, then review | reports, names, responses public | https://nstopenresearch.org/about/how-it-works/ | active; operator webinar announcement of 2026-10-26 (https://www.ans.org/news/2026-10-26/article-8519/ans-webinar-spotlights-nstor/) |
+  | `digital_twin` | platform-period workflow: publication before named public review | public named reports | https://digitaltwin1.org/about (platform period); https://www.tandfonline.com/journals/tdtw20/about-this-journal (continuation, single-anonymous) | closed 2025 (unchanged) |
+  | `molecular_psychology` | publication precedes named public review | public named reports | https://molecularpsychology.org/about | closed: "This journal is now closed to all submissions"; date not stated |
+  | `materials_open_research` | public DOI article before review | public named reports and responses | https://materialsopenresearch.org/about | dormant (unchanged); submission model still described |
+  | `cobot` | publication after prechecks, before review | public reviewer names and reports | https://collaborative-robot.org/about | dormant (unchanged); no closure notice |
+  | `bioethics_open_research` | policy: peer review takes place after publication | identities, manuscripts and reports published; approval statuses | https://bioethicsopenresearch.org/about/policies | active (unchanged) |
+
+  All URLs retrieved 2026-11-05.
+- **Evidence:** the table above; `reports/tables/register_summary.csv` of
+  run_20261102_01 (`extraction_status: complete`, nonblank
+  `unique_works_to_cutoff` for all eight rows); D-051 and D-052
+  ("provisional until their first flattening"); `config/platforms.yaml`
+  (eight `provisional: false`, `molecular_psychology` status and
+  `model_note`, `digital_twin` `model_note`); `src/common/register.py`
+  (validator rule for closed rows); tests
+  `tests/test_decision_log_consistency.py`, `tests/test_preprint_pairs.py`,
+  `tests/test_owner_prefix_scopes.py`, `tests/test_register_only_is_blank.py`
+  (the provisional gate is now exercised on a copy of the register).
+- **Consequences:** after the local re-run, all eight rows enter
+  `unique_works_all_rows_year`, `unique_works_all_rows_by_row_year`, the
+  class and configuration group tables and `evidence_features_by_platform`
+  (binding decision no longer blank); the three VeriXiv / Gates Open
+  Research pairs of D-041 move to the VeriXiv row in the deduplicated
+  tables; Figures 2, 3, 6 and 8 are redrawn. Row series are unchanged;
+  `register_summary.provisional` becomes `false` for the eight rows and
+  `status` of `molecular_psychology` becomes `closed`.
+
 ## Q-4: Cross-DOI work correspondence for Gates Open Research / VeriXiv
 
 - **Date:** 2026-10-20

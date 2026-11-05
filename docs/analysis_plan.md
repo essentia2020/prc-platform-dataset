@@ -155,7 +155,7 @@ with specific methodology:
   in run_20261026_01 (D-051: 314 unique `10.21956/verixiv.*` reviews
   targeting 185 `10.12688/verixiv.*` preprints); the selector is enabled
   (`posted-content` and `peer-review` under 10.12688 / 10.21956, stem
-  regex only) and the row stays provisional until its first flattening.
+  regex only); the provisional flag was cleared by D-071.
   Review stems differ from preprint stems, so attribution is relation-based.
   Confirmed Version-of-Record/preprint overlap is expected, reported and
   never a disjointness failure. Preserve both source DOIs and the evidence
@@ -169,9 +169,10 @@ with specific methodology:
   follow it, so the preprint keeps its qualifying review; a record related
   to several counterparts is a conflict, logged and left unpaired. Row
   series are unchanged; the deduplicated tables count the pair once, on
-  the row of its earliest counting event (while VeriXiv is provisional it
-  is outside the deduplicated tables, so the pair sits with the Gates Open
-  Research row there); `cross_platform_overlap.csv` carries one line per
+  the row of its earliest counting event (a provisional row is outside the
+  deduplicated tables, so while the VeriXiv flag was set — until D-071 —
+  the pair sat with the Gates Open Research row there);
+  `cross_platform_overlap.csv` carries one line per
   pair. The residual — included works of both rows with no Crossref
   relation from either side — is the input of the OpenAlex pair signal
   (D-066), which is a data-quality row and never a pair.
@@ -213,8 +214,9 @@ with specific methodology:
   that venue are owned by member 13904). NIHR Open Research is registered
   under 10.3310, shared with the NIHR Journals Library, and is selected by
   stem regex (D-047). Seven further venues on the F1000 infrastructure
-  (D-052) are provisional rows selected by stem or, for Digital Twin, by
-  ISSN after the DOI transfer to the continuing Taylor & Francis journal.
+  (D-052) are rows selected by stem or, for Digital Twin, by ISSN after
+  the DOI transfer to the continuing Taylor & Francis journal; their
+  provisional flags were cleared by D-071.
 - **Peer Community In.** Recommendations are deposited as
   `journal-article` records under `10.24072/pci.<community>.<id>` with
   `is-review-of` relations (D-049); they are the row's evaluation records
