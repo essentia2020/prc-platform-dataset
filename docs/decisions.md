@@ -1982,6 +1982,38 @@ The descriptive `doi_pattern` of `access_microbiology` was tightened to `^10\.10
   future runs. `event_date_raw` of a Crossref evaluation record is now
   `issued` or empty.
 
+## D-074: One Crossref relation line per (source, review record, reviewed work)
+
+- **Date:** 2026-11-05
+- **Status:** applied at the local re-run (record files)
+- decided_by: researcher
+- **Trigger:** internal pre-submission review, 2026-11-05, item S3 (the
+  Crossref branch of the normaliser wrote one `evaluation_relation` line per
+  interim line, so a review met again in another walk or page of the same
+  interim repeated its relation lines; the Sciety branch yields one line
+  per evaluation and target).
+- **Question:** Are repeated relation lines a defect of the record files or
+  a feature to retain?
+- **Options considered:** (a) de-duplicate on
+  (`source`, `review_record_id`, `reviewed_work_id`) in the Crossref branch
+  and keep the dictionary text of `evaluation_relation` ("one (evaluation,
+  reviewed work) pair") unchanged; (b) keep the repeats and document them.
+- **Decision:** (a). The analysis already treats relations as a set, so the
+  repeats carry no information; the record files should match the
+  dictionary. The first line met for a key is kept (the pages of a walk are
+  read in order).
+- **Evidence:** internal pre-submission review, 2026-11-05: 118,448 excess
+  relation lines across 19 row record files of run_20261102_01. Code:
+  `src/normalise/clean_and_normalise.py` (`review_records`,
+  `seen_relations`); tests `tests/test_normalise_records.py`
+  (`test_crossref_relation_lines_are_unique_per_review_and_target`,
+  `test_relation_key_is_unique_in_every_records_file` on the offline
+  fixture).
+- **Consequences:** after the local re-run the record files
+  `data/processed/records_<row_id>.csv` shrink by 118,448 lines across 19
+  rows; `n_evaluation_records`, the evaluation and work counts, every table
+  and every figure are unchanged. Checksums of the record files change.
+
 ## Q-4: Cross-DOI work correspondence for Gates Open Research / VeriXiv
 
 - **Date:** 2026-10-20

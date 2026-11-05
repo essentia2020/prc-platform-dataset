@@ -211,7 +211,7 @@ def test_evaluation_record_without_issued_has_no_interval_and_is_missing_event_d
 
     row = {"row_id": "x", "doi_version_pattern": None, "extraction_selector": {"crossref": {}}}
     interim = [{"doi": "10.21956/test.1.r1", "type": "peer-review", "issued": "", "created": "2024-03-01T10:00:00Z",
-                "target_doi": "10.12688/test.1.1", "target_relation_type": "is-review-of"}]
+                "target_id_raw": "10.12688/test.1.1", "target_id_type": "doi", "target_relation_type": "is-review-of"}]
     recs = review_records(row, interim, set())
     ev = [r for r in recs if r["row_entity_type"] == "evaluation_record"]
     assert len(ev) == 1

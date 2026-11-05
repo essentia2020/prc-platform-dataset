@@ -216,6 +216,7 @@ def review_records(row: Mapping[str, Any], interim_rows: list[Mapping[str, str]]
     pattern = row.get("doi_version_pattern") or None
     out: list[dict[str, str]] = []
     seen: set[str] = set()
+    seen_relations: set[tuple[str, str, str]] = set()
     for r in interim_rows:
         # The peer-review interim holds peer-review records and, for rows with
         # ``evaluation_record_types``, evaluation records deposited under a work type.
@@ -245,8 +246,16 @@ def review_records(row: Mapping[str, Any], interim_rows: list[Mapping[str, str]]
                 retrieved_at_utc=r.get("retrieved_at_utc", ""), walk_id=r.get("walk_id", ""), page=r.get("page", ""),
             )
             out.append(rec)
-        rel = _blank_record(row_id, "evaluation_relation", "crossref")
         wid, cwid, flag = _target_identifier(r, pattern)
+        # D-074: one relation line per (source, review record, reviewed work).
+        # A review met again in another walk or page of the same interim (the
+        # same target relation repeated) adds no second line; the analysis
+        # already treats relations as a set, so no count depends on this.
+        relation_key = ("crossref", doi, wid)
+        if relation_key in seen_relations:
+            continue
+        seen_relations.add(relation_key)
+        rel = _blank_record(row_id, "evaluation_relation", "crossref")
         basis = ""
         if not flag and wid.startswith("doi:"):
             canonical, basis = canonical_work_doi(row, bare_doi(wid), pairs)

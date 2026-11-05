@@ -150,3 +150,31 @@ def test_f1000research_selector_rejects_other_forms(doi):
     import re
     row = _f1000_row()
     assert not re.match(row["extraction_selector"]["crossref"]["doi_regex"], doi)
+
+
+# ------------------------------------------------------------------ D-074
+def test_crossref_relation_lines_are_unique_per_review_and_target():
+    """One ``evaluation_relation`` line per (source, review record, reviewed work) in the Crossref branch."""
+    from src.normalise.clean_and_normalise import review_records
+
+    row = {"row_id": "x", "doi_version_pattern": None, "extraction_selector": {"crossref": {}}}
+    line = {"doi": "10.21956/test.1.r1", "type": "peer-review", "issued": "2024-03-01",
+            "target_id_raw": "10.12688/test.1.1", "target_id_type": "doi", "target_relation_type": "is-review-of"}
+    recs = review_records(row, [line, dict(line, page="2"), dict(line, target_id_raw="10.12688/test.2.1")], set())
+    rels = [(r["source"], r["review_record_id"], r["reviewed_work_id"]) for r in recs
+            if r["row_entity_type"] == "evaluation_relation"]
+    assert len(rels) == 2 and len(set(rels)) == 2
+    assert sum(1 for r in recs if r["row_entity_type"] == "evaluation_record") == 1
+
+
+def test_relation_key_is_unique_in_every_records_file(pipeline_outputs):
+    """Offline fixture: no records file carries a duplicate (source, review_record_id, reviewed_work_id)."""
+    out = pipeline_outputs
+    checked = 0
+    for path in sorted(out.processed.glob("records_*.csv")):
+        row_id = path.stem[len("records_"):]
+        rels = [(r["source"], r["review_record_id"], r["reviewed_work_id"]) for r in out.records(row_id)
+                if r["row_entity_type"] == "evaluation_relation"]
+        assert len(rels) == len(set(rels)), row_id
+        checked += len(rels)
+    assert checked > 0
