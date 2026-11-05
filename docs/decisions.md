@@ -1882,14 +1882,29 @@ The descriptive `doi_pattern` of `access_microbiology` was tightened to `^10\.10
   `tests/test_decision_log_consistency.py`, `tests/test_preprint_pairs.py`,
   `tests/test_owner_prefix_scopes.py`, `tests/test_register_only_is_blank.py`
   (the provisional gate is now exercised on a copy of the register).
+  The archived cross-row pair list for run_20261102_01, reconstructed by
+  joining the VeriXiv and Gates Open Research rows of `works_included.csv`
+  on canonical work id and checked against
+  `normalisation_summary.json::preprint_pairs`, contains 55 pairs: 1 counted
+  on both rows, 51 with the Gates side outside its eligible range and 3
+  with the Gates side excluded as `ambiguous_cutoff_date`.
 - **Consequences:** after the local re-run, all eight rows enter
   `unique_works_all_rows_year`, `unique_works_all_rows_by_row_year`, the
   class and configuration group tables and `evidence_features_by_platform`
-  (binding decision no longer blank); the three VeriXiv / Gates Open
-  Research pairs of D-041 move to the VeriXiv row in the deduplicated
-  tables; Figures 2, 3, 6 and 8 are redrawn. Row series are unchanged;
+  (binding decision no longer blank); the VeriXiv side of the 55 D-041
+  pairs is now counted (one pair appears in `cross_platform_overlap`;
+  the Gates side of the other 54 is outside that row's range or excluded);
+  Figures 2, 3, 6 and 8 are redrawn. Row series are unchanged;
   `register_summary.provisional` becomes `false` for the eight rows and
   `status` of `molecular_psychology` becomes `closed`.
+
+- Note 2026-11-05 (follow-up R4): the earlier reference to three pairs
+  confused the synthetic D-041 fixture with the run's cross-row pair list.
+  The observed split is 55 / 1 / 51 / 3 as recorded in Evidence above.
+  The one overlap is `doi:10.12688/gatesopenres.16311`; the excluded
+  Gates ids are `gatesopenres.16376`, `gatesopenres.16382` and
+  `gatesopenres.16384`. This corrects the expected-effects description,
+  not the pairing rule or any output.
 
 ## D-072: JMIRx Bio row; pending candidates from the PRC Alliance members list
 
