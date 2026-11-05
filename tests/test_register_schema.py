@@ -108,3 +108,17 @@ def test_observed_editorial_features_are_declared_and_in_vocabulary():
     assert by_id["f1000research"]["editorial_decision_observed"] == "none"
     assert "editorial_decision_observed" in register.PLATFORM_COLUMNS
     assert "review_disclosure_timing" in register.PLATFORM_COLUMNS
+
+
+def test_alliance_pending_candidates_are_recorded():
+    """D-072: eight PRC Alliance members recorded as pending candidates, not assessed."""
+    from src.common.register import load_excluded
+
+    pending = {c["candidate_id"]: c for c in load_excluded() if c["verification_status"] == "pending"}
+    assert set(pending) == {"openrxiv", "research_ideas_and_outcomes", "replication_research",
+                            "the_scientific_review", "knowledge_commons", "openscholar", "digital_csic",
+                            "openlab_ecuador"}
+    for c in pending.values():
+        assert c["failed_criterion"] is None and c["comparator"] is False
+        assert "https://publish-review-curate.org/members/" in c["evidence_url"]
+        assert c["verified_on"] == "2026-11-05"

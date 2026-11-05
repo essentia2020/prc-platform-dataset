@@ -233,3 +233,130 @@ excluded_candidates:
     evidence_url:
       - https://www.biorxiv.org/about/FAQ
     verified_on: "2026-10-20"
+
+  # ---- Pending candidates from the PRC Alliance members list (D-072) ----
+  # Member organisations of the Alliance (Implementers group) without a match
+  # by organisation name in either register file on 2026-11-05 and whose
+  # own site may describe an evaluation workflow. Not assessed against
+  # criteria 1-3 in this release; candidate_type and operator are
+  # placeholders (the member name) until the assessment.
+  - candidate_id: openrxiv
+    candidate_name: "openRxiv"
+    operator: "openRxiv"
+    candidate_type: pending_assessment
+    failed_criterion: null
+    comparator: false
+    verification_status: pending
+    reason: >-
+      identified from the PRC Alliance members list on 2026-11-05;
+      assessment deferred to the next release
+    machine_readable_source: unknown
+    evidence_url:
+      - https://publish-review-curate.org/members/
+      - https://openrxiv.org/
+    verified_on: "2026-11-05"
+  - candidate_id: research_ideas_and_outcomes
+    candidate_name: "Research Ideas and Outcomes (RIO)"
+    operator: "Research Ideas and Outcomes (RIO)"
+    candidate_type: pending_assessment
+    failed_criterion: null
+    comparator: false
+    verification_status: pending
+    reason: >-
+      identified from the PRC Alliance members list on 2026-11-05;
+      assessment deferred to the next release
+    machine_readable_source: unknown
+    evidence_url:
+      - https://publish-review-curate.org/members/
+      - https://riojournal.com/
+    verified_on: "2026-11-05"
+  - candidate_id: replication_research
+    candidate_name: "Replication Research"
+    operator: "Replication Research"
+    candidate_type: pending_assessment
+    failed_criterion: null
+    comparator: false
+    verification_status: pending
+    reason: >-
+      identified from the PRC Alliance members list on 2026-11-05;
+      assessment deferred to the next release
+    machine_readable_source: unknown
+    evidence_url:
+      - https://publish-review-curate.org/members/
+      - https://www.replicationresearch.org
+    verified_on: "2026-11-05"
+  - candidate_id: the_scientific_review
+    candidate_name: "The Scientific Review"
+    operator: "The Scientific Review"
+    candidate_type: pending_assessment
+    failed_criterion: null
+    comparator: false
+    verification_status: pending
+    reason: >-
+      identified from the PRC Alliance members list on 2026-11-05;
+      assessment deferred to the next release
+    machine_readable_source: unknown
+    evidence_url:
+      - https://publish-review-curate.org/members/
+      - https://thescientificreview.org/community-standards/prc
+    verified_on: "2026-11-05"
+  - candidate_id: knowledge_commons
+    candidate_name: "Knowledge Commons"
+    operator: "Knowledge Commons"
+    candidate_type: pending_assessment
+    failed_criterion: null
+    comparator: false
+    verification_status: pending
+    reason: >-
+      identified from the PRC Alliance members list on 2026-11-05;
+      assessment deferred to the next release
+    machine_readable_source: unknown
+    evidence_url:
+      - https://publish-review-curate.org/members/
+      - https://hcommons.org/
+    verified_on: "2026-11-05"
+  - candidate_id: openscholar
+    candidate_name: "OpenScholar"
+    operator: "OpenScholar"
+    candidate_type: pending_assessment
+    failed_criterion: null
+    comparator: false
+    verification_status: pending
+    reason: >-
+      identified from the PRC Alliance members list on 2026-11-05;
+      assessment deferred to the next release
+    machine_readable_source: unknown
+    evidence_url:
+      - https://publish-review-curate.org/members/
+      - https://openscholar.info/manifesto/
+    verified_on: "2026-11-05"
+  - candidate_id: digital_csic
+    candidate_name: "DIGITAL.CSIC"
+    operator: "DIGITAL.CSIC"
+    candidate_type: pending_assessment
+    failed_criterion: null
+    comparator: false
+    verification_status: pending
+    reason: >-
+      identified from the PRC Alliance members list on 2026-11-05;
+      assessment deferred to the next release
+    machine_readable_source: unknown
+    evidence_url:
+      - https://publish-review-curate.org/members/
+      - https://digital.csic.es/
+    verified_on: "2026-11-05"
+  - candidate_id: openlab_ecuador
+    candidate_name: "Openlab Ecuador"
+    operator: "Openlab Ecuador"
+    candidate_type: pending_assessment
+    failed_criterion: null
+    comparator: false
+    verification_status: pending
+    reason: >-
+      identified from the PRC Alliance members list on 2026-11-05;
+      assessment deferred to the next release
+    machine_readable_source: unknown
+    evidence_url:
+      - https://publish-review-curate.org/members/
+      - https://openlab.ec/
+    verified_on: "2026-11-05"

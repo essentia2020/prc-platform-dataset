@@ -1867,6 +1867,83 @@ The descriptive `doi_pattern` of `access_microbiology` was tightened to `^10\.10
   `register_summary.provisional` becomes `false` for the eight rows and
   `status` of `molecular_psychology` becomes `closed`.
 
+## D-072: JMIRx Bio row; pending candidates from the PRC Alliance members list
+
+- **Date:** 2026-11-05
+- **Status:** applied (register, candidates, scope); the row's counts are
+  applied at the local re-run, after the ISSN scope is walked
+- decided_by: researcher
+- **Trigger:** external review 2026-11, comment K9 (JMIRx Bio, the second
+  JMIRx overlay journal, is absent from the register) and the
+  register-construction comparison with the PRC Alliance members list made
+  during the internal pre-submission review, 2026-11-05.
+- **Question:** (1) How is JMIRx Bio added without re-walking the shared
+  10.2196 prefix of run_20261102_01? (2) What is recorded for the Alliance
+  member organisations that match neither register file by organisation
+  name?
+- **Options considered:** (1a) a second container-title row inside the
+  existing 10.2196 journal-article walk, which would require re-walking the
+  whole prefix scope; (1b) a new row selected by the journal ISSN 2819-2044
+  (one walk of 52 records on 2026-11-05), added to run_20261102_01 as an
+  extension under the D-057 precedent; (1c) defer to the next release.
+  (2a) assess all 23 unmatched members now; (2b) record the services that
+  may operate an evaluation workflow as pending candidates with the
+  Alliance list as evidence and defer the assessment; (2c) ignore the
+  comparison.
+- **Decision:** (1b) and (2b). Row `jmirx_bio` mirrors `jmirx_med`
+  (organisation `jmir`, `mixed` / medium, `core_publish_first` / medium,
+  `overlay_journal`, counting event `final_article`, `editorial_decision_observed`
+  binary, `review_disclosure_timing` with_acceptance, D-050 companion rule
+  unchanged) with `extraction_selector.crossref.issn` 2819-2044,
+  `record_types` journal-article, `doi_regex` `^10\.2196/`,
+  `sample_work_doi` 10.2196/53721 (a research article of 2024 with a
+  `has-preprint` relation among the records opened on 2026-11-05),
+  `launch_year` and `coverage_start_year` 2023 (first record issued
+  2023-07-21), `provisional` false, `register_status` quantified,
+  `verified_on` 2026-11-05. The scope
+  `works__issn_2819-2044__journal-article` is added to the enumerated and
+  pinned scopes; run_20261102_01 is extended by this one scope (cutoff,
+  policy and all other scopes unchanged; the per-scope `software` record in
+  the run manifest documents the extension commit, precedent D-057).
+  Eight Alliance members (openRxiv, Research Ideas and Outcomes, Replication
+  Research, The Scientific Review, Knowledge Commons, OpenScholar,
+  DIGITAL.CSIC, Openlab Ecuador) are recorded in
+  `config/excluded_candidates.yaml` with `verification_status: pending`,
+  `failed_criterion: null` and the reason "identified from the PRC Alliance
+  members list on 2026-11-05; assessment deferred to the next release";
+  `candidate_type` and `operator` are placeholders until the assessment. The
+  remaining unmatched members are funders, libraries and infrastructure
+  bodies and are not candidate observation series.
+  Observation for the local walk: among the 52 records opened on 2026-11-05
+  one companion item is titled "Author's Response to Peer Reviews of …"
+  (singular; 10.2196/72764), which the D-050 regex does not match; the
+  regex is kept identical to JMIRx Med as ruled, and the local run's
+  companion count will show whether an extension of D-050 is needed.
+- **Evidence:** https://xbio.jmir.org/ and
+  https://support.jmir.org/hc/en-us/articles/360034752692-What-is-JMIRx
+  (retrieved 2026-11-05); https://api.crossref.org/works?filter=issn:2819-2044&rows=100
+  (retrieved 2026-11-05: total-results 52, all journal-article under
+  10.2196, container-title "JMIRx Bio", earliest issued 2023-07-21);
+  https://publish-review-curate.org/members/ (retrieved 2026-11-05: 18
+  member organisations represented in the register, 2 in the
+  excluded-candidates file, 23 without a match by organisation name);
+  `docs/register_construction.md`; `config/platforms.yaml`,
+  `config/excluded_candidates.yaml`; tests `tests/test_issn_scope.py`
+  (scope id, selector, mirrored fields), `tests/test_owner_prefix_scopes.py`
+  (ISSN walk on the offline fixture; companions kept, not counted),
+  `tests/test_register_schema.py` (pending candidates).
+- **Consequences:** the register has 45 observation series of 27
+  organisations (42 quantified, 3 register-only). Until the ISSN scope is
+  walked locally, `jmirx_bio` has no run data: its cells in
+  `works_by_row_year` are blank with `extraction_status` not complete and it
+  blocks the `mixed` and `core_publish_first` group cells of 2023 onwards.
+  After the local walk and re-run, `register_summary`, `works_by_row_year`,
+  `works_included`, the `mixed` class and `core_publish_first` configuration
+  group cells 2023–2026, the all-rows tables, `evidence_features_by_platform`,
+  `cross_platform_overlap` (if any JMIRx Bio article pairs with another
+  row) and Figures 1, 2, 3, 6 and 8 change; `excluded_candidates.csv`
+  gains eight rows now.
+
 ## Q-4: Cross-DOI work correspondence for Gates Open Research / VeriXiv
 
 - **Date:** 2026-10-20

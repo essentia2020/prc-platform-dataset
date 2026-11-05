@@ -1,0 +1,144 @@
+{
+ "status": "ok",
+ "message-type": "work-list",
+ "message": {
+  "items": [
+   {
+    "DOI": "10.2196/68519",
+    "type": "journal-article",
+    "prefix": "10.2196",
+    "member": "2244",
+    "title": [
+     "Synthetic JMIRx Bio article"
+    ],
+    "container-title": [
+     "JMIRx Bio"
+    ],
+    "ISSN": [
+     "2819-2044"
+    ],
+    "created": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "deposited": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "indexed": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "issued": {
+     "date-parts": [
+      [
+       2025,
+       3,
+       8
+      ]
+     ]
+    },
+    "published-online": {
+     "date-parts": [
+      [
+       2025,
+       3,
+       8
+      ]
+     ]
+    },
+    "relation": {
+     "has-preprint": [
+      {
+       "id": "10.1101/2024.06.01.000001",
+       "id-type": "doi",
+       "asserted-by": "subject"
+      }
+     ]
+    }
+   },
+   {
+    "DOI": "10.2196/71629",
+    "type": "journal-article",
+    "prefix": "10.2196",
+    "member": "2244",
+    "title": [
+     "Authors’ Response to Peer Reviews of “Synthetic JMIRx Bio article”"
+    ],
+    "container-title": [
+     "JMIRx Bio"
+    ],
+    "ISSN": [
+     "2819-2044"
+    ],
+    "created": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "deposited": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "indexed": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "issued": {
+     "date-parts": [
+      [
+       2025,
+       4,
+       8
+      ]
+     ]
+    },
+    "published-online": {
+     "date-parts": [
+      [
+       2025,
+       4,
+       8
+      ]
+     ]
+    }
+   },
+   {
+    "DOI": "10.2196/71630",
+    "type": "journal-article",
+    "prefix": "10.2196",
+    "member": "2244",
+    "title": [
+     "Peer Review of “Synthetic JMIRx Bio article”"
+    ],
+    "container-title": [
+     "JMIRx Bio"
+    ],
+    "ISSN": [
+     "2819-2044"
+    ],
+    "created": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "deposited": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "indexed": {
+     "date-time": "2026-01-05T10:00:00Z"
+    },
+    "issued": {
+     "date-parts": [
+      [
+       2025,
+       4,
+       8
+      ]
+     ]
+    },
+    "published-online": {
+     "date-parts": [
+      [
+       2025,
+       4,
+       8
+      ]
+     ]
+    }
+   }
+  ],
+  "total-results": 3
+ }
+}

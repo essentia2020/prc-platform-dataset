@@ -2218,6 +2218,87 @@ platforms:
       - https://support.jmir.org/hc/en-us/articles/360034752692-What-is-JMIRx
     verified_on: "2026-10-20"
 
+  - row_id: jmirx_bio
+    row_label: "JMIRx Bio"
+    organisation_id: jmir
+    organisation_name: "JMIR Publications"
+    prc_role: overlay_journal
+    status: active
+    launch_year: 2023
+    model_since: 2023
+    model_note: >-
+      D-072: second JMIRx overlay journal, added after the external review
+      of 2026-11 identified its omission; same workflow family as JMIRx Med
+      (bioRxiv and JMIR Preprints instead of medRxiv). Counted from the
+      ISSN walk 2819-2044; the first Crossref record is issued in 2023.
+    coverage_start_year: 2023
+    coverage_end_year: null
+    discipline_scope: life_sciences
+    country_of_operator: "Canada"
+    initiation_class: mixed
+    classification_confidence: medium
+    classification_note: >-
+      Same two documented entry routes as JMIRx Med: editorial prospecting
+      of preprints with conditional offers, and author self-nomination of
+      an existing preprint. The relative share of the two routes is not
+      published, hence medium confidence.
+    prc_configuration: core_publish_first
+    configuration_confidence: medium
+    configuration_note: >-
+      Overlay journal on bioRxiv and JMIR Preprints: the preprint is public
+      before review, peer-review reports and author responses are published
+      with the accepted Version of Record, and acceptance is a conventional
+      editorial decision. Reports are not public during the review. D-016
+      (overlay-journal ruling, applied to JMIRx Med) and D-072 assign
+      core_publish_first (medium) on the same grounds.
+    provisional: false
+    publish_arrangement: external_preprint_server
+    review_arrangement: platform_own
+    curation_arrangement: platform_own
+    output_types: [version_of_record, review_report]
+    public_review_reports: true
+    approval_status_public: false
+    summary_assessment: false
+    reviewer_identity_disclosed: optional
+    version_linked_review: false
+    review_to_object_relation: unknown
+    public_author_response: true
+    review_has_doi: true
+    editorial_decision_observed: binary
+    review_disclosure_timing: with_acceptance
+    data_source: crossref
+    register_status: quantified
+    data_status: machine_readable
+    doi_prefix: "10.2196"
+    doi_pattern: "^10\\.2196/"
+    doi_version_pattern: null
+    sciety_group_slug: null
+    extraction_selector:
+      # D-072: selected by journal ISSN (one walk, scope
+      # works__issn_2819-2044__journal-article) rather than by container-title
+      # inside the shared 10.2196 prefix walk; the D-050 companion rule of
+      # JMIRx Med applies unchanged (review reports and author responses are
+      # journal-article records in the same container and are never counted).
+      crossref:
+        issn: ["2819-2044"]
+        record_types: [journal-article]
+        doi_regex: "^10\\.2196/"
+        companion_title_regex: "^(Peer Review of |Authors[’'] Response to Peer Reviews? of )"
+        sample_work_doi: "10.2196/53721"
+        notes: >-
+          The ISSN filter returns only this journal's records (52 records on
+          2026-11-05, total-results of the filter), all under 10.2196; the
+          DOI regex is the whole prefix. Review reports and author responses
+          are companion items with their own DOIs, as for JMIRx Med.
+    eligibility_events:
+      - published Version of Record (journal-article, ISSN 2819-2044) of a reviewed preprint
+    counting_event: final_article
+    counting_event_date_field: issued
+    evidence_url:
+      - https://xbio.jmir.org/
+      - https://support.jmir.org/hc/en-us/articles/360034752692-What-is-JMIRx
+    verified_on: "2026-11-05"
+
   # ----------------------------------------------------- Access Microbiology
   - row_id: access_microbiology
     row_label: "Access Microbiology (open research platform)"

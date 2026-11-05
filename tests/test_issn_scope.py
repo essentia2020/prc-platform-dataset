@@ -32,6 +32,7 @@ SCOPE_IDS = {s.scope_id for s in WORK_SCOPES}
 
 def test_scope_ids_and_kinds():
     assert "works__issn_2631-3952__journal-article" in SCOPE_IDS
+    assert "works__issn_2819-2044__journal-article" in SCOPE_IDS  # JMIRx Bio (D-072)
     assert "works__10.15694__journal-article" not in SCOPE_IDS
     assert "works__10.15694__posted-content" not in SCOPE_IDS
     assert "works__10.35241__journal-article" not in SCOPE_IDS
@@ -60,6 +61,21 @@ def test_register_rows():
     assert emerald["doi_version_pattern"] == r"^(10\.12688/emeraldopenres\.\d+)\.\d+$"
     assert emerald["data_status"] == "machine_readable"
     assert emerald["status"] == "closed" and emerald["coverage_end_year"] == 2023  # D-014 unchanged
+    bio = rows["jmirx_bio"]  # D-072: mirrors jmirx_med, selected by ISSN
+    med = rows["jmirx_med"]
+    assert bio["extraction_selector"]["crossref"]["issn"] == ["2819-2044"]
+    assert bio["extraction_selector"]["crossref"]["record_types"] == ["journal-article"]
+    assert (bio["extraction_selector"]["crossref"]["companion_title_regex"]
+            == med["extraction_selector"]["crossref"]["companion_title_regex"])
+    for key in ("organisation_id", "initiation_class", "prc_configuration", "prc_role", "counting_event",
+                "editorial_decision_observed", "review_disclosure_timing", "data_source"):
+        assert bio[key] == med[key], key
+    assert bio["launch_year"] == bio["coverage_start_year"] == 2023
+    assert bio["provisional"] is False and bio["register_status"] == "quantified"
+    sel = compile_crossref_selector(bio)
+    assert sel.work_keys() == ["issn:2819-2044"]
+    assert sel.matches_work({"DOI": "10.2196/53721", "type": "journal-article", "container-title": ["JMIRx Bio"]})
+    assert not sel.matches_work({"DOI": "10.1234/x", "type": "journal-article", "container-title": ["JMIRx Bio"]})
     meded = rows["meded_publish"]
     assert meded["extraction_selector"]["crossref"]["prefix"] == ["10.12688"]
     assert meded["doi_pattern"] == r"^10\.(15694|12688)/mep\."

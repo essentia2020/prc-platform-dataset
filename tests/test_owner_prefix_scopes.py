@@ -337,3 +337,15 @@ def test_every_quantified_crossref_row_declares_a_sample_work_doi_or_is_reported
         assert roles["work"].doi or roles["work"].status == "not_applicable", r.row_id
         if "review" in roles:
             assert roles["review"].doi or r.row_id == "emerald_open_research", r.row_id    # D-046: withdrawn
+
+
+def test_jmirx_bio_issn_walk_counts_articles_and_keeps_companions(pipeline_outputs):
+    """D-072: JMIRx Bio is walked by ISSN 2819-2044; the D-050 companion rule applies unchanged."""
+    out = pipeline_outputs
+    works = out.works("jmirx_bio")
+    assert [w["counting_record_id"] for w in works if w["included"] == "true"] == ["10.2196/68519"]
+    assert sorted(w["work_doi"] for w in works if w["exclusion_reason"] == "companion_item") == \
+        ["10.2196/71629", "10.2196/71630"]
+    cell = out.cell("works_by_row_year", row_id="jmirx_bio", year=2025)
+    assert cell["count"] == "1" and cell["observation_status"] == "observed"
+    assert out.cell("works_by_row_year", row_id="jmirx_bio", year=2022)["observation_status"] == "not_applicable"
