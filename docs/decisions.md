@@ -804,6 +804,39 @@ completion of its evidence checks; outstanding checks are stated explicitly.
 - **Authority:** C-1 ruling (user ruling, 2026-10-20); controls the attribution rule
   in D-027. The code-location note is retained without a decision number so
   D-032 through D-035 correspond to C-1 through C-4; Git history is unchanged.
+- Note 2026-11-05 (repair): the implementation line above was only half
+  applied. `refresh_journal_attribution`, which joins the `is-review-of`
+  targets of the selected peer-review walks to the EGUsphere work records,
+  ran at the end of the peer-review stage only; the works stage wrote the
+  preliminary bases (`doi_pattern`, `is_preprint_of`, `journal_title`) and
+  left them. The interim rebuild from the stored walks of run_20261102_01 at
+  84a7a67 (D-050 companion regex) ran the works stage alone, so every
+  `peer_review_is_review_of` value of the row was lost: in the deposited 1.4.0
+  interim the signal stood on 13,378 of 67,837 work records (9,600 together
+  with `is_preprint_of`, 90 with `is_preprint_of` and `journal_title`, 38 with
+  `journal_title`, 3,650 alone); in the rebuilt interim it stood on none, and
+  the 3,650 records attributed by review evidence alone became
+  `no_journal_attribution`. Of these, 3,547 had been counted to the cutoff
+  (2022: 92, 2023: 180, 2024: 268, 2025: 590, 2026: 2,417) and 103 were already
+  excluded as `future_event`; `unique_works_to_cutoff` of the row fell from
+  67,054 to 63,507 in the tables committed from 84a7a67 to c0fd61f. The
+  peer-review interim was untouched (111,803 evaluation records, 79,631
+  distinct `is-review-of` targets before and after) and the run manifest kept
+  `peer_review_is_review_of` among `signals_observed`; the loss was confined
+  to `crossref_works__copernicus_interactive_public_peer_review.csv` and the
+  processed files derived from it. Repair: `refresh_journal_attribution` now
+  runs at the end of both Crossref stages and joins the review evidence
+  whenever the selected review walks of the run are complete; when they are
+  not (a works-only run before the peer-review stage) it leaves the row as
+  written and logs `journal_attribution_deferred`, and each completed join
+  logs `journal_attribution_refreshed` with the signals observed. A regression
+  test runs the peer-review stage, re-runs the works stage against the stored
+  walks and asserts that the interim and the manifest entry are unchanged and
+  that no request was made. The tables are regenerated locally by re-running
+  the peer-review stage against the complete walks of run_20261102_01 (zero
+  requests expected) followed by normalise, analyse, openalex_diagnostics
+  and report; the expected row value is 67,054, and any other value is
+  accounted for work by work before the release freeze.
 
 ## D-033: Candidate dispositions and ResearchHub reassessment
 
@@ -1142,6 +1175,7 @@ work-type records matching `companion_title_regex` are excluded as
 is unchanged (D-016).
 
 - Note 2026-11-05: the companion regex of both JMIRx rows was generalised to the two title prefixes, `^(Peer Review\b|Author(s|[’']s|s[’'])? Responses? to )`. The previous form matched only "Peer Review of" and "Authors' Response to Peer Reviews of"; JMIRx Med also deposits "Peer Review for", "Peer Review “…”", "Author Response to", "Author’s Response(s) to Peer Review Reports for/on", "Authors’ Response to the Peer Review of" and "Author’s Response to a Commentary on". The gap was noticed on JMIRx Bio (10.2196/72764, D-072) and then measured on JMIRx Med: 50 companion items of run_20261102_01 had been counted as works (2020: 2, 2021: 13, 2022: 6, 2023: 3, 2024: 5, 2025: 17, 2026: 4); unique_works_to_cutoff of jmirx_med falls from 201 to 151, and jmirx_bio counts 14 works and 38 companions. Companion items are flagged at extraction (crossref_common), so the interim files were rebuilt from the stored walks without new requests. In a YAML double-quoted string, `\b` is parsed as a backspace, which made the first branch fail silently; `\\b` preserves the regex word boundary. Three of the 151 counted JMIRx Med works remain known companion-derived records: 10.2196/57116 (the deposited title misspells "Response" as "Reponse") and 10.2196/29878 and 10.2196/29879 ("Correction: Author(s)' Response(s) …"); these residuals are not encoded in the regex. Recorded as DQ-020.
+- Note 2026-11-05 (repair): the rebuild of the interim files from the stored walks mentioned in the note above ran the works stage only. On the Copernicus row this dropped the review-evidence attribution and 3,547 counted works; the mechanism, the figures and the repair are recorded under D-032 (note of the same date). The JMIRx figures of the note above are unaffected: the refresh concerns the only row with journal attribution rules (Copernicus), and the companion flag of the JMIRx rows is set at extraction.
 
 - Note 2026-11-05 (follow-up R6): both JMIRx fixtures now include
   "Peer Review for" and "Author Response to" title forms, retained as

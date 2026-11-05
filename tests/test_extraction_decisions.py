@@ -134,6 +134,49 @@ def test_review_signal_is_joined_and_unattributed_records_retained(tmp_path):
     assert entry["yearly_scope"]["2025"]["coverage"] == "partial_known_scope"
 
 
+def test_works_rebuild_keeps_review_attribution(tmp_path):
+    """D-032 note 2026-11-05: a works-stage rebuild from stored walks keeps the review signal.
+
+    The 84a7a67 interim rebuild re-ran the works stage only; the preliminary
+    attribution it wrote had no ``peer_review_is_review_of`` and 3,547 counted
+    Copernicus works became ``no_journal_attribution``. The join must survive a
+    works-only re-run once the review walks of the run are complete, and the
+    re-run must make no request.
+    """
+    config, sources, _, logger, roots = run_context(tmp_path)
+    import copy
+    sources = copy.deepcopy(sources)
+    sources["sources"]["crossref"]["pagination"]["windowed_scopes"].pop("works__10.5194__peer-review")
+    rows = [copernicus()]
+    crossref_works.run(config, sources, rows, logger, transport=FixtureTransport(), sleeper=lambda _: None, **roots)
+    review = {"DOI": "10.5194/example-review", "type": "peer-review", "relation": {
+        "is-review-of": [{"id": "10.5194/egusphere-2025-78", "id-type": "doi"}]}}
+    body = {"status": "ok", "message": {"items": [review], "total-results": 1}}
+    transport = FixtureTransport({"prefix:10.5194,type:peer-review": [(200, {}, json.dumps(body).encode())]})
+    crossref_peer_reviews.run(config, sources, rows, logger, transport=transport, sleeper=lambda _: None, **roots)
+    interim = roots["interim_root"] / f"crossref_works__{rows[0]['row_id']}.csv"
+    after_reviews = read_csv(interim)
+    assert {r["doi"]: r["attribution_basis"] for r in after_reviews}["10.5194/egusphere-2025-78"] == \
+        "peer_review_is_review_of"
+    manifest_path = roots["manifest_root"] / config.run_id / f"{config.run_id}.json"
+    attribution_before = json.loads(manifest_path.read_text())["attribution"][rows[0]["row_id"]]
+
+    rebuild = FixtureTransport()
+    crossref_works.run(config, sources, rows, logger, transport=rebuild, sleeper=lambda _: None, **roots)
+    assert rebuild.requests == []  # every walk of the run is complete and reused
+    assert read_csv(interim) == after_reviews  # the rebuild reproduces the joined interim byte for byte
+    attribution_after = json.loads(manifest_path.read_text())["attribution"][rows[0]["row_id"]]
+    assert attribution_after == attribution_before
+    assert "peer_review_is_review_of" in attribution_after["signals_observed"]
+    events = [json.loads(line) for line in logger.path.read_text(encoding="utf-8").splitlines()]
+    refreshed = [e for e in events if e["event"] == "journal_attribution_refreshed"]
+    assert len(refreshed) == 2  # once by the review stage, once by the rebuild
+    assert refreshed[-1]["row_id"] == rows[0]["row_id"]
+    assert refreshed[-1]["signals_observed"] == attribution_after["signals_observed"]
+    deferred = [e for e in events if e["event"] == "journal_attribution_deferred"]
+    assert len(deferred) == 1  # the first works-only run, before any review walk existed
+
+
 def test_no_signals_is_the_only_register_only_fallback(tmp_path):
     config, sources, _, logger, roots = run_context(tmp_path)
     import copy

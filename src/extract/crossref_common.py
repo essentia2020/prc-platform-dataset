@@ -405,8 +405,12 @@ def run_crossref(run_config: RunConfig, sources_config: Mapping[str, Any], platf
                              reason="at least one scope of this row is not complete")
             continue
         write_csv(interim / f"{name}__{key}.csv", columns, accumulated[key])
-    if kinds == "reviews":
-        refresh_journal_attribution(run_config, selectors, store, manifest_root, interim)
+    # D-032: the attribution is rebuilt after *both* Crossref stages. The
+    # works stage writes the preliminary (work-only) bases; the join with the
+    # review evidence runs whenever the selected review walks of the run are
+    # complete, so a works-stage rebuild from stored walks cannot drop
+    # ``peer_review_is_review_of`` (note of 2026-11-05 under D-032).
+    refresh_journal_attribution(run_config, selectors, store, manifest_root, interim, logger=logger)
     incomplete = [o for o in outcomes if not o.complete]
     if incomplete:
         detail = "; ".join(f"{o.scope.scope_id}: {o.walk.state} (blocks {', '.join(o.blocked_rows) or 'no row'})"
@@ -455,12 +459,22 @@ def inverse_review_targets(run_config, selectors, store, manifest_root):
     return out
 
 
-def refresh_journal_attribution(run_config, selectors, store, manifest_root, interim):
+def refresh_journal_attribution(run_config, selectors, store, manifest_root, interim, logger=None):
     """Rebuild journal rows from selected complete walks, joining review evidence.
 
-    Work-stage fields are preliminary until the peer-review stage completes.
-    This function performs no requests and never modifies the register.
+    Called at the end of both Crossref stages (D-032). Work-stage fields are
+    preliminary until every selected review walk of the run is complete; until
+    then the row is left as written and a ``journal_attribution_deferred``
+    event is logged. Once the walks are complete, any later run of either
+    stage — including a rebuild of the interim files from the stored walks —
+    rewrites the row with the full attribution and logs
+    ``journal_attribution_refreshed``. This function performs no requests and
+    never modifies the register.
     """
+    def _log(kind: str, **payload) -> None:
+        if logger is not None:
+            logger.event(kind, source=SOURCE, **payload)
+
     for sel in selectors:
         if not sel.journals:
             continue
@@ -473,6 +487,8 @@ def refresh_journal_attribution(run_config, selectors, store, manifest_root, int
                 break
             selected.append((scope, walk))
         if len(selected) != len(required):
+            _log("journal_attribution_deferred", row_id=sel.row_id,
+                 reason="not every scope of the row has a complete walk")
             continue
         reviewed = set()
         review_walks = []
@@ -483,6 +499,8 @@ def refresh_journal_attribution(run_config, selectors, store, manifest_root, int
                 break
             review_walks.append((scope, walk))
         if len(review_walks) != len(crossref_scopes(selectors, "reviews")):
+            _log("journal_attribution_deferred", row_id=sel.row_id,
+                 reason="not every review scope of the run has a complete walk")
             continue
         for scope, walk in review_walks:
             for item, _ in iter_walk_items(store, walk):
@@ -522,3 +540,6 @@ def refresh_journal_attribution(run_config, selectors, store, manifest_root, int
             "review_evidence_walks": {s.scope_id: w.walk_id for s, w in review_walks},
         }
         write_run_manifest(path, payload)
+        _log("journal_attribution_refreshed", row_id=sel.row_id, records=len(rows),
+             signals_observed=sorted(observed), reviewed_dois=len(reviewed),
+             review_evidence_walks=len(review_walks))
