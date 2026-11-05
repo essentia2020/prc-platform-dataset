@@ -262,6 +262,10 @@ Decision entries in this log are identified by decision number, date and subject
   (together with the presentation of D-006). Author name, ORCID and
   affiliation are legitimate in `CITATION.cff` and are not R1 tokens.
 - **Evidence:** see `config/audit_allowlist.yaml` (R3 entries).
+- **Note 2026-11-05:** permitted context extended to
+  `docs/register_construction.md`, a methodological document of the same
+  kind as `config/classification_scheme.md` (two literal spans: the full
+  citation and the short form used in the same paragraph).
 
 ---
 

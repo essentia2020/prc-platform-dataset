@@ -24,6 +24,12 @@ allowlist:
     file: docs/analysis_plan.md
     literal: "Corker, Waltman and Coates\n   (2024)"
   - rule_id: R3
+    file: docs/register_construction.md
+    literal: "Corker, Waltman and Coates (2024)"
+  - rule_id: R3
+    file: docs/register_construction.md
+    literal: "Corker et al."
+  - rule_id: R3
     file: config/classification_scheme.md
     literal: "Corker, K. S., Waltman, L., & Coates, J. (2024). Understanding the\nPublish-Review-Curate (PRC) Model of Scholarly Communication. MetaArXiv.\nhttps://doi.org/10.31222/osf.io/h7swt"
 
