@@ -2,7 +2,7 @@
 
 Analysis cutoff: 2026-09-30; year 2026 is year_to_date (not annualised).
 Additivity: `deduplicated`. No all-row total is published in this table.
-Snapshot: Crossref/Sciety retrieval finished 2026-11-05T10:42:10Z.
+Snapshot: last selected Crossref/Sciety walk completed 2026-11-05T09:55:03Z.
 Empty cells are not zeros: see `observation_status` and `extraction_status` in the CSV.
 A canonical work counts once per group, in the year of its earliest counting event.
 
@@ -50,11 +50,11 @@ A canonical work counts once per group, in the year of its earliest counting eve
 | hybrid_public_discussion | 2019 | 2019 | 4087 | false | complete | observable | observed | complete | complete | deduplicated |  |  |  |
 | hybrid_public_discussion | 2020 | 2020 | 4891 | false | complete | observable | observed | complete | complete | deduplicated |  |  |  |
 | hybrid_public_discussion | 2021 | 2021 | 4639 | false | complete | observable | observed | complete | complete | deduplicated |  |  |  |
-| hybrid_public_discussion | 2022 | 2022 | 4720 | false | complete | partial_known_scope | observed | partial_known_scope | partial | deduplicated |  | copernicus_interactive_public_peer_review:partial_known_scope |  |
-| hybrid_public_discussion | 2023 | 2023 | 4999 | false | complete | partial_known_scope | observed | partial_known_scope | partial | deduplicated |  | copernicus_interactive_public_peer_review:partial_known_scope |  |
-| hybrid_public_discussion | 2024 | 2024 | 4768 | false | complete | partial_known_scope | observed | partial_known_scope | partial | deduplicated |  | copernicus_interactive_public_peer_review:partial_known_scope |  |
-| hybrid_public_discussion | 2025 | 2025 | 5306 | false | complete | partial_known_scope | observed | partial_known_scope | partial | deduplicated |  | copernicus_interactive_public_peer_review:partial_known_scope |  |
-| hybrid_public_discussion | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 2495 | true | complete | partial_known_scope | observed | partial_known_scope | partial | deduplicated |  | copernicus_interactive_public_peer_review:partial_known_scope |  |
+| hybrid_public_discussion | 2022 | 2022 | 4812 | false | complete | partial_known_scope | observed | partial_known_scope | partial | deduplicated |  | copernicus_interactive_public_peer_review:partial_known_scope |  |
+| hybrid_public_discussion | 2023 | 2023 | 5179 | false | complete | partial_known_scope | observed | partial_known_scope | partial | deduplicated |  | copernicus_interactive_public_peer_review:partial_known_scope |  |
+| hybrid_public_discussion | 2024 | 2024 | 5036 | false | complete | partial_known_scope | observed | partial_known_scope | partial | deduplicated |  | copernicus_interactive_public_peer_review:partial_known_scope |  |
+| hybrid_public_discussion | 2025 | 2025 | 5896 | false | complete | partial_known_scope | observed | partial_known_scope | partial | deduplicated |  | copernicus_interactive_public_peer_review:partial_known_scope |  |
+| hybrid_public_discussion | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 4912 | true | complete | partial_known_scope | observed | partial_known_scope | partial | deduplicated |  | copernicus_interactive_public_peer_review:partial_known_scope |  |
 | review_or_curation_service | 2017 | 2017 | 23 | false | complete | observable | observed | complete | complete | deduplicated |  |  |  |
 | review_or_curation_service | 2018 | 2018 | 35 | false | complete | observable | observed | partial_coverage | partial | deduplicated |  | prelights:partial_coverage |  |
 | review_or_curation_service | 2019 | 2019 | 310 | false | complete | observable | observed | partial_coverage | partial | deduplicated |  | prelights:partial_coverage; prereview:partial_coverage |  |

@@ -2,7 +2,7 @@
 
 Analysis cutoff: 2026-09-30; year 2026 is year_to_date (not annualised).
 Additivity: `deduplicated`.
-Snapshot: Crossref/Sciety retrieval finished 2026-11-05T10:42:10Z.
+Snapshot: last selected Crossref/Sciety walk completed 2026-11-05T09:55:03Z.
 Empty cells are not zeros: see `observation_status` and `extraction_status` in the CSV.
 Attribution of each work in `unique_works_all_rows_year` to the row holding its earliest counting event (ties: earlier interval start, then row_id); the same pass as the `n_<class>_by_earliest_event` columns. Attribution is relative to the rows observable in this run (D-059, merged into D-061). `count` is blank when the row's own cell is not observable; the all-rows cell of a year may be blank while row lines carry attributions.
 
@@ -127,7 +127,7 @@ Attribution of each work in `unique_works_all_rows_year` to the row holding its 
 | emerald_open_research | author_initiated | approval_threshold | 2022 | 2022 | 32 | false | complete | observable | observed | complete | complete | deduplicated |
 | pci_recommendations | author_initiated | review_or_curation_service | 2022 | 2022 | 35 | false | complete | observable | observed | complete | complete | deduplicated |
 | scipost | author_initiated | hybrid_public_discussion | 2022 | 2022 | 725 | false | complete | observable | observed | complete | complete | deduplicated |
-| copernicus_interactive_public_peer_review | author_initiated | hybrid_public_discussion | 2022 | 2022 | 3912 | false | complete | partial_known_scope | observed | partial_known_scope | partial | deduplicated |
+| copernicus_interactive_public_peer_review | author_initiated | hybrid_public_discussion | 2022 | 2022 | 4004 | false | complete | partial_known_scope | observed | partial_known_scope | partial | deduplicated |
 | jmirx_med | mixed | core_publish_first | 2022 | 2022 | 26 | false | complete | observable | observed | complete | complete | deduplicated |
 | access_microbiology | author_initiated | hybrid_public_discussion | 2022 | 2022 | 83 | false | complete | observable | observed | complete | complete | deduplicated |
 | review_commons | author_initiated | review_or_curation_service | 2022 | 2022 | 227 | false | complete | observable | observed | complete | complete | deduplicated |
@@ -165,7 +165,7 @@ Attribution of each work in `unique_works_all_rows_year` to the row holding its 
 | emerald_open_research | author_initiated | approval_threshold | 2023 | 2023 | 17 | false | complete | observable | observed | complete | complete | deduplicated |
 | pci_recommendations | author_initiated | review_or_curation_service | 2023 | 2023 | 122 | false | complete | observable | observed | complete | complete | deduplicated |
 | scipost | author_initiated | hybrid_public_discussion | 2023 | 2023 | 747 | false | complete | observable | observed | complete | complete | deduplicated |
-| copernicus_interactive_public_peer_review | author_initiated | hybrid_public_discussion | 2023 | 2023 | 4036 | false | complete | partial_known_scope | observed | partial_known_scope | partial | deduplicated |
+| copernicus_interactive_public_peer_review | author_initiated | hybrid_public_discussion | 2023 | 2023 | 4216 | false | complete | partial_known_scope | observed | partial_known_scope | partial | deduplicated |
 | jmirx_med | mixed | core_publish_first | 2023 | 2023 | 5 | false | complete | observable | observed | complete | complete | deduplicated |
 | jmirx_bio | mixed | core_publish_first | 2023 | 2023 | 2 | false | complete | observable | observed | complete | complete | deduplicated |
 | access_microbiology | author_initiated | hybrid_public_discussion | 2023 | 2023 | 216 | false | complete | observable | observed | complete | complete | deduplicated |
@@ -205,7 +205,7 @@ Attribution of each work in `unique_works_all_rows_year` to the row holding its 
 | metaror | author_initiated | review_or_curation_service | 2024 | 2024 | 2 | false | complete | observable | observed | complete | complete | deduplicated |
 | pci_recommendations | author_initiated | review_or_curation_service | 2024 | 2024 | 159 | false | complete | observable | observed | complete | complete | deduplicated |
 | scipost | author_initiated | hybrid_public_discussion | 2024 | 2024 | 498 | false | complete | observable | observed | complete | complete | deduplicated |
-| copernicus_interactive_public_peer_review | author_initiated | hybrid_public_discussion | 2024 | 2024 | 4062 | false | complete | partial_known_scope | observed | partial_known_scope | partial | deduplicated |
+| copernicus_interactive_public_peer_review | author_initiated | hybrid_public_discussion | 2024 | 2024 | 4330 | false | complete | partial_known_scope | observed | partial_known_scope | partial | deduplicated |
 | jmirx_med | mixed | core_publish_first | 2024 | 2024 | 24 | false | complete | observable | observed | complete | complete | deduplicated |
 | jmirx_bio | mixed | core_publish_first | 2024 | 2024 | 4 | false | complete | observable | observed | complete | complete | deduplicated |
 | access_microbiology | author_initiated | hybrid_public_discussion | 2024 | 2024 | 208 | false | complete | observable | observed | complete | complete | deduplicated |
@@ -244,7 +244,7 @@ Attribution of each work in `unique_works_all_rows_year` to the row holding its 
 | metaror | author_initiated | review_or_curation_service | 2025 | 2025 | 15 | false | complete | observable | observed | complete | complete | deduplicated |
 | pci_recommendations | author_initiated | review_or_curation_service | 2025 | 2025 | 115 | false | complete | observable | observed | complete | complete | deduplicated |
 | scipost | author_initiated | hybrid_public_discussion | 2025 | 2025 | 607 | false | complete | observable | observed | complete | complete | deduplicated |
-| copernicus_interactive_public_peer_review | author_initiated | hybrid_public_discussion | 2025 | 2025 | 4520 | false | complete | partial_known_scope | observed | partial_known_scope | partial | deduplicated |
+| copernicus_interactive_public_peer_review | author_initiated | hybrid_public_discussion | 2025 | 2025 | 5110 | false | complete | partial_known_scope | observed | partial_known_scope | partial | deduplicated |
 | jmirx_med | mixed | core_publish_first | 2025 | 2025 | 40 | false | complete | observable | observed | complete | complete | deduplicated |
 | jmirx_bio | mixed | core_publish_first | 2025 | 2025 | 4 | false | complete | observable | observed | complete | complete | deduplicated |
 | access_microbiology | author_initiated | hybrid_public_discussion | 2025 | 2025 | 179 | false | complete | observable | observed | complete | complete | deduplicated |
@@ -282,7 +282,7 @@ Attribution of each work in `unique_works_all_rows_year` to the row holding its 
 | metaror | author_initiated | review_or_curation_service | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 21 | true | complete | observable | observed | year_to_date | partial | deduplicated |
 | pci_recommendations | author_initiated | review_or_curation_service | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 160 | true | complete | observable | observed | year_to_date | partial | deduplicated |
 | scipost | author_initiated | hybrid_public_discussion | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 454 | true | complete | observable | observed | year_to_date | partial | deduplicated |
-| copernicus_interactive_public_peer_review | author_initiated | hybrid_public_discussion | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 1877 | true | complete | partial_known_scope | observed | partial_known_scope | partial | deduplicated |
+| copernicus_interactive_public_peer_review | author_initiated | hybrid_public_discussion | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 4294 | true | complete | partial_known_scope | observed | partial_known_scope | partial | deduplicated |
 | jmirx_med | mixed | core_publish_first | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 11 | true | complete | observable | observed | year_to_date | partial | deduplicated |
 | jmirx_bio | mixed | core_publish_first | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 4 | true | complete | observable | observed | year_to_date | partial | deduplicated |
 | access_microbiology | author_initiated | hybrid_public_discussion | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 164 | true | complete | observable | observed | year_to_date | partial | deduplicated |

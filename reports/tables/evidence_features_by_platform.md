@@ -2,7 +2,7 @@
 
 Analysis cutoff: 2026-09-30; year 2026 is year_to_date (not annualised).
 Additivity: `row_series`. No all-row total is published in this table.
-Snapshot: Crossref/Sciety retrieval finished 2026-11-05T10:42:10Z.
+Snapshot: last selected Crossref/Sciety walk completed 2026-11-05T09:55:03Z.
 Empty cells are not zeros: see `observation_status` and `extraction_status` in the CSV.
 `binding_publication_decision` is derived from `prc_configuration` and is contextual, not a recognition signal; `editorial_decision_observed` and `review_disclosure_timing` are observed register fields (D-069).
 

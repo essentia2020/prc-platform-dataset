@@ -2,7 +2,7 @@
 
 Analysis cutoff: 2026-09-30; year 2026 is year_to_date (not annualised).
 Additivity: `row_series`. No all-row total is published in this table.
-Snapshot: Crossref/Sciety retrieval finished 2026-11-05T10:42:10Z.
+Snapshot: last selected Crossref/Sciety walk completed 2026-11-05T09:55:03Z.
 Empty cells are not zeros: see `observation_status` and `extraction_status` in the CSV.
 `unique_works_to_cutoff` is blank for register-only rows, blocked extraction, an unresolved coverage start, a selector that matched no record (selector_no_match) or a source that does not cover the group (source_not_covering). `unique_works_to_cutoff`, `first_year_with_data` and `last_year_with_data` cover the eligible range only; included works counted outside it are reported in `n_works_outside_eligible_range` (D-060).
 
@@ -31,7 +31,7 @@ Empty cells are not zeros: see `observation_status` and `extraction_status` in t
 | metaror | metaror | author_initiated | high | review_or_curation_service | high | quantified | quantified | machine_readable | both | false | complete | 2024 | 2026 | 2024 | 2026 | 41 | 0 | 0 |
 | pci_recommendations | pci | author_initiated | high | review_or_curation_service | high | quantified | quantified | machine_readable | both | false | complete | 2017 | 2026 | 2017 | 2026 | 781 | 23 | 14 |
 | scipost | scipost | author_initiated | high | hybrid_public_discussion | high | quantified | quantified | machine_readable | crossref | false | complete | 2016 | 2026 | 2016 | 2026 | 4096 | 42 | 0 |
-| copernicus_interactive_public_peer_review | copernicus | author_initiated | high | hybrid_public_discussion | high | quantified | quantified | machine_readable | crossref | false | complete | 2001 | 2026 | 2001 | 2026 | 63507 | 4330 | 0 |
+| copernicus_interactive_public_peer_review | copernicus | author_initiated | high | hybrid_public_discussion | high | quantified | quantified | machine_readable | crossref | false | complete | 2001 | 2026 | 2001 | 2026 | 67054 | 783 | 0 |
 | jmirx_med | jmir | mixed | medium | core_publish_first | medium | quantified | quantified | machine_readable | crossref | false | complete | 2020 | 2026 | 2020 | 2026 | 151 | 471 | 0 |
 | jmirx_bio | jmir | mixed | medium | core_publish_first | medium | quantified | quantified | machine_readable | crossref | false | complete | 2023 | 2026 | 2023 | 2026 | 14 | 38 | 0 |
 | access_microbiology | microbiology_society | author_initiated | high | hybrid_public_discussion | medium | quantified | quantified | machine_readable | both | false | complete | 2022 | 2026 | 2022 | 2026 | 850 | 428 | 0 |

@@ -2,7 +2,7 @@
 
 Analysis cutoff: 2026-09-30; year 2026 is year_to_date (not annualised).
 Additivity: `deduplicated`. No all-row total is published in this table.
-Snapshot: Crossref/Sciety retrieval finished 2026-11-05T10:42:10Z.
+Snapshot: last selected Crossref/Sciety walk completed 2026-11-05T09:55:03Z.
 Empty cells are not zeros: see `observation_status` and `extraction_status` in the CSV.
 A canonical work counts once per group, in the year of its earliest counting event.
 
@@ -29,11 +29,11 @@ A canonical work counts once per group, in the year of its earliest counting eve
 | author_initiated | 2019 | 2019 | 5628 | false | complete | observable | observed | partial_coverage | partial | deduplicated |  | qeios_hosted_works:partial_coverage |  |
 | author_initiated | 2020 | 2020 | 6793 | false | complete | observable | observed | partial_coverage | partial | deduplicated |  | qeios_hosted_works:partial_coverage |  |
 | author_initiated | 2021 | 2021 | 6810 | false | complete | observable | observed | partial_coverage | partial | deduplicated |  | qeios_hosted_works:partial_coverage |  |
-| author_initiated | 2022 | 2022 | 7336 | false | complete | partial_known_scope | observed | partial_coverage | partial | deduplicated |  | copernicus_interactive_public_peer_review:partial_known_scope; qeios_hosted_works:partial_coverage | peerref:source_not_covering |
-| author_initiated | 2023 | 2023 | 10390 | false | complete | partial_known_scope | observed | partial_coverage | partial | deduplicated |  | copernicus_interactive_public_peer_review:partial_known_scope; qeios_hosted_works:partial_coverage | peerref:source_not_covering |
-| author_initiated | 2024 | 2024 | 10719 | false | complete | partial_known_scope | observed | partial_coverage | partial | deduplicated |  | copernicus_interactive_public_peer_review:partial_known_scope; qeios_hosted_works:partial_coverage | peerref:source_not_covering |
-| author_initiated | 2025 | 2025 | 10160 | false | complete | partial_known_scope | observed | partial_coverage | partial | deduplicated |  | copernicus_interactive_public_peer_review:partial_known_scope; qeios_hosted_works:partial_coverage | peerref:source_not_covering |
-| author_initiated | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 6525 | true | complete | partial_known_scope | observed | partial_coverage | partial | deduplicated |  | copernicus_interactive_public_peer_review:partial_known_scope; qeios_hosted_works:partial_coverage | peerref:source_not_covering |
+| author_initiated | 2022 | 2022 | 7428 | false | complete | partial_known_scope | observed | partial_coverage | partial | deduplicated |  | copernicus_interactive_public_peer_review:partial_known_scope; qeios_hosted_works:partial_coverage | peerref:source_not_covering |
+| author_initiated | 2023 | 2023 | 10570 | false | complete | partial_known_scope | observed | partial_coverage | partial | deduplicated |  | copernicus_interactive_public_peer_review:partial_known_scope; qeios_hosted_works:partial_coverage | peerref:source_not_covering |
+| author_initiated | 2024 | 2024 | 10987 | false | complete | partial_known_scope | observed | partial_coverage | partial | deduplicated |  | copernicus_interactive_public_peer_review:partial_known_scope; qeios_hosted_works:partial_coverage | peerref:source_not_covering |
+| author_initiated | 2025 | 2025 | 10750 | false | complete | partial_known_scope | observed | partial_coverage | partial | deduplicated |  | copernicus_interactive_public_peer_review:partial_known_scope; qeios_hosted_works:partial_coverage | peerref:source_not_covering |
+| author_initiated | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 8942 | true | complete | partial_known_scope | observed | partial_coverage | partial | deduplicated |  | copernicus_interactive_public_peer_review:partial_known_scope; qeios_hosted_works:partial_coverage | peerref:source_not_covering |
 | community_initiated | 2018 | 2018 | 13 | false | complete | observable | observed | partial_coverage | partial | deduplicated |  | prelights:partial_coverage |  |
 | community_initiated | 2019 | 2019 | 265 | false | complete | observable | observed | partial_coverage | partial | deduplicated |  | prelights:partial_coverage; prereview:partial_coverage |  |
 | community_initiated | 2020 | 2020 | 502 | false | complete | observable | observed | partial_coverage | partial | deduplicated |  | prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage |  |
