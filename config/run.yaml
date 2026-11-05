@@ -18,7 +18,9 @@ run_id: run_20261102_01
 analysis_cutoff_date: 2026-09-30
 
 # Address sent in the Crossref polite-pool `mailto` parameter and in the
-# User-Agent header of every request.
+# User-Agent header of every request. The environment variable PRC_MAILTO,
+# when set and non-empty, overrides this value at load time (the tracked
+# file is not edited; the value is validated in the same way).
 mailto: kochetkovdm@hotmail.com
 
 # How the analysis selects among completed cursor walks within the run:

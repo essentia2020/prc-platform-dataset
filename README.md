@@ -16,6 +16,23 @@ between workflow configurations; which PRC services are verifiable but not
 quantifiable from the two sources; and which transparency features each
 platform exhibits. See `docs/analysis_plan.md`.
 
+## Start here for reuse
+
+- Which services are in the register, and why? `config/platforms.yaml`
+  (one row per observation series) and `config/excluded_candidates.yaml`;
+  `docs/register_construction.md` explains how the list was assembled.
+- How many works per platform and year? `reports/tables/works_by_row_year.csv`
+  (one row per series) and `reports/tables/register_summary.csv` (totals).
+- How do initiation classes and workflow configurations compare?
+  `reports/tables/unique_works_by_class_year.csv` and
+  `reports/tables/unique_works_by_configuration_year.csv` (deduplicated
+  within group; `docs/analysis_plan.md` for the unit-of-analysis rule).
+- What does each column mean, and how was a work counted or excluded?
+  `docs/data_dictionary.md` (§5.2 for `works_included.csv`, §6 for tables).
+- Which rules were decided and why, and what is known to be wrong or
+  limited? `docs/decisions.md` (D-001 onwards), `docs/limitations.md` and
+  `reports/tables/data_quality_log.csv`.
+
 ## Definition
 
 The dataset follows the definition of the PRC model by Corker, Waltman and
@@ -145,7 +162,9 @@ The approved cutoff is 2026-09-30; 2026 is `year_to_date`.
 
 Requirements: Python 3.10 or later and the packages in `requirements.txt`
 (`pip install -r requirements.txt`). Set `run_id`, `analysis_cutoff_date` and
-`mailto` in `config/run.yaml` before each run.
+`mailto` in `config/run.yaml` before each run; the environment variable
+`PRC_MAILTO`, when set, overrides the configured `mailto` without editing
+the tracked file.
 
 ```
 python -m src.common.register --validate     # register schema and vocabularies
@@ -288,6 +307,12 @@ superseded by this one.
 - Raw HTTP responses under `data/raw/` are not part of the repository; when
   shared, they carry the source terms recorded in `config/sources.yaml`
   (Crossref REST API, Sciety).
+- The interim and record files in the release archive are derived from
+  Crossref metadata (CC0 / no restriction, per `config/sources.yaml`) and
+  from Sciety docmap identifiers, dates and URLs; CC BY 4.0 applies to the
+  compilation and to the derived fields, not to the source metadata as
+  such (`docs/zenodo_description.md` carries the same statement for the
+  archive record).
 
 ## Citation
 
@@ -333,9 +358,10 @@ discussion for individually verified journals. Full statement:
    (per-platform data confirmation).
 3. OpenAlex as a diagnostic source (D-066). Two of the three permitted
    uses ran in `run_20261102_01` as the `openalex_diagnostics` stage: the
-   per-row volume check (32 rows resolved by counting-record DOI) and the
-   Gates Open Research–VeriXiv pair signal on the D-041 residual (0 shared
-   OpenAlex work ids); both leave rows in the data-quality log only. Still
+   per-row volume check (31 rows resolved by counting-record DOI, one
+   `openalex_volume_check` row each) and the Gates Open Research–VeriXiv
+   pair signal on the D-041 residual (one `openalex_pair_signal` row; 0
+   shared OpenAlex work ids); both leave rows in the data-quality log only. Still
    open: source-level yearly counts (`openalex.source_ids` is empty for
    1.4.0 — deferred because the OpenAlex source of a merged Copernicus
    record is the final article, D-066 follow-up 2), and the topic, country

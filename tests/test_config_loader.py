@@ -59,3 +59,18 @@ def test_unknown_walk_policy_fails(tmp_path):
 def test_user_agent_contains_mailto(tmp_path):
     cfg = config.load_run_config(_write(tmp_path, BASE))
     assert "mailto:someone@example.org" in cfg.user_agent()
+
+
+def test_prc_mailto_overrides_the_configured_address(tmp_path, monkeypatch):
+    """S10: PRC_MAILTO, when set and non-empty, replaces mailto at load time; it is validated the same way."""
+    path = _write(tmp_path, BASE)
+    monkeypatch.delenv("PRC_MAILTO", raising=False)
+    assert config.load_run_config(path).mailto == "someone@example.org"
+    monkeypatch.setenv("PRC_MAILTO", "")
+    assert config.load_run_config(path).mailto == "someone@example.org"
+    monkeypatch.setenv("PRC_MAILTO", "other@example.net")
+    cfg = config.load_run_config(path)
+    assert cfg.mailto == "other@example.net" and "mailto:other@example.net" in cfg.user_agent()
+    monkeypatch.setenv("PRC_MAILTO", "not-an-address")
+    with pytest.raises(config.ConfigError):
+        config.load_run_config(path)

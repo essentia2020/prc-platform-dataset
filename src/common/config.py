@@ -11,6 +11,7 @@ run-level manifest (``data/manifests/<run_id>.json``), never in this file.
 from __future__ import annotations
 
 import datetime as _dt
+import os
 import re
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -102,7 +103,9 @@ def load_run_config(path: Path | str = RUN_CONFIG_PATH) -> RunConfig:
     run_id = str(data["run_id"])
     if not _RUN_ID_RE.match(run_id):
         raise ConfigError(f"{path}: run_id must match {_RUN_ID_RE.pattern}: {run_id!r}")
-    mailto = str(data["mailto"])
+    # PRC_MAILTO overrides the configured address without editing the tracked
+    # file (internal pre-submission review, 2026-11-05, item S10).
+    mailto = os.environ.get("PRC_MAILTO") or str(data["mailto"])
     if not _MAILTO_RE.match(mailto):
         raise ConfigError(f"{path}: mailto must be an e-mail address: {mailto!r}")
     policy = str(data["selected_walk_policy"])

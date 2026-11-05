@@ -479,6 +479,11 @@ counts.
 
 ### 5.2 `works_included.csv` (work level)
 
+One line per work of every quantified row, included or excluded. A row with
+zero included works (and no excluded candidates) has no lines in this file;
+its cells are `observed` with count 0 when extraction is complete, and the
+register summary still lists the row.
+
 | Column | Type | Meaning |
 |---|---|---|
 | `row_id` | string | — |
