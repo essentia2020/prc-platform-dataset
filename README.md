@@ -318,6 +318,28 @@ The archive of the preceding run, `run_20261027_01`, remains available under
 [10.5281/zenodo.23812673](https://doi.org/10.5281/zenodo.23812673) and is
 superseded by this one.
 
+The interim layer of this archive contains 96 CSV files plus `.gitkeep`.
+The deposit was recorded in 4a9c1d4 on 2026-11-02; its documented code
+baseline is d0b4806. Three CSVs are header-only carryovers from
+`run_20261027_01`, contain no data records, and have no output binding in
+the selected `run_20261102_01` replay:
+`crossref_peer_reviews__jmirx_med.csv`,
+`crossref_peer_reviews__unattributed__10.2196.csv`, and
+`crossref_works__rapid_reviews_infectious_diseases.csv`. D-050 removes the
+JMIR peer-review scope; no such scope is selected in this run. RRID uses
+Sciety as primary and Crossref peer-review records as a cross-check, but
+has no Crossref works output binding.
+
+The archive predates the 2026-11-05 JMIRx Bio extension under D-072 and
+the D-057 precedent, and therefore does not contain
+`crossref_works__jmirx_bio.csv`. S13 validated the extended baseline at
+9affb3c from stored walks, rebuilding 94 run-owned interim files and
+verifying the three carryovers against the committed archive checksum
+manifest. It did not extract the published ZIP as replay input. The
+1.4.0 archive alone is insufficient to reproduce the extended baseline.
+The planned 1.5.0 archive will contain the complete validated snapshot;
+the original 1.4.0 deposit remains unchanged.
+
 ## Licensing
 
 - `LICENSE` — MIT License; applies to the code in `src/`, `tools/` and

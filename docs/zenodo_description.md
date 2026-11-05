@@ -30,6 +30,12 @@ and `SHA256SUMS.txt` with the digest of each file (`<n>` files). The SHA-256
 digest of the archive is `<digest>`; the same sums are in
 `reports/release_archive_<run_id>.sha256` in the repository. Raw HTTP
 responses are not deposited; the manifests record every accepted page.
+The interim layer of an archive is a snapshot of the run at the time of
+deposit; a run id can span documented extensions, so the release version,
+the baseline commit and the archive hash identify the snapshot. For the
+1.4.0 archive of `run_20261102_01`, the repository README (Data
+availability) names the header-only carryovers that have no output binding
+in the selected run and the file of the scope added after that deposit.
 
 Licensing. The interim and record files in this archive are derived from
 Crossref metadata (made available without restriction, CC0 waiver, per

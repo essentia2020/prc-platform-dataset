@@ -841,6 +841,27 @@ completion of its evidence checks; outstanding checks are stated explicitly.
   `PRC_MAX_REQUESTS=0` (every walk is reused; a first request would stop the
   stage) followed by normalise, analyse, openalex_diagnostics and report; the expected row value is 67,054, and any other value is
   accounted for work by work before the release freeze.
+- Note 2026-11-05 (replay-check specification correction): the external
+  D-032 checker and command sheet incorrectly required four values in
+  `journal_attribution_refreshed.signals_observed`. That field, like
+  `attribution.<row_id>.signals_observed` in the run manifest, is the union
+  of attribution bases observed on EGUsphere records only. For the accepted
+  replay of run_20261102_01 the exact expected values are `is_preprint_of`,
+  `journal_title`, and `peer_review_is_review_of`. `doi_pattern` remains a
+  valid per-record `attribution_basis` for pre-EGUsphere discussion DOIs;
+  it is not an EGUsphere signal and must not be added to this event to make
+  the checker pass. The checker expectation is corrected, not the
+  attribution rule, event semantics, interim data or processed outputs.
+  Regression tests cover both cases: all three EGUsphere signals alongside
+  a pre-EGUsphere DOI-pattern record, and a DOI-pattern-only population
+  with an empty EGUsphere signal set. The total 67,054, snapshot
+  `2026-11-05T09:55:03Z`, deposit-identical interim hash, zero-request
+  checks and all other replay gates remain unchanged.
+  The regenerated outputs were pushed as 7011dac before the corrected
+  command sheet arrived; 9affb3c subsequently applied the explicit
+  public-error disclosure without changing those outputs. Production S13
+  is bound to `9affb3c97af4eb2d8612242d392278485cfd148e`; this docs/test
+  follow-up does not silently advance that baseline.
 
 ## D-033: Candidate dispositions and ResearchHub reassessment
 
@@ -1294,6 +1315,32 @@ history rewrite is involved (D-004, D-042): the files were never committed.
   10.5281/zenodo.23891928 (`isSupplementTo` the repository, resource type
   Software). Branch ruleset on `main`: no force pushes, no deletions,
   linear history.
+- Clarification 2026-11-06 (snapshots and extensions): a run id can span
+  documented extensions (D-057 precedent; D-072 on 2026-11-05), so the
+  release version, the baseline commit and the archive hash together
+  identify a particular snapshot, not the run id alone. The 1.4.0 archive
+  (deposit recorded in 4a9c1d4 on 2026-11-02; documented code baseline
+  d0b4806) predates the JMIRx Bio extension of `run_20261102_01` under
+  D-072 and therefore does not contain `crossref_works__jmirx_bio.csv`.
+  Its interim layer holds 96 CSV files plus `.gitkeep`; three CSVs are
+  header-only carryovers from `run_20261027_01` with no data records and
+  no output binding in the selected `run_20261102_01` replay:
+  `crossref_peer_reviews__jmirx_med.csv` and
+  `crossref_peer_reviews__unattributed__10.2196.csv` (D-050 removes the
+  JMIR peer-review scope; none is selected in this run) and
+  `crossref_works__rapid_reviews_infectious_diseases.csv` (Sciety is the
+  primary source, Crossref peer-review records are a cross-check; the row
+  has no Crossref works output binding). S13 validated the extended
+  baseline at 9affb3c from the stored walks, rebuilding the 94 run-owned
+  interim files and verifying the three carryovers against the committed
+  archive checksum manifest; it did not extract the published ZIP as
+  replay input. The 1.4.0 archive alone is insufficient to reproduce that
+  extended baseline. The planned 1.5.0 archive is built from the
+  S13-validated snapshot (JMIRx Bio interim, manifests, current processed
+  outputs) with its inventory and hashes verified before the separately
+  approved upload; no interim Zenodo version is created for this, and the
+  original 1.4.0 deposit remains unchanged. The decision above is
+  unchanged.
 
 ## D-057: Windowed retrieval for `works__10.5256__peer-review` (D-045 option c)
 Two shape-consistent walks of this scope on 2026-10-27 (31 non-empty pages and an

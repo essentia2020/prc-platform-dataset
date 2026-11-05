@@ -134,6 +134,48 @@ def test_review_signal_is_joined_and_unattributed_records_retained(tmp_path):
     assert entry["yearly_scope"]["2025"]["coverage"] == "partial_known_scope"
 
 
+@pytest.mark.parametrize("with_egusphere", [True, False])
+def test_refresh_signals_cover_egusphere_not_legacy_doi_patterns(tmp_path, with_egusphere):
+    """D-032 checker correction: event/manifest signals are not the row-wide union."""
+    config, sources, _, logger, roots = run_context(tmp_path)
+    sources = deepcopy(sources)
+    sources["sources"]["crossref"]["pagination"]["windowed_scopes"].pop("works__10.5194__peer-review")
+    rows = [copernicus()]
+    doi = "10.5194/egusphere-2025-1"
+    items = [{
+        "DOI": doi, "type": "posted-content", "posted": {"date-parts": [[2025]]},
+        "container-title": ["Atmospheric Chemistry and Physics"],
+        "relation": {"is-preprint-of": [{"id": "10.5194/acp-25-1-2025", "id-type": "doi"}]},
+    }] if with_egusphere else []
+    body = {"status": "ok", "message": {"items": items, "total-results": len(items)}}
+    works = FixtureTransport({
+        "prefix:10.5194,type:posted-content": [(200, {}, json.dumps(body).encode())]})
+    crossref_works.run(config, sources, rows, logger, transport=works,
+                       sleeper=lambda _: None, **roots)
+    review = {"DOI": "10.5194/synthetic-review", "type": "peer-review", "relation": {
+        "is-review-of": [{"id": doi, "id-type": "doi"}]}}
+    body = {"status": "ok", "message": {"items": [review], "total-results": 1}}
+    reviews = FixtureTransport({
+        "prefix:10.5194,type:peer-review": [(200, {}, json.dumps(body).encode())]})
+    crossref_peer_reviews.run(config, sources, rows, logger, transport=reviews,
+                              sleeper=lambda _: None, **roots)
+    path = roots["interim_root"] / f"crossref_works__{rows[0]['row_id']}.csv"
+    interim = {r["doi"]: r for r in read_csv(path)}
+    assert interim["10.5194/acpd-15-1-2015"]["attribution_basis"] == "doi_pattern"
+    expected = ["is_preprint_of", "journal_title", "peer_review_is_review_of"] if with_egusphere else []
+    if with_egusphere:
+        assert interim[doi]["attribution_basis"].split(";") == expected
+    else:
+        assert doi not in interim
+    manifest = json.loads((roots["manifest_root"] / config.run_id / f"{config.run_id}.json").read_text())
+    assert manifest["attribution"][rows[0]["row_id"]]["signals_observed"] == expected
+    events = [json.loads(line) for line in logger.path.read_text(encoding="utf-8").splitlines()]
+    refresh = [e for e in events if e["event"] == "journal_attribution_refreshed"]
+    assert len(refresh) == 1
+    assert refresh[0]["row_id"] == rows[0]["row_id"]
+    assert refresh[0]["signals_observed"] == expected
+
+
 def test_works_rebuild_keeps_review_attribution(tmp_path):
     """D-032 note 2026-11-05: a works-stage rebuild from stored walks keeps the review signal.
 
