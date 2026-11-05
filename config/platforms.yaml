@@ -29,6 +29,8 @@ register_meta:
   output_types: [reviewed_preprint, version_of_record, recommendation, review_report, approval_status, assessment_statement, highlight]
   reviewer_identity_values: [always, optional, never, unknown]
   review_to_object_relations: [crossref_is_review_of, sciety_docmap, both, none, unknown]
+  editorial_decision_values: [binary, none, unknown]
+  review_disclosure_timings: [during_review, with_acceptance, none, unknown]
   discipline_scopes: [life_sciences, physical_sciences, social_sciences, metaresearch, multidisciplinary]
 
 platforms:
@@ -79,6 +81,8 @@ platforms:
     review_to_object_relation: both
     public_author_response: true
     review_has_doi: true
+    editorial_decision_observed: none
+    review_disclosure_timing: during_review
     data_source: both
     register_status: quantified
     data_status: machine_readable
@@ -155,6 +159,8 @@ platforms:
     review_to_object_relation: crossref_is_review_of
     public_author_response: true
     review_has_doi: true
+    editorial_decision_observed: none
+    review_disclosure_timing: during_review
     data_source: crossref
     register_status: quantified
     data_status: machine_readable
@@ -222,6 +228,8 @@ platforms:
     review_to_object_relation: crossref_is_review_of
     public_author_response: true
     review_has_doi: true
+    editorial_decision_observed: none
+    review_disclosure_timing: during_review
     data_source: crossref
     register_status: quantified
     data_status: machine_readable
@@ -286,6 +294,8 @@ platforms:
     review_to_object_relation: crossref_is_review_of
     public_author_response: true
     review_has_doi: true
+    editorial_decision_observed: none
+    review_disclosure_timing: during_review
     data_source: crossref
     register_status: quantified
     data_status: machine_readable
@@ -347,6 +357,8 @@ platforms:
     review_to_object_relation: crossref_is_review_of
     public_author_response: unknown
     review_has_doi: true
+    editorial_decision_observed: none
+    review_disclosure_timing: during_review
     data_source: crossref
     register_status: quantified
     data_status: machine_readable
@@ -429,6 +441,8 @@ platforms:
     review_to_object_relation: crossref_is_review_of
     public_author_response: true
     review_has_doi: true
+    editorial_decision_observed: none
+    review_disclosure_timing: during_review
     data_source: crossref
     register_status: quantified
     data_status: machine_readable
@@ -490,6 +504,8 @@ platforms:
     review_to_object_relation: crossref_is_review_of
     public_author_response: true
     review_has_doi: true
+    editorial_decision_observed: none
+    review_disclosure_timing: during_review
     data_source: crossref
     register_status: quantified
     data_status: machine_readable
@@ -546,6 +562,8 @@ platforms:
     review_to_object_relation: crossref_is_review_of
     public_author_response: true
     review_has_doi: true
+    editorial_decision_observed: none
+    review_disclosure_timing: during_review
     data_source: crossref
     register_status: quantified
     data_status: machine_readable
@@ -603,6 +621,8 @@ platforms:
     review_to_object_relation: crossref_is_review_of
     public_author_response: true
     review_has_doi: true
+    editorial_decision_observed: none
+    review_disclosure_timing: during_review
     data_source: crossref
     register_status: quantified
     data_status: machine_readable
@@ -660,6 +680,8 @@ platforms:
     review_to_object_relation: crossref_is_review_of
     public_author_response: true
     review_has_doi: true
+    editorial_decision_observed: none
+    review_disclosure_timing: during_review
     data_source: crossref
     register_status: quantified
     data_status: machine_readable
@@ -718,6 +740,8 @@ platforms:
     review_to_object_relation: crossref_is_review_of
     public_author_response: true
     review_has_doi: true
+    editorial_decision_observed: none
+    review_disclosure_timing: during_review
     data_source: crossref
     register_status: quantified
     data_status: machine_readable
@@ -774,6 +798,8 @@ platforms:
     review_to_object_relation: crossref_is_review_of
     public_author_response: true
     review_has_doi: true
+    editorial_decision_observed: none
+    review_disclosure_timing: during_review
     data_source: crossref
     register_status: quantified
     data_status: machine_readable
@@ -832,6 +858,8 @@ platforms:
     review_to_object_relation: crossref_is_review_of
     public_author_response: true
     review_has_doi: true
+    editorial_decision_observed: none
+    review_disclosure_timing: during_review
     data_source: crossref
     register_status: quantified
     data_status: machine_readable
@@ -889,6 +917,8 @@ platforms:
     review_to_object_relation: crossref_is_review_of
     public_author_response: true
     review_has_doi: true
+    editorial_decision_observed: none
+    review_disclosure_timing: during_review
     data_source: crossref
     register_status: quantified
     data_status: machine_readable
@@ -944,6 +974,8 @@ platforms:
     review_to_object_relation: crossref_is_review_of
     public_author_response: true
     review_has_doi: true
+    editorial_decision_observed: none
+    review_disclosure_timing: during_review
     data_source: crossref
     register_status: quantified
     data_status: machine_readable
@@ -1006,6 +1038,8 @@ platforms:
     review_to_object_relation: crossref_is_review_of
     public_author_response: true
     review_has_doi: true
+    editorial_decision_observed: none
+    review_disclosure_timing: during_review
     data_source: crossref
     register_status: quantified
     data_status: machine_readable
@@ -1066,6 +1100,8 @@ platforms:
     review_to_object_relation: crossref_is_review_of
     public_author_response: true
     review_has_doi: true
+    editorial_decision_observed: none
+    review_disclosure_timing: during_review
     data_source: crossref
     register_status: quantified
     data_status: machine_readable
@@ -1125,6 +1161,8 @@ platforms:
     review_to_object_relation: crossref_is_review_of
     public_author_response: true
     review_has_doi: true
+    editorial_decision_observed: unknown
+    review_disclosure_timing: unknown
     data_source: crossref
     register_status: quantified
     data_status: machine_readable
@@ -1188,6 +1226,8 @@ platforms:
     review_to_object_relation: unknown
     public_author_response: true
     review_has_doi: true
+    editorial_decision_observed: none
+    review_disclosure_timing: during_review
     data_source: crossref
     register_status: quantified
     data_status: machine_readable
@@ -1273,6 +1313,8 @@ platforms:
     review_to_object_relation: unknown
     public_author_response: true
     review_has_doi: unknown
+    editorial_decision_observed: unknown
+    review_disclosure_timing: during_review
     data_source: crossref
     register_status: quantified
     data_status: machine_readable
@@ -1371,6 +1413,8 @@ platforms:
     review_to_object_relation: crossref_is_review_of
     public_author_response: true
     review_has_doi: true
+    editorial_decision_observed: none
+    review_disclosure_timing: during_review
     data_source: both
     register_status: quantified
     data_status: machine_readable
@@ -1450,6 +1494,8 @@ platforms:
     review_to_object_relation: both
     public_author_response: true
     review_has_doi: true
+    editorial_decision_observed: binary
+    review_disclosure_timing: with_acceptance
     data_source: both
     register_status: quantified
     data_status: machine_readable
@@ -1534,6 +1580,8 @@ platforms:
     review_to_object_relation: unknown
     public_author_response: true
     review_has_doi: true
+    editorial_decision_observed: binary
+    review_disclosure_timing: during_review
     data_source: crossref
     register_status: quantified
     data_status: machine_readable
@@ -1612,6 +1660,8 @@ platforms:
     review_to_object_relation: none
     public_author_response: true
     review_has_doi: false
+    editorial_decision_observed: binary
+    review_disclosure_timing: during_review
     data_source: crossref
     register_status: quantified
     data_status: machine_readable
@@ -2118,6 +2168,8 @@ platforms:
     review_to_object_relation: unknown
     public_author_response: true
     review_has_doi: true
+    editorial_decision_observed: binary
+    review_disclosure_timing: with_acceptance
     data_source: crossref
     register_status: quantified
     data_status: machine_readable
@@ -2203,6 +2255,8 @@ platforms:
     review_to_object_relation: both
     public_author_response: true
     review_has_doi: true
+    editorial_decision_observed: binary
+    review_disclosure_timing: with_acceptance
     data_source: both
     register_status: quantified
     data_status: machine_readable
@@ -2298,6 +2352,8 @@ platforms:
     review_to_object_relation: crossref_is_review_of
     public_author_response: true
     review_has_doi: true
+    editorial_decision_observed: none
+    review_disclosure_timing: during_review
     data_source: both
     register_status: quantified
     data_status: machine_readable
@@ -2375,6 +2431,8 @@ platforms:
     review_to_object_relation: sciety_docmap
     public_author_response: unknown
     review_has_doi: unknown
+    editorial_decision_observed: none
+    review_disclosure_timing: during_review
     data_source: sciety
     register_status: quantified
     data_status: partial_coverage
@@ -2437,6 +2495,8 @@ platforms:
     review_to_object_relation: sciety_docmap
     public_author_response: true
     review_has_doi: unknown
+    editorial_decision_observed: none
+    review_disclosure_timing: during_review
     data_source: sciety
     register_status: quantified
     data_status: machine_readable
@@ -2500,6 +2560,8 @@ platforms:
     review_to_object_relation: crossref_is_review_of
     public_author_response: true
     review_has_doi: true
+    editorial_decision_observed: none
+    review_disclosure_timing: during_review
     data_source: crossref
     register_status: quantified
     data_status: partial_coverage
@@ -2570,6 +2632,8 @@ platforms:
     review_to_object_relation: crossref_is_review_of
     public_author_response: false
     review_has_doi: true
+    editorial_decision_observed: none
+    review_disclosure_timing: during_review
     data_source: crossref
     register_status: quantified
     data_status: partial_coverage
@@ -2635,6 +2699,8 @@ platforms:
     review_to_object_relation: sciety_docmap
     public_author_response: true
     review_has_doi: true
+    editorial_decision_observed: none
+    review_disclosure_timing: during_review
     data_source: sciety
     register_status: quantified
     data_status: partial_coverage
@@ -2702,6 +2768,8 @@ platforms:
     review_to_object_relation: sciety_docmap
     public_author_response: true
     review_has_doi: false
+    editorial_decision_observed: none
+    review_disclosure_timing: during_review
     data_source: sciety
     register_status: quantified
     data_status: partial_coverage
@@ -2763,6 +2831,8 @@ platforms:
     review_to_object_relation: both
     public_author_response: false
     review_has_doi: true
+    editorial_decision_observed: none
+    review_disclosure_timing: during_review
     data_source: both
     register_status: quantified
     data_status: machine_readable
@@ -2842,6 +2912,8 @@ platforms:
     review_to_object_relation: sciety_docmap
     public_author_response: true
     review_has_doi: unknown
+    editorial_decision_observed: none
+    review_disclosure_timing: during_review
     data_source: sciety
     register_status: quantified
     data_status: machine_readable
@@ -2905,6 +2977,8 @@ platforms:
     review_to_object_relation: sciety_docmap
     public_author_response: false
     review_has_doi: true
+    editorial_decision_observed: none
+    review_disclosure_timing: during_review
     data_source: sciety
     register_status: quantified
     data_status: machine_readable
@@ -2962,6 +3036,8 @@ platforms:
     review_to_object_relation: sciety_docmap
     public_author_response: false
     review_has_doi: unknown
+    editorial_decision_observed: none
+    review_disclosure_timing: during_review
     data_source: sciety
     register_status: quantified
     data_status: machine_readable
@@ -3021,6 +3097,8 @@ platforms:
     review_to_object_relation: sciety_docmap
     public_author_response: false
     review_has_doi: false
+    editorial_decision_observed: none
+    review_disclosure_timing: during_review
     data_source: sciety
     register_status: quantified
     data_status: defunct
@@ -3081,6 +3159,8 @@ platforms:
     review_to_object_relation: sciety_docmap
     public_author_response: true
     review_has_doi: unknown
+    editorial_decision_observed: none
+    review_disclosure_timing: during_review
     data_source: sciety
     register_status: quantified
     data_status: machine_readable
@@ -3139,6 +3219,8 @@ platforms:
     review_to_object_relation: sciety_docmap
     public_author_response: true
     review_has_doi: unknown
+    editorial_decision_observed: none
+    review_disclosure_timing: during_review
     data_source: sciety
     register_status: quantified
     data_status: machine_readable
@@ -3204,6 +3286,8 @@ platforms:
     review_to_object_relation: crossref_is_review_of
     public_author_response: true
     review_has_doi: true
+    editorial_decision_observed: none
+    review_disclosure_timing: during_review
     data_source: both
     register_status: quantified
     data_status: partial_coverage
@@ -3290,6 +3374,8 @@ platforms:
     review_to_object_relation: unknown
     public_author_response: unknown
     review_has_doi: unknown
+    editorial_decision_observed: none
+    review_disclosure_timing: during_review
     data_source: none
     register_status: register_only
     data_status: not_machine_readable
@@ -3354,6 +3440,8 @@ platforms:
     review_to_object_relation: none
     public_author_response: unknown
     review_has_doi: true
+    editorial_decision_observed: none
+    review_disclosure_timing: during_review
     data_source: none
     register_status: register_only
     data_status: not_machine_readable
@@ -3420,6 +3508,8 @@ platforms:
     review_to_object_relation: none
     public_author_response: unknown
     review_has_doi: false
+    editorial_decision_observed: binary
+    review_disclosure_timing: unknown
     data_source: none
     register_status: register_only
     data_status: not_machine_readable

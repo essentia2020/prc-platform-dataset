@@ -85,3 +85,26 @@ def test_comparators_fail_criterion_one():
     for row in register.load_excluded():
         if row["comparator"]:
             assert row["failed_criterion"] == 1
+
+
+# ---------------------------------------------------------------- D-069: observed editorial features
+def test_observed_editorial_features_are_declared_and_in_vocabulary():
+    meta = register.load_yaml(register.PLATFORMS_YAML)["register_meta"]
+    rows = register.load_platforms()
+    decisions, timings = set(meta["editorial_decision_values"]), set(meta["review_disclosure_timings"])
+    assert decisions == {"binary", "none", "unknown"}
+    assert timings == {"during_review", "with_acceptance", "none", "unknown"}
+    for r in rows:
+        assert r["editorial_decision_observed"] in decisions, r["row_id"]
+        assert r["review_disclosure_timing"] in timings, r["row_id"]
+    by_id = {r["row_id"]: r for r in rows}
+    # overlay journal with a binding decision and reports released with the accepted article
+    assert by_id["jmirx_med"]["editorial_decision_observed"] == "binary"
+    assert by_id["jmirx_med"]["review_disclosure_timing"] == "with_acceptance"
+    # public discussion before a binding decision
+    assert by_id["copernicus_interactive_public_peer_review"]["editorial_decision_observed"] == "binary"
+    assert by_id["copernicus_interactive_public_peer_review"]["review_disclosure_timing"] == "during_review"
+    # approval-threshold platform: no editorial decision, reports public as they arrive
+    assert by_id["f1000research"]["editorial_decision_observed"] == "none"
+    assert "editorial_decision_observed" in register.PLATFORM_COLUMNS
+    assert "review_disclosure_timing" in register.PLATFORM_COLUMNS

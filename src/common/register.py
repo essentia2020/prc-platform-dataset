@@ -69,6 +69,8 @@ PLATFORM_COLUMNS: Sequence[str] = (
     "review_to_object_relation",
     "public_author_response",
     "review_has_doi",
+    "editorial_decision_observed",
+    "review_disclosure_timing",
     "data_source",
     "register_status",
     "data_status",
@@ -129,6 +131,8 @@ REQUIRED_ROW_FIELDS: Sequence[str] = (
     "review_to_object_relation",
     "public_author_response",
     "review_has_doi",
+    "editorial_decision_observed",
+    "review_disclosure_timing",
     "data_source",
     "register_status",
     "data_status",
@@ -157,6 +161,8 @@ VOCABULARY_FIELDS: Mapping[str, str] = {
     "reviewer_identity_disclosed": "reviewer_identity_values",
     "review_to_object_relation": "review_to_object_relations",
     "discipline_scope": "discipline_scopes",
+    "editorial_decision_observed": "editorial_decision_values",
+    "review_disclosure_timing": "review_disclosure_timings",
 }
 
 #: Three-valued observed signals: ``true`` / ``false`` / ``unknown``.

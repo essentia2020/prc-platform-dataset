@@ -1700,6 +1700,62 @@ The descriptive `doi_pattern` of `access_microbiology` was tightened to `^10\.10
   pairing, when adopted, will lower `unique_works_all_rows_year` and the
   affected class and configuration group cells by at most 105 works.
 
+## D-069: Observed editorial features in the register
+
+- **Date:** 2026-11-05
+- **Status:** applied (register and dictionary); the two new columns of
+  `evidence_features_by_platform.csv` appear at the local re-run
+- decided_by: researcher
+- **Trigger:** external review 2026-11, comment K4a (the configuration axis
+  conflates platforms with and without a binding editorial decision, and
+  platforms that disclose reports during review with those that disclose
+  them only with the accepted article).
+- **Question:** `binding_publication_decision` is derived from
+  `prc_configuration` (`hybrid_public_discussion` → `true`, otherwise
+  `false`). Overlay journals coded `core_publish_first` do take a binding
+  decision but hold no public pre-decision discussion. How should the
+  register represent what is observed on the platforms' own pages without
+  re-coding the configuration axis in this release?
+- **Options considered:** (a) add two observed fields to every row,
+  `editorial_decision_observed` (`binary`, `none`, `unknown`) and
+  `review_disclosure_timing` (`during_review`, `with_acceptance`, `none`,
+  `unknown`), populated from the pages already recorded in `evidence_url`
+  and from `configuration_note`, with `unknown` where those do not state
+  it; (b) re-code `prc_configuration` for overlay journals; (c) leave the
+  derived field as the only representation.
+- **Decision:** (a). The fields are populated for all 44 rows from the
+  existing evidence pages and notes, without new browsing; `unknown` is
+  recorded where the note does not state the feature
+  (`routledge_open_research` both fields, `emerald_open_research` decision,
+  `peeriodicals` timing). Reviewer-assigned approval statuses, indexing
+  thresholds and author-triggered steps are not editorial decisions
+  (`none`); recommend/reject decisions of PCI, the editorial votes of
+  SciPost and Copernicus, the editor decisions of Access Microbiology and
+  JMIRx Med and the published decisions of Peeriodicals are `binary`.
+  `during_review` means that reports are public before, or independently
+  of, any publication decision (including services that take no
+  decision); `with_acceptance` means that reports are released only with
+  an accepted version or a positive decision (PCI, JMIRx Med, Access
+  Microbiology). Both columns are exported to `config/platforms.csv` and
+  added to `evidence_features_by_platform.csv`; the dictionary states that
+  `binding_publication_decision` is configuration-derived while
+  `editorial_decision_observed` is observed, and that the two differ for
+  overlay journals with a binding decision and no public pre-decision
+  discussion (JMIRx Med, JMIRx Bio). (b) is deferred: it would change the
+  configuration series and needs the typology discussion of the data
+  paper; (c) is rejected because the reviewer's distinction is real and
+  observable.
+- **Evidence:** `config/platforms.yaml` (`register_meta` vocabularies
+  `editorial_decision_values`, `review_disclosure_timings`; per-row values
+  next to `review_has_doi`); `src/common/register.py`
+  (`PLATFORM_COLUMNS`, `REQUIRED_ROW_FIELDS`, `VOCABULARY_FIELDS`);
+  `src/analyse/build_aggregates.py` (`FEATURE_COLUMNS`);
+  `docs/data_dictionary.md` §2.1 and §6;
+  `tests/test_register_schema.py::test_observed_editorial_features_are_declared_and_in_vocabulary`.
+- **Consequences:** `config/platforms.csv` has two more columns now;
+  `reports/tables/evidence_features_by_platform.csv` gains the two columns
+  at the local re-run. No count, group table or figure changes.
+
 ## Q-4: Cross-DOI work correspondence for Gates Open Research / VeriXiv
 
 - **Date:** 2026-10-20

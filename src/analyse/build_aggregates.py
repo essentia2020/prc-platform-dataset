@@ -82,6 +82,7 @@ FEATURE_COLUMNS = [
     "publish_arrangement", "review_arrangement", "curation_arrangement", "output_types",
     "public_review_reports", "approval_status_public", "summary_assessment", "version_linked_review",
     "public_author_response", "review_has_doi", "reviewer_identity_disclosed", "review_to_object_relation",
+    "editorial_decision_observed", "review_disclosure_timing",
     "register_status", "data_status", "data_source",
 ]
 RECOGNITION_SIGNALS = ["public_review_reports", "approval_status_public", "summary_assessment",
@@ -961,7 +962,8 @@ def run(run_config: RunConfig, sources_config: Mapping[str, Any], platforms: lis
     _write_table(tables_root, "evidence_features_by_platform", FEATURE_COLUMNS, features, cutoff=cutoff,
                  additivity="row_series", snapshot=snapshot,
                  note="`binding_publication_decision` is derived from `prc_configuration` and is contextual, "
-                      "not a recognition signal.")
+                      "not a recognition signal; `editorial_decision_observed` and `review_disclosure_timing` "
+                      "are observed register fields (D-069).")
 
     dq_rows = update_data_quality_log(processed_root / "data_quality_log.csv", analyses, manifest)
 
