@@ -95,7 +95,7 @@ but not included are in `config/excluded_candidates.yaml`.
 | `routledge_open_research` | F1000 Research Ltd / Routledge (Taylor & Francis) | `author_initiated` (medium) | `approval_threshold` (medium) | crossref | first_public_posting | 2021–cutoff | machine_readable |
 | `meded_publish` | Association for Medical Education in Europe (AMEE); platform operated by F1000 since 2021 | `author_initiated` (high) | `approval_threshold` (high) | crossref | first_public_posting | 2016–cutoff | machine_readable |
 | `emerald_open_research` | Emerald Publishing (platform operated by F1000) | `author_initiated` (high) | `approval_threshold` (medium) | crossref | first_public_posting | 2019–2023 | machine_readable |
-| `metaror` | Research on Research Institute (RoRI) and AIMOS | `author_initiated` (high) | `core_publish_first` (high) | both | earliest_qualifying_evaluation | 2024–cutoff | machine_readable |
+| `metaror` | Research on Research Institute (RoRI) and AIMOS | `author_initiated` (high) | `review_or_curation_service` (high) | both | earliest_qualifying_evaluation | 2024–cutoff | machine_readable |
 | `pci_recommendations` | Peer Community In (non-profit association) | `author_initiated` (high) | `review_or_curation_service` (high) | both | earliest_qualifying_evaluation | 2017–cutoff | machine_readable |
 | `scipost` | SciPost Foundation | `author_initiated` (high) | `hybrid_public_discussion` (high) | crossref | final_article | 2016–cutoff | machine_readable |
 | `copernicus_interactive_public_peer_review` | Copernicus Publications (Copernicus GmbH) | `author_initiated` (high) | `hybrid_public_discussion` (high) | crossref | first_public_posting | 2001–cutoff | machine_readable |

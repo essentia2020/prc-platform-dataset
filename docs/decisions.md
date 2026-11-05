@@ -1756,6 +1756,50 @@ The descriptive `doi_pattern` of `access_microbiology` was tightened to `^10\.10
   `reports/tables/evidence_features_by_platform.csv` gains the two columns
   at the local re-run. No count, group table or figure changes.
 
+## D-070: MetaROR is a review or curation service on the configuration axis
+
+- **Date:** 2026-11-05
+- **Status:** applied at the local re-run (register applied; the
+  configuration group tables change when analyse/report are re-run)
+- decided_by: researcher
+- **Trigger:** external review 2026-11, comment K4b (MetaROR coded
+  `core_publish_first` although it hosts no works).
+- **Question:** MetaROR organises open review of preprints that are posted
+  on external servers and repositories and publishes review reports and an
+  editorial assessment. Does it satisfy the `core_publish_first` definition
+  ("the platform publishes or posts the work, organises public review and
+  issues a curation output without an accept/reject decision"), or the
+  `review_or_curation_service` definition ("evaluates or curates works that
+  are published or posted elsewhere; it neither hosts the work nor takes a
+  publication decision")?
+- **Options considered:** (a) `review_or_curation_service` (high); (b) keep
+  `core_publish_first` with a note; (c) a new configuration value for
+  publish-first services that do not host.
+- **Decision:** (a). MetaROR evaluates preprints posted on external servers
+  and repositories and issues reviews and an editorial assessment without
+  hosting the work or taking a publication decision; under the axis-2
+  definitions in README this is `review_or_curation_service`. The earlier
+  `core_publish_first` coding conflicted with the hosting requirement of
+  that category. `initiation_class` (`author_initiated`, high), `prc_role`
+  (`review_service`), counting event and selector are unchanged. (b) would
+  keep a definition conflict in the register; (c) would change the
+  configuration vocabulary in a release under review. I collaborate with
+  one of the platform's founders; this decision follows from the category
+  definitions and is recorded here as a conflict-of-interest note for the
+  data paper.
+- **Evidence:** `config/classification_scheme.md` (axis-2 definitions and
+  decision rules); `config/platforms.yaml` row `metaror`
+  (`configuration_note`, `publish_arrangement: external_preprint_server`);
+  https://metaror.org/ (recorded in the row's `evidence_url`,
+  verified 2026-10-20); D-064 (counting from Crossref peer-review records).
+- **Consequences:** after the local re-run, the `metaror` series
+  (2024–2026) moves from the `core_publish_first` column to the
+  `review_or_curation_service` column of
+  `unique_works_by_configuration_year.csv` and
+  `works_by_configuration_year.csv`, and Figure 6 is redrawn; the all-rows
+  totals, the class tables and the row series are unchanged. The README
+  register table and `config/platforms.csv` are updated now.
+
 ## Q-4: Cross-DOI work correspondence for Gates Open Research / VeriXiv
 
 - **Date:** 2026-10-20

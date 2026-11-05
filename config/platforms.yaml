@@ -1394,12 +1394,17 @@ platforms:
       repository; the platform organises open review and posts an editorial
       assessment. No documented route by which editors select unsolicited
       works.
-    prc_configuration: core_publish_first
+    prc_configuration: review_or_curation_service
     configuration_confidence: high
     configuration_note: >-
-      Open review reports are posted alongside the work; editors post an
-      editorial assessment summarising strengths and weaknesses instead of a
-      binary accept/reject decision. Partner journals may reuse the reports.
+      D-070 (supersedes the core_publish_first coding): MetaROR evaluates
+      preprints posted on external servers and repositories and issues open
+      review reports and an editorial assessment summarising strengths and
+      weaknesses, without hosting the work and without taking a publication
+      decision. Under the axis-2 definitions in README this is
+      review_or_curation_service; the earlier core_publish_first coding
+      conflicted with the hosting requirement of that category. Partner
+      journals may reuse the reports.
     provisional: false
     publish_arrangement: external_preprint_server
     review_arrangement: platform_own

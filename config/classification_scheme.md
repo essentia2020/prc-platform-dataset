@@ -97,6 +97,11 @@ Decision rules applied in this release:
   qualifies the general definition above; the configuration-derived
   `binding_publication_decision` is not an independent observation of
   whether an editorial acceptance decision exists.
+- MetaROR is `review_or_curation_service` (high), `review_service`, by
+  D-070: it evaluates preprints posted elsewhere and issues reports and an
+  editorial assessment without hosting the work or taking a publication
+  decision; the earlier `core_publish_first` coding conflicted with the
+  hosting requirement of that category.
 - SciPost counts final articles. Copernicus counts discussion preprints
   entering public discussion for hand-verified journals; rejected
   discussion preprints are not categorically invisible in that series.
