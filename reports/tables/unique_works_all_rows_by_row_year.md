@@ -2,7 +2,7 @@
 
 Analysis cutoff: 2026-09-30; year 2026 is year_to_date (not annualised).
 Additivity: `deduplicated`.
-Snapshot: Crossref/Sciety retrieval finished 2026-11-02T12:08:34Z.
+Snapshot: Crossref/Sciety retrieval finished 2026-11-05T10:42:10Z.
 Empty cells are not zeros: see `observation_status` and `extraction_status` in the CSV.
 Attribution of each work in `unique_works_all_rows_year` to the row holding its earliest counting event (ties: earlier interval start, then row_id); the same pass as the `n_<class>_by_earliest_event` columns. Attribution is relative to the rows observable in this run (D-059, merged into D-061). `count` is blank when the row's own cell is not observable; the all-rows cell of a year may be blank while row lines carry attributions.
 
@@ -20,9 +20,9 @@ Attribution of each work in `unique_works_all_rows_year` to the row holding its 
 | copernicus_interactive_public_peer_review | author_initiated | hybrid_public_discussion | 2010 | 2010 | 1797 | false | complete | observable | observed | complete | complete | deduplicated |
 | copernicus_interactive_public_peer_review | author_initiated | hybrid_public_discussion | 2011 | 2011 | 2170 | false | complete | observable | observed | complete | complete | deduplicated |
 | copernicus_interactive_public_peer_review | author_initiated | hybrid_public_discussion | 2012 | 2012 | 2659 | false | complete | observable | observed | complete | complete | deduplicated |
-| f1000research | author_initiated | approval_threshold | 2013 | 2013 | 0 | false | complete | observable | observed_zero | complete | complete | deduplicated |
+| f1000research | author_initiated | approval_threshold | 2013 | 2013 | 289 | false | complete | observable | observed | complete | complete | deduplicated |
 | copernicus_interactive_public_peer_review | author_initiated | hybrid_public_discussion | 2013 | 2013 | 3042 | false | complete | observable | observed | complete | complete | deduplicated |
-| f1000research | author_initiated | approval_threshold | 2014 | 2014 | 255 | false | complete | observable | observed | complete | complete | deduplicated |
+| f1000research | author_initiated | approval_threshold | 2014 | 2014 | 317 | false | complete | observable | observed | complete | complete | deduplicated |
 | copernicus_interactive_public_peer_review | author_initiated | hybrid_public_discussion | 2014 | 2014 | 3099 | false | complete | observable | observed | complete | complete | deduplicated |
 | f1000research | author_initiated | approval_threshold | 2015 | 2015 | 432 | false | complete | observable | observed | complete | complete | deduplicated |
 | copernicus_interactive_public_peer_review | author_initiated | hybrid_public_discussion | 2015 | 2015 | 3323 | false | complete | observable | observed | complete | complete | deduplicated |
@@ -73,7 +73,7 @@ Attribution of each work in `unique_works_all_rows_year` to the row holding its 
 | pci_recommendations | author_initiated | review_or_curation_service | 2020 | 2020 | 59 | false | complete | observable | observed | complete | complete | deduplicated |
 | scipost | author_initiated | hybrid_public_discussion | 2020 | 2020 | 282 | false | complete | observable | observed | complete | complete | deduplicated |
 | copernicus_interactive_public_peer_review | author_initiated | hybrid_public_discussion | 2020 | 2020 | 4609 | false | complete | observable | observed | complete | complete | deduplicated |
-| jmirx_med | mixed | core_publish_first | 2020 | 2020 | 5 | false | complete | observable | observed | complete | complete | deduplicated |
+| jmirx_med | mixed | core_publish_first | 2020 | 2020 | 3 | false | complete | observable | observed | complete | complete | deduplicated |
 | review_commons | author_initiated | review_or_curation_service | 2020 | 2020 | 78 | false | complete | observable | observed | complete | complete | deduplicated |
 | qeios_hosted_works | author_initiated | approval_threshold | 2020 | 2020 | 23 | false | complete | observable | observed | partial_coverage | partial | deduplicated |
 | qeios_external_works | community_initiated | review_or_curation_service | 2020 | 2020 | 1 | false | complete | observable | observed | partial_coverage | partial | deduplicated |
@@ -86,6 +86,9 @@ Attribution of each work in `unique_works_all_rows_year` to the row holding its 
 | gates_open_research | author_initiated | approval_threshold | 2021 | 2021 | 68 | false | complete | observable | observed | complete | complete | deduplicated |
 | open_research_europe | author_initiated | approval_threshold | 2021 | 2021 | 156 | false | complete | observable | observed | complete | complete | deduplicated |
 | hrb_open_research | author_initiated | approval_threshold | 2021 | 2021 | 132 | false | complete | observable | observed | complete | complete | deduplicated |
+| stosunki_miedzynarodowe | author_initiated | approval_threshold | 2021 | 2021 | 1 | false | complete | observable | observed | complete | complete | deduplicated |
+| digital_twin | author_initiated | approval_threshold | 2021 | 2021 | 12 | false | complete | observable | observed | complete | complete | deduplicated |
+| materials_open_research | author_initiated | approval_threshold | 2021 | 2021 | 0 | false | complete | observable | observed_zero | complete | complete | deduplicated |
 | nihr_open_research | author_initiated | approval_threshold | 2021 | 2021 | 5 | false | complete | observable | observed | complete | complete | deduplicated |
 | health_open_research | author_initiated | approval_threshold | 2021 | 2021 | 15 | false | complete | observable | observed | complete | complete | deduplicated |
 | open_research_africa | author_initiated | approval_threshold | 2021 | 2021 | 33 | false | complete | observable | observed | complete | complete | deduplicated |
@@ -95,7 +98,7 @@ Attribution of each work in `unique_works_all_rows_year` to the row holding its 
 | pci_recommendations | author_initiated | review_or_curation_service | 2021 | 2021 | 40 | false | complete | observable | observed | complete | complete | deduplicated |
 | scipost | author_initiated | hybrid_public_discussion | 2021 | 2021 | 363 | false | complete | observable | observed | complete | complete | deduplicated |
 | copernicus_interactive_public_peer_review | author_initiated | hybrid_public_discussion | 2021 | 2021 | 4276 | false | complete | observable | observed | complete | complete | deduplicated |
-| jmirx_med | mixed | core_publish_first | 2021 | 2021 | 55 | false | complete | observable | observed | complete | complete | deduplicated |
+| jmirx_med | mixed | core_publish_first | 2021 | 2021 | 42 | false | complete | observable | observed | complete | complete | deduplicated |
 | review_commons | author_initiated | review_or_curation_service | 2021 | 2021 | 137 | false | complete | observable | observed | complete | complete | deduplicated |
 | biophysics_colab | mixed | review_or_curation_service | 2021 | 2021 | 6 | false | complete | observable | observed | complete | complete | deduplicated |
 | qeios_hosted_works | author_initiated | approval_threshold | 2021 | 2021 | 47 | false | complete | observable | observed | partial_coverage | partial | deduplicated |
@@ -111,6 +114,11 @@ Attribution of each work in `unique_works_all_rows_year` to the row holding its 
 | gates_open_research | author_initiated | approval_threshold | 2022 | 2022 | 63 | false | complete | observable | observed | complete | complete | deduplicated |
 | open_research_europe | author_initiated | approval_threshold | 2022 | 2022 | 147 | false | complete | observable | observed | complete | complete | deduplicated |
 | hrb_open_research | author_initiated | approval_threshold | 2022 | 2022 | 82 | false | complete | observable | observed | complete | complete | deduplicated |
+| stosunki_miedzynarodowe | author_initiated | approval_threshold | 2022 | 2022 | 26 | false | complete | observable | observed | complete | complete | deduplicated |
+| digital_twin | author_initiated | approval_threshold | 2022 | 2022 | 18 | false | complete | observable | observed | complete | complete | deduplicated |
+| molecular_psychology | author_initiated | approval_threshold | 2022 | 2022 | 4 | false | complete | observable | observed | complete | complete | deduplicated |
+| materials_open_research | author_initiated | approval_threshold | 2022 | 2022 | 3 | false | complete | observable | observed | complete | complete | deduplicated |
+| cobot | author_initiated | approval_threshold | 2022 | 2022 | 21 | false | complete | observable | observed | complete | complete | deduplicated |
 | nihr_open_research | author_initiated | approval_threshold | 2022 | 2022 | 33 | false | complete | observable | observed | complete | complete | deduplicated |
 | health_open_research | author_initiated | approval_threshold | 2022 | 2022 | 5 | false | complete | observable | observed | complete | complete | deduplicated |
 | open_research_africa | author_initiated | approval_threshold | 2022 | 2022 | 21 | false | complete | observable | observed | complete | complete | deduplicated |
@@ -119,8 +127,8 @@ Attribution of each work in `unique_works_all_rows_year` to the row holding its 
 | emerald_open_research | author_initiated | approval_threshold | 2022 | 2022 | 32 | false | complete | observable | observed | complete | complete | deduplicated |
 | pci_recommendations | author_initiated | review_or_curation_service | 2022 | 2022 | 35 | false | complete | observable | observed | complete | complete | deduplicated |
 | scipost | author_initiated | hybrid_public_discussion | 2022 | 2022 | 725 | false | complete | observable | observed | complete | complete | deduplicated |
-| copernicus_interactive_public_peer_review | author_initiated | hybrid_public_discussion | 2022 | 2022 | 4004 | false | complete | partial_known_scope | observed | partial_known_scope | partial | deduplicated |
-| jmirx_med | mixed | core_publish_first | 2022 | 2022 | 32 | false | complete | observable | observed | complete | complete | deduplicated |
+| copernicus_interactive_public_peer_review | author_initiated | hybrid_public_discussion | 2022 | 2022 | 3912 | false | complete | partial_known_scope | observed | partial_known_scope | partial | deduplicated |
+| jmirx_med | mixed | core_publish_first | 2022 | 2022 | 26 | false | complete | observable | observed | complete | complete | deduplicated |
 | access_microbiology | author_initiated | hybrid_public_discussion | 2022 | 2022 | 83 | false | complete | observable | observed | complete | complete | deduplicated |
 | review_commons | author_initiated | review_or_curation_service | 2022 | 2022 | 227 | false | complete | observable | observed | complete | complete | deduplicated |
 | peerref | author_initiated | review_or_curation_service | 2022 | 2022 |  | false | complete | source_not_covering | not_observable | no_data | not_assessable | deduplicated |
@@ -142,6 +150,13 @@ Attribution of each work in `unique_works_all_rows_year` to the row holding its 
 | gates_open_research | author_initiated | approval_threshold | 2023 | 2023 | 55 | false | complete | observable | observed | complete | complete | deduplicated |
 | open_research_europe | author_initiated | approval_threshold | 2023 | 2023 | 220 | false | complete | observable | observed | complete | complete | deduplicated |
 | hrb_open_research | author_initiated | approval_threshold | 2023 | 2023 | 76 | false | complete | observable | observed | complete | complete | deduplicated |
+| stosunki_miedzynarodowe | author_initiated | approval_threshold | 2023 | 2023 | 17 | false | complete | observable | observed | complete | complete | deduplicated |
+| nuclear_science_technology_open_research | author_initiated | approval_threshold | 2023 | 2023 | 10 | false | complete | observable | observed | complete | complete | deduplicated |
+| digital_twin | author_initiated | approval_threshold | 2023 | 2023 | 6 | false | complete | observable | observed | complete | complete | deduplicated |
+| molecular_psychology | author_initiated | approval_threshold | 2023 | 2023 | 23 | false | complete | observable | observed | complete | complete | deduplicated |
+| materials_open_research | author_initiated | approval_threshold | 2023 | 2023 | 10 | false | complete | observable | observed | complete | complete | deduplicated |
+| cobot | author_initiated | approval_threshold | 2023 | 2023 | 6 | false | complete | observable | observed | complete | complete | deduplicated |
+| bioethics_open_research | author_initiated | approval_threshold | 2023 | 2023 | 5 | false | complete | observable | observed | complete | complete | deduplicated |
 | nihr_open_research | author_initiated | approval_threshold | 2023 | 2023 | 53 | false | complete | observable | observed | complete | complete | deduplicated |
 | health_open_research | author_initiated | approval_threshold | 2023 | 2023 | 15 | false | complete | observable | observed | complete | complete | deduplicated |
 | open_research_africa | author_initiated | approval_threshold | 2023 | 2023 | 8 | false | complete | observable | observed | complete | complete | deduplicated |
@@ -150,8 +165,9 @@ Attribution of each work in `unique_works_all_rows_year` to the row holding its 
 | emerald_open_research | author_initiated | approval_threshold | 2023 | 2023 | 17 | false | complete | observable | observed | complete | complete | deduplicated |
 | pci_recommendations | author_initiated | review_or_curation_service | 2023 | 2023 | 122 | false | complete | observable | observed | complete | complete | deduplicated |
 | scipost | author_initiated | hybrid_public_discussion | 2023 | 2023 | 747 | false | complete | observable | observed | complete | complete | deduplicated |
-| copernicus_interactive_public_peer_review | author_initiated | hybrid_public_discussion | 2023 | 2023 | 4216 | false | complete | partial_known_scope | observed | partial_known_scope | partial | deduplicated |
-| jmirx_med | mixed | core_publish_first | 2023 | 2023 | 8 | false | complete | observable | observed | complete | complete | deduplicated |
+| copernicus_interactive_public_peer_review | author_initiated | hybrid_public_discussion | 2023 | 2023 | 4036 | false | complete | partial_known_scope | observed | partial_known_scope | partial | deduplicated |
+| jmirx_med | mixed | core_publish_first | 2023 | 2023 | 5 | false | complete | observable | observed | complete | complete | deduplicated |
+| jmirx_bio | mixed | core_publish_first | 2023 | 2023 | 2 | false | complete | observable | observed | complete | complete | deduplicated |
 | access_microbiology | author_initiated | hybrid_public_discussion | 2023 | 2023 | 216 | false | complete | observable | observed | complete | complete | deduplicated |
 | review_commons | author_initiated | review_or_curation_service | 2023 | 2023 | 280 | false | complete | observable | observed | complete | complete | deduplicated |
 | peerref | author_initiated | review_or_curation_service | 2023 | 2023 |  | false | complete | source_not_covering | not_observable | no_data | not_assessable | deduplicated |
@@ -170,19 +186,28 @@ Attribution of each work in `unique_works_all_rows_year` to the row holding its 
 | elife_reviewed_preprints | author_initiated | core_publish_first | 2024 | 2024 | 1728 | false | complete | observable | observed | complete | complete | deduplicated |
 | f1000research | author_initiated | approval_threshold | 2024 | 2024 | 1223 | false | complete | observable | observed | complete | complete | deduplicated |
 | wellcome_open_research | author_initiated | approval_threshold | 2024 | 2024 | 711 | false | complete | observable | observed | complete | complete | deduplicated |
-| gates_open_research | author_initiated | approval_threshold | 2024 | 2024 | 40 | false | complete | observable | observed | complete | complete | deduplicated |
+| gates_open_research | author_initiated | approval_threshold | 2024 | 2024 | 39 | false | complete | observable | observed | complete | complete | deduplicated |
+| verixiv | author_initiated | approval_threshold | 2024 | 2024 | 16 | false | complete | observable | observed | complete | complete | deduplicated |
 | open_research_europe | author_initiated | approval_threshold | 2024 | 2024 | 275 | false | complete | observable | observed | complete | complete | deduplicated |
 | hrb_open_research | author_initiated | approval_threshold | 2024 | 2024 | 78 | false | complete | observable | observed | complete | complete | deduplicated |
+| stosunki_miedzynarodowe | author_initiated | approval_threshold | 2024 | 2024 | 18 | false | complete | observable | observed | complete | complete | deduplicated |
+| nuclear_science_technology_open_research | author_initiated | approval_threshold | 2024 | 2024 | 29 | false | complete | observable | observed | complete | complete | deduplicated |
+| digital_twin | author_initiated | approval_threshold | 2024 | 2024 | 11 | false | complete | observable | observed | complete | complete | deduplicated |
+| molecular_psychology | author_initiated | approval_threshold | 2024 | 2024 | 0 | false | complete | observable | observed_zero | complete | complete | deduplicated |
+| materials_open_research | author_initiated | approval_threshold | 2024 | 2024 | 9 | false | complete | observable | observed | complete | complete | deduplicated |
+| cobot | author_initiated | approval_threshold | 2024 | 2024 | 8 | false | complete | observable | observed | complete | complete | deduplicated |
+| bioethics_open_research | author_initiated | approval_threshold | 2024 | 2024 | 3 | false | complete | observable | observed | complete | complete | deduplicated |
 | nihr_open_research | author_initiated | approval_threshold | 2024 | 2024 | 67 | false | complete | observable | observed | complete | complete | deduplicated |
 | health_open_research | author_initiated | approval_threshold | 2024 | 2024 | 16 | false | complete | observable | observed | complete | complete | deduplicated |
 | open_research_africa | author_initiated | approval_threshold | 2024 | 2024 | 7 | false | complete | observable | observed | complete | complete | deduplicated |
 | routledge_open_research | author_initiated | approval_threshold | 2024 | 2024 | 28 | false | complete | observable | observed | complete | complete | deduplicated |
 | meded_publish | author_initiated | approval_threshold | 2024 | 2024 | 84 | false | complete | observable | observed | complete | complete | deduplicated |
-| metaror | author_initiated | core_publish_first | 2024 | 2024 | 2 | false | complete | observable | observed | complete | complete | deduplicated |
+| metaror | author_initiated | review_or_curation_service | 2024 | 2024 | 2 | false | complete | observable | observed | complete | complete | deduplicated |
 | pci_recommendations | author_initiated | review_or_curation_service | 2024 | 2024 | 159 | false | complete | observable | observed | complete | complete | deduplicated |
 | scipost | author_initiated | hybrid_public_discussion | 2024 | 2024 | 498 | false | complete | observable | observed | complete | complete | deduplicated |
-| copernicus_interactive_public_peer_review | author_initiated | hybrid_public_discussion | 2024 | 2024 | 4330 | false | complete | partial_known_scope | observed | partial_known_scope | partial | deduplicated |
-| jmirx_med | mixed | core_publish_first | 2024 | 2024 | 29 | false | complete | observable | observed | complete | complete | deduplicated |
+| copernicus_interactive_public_peer_review | author_initiated | hybrid_public_discussion | 2024 | 2024 | 4062 | false | complete | partial_known_scope | observed | partial_known_scope | partial | deduplicated |
+| jmirx_med | mixed | core_publish_first | 2024 | 2024 | 24 | false | complete | observable | observed | complete | complete | deduplicated |
+| jmirx_bio | mixed | core_publish_first | 2024 | 2024 | 4 | false | complete | observable | observed | complete | complete | deduplicated |
 | access_microbiology | author_initiated | hybrid_public_discussion | 2024 | 2024 | 208 | false | complete | observable | observed | complete | complete | deduplicated |
 | review_commons | author_initiated | review_or_curation_service | 2024 | 2024 | 254 | false | complete | observable | observed | complete | complete | deduplicated |
 | peerref | author_initiated | review_or_curation_service | 2024 | 2024 |  | false | complete | source_not_covering | not_observable | no_data | not_assessable | deduplicated |
@@ -201,18 +226,27 @@ Attribution of each work in `unique_works_all_rows_year` to the row holding its 
 | elife_reviewed_preprints | author_initiated | core_publish_first | 2025 | 2025 | 1149 | false | complete | observable | observed | complete | complete | deduplicated |
 | f1000research | author_initiated | approval_threshold | 2025 | 2025 | 1157 | false | complete | observable | observed | complete | complete | deduplicated |
 | wellcome_open_research | author_initiated | approval_threshold | 2025 | 2025 | 671 | false | complete | observable | observed | complete | complete | deduplicated |
+| verixiv | author_initiated | approval_threshold | 2025 | 2025 | 82 | false | complete | observable | observed | complete | complete | deduplicated |
 | open_research_europe | author_initiated | approval_threshold | 2025 | 2025 | 397 | false | complete | observable | observed | complete | complete | deduplicated |
 | hrb_open_research | author_initiated | approval_threshold | 2025 | 2025 | 133 | false | complete | observable | observed | complete | complete | deduplicated |
+| stosunki_miedzynarodowe | author_initiated | approval_threshold | 2025 | 2025 | 36 | false | complete | observable | observed | complete | complete | deduplicated |
+| nuclear_science_technology_open_research | author_initiated | approval_threshold | 2025 | 2025 | 20 | false | complete | observable | observed | complete | complete | deduplicated |
+| digital_twin | author_initiated | approval_threshold | 2025 | 2025 | 4 | false | complete | observable | observed | complete | complete | deduplicated |
+| molecular_psychology | author_initiated | approval_threshold | 2025 | 2025 | 1 | false | complete | observable | observed | complete | complete | deduplicated |
+| materials_open_research | author_initiated | approval_threshold | 2025 | 2025 | 0 | false | complete | observable | observed_zero | complete | complete | deduplicated |
+| cobot | author_initiated | approval_threshold | 2025 | 2025 | 0 | false | complete | observable | observed_zero | complete | complete | deduplicated |
+| bioethics_open_research | author_initiated | approval_threshold | 2025 | 2025 | 2 | false | complete | observable | observed | complete | complete | deduplicated |
 | nihr_open_research | author_initiated | approval_threshold | 2025 | 2025 | 92 | false | complete | observable | observed | complete | complete | deduplicated |
 | health_open_research | author_initiated | approval_threshold | 2025 | 2025 | 5 | false | complete | observable | observed | complete | complete | deduplicated |
 | open_research_africa | author_initiated | approval_threshold | 2025 | 2025 | 26 | false | complete | observable | observed | complete | complete | deduplicated |
 | routledge_open_research | author_initiated | approval_threshold | 2025 | 2025 | 16 | false | complete | observable | observed | complete | complete | deduplicated |
 | meded_publish | author_initiated | approval_threshold | 2025 | 2025 | 69 | false | complete | observable | observed | complete | complete | deduplicated |
-| metaror | author_initiated | core_publish_first | 2025 | 2025 | 15 | false | complete | observable | observed | complete | complete | deduplicated |
+| metaror | author_initiated | review_or_curation_service | 2025 | 2025 | 15 | false | complete | observable | observed | complete | complete | deduplicated |
 | pci_recommendations | author_initiated | review_or_curation_service | 2025 | 2025 | 115 | false | complete | observable | observed | complete | complete | deduplicated |
 | scipost | author_initiated | hybrid_public_discussion | 2025 | 2025 | 607 | false | complete | observable | observed | complete | complete | deduplicated |
-| copernicus_interactive_public_peer_review | author_initiated | hybrid_public_discussion | 2025 | 2025 | 5110 | false | complete | partial_known_scope | observed | partial_known_scope | partial | deduplicated |
-| jmirx_med | mixed | core_publish_first | 2025 | 2025 | 57 | false | complete | observable | observed | complete | complete | deduplicated |
+| copernicus_interactive_public_peer_review | author_initiated | hybrid_public_discussion | 2025 | 2025 | 4520 | false | complete | partial_known_scope | observed | partial_known_scope | partial | deduplicated |
+| jmirx_med | mixed | core_publish_first | 2025 | 2025 | 40 | false | complete | observable | observed | complete | complete | deduplicated |
+| jmirx_bio | mixed | core_publish_first | 2025 | 2025 | 4 | false | complete | observable | observed | complete | complete | deduplicated |
 | access_microbiology | author_initiated | hybrid_public_discussion | 2025 | 2025 | 179 | false | complete | observable | observed | complete | complete | deduplicated |
 | review_commons | author_initiated | review_or_curation_service | 2025 | 2025 | 260 | false | complete | observable | observed | complete | complete | deduplicated |
 | peerref | author_initiated | review_or_curation_service | 2025 | 2025 |  | false | complete | source_not_covering | not_observable | no_data | not_assessable | deduplicated |
@@ -231,18 +265,26 @@ Attribution of each work in `unique_works_all_rows_year` to the row holding its 
 | elife_reviewed_preprints | author_initiated | core_publish_first | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 742 | true | complete | observable | observed | year_to_date | partial | deduplicated |
 | f1000research | author_initiated | approval_threshold | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 1350 | true | complete | observable | observed | year_to_date | partial | deduplicated |
 | wellcome_open_research | author_initiated | approval_threshold | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 605 | true | complete | observable | observed | year_to_date | partial | deduplicated |
+| verixiv | author_initiated | approval_threshold | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 37 | true | complete | observable | observed | year_to_date | partial | deduplicated |
 | open_research_europe | author_initiated | approval_threshold | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 382 | true | complete | observable | observed | year_to_date | partial | deduplicated |
 | hrb_open_research | author_initiated | approval_threshold | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 100 | true | complete | observable | observed | year_to_date | partial | deduplicated |
+| stosunki_miedzynarodowe | author_initiated | approval_threshold | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 1 | true | complete | observable | observed | year_to_date | partial | deduplicated |
+| nuclear_science_technology_open_research | author_initiated | approval_threshold | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 11 | true | complete | observable | observed | year_to_date | partial | deduplicated |
+| molecular_psychology | author_initiated | approval_threshold | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 0 | true | complete | observable | observed_zero | year_to_date | partial | deduplicated |
+| materials_open_research | author_initiated | approval_threshold | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 0 | true | complete | observable | observed_zero | year_to_date | partial | deduplicated |
+| cobot | author_initiated | approval_threshold | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 0 | true | complete | observable | observed_zero | year_to_date | partial | deduplicated |
+| bioethics_open_research | author_initiated | approval_threshold | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 0 | true | complete | observable | observed_zero | year_to_date | partial | deduplicated |
 | nihr_open_research | author_initiated | approval_threshold | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 87 | true | complete | observable | observed | year_to_date | partial | deduplicated |
 | health_open_research | author_initiated | approval_threshold | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 4 | true | complete | observable | observed | year_to_date | partial | deduplicated |
 | open_research_africa | author_initiated | approval_threshold | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 72 | true | complete | observable | observed | year_to_date | partial | deduplicated |
 | routledge_open_research | author_initiated | approval_threshold | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 19 | true | complete | observable | observed | year_to_date | partial | deduplicated |
 | meded_publish | author_initiated | approval_threshold | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 45 | true | complete | observable | observed | year_to_date | partial | deduplicated |
-| metaror | author_initiated | core_publish_first | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 21 | true | complete | observable | observed | year_to_date | partial | deduplicated |
+| metaror | author_initiated | review_or_curation_service | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 21 | true | complete | observable | observed | year_to_date | partial | deduplicated |
 | pci_recommendations | author_initiated | review_or_curation_service | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 160 | true | complete | observable | observed | year_to_date | partial | deduplicated |
 | scipost | author_initiated | hybrid_public_discussion | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 454 | true | complete | observable | observed | year_to_date | partial | deduplicated |
-| copernicus_interactive_public_peer_review | author_initiated | hybrid_public_discussion | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 4294 | true | complete | partial_known_scope | observed | partial_known_scope | partial | deduplicated |
-| jmirx_med | mixed | core_publish_first | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 15 | true | complete | observable | observed | year_to_date | partial | deduplicated |
+| copernicus_interactive_public_peer_review | author_initiated | hybrid_public_discussion | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 1877 | true | complete | partial_known_scope | observed | partial_known_scope | partial | deduplicated |
+| jmirx_med | mixed | core_publish_first | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 11 | true | complete | observable | observed | year_to_date | partial | deduplicated |
+| jmirx_bio | mixed | core_publish_first | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 4 | true | complete | observable | observed | year_to_date | partial | deduplicated |
 | access_microbiology | author_initiated | hybrid_public_discussion | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 164 | true | complete | observable | observed | year_to_date | partial | deduplicated |
 | review_commons | author_initiated | review_or_curation_service | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 181 | true | complete | observable | observed | year_to_date | partial | deduplicated |
 | peerref | author_initiated | review_or_curation_service | 2026 | 2026 (year_to_date, cutoff 2026-09-30) |  | true | complete | source_not_covering | not_observable | no_data | not_assessable | deduplicated |

@@ -2,33 +2,33 @@
 
 Analysis cutoff: 2026-09-30; year 2026 is year_to_date (not annualised).
 Additivity: `row_summed`. No all-row total is published in this table.
-Snapshot: Crossref/Sciety retrieval finished 2026-11-02T12:08:34Z.
+Snapshot: Crossref/Sciety retrieval finished 2026-11-05T10:42:10Z.
 Empty cells are not zeros: see `observation_status` and `extraction_status` in the CSV.
 Provisional and register-only rows are excluded from this table.
 
 | prc_configuration | year | year_label | count | partial_year | extraction_status | source_observability_status | observation_status | coverage | temporal_coverage_status | additivity | blocking_rows | lower_bound_rows | excluded_rows |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| approval_threshold | 2013 | 2013 | 0 | false | complete | observable | observed_zero | complete | complete | row_summed |  |  |  |
-| approval_threshold | 2014 | 2014 | 255 | false | complete | observable | observed | complete | complete | row_summed |  |  |  |
+| approval_threshold | 2013 | 2013 | 289 | false | complete | observable | observed | complete | complete | row_summed |  |  |  |
+| approval_threshold | 2014 | 2014 | 317 | false | complete | observable | observed | complete | complete | row_summed |  |  |  |
 | approval_threshold | 2015 | 2015 | 432 | false | complete | observable | observed | complete | complete | row_summed |  |  |  |
 | approval_threshold | 2016 | 2016 | 770 | false | complete | observable | observed | complete | complete | row_summed |  |  |  |
 | approval_threshold | 2017 | 2017 | 895 | false | complete | observable | observed | complete | complete | row_summed |  |  |  |
 | approval_threshold | 2018 | 2018 | 1455 | false | complete | observable | observed | complete | complete | row_summed |  |  |  |
 | approval_threshold | 2019 | 2019 | 1496 | false | complete | observable | observed | partial_coverage | partial | row_summed |  | qeios_hosted_works:partial_coverage |  |
 | approval_threshold | 2020 | 2020 | 1761 | false | complete | observable | observed | partial_coverage | partial | row_summed |  | qeios_hosted_works:partial_coverage |  |
-| approval_threshold | 2021 | 2021 | 1980 | false | complete | observable | observed | partial_coverage | partial | row_summed |  | qeios_hosted_works:partial_coverage |  |
-| approval_threshold | 2022 | 2022 | 2269 | false | complete | observable | observed | partial_coverage | partial | row_summed |  | qeios_hosted_works:partial_coverage |  |
-| approval_threshold | 2023 | 2023 | 3711 | false | complete | observable | observed | partial_coverage | partial | row_summed |  | qeios_hosted_works:partial_coverage |  |
-| approval_threshold | 2024 | 2024 | 3711 | false | complete | observable | observed | partial_coverage | partial | row_summed |  | qeios_hosted_works:partial_coverage |  |
-| approval_threshold | 2025 | 2025 | 3166 | false | complete | observable | observed | partial_coverage | partial | row_summed |  | qeios_hosted_works:partial_coverage |  |
-| approval_threshold | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 2875 | true | complete | observable | observed | partial_coverage | partial | row_summed |  | qeios_hosted_works:partial_coverage |  |
-| core_publish_first | 2020 | 2020 | 5 | false | complete | observable | observed | complete | complete | row_summed |  |  |  |
-| core_publish_first | 2021 | 2021 | 55 | false | complete | observable | observed | complete | complete | row_summed |  |  |  |
-| core_publish_first | 2022 | 2022 | 38 | false | complete | observable | observed | complete | complete | row_summed |  |  |  |
-| core_publish_first | 2023 | 2023 | 1198 | false | complete | observable | observed | complete | complete | row_summed |  |  |  |
-| core_publish_first | 2024 | 2024 | 1760 | false | complete | observable | observed | complete | complete | row_summed |  |  |  |
-| core_publish_first | 2025 | 2025 | 1223 | false | complete | observable | observed | complete | complete | row_summed |  |  |  |
-| core_publish_first | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 778 | true | complete | observable | observed | year_to_date | partial | row_summed |  |  |  |
+| approval_threshold | 2021 | 2021 | 1993 | false | complete | observable | observed | partial_coverage | partial | row_summed |  | qeios_hosted_works:partial_coverage |  |
+| approval_threshold | 2022 | 2022 | 2341 | false | complete | observable | observed | partial_coverage | partial | row_summed |  | qeios_hosted_works:partial_coverage |  |
+| approval_threshold | 2023 | 2023 | 3788 | false | complete | observable | observed | partial_coverage | partial | row_summed |  | qeios_hosted_works:partial_coverage |  |
+| approval_threshold | 2024 | 2024 | 3805 | false | complete | observable | observed | partial_coverage | partial | row_summed |  | qeios_hosted_works:partial_coverage |  |
+| approval_threshold | 2025 | 2025 | 3311 | false | complete | observable | observed | partial_coverage | partial | row_summed |  | qeios_hosted_works:partial_coverage |  |
+| approval_threshold | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 2924 | true | complete | observable | observed | partial_coverage | partial | row_summed |  | qeios_hosted_works:partial_coverage |  |
+| core_publish_first | 2020 | 2020 | 3 | false | complete | observable | observed | complete | complete | row_summed |  |  |  |
+| core_publish_first | 2021 | 2021 | 42 | false | complete | observable | observed | complete | complete | row_summed |  |  |  |
+| core_publish_first | 2022 | 2022 | 32 | false | complete | observable | observed | complete | complete | row_summed |  |  |  |
+| core_publish_first | 2023 | 2023 | 1197 | false | complete | observable | observed | complete | complete | row_summed |  |  |  |
+| core_publish_first | 2024 | 2024 | 1756 | false | complete | observable | observed | complete | complete | row_summed |  |  |  |
+| core_publish_first | 2025 | 2025 | 1193 | false | complete | observable | observed | complete | complete | row_summed |  |  |  |
+| core_publish_first | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 757 | true | complete | observable | observed | year_to_date | partial | row_summed |  |  |  |
 | hybrid_public_discussion | 2001 | 2001 | 14 | false | complete | observable | observed | complete | complete | row_summed |  |  |  |
 | hybrid_public_discussion | 2002 | 2002 | 79 | false | complete | observable | observed | complete | complete | row_summed |  |  |  |
 | hybrid_public_discussion | 2003 | 2003 | 180 | false | complete | observable | observed | complete | complete | row_summed |  |  |  |
@@ -50,11 +50,11 @@ Provisional and register-only rows are excluded from this table.
 | hybrid_public_discussion | 2019 | 2019 | 4087 | false | complete | observable | observed | complete | complete | row_summed |  |  |  |
 | hybrid_public_discussion | 2020 | 2020 | 4891 | false | complete | observable | observed | complete | complete | row_summed |  |  |  |
 | hybrid_public_discussion | 2021 | 2021 | 4639 | false | complete | observable | observed | complete | complete | row_summed |  |  |  |
-| hybrid_public_discussion | 2022 | 2022 | 4812 | false | complete | partial_known_scope | observed | partial_known_scope | partial | row_summed |  | copernicus_interactive_public_peer_review:partial_known_scope |  |
-| hybrid_public_discussion | 2023 | 2023 | 5179 | false | complete | partial_known_scope | observed | partial_known_scope | partial | row_summed |  | copernicus_interactive_public_peer_review:partial_known_scope |  |
-| hybrid_public_discussion | 2024 | 2024 | 5036 | false | complete | partial_known_scope | observed | partial_known_scope | partial | row_summed |  | copernicus_interactive_public_peer_review:partial_known_scope |  |
-| hybrid_public_discussion | 2025 | 2025 | 5896 | false | complete | partial_known_scope | observed | partial_known_scope | partial | row_summed |  | copernicus_interactive_public_peer_review:partial_known_scope |  |
-| hybrid_public_discussion | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 4912 | true | complete | partial_known_scope | observed | partial_known_scope | partial | row_summed |  | copernicus_interactive_public_peer_review:partial_known_scope |  |
+| hybrid_public_discussion | 2022 | 2022 | 4720 | false | complete | partial_known_scope | observed | partial_known_scope | partial | row_summed |  | copernicus_interactive_public_peer_review:partial_known_scope |  |
+| hybrid_public_discussion | 2023 | 2023 | 4999 | false | complete | partial_known_scope | observed | partial_known_scope | partial | row_summed |  | copernicus_interactive_public_peer_review:partial_known_scope |  |
+| hybrid_public_discussion | 2024 | 2024 | 4768 | false | complete | partial_known_scope | observed | partial_known_scope | partial | row_summed |  | copernicus_interactive_public_peer_review:partial_known_scope |  |
+| hybrid_public_discussion | 2025 | 2025 | 5306 | false | complete | partial_known_scope | observed | partial_known_scope | partial | row_summed |  | copernicus_interactive_public_peer_review:partial_known_scope |  |
+| hybrid_public_discussion | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 2495 | true | complete | partial_known_scope | observed | partial_known_scope | partial | row_summed |  | copernicus_interactive_public_peer_review:partial_known_scope |  |
 | review_or_curation_service | 2017 | 2017 | 23 | false | complete | observable | observed | complete | complete | row_summed |  |  |  |
 | review_or_curation_service | 2018 | 2018 | 35 | false | complete | observable | observed | partial_coverage | partial | row_summed |  | prelights:partial_coverage |  |
 | review_or_curation_service | 2019 | 2019 | 310 | false | complete | observable | observed | partial_coverage | partial | row_summed |  | prelights:partial_coverage; prereview:partial_coverage |  |
@@ -62,9 +62,9 @@ Provisional and register-only rows are excluded from this table.
 | review_or_curation_service | 2021 | 2021 | 1444 | false | complete | observable | observed | partial_coverage | partial | row_summed |  | prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage |  |
 | review_or_curation_service | 2022 | 2022 | 1537 | false | complete | observable | observed | partial_coverage | partial | row_summed |  | prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage | peerref:source_not_covering |
 | review_or_curation_service | 2023 | 2023 | 1048 | false | complete | observable | observed | partial_coverage | partial | row_summed |  | prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage; the_unjournal:partial_coverage | peerref:source_not_covering |
-| review_or_curation_service | 2024 | 2024 | 1206 | false | complete | observable | observed | partial_coverage | partial | row_summed |  | prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage; the_unjournal:partial_coverage | peerref:source_not_covering |
-| review_or_curation_service | 2025 | 2025 | 1398 | false | complete | observable | observed | partial_coverage | partial | row_summed |  | prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage; the_unjournal:partial_coverage | peerref:source_not_covering |
-| review_or_curation_service | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 1205 | true | complete | observable | observed | partial_coverage | partial | row_summed |  | prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage; the_unjournal:partial_coverage | peerref:source_not_covering |
+| review_or_curation_service | 2024 | 2024 | 1209 | false | complete | observable | observed | partial_coverage | partial | row_summed |  | prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage; the_unjournal:partial_coverage | peerref:source_not_covering |
+| review_or_curation_service | 2025 | 2025 | 1415 | false | complete | observable | observed | partial_coverage | partial | row_summed |  | prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage; the_unjournal:partial_coverage | peerref:source_not_covering |
+| review_or_curation_service | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 1226 | true | complete | observable | observed | partial_coverage | partial | row_summed |  | prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage; the_unjournal:partial_coverage | peerref:source_not_covering |
 
 Blank group cells (D-038): the member row and status that block the sum.
 None in this table.

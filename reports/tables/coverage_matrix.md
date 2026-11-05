@@ -2,7 +2,7 @@
 
 Analysis cutoff: 2026-09-30; year 2026 is year_to_date (not annualised).
 Additivity: `row_series`. No all-row total is published in this table.
-Snapshot: Crossref/Sciety retrieval finished 2026-11-02T12:08:34Z.
+Snapshot: Crossref/Sciety retrieval finished 2026-11-05T10:42:10Z.
 Empty cells are not zeros: see `observation_status` and `extraction_status` in the CSV.
 
 | row_id | year | year_label | coverage | partial_year | extraction_status | source_observability_status | observation_status | note |
@@ -45,7 +45,7 @@ Empty cells are not zeros: see `observation_status` and `extraction_status` in t
 | f1000research | 2010 | 2010 | not_applicable | false | complete | observable | not_applicable |  |
 | f1000research | 2011 | 2011 | not_applicable | false | complete | observable | not_applicable |  |
 | f1000research | 2012 | 2012 | not_applicable | false | complete | observable | not_applicable |  |
-| f1000research | 2013 | 2013 | complete | false | complete | observable | observed_zero |  |
+| f1000research | 2013 | 2013 | complete | false | complete | observable | observed |  |
 | f1000research | 2014 | 2014 | complete | false | complete | observable | observed |  |
 | f1000research | 2015 | 2015 | complete | false | complete | observable | observed |  |
 | f1000research | 2016 | 2016 | complete | false | complete | observable | observed |  |
@@ -657,6 +657,32 @@ Empty cells are not zeros: see `observation_status` and `extraction_status` in t
 | jmirx_med | 2024 | 2024 | complete | false | complete | observable | observed |  |
 | jmirx_med | 2025 | 2025 | complete | false | complete | observable | observed |  |
 | jmirx_med | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | year_to_date | true | complete | observable | observed |  |
+| jmirx_bio | 2001 | 2001 | not_applicable | false | complete | observable | not_applicable |  |
+| jmirx_bio | 2002 | 2002 | not_applicable | false | complete | observable | not_applicable |  |
+| jmirx_bio | 2003 | 2003 | not_applicable | false | complete | observable | not_applicable |  |
+| jmirx_bio | 2004 | 2004 | not_applicable | false | complete | observable | not_applicable |  |
+| jmirx_bio | 2005 | 2005 | not_applicable | false | complete | observable | not_applicable |  |
+| jmirx_bio | 2006 | 2006 | not_applicable | false | complete | observable | not_applicable |  |
+| jmirx_bio | 2007 | 2007 | not_applicable | false | complete | observable | not_applicable |  |
+| jmirx_bio | 2008 | 2008 | not_applicable | false | complete | observable | not_applicable |  |
+| jmirx_bio | 2009 | 2009 | not_applicable | false | complete | observable | not_applicable |  |
+| jmirx_bio | 2010 | 2010 | not_applicable | false | complete | observable | not_applicable |  |
+| jmirx_bio | 2011 | 2011 | not_applicable | false | complete | observable | not_applicable |  |
+| jmirx_bio | 2012 | 2012 | not_applicable | false | complete | observable | not_applicable |  |
+| jmirx_bio | 2013 | 2013 | not_applicable | false | complete | observable | not_applicable |  |
+| jmirx_bio | 2014 | 2014 | not_applicable | false | complete | observable | not_applicable |  |
+| jmirx_bio | 2015 | 2015 | not_applicable | false | complete | observable | not_applicable |  |
+| jmirx_bio | 2016 | 2016 | not_applicable | false | complete | observable | not_applicable |  |
+| jmirx_bio | 2017 | 2017 | not_applicable | false | complete | observable | not_applicable |  |
+| jmirx_bio | 2018 | 2018 | not_applicable | false | complete | observable | not_applicable |  |
+| jmirx_bio | 2019 | 2019 | not_applicable | false | complete | observable | not_applicable |  |
+| jmirx_bio | 2020 | 2020 | not_applicable | false | complete | observable | not_applicable |  |
+| jmirx_bio | 2021 | 2021 | not_applicable | false | complete | observable | not_applicable |  |
+| jmirx_bio | 2022 | 2022 | not_applicable | false | complete | observable | not_applicable |  |
+| jmirx_bio | 2023 | 2023 | complete | false | complete | observable | observed |  |
+| jmirx_bio | 2024 | 2024 | complete | false | complete | observable | observed |  |
+| jmirx_bio | 2025 | 2025 | complete | false | complete | observable | observed |  |
+| jmirx_bio | 2026 | 2026 (year_to_date, cutoff 2026-09-30) | year_to_date | true | complete | observable | observed |  |
 | access_microbiology | 2001 | 2001 | not_applicable | false | complete | observable | not_applicable |  |
 | access_microbiology | 2002 | 2002 | not_applicable | false | complete | observable | not_applicable |  |
 | access_microbiology | 2003 | 2003 | not_applicable | false | complete | observable | not_applicable |  |

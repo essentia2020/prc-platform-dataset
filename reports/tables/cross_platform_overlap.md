@@ -2,7 +2,7 @@
 
 Analysis cutoff: 2026-09-30; year 2026 is year_to_date (not annualised).
 Additivity: `row_series`. No all-row total is published in this table.
-Snapshot: Crossref/Sciety retrieval finished 2026-11-02T12:08:34Z.
+Snapshot: Crossref/Sciety retrieval finished 2026-11-05T10:42:10Z.
 Empty cells are not zeros: see `observation_status` and `extraction_status` in the CSV.
 Overlap is reported, not removed; the Qeios pair must be absent here (hard check).
 

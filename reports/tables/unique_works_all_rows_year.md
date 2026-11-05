@@ -2,7 +2,7 @@
 
 Analysis cutoff: 2026-09-30; year 2026 is year_to_date (not annualised).
 Additivity: `deduplicated`.
-Snapshot: Crossref/Sciety retrieval finished 2026-11-02T12:08:34Z.
+Snapshot: Crossref/Sciety retrieval finished 2026-11-05T10:42:10Z.
 Empty cells are not zeros: see `observation_status` and `extraction_status` in the CSV.
 The only all-row total; overlapping works are attributed to the class of their earliest event. A cell with `lower_bound_rows` or `excluded_rows` is a lower bound (D-061).
 
@@ -20,20 +20,20 @@ The only all-row total; overlapping works are attributed to the class of their e
 | 2010 | 2010 | 1797 | false | complete | observable | observed | complete | complete | deduplicated | 1797 | 0 | 0 |  |  |  |
 | 2011 | 2011 | 2170 | false | complete | observable | observed | complete | complete | deduplicated | 2170 | 0 | 0 |  |  |  |
 | 2012 | 2012 | 2659 | false | complete | observable | observed | complete | complete | deduplicated | 2659 | 0 | 0 |  |  |  |
-| 2013 | 2013 | 3042 | false | complete | observable | observed | complete | complete | deduplicated | 3042 | 0 | 0 |  |  |  |
-| 2014 | 2014 | 3354 | false | complete | observable | observed | complete | complete | deduplicated | 3354 | 0 | 0 |  |  |  |
+| 2013 | 2013 | 3331 | false | complete | observable | observed | complete | complete | deduplicated | 3331 | 0 | 0 |  |  |  |
+| 2014 | 2014 | 3416 | false | complete | observable | observed | complete | complete | deduplicated | 3416 | 0 | 0 |  |  |  |
 | 2015 | 2015 | 3755 | false | complete | observable | observed | complete | complete | deduplicated | 3755 | 0 | 0 |  |  |  |
 | 2016 | 2016 | 4491 | false | complete | observable | observed | complete | complete | deduplicated | 4491 | 0 | 0 |  |  |  |
 | 2017 | 2017 | 4610 | false | complete | observable | observed | complete | complete | deduplicated | 4610 | 0 | 0 |  |  |  |
 | 2018 | 2018 | 5446 | false | complete | observable | observed | partial_coverage | partial | deduplicated | 5433 | 13 | 0 |  | prelights:partial_coverage |  |
 | 2019 | 2019 | 5893 | false | complete | observable | observed | partial_coverage | partial | deduplicated | 5628 | 265 | 0 |  | prelights:partial_coverage; prereview:partial_coverage; qeios_hosted_works:partial_coverage |  |
-| 2020 | 2020 | 7296 | false | complete | observable | observed | partial_coverage | partial | deduplicated | 6789 | 502 | 5 |  | prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage; qeios_hosted_works:partial_coverage |  |
-| 2021 | 2021 | 8106 | false | complete | observable | observed | partial_coverage | partial | deduplicated | 6796 | 1249 | 61 |  | prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage; qeios_hosted_works:partial_coverage |  |
-| 2022 | 2022 | 8635 | false | complete | partial_known_scope | observed | partial_coverage | partial | deduplicated | 7349 | 1241 | 45 |  | copernicus_interactive_public_peer_review:partial_known_scope; prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage; qeios_hosted_works:partial_coverage | peerref:source_not_covering |
-| 2023 | 2023 | 11111 | false | complete | partial_known_scope | observed | partial_coverage | partial | deduplicated | 10482 | 599 | 30 |  | copernicus_interactive_public_peer_review:partial_known_scope; prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage; qeios_hosted_works:partial_coverage; the_unjournal:partial_coverage | peerref:source_not_covering |
-| 2024 | 2024 | 11697 | false | complete | partial_known_scope | observed | partial_coverage | partial | deduplicated | 10890 | 755 | 52 |  | copernicus_interactive_public_peer_review:partial_known_scope; prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage; qeios_hosted_works:partial_coverage; the_unjournal:partial_coverage | peerref:source_not_covering |
-| 2025 | 2025 | 11654 | false | complete | partial_known_scope | observed | partial_coverage | partial | deduplicated | 10601 | 975 | 78 |  | copernicus_interactive_public_peer_review:partial_known_scope; prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage; qeios_hosted_works:partial_coverage; the_unjournal:partial_coverage | peerref:source_not_covering |
-| 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 9736 | true | complete | partial_known_scope | observed | partial_coverage | partial | deduplicated | 8891 | 828 | 17 |  | copernicus_interactive_public_peer_review:partial_known_scope; prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage; qeios_hosted_works:partial_coverage; the_unjournal:partial_coverage | peerref:source_not_covering |
+| 2020 | 2020 | 7294 | false | complete | observable | observed | partial_coverage | partial | deduplicated | 6789 | 502 | 3 |  | prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage; qeios_hosted_works:partial_coverage |  |
+| 2021 | 2021 | 8106 | false | complete | observable | observed | partial_coverage | partial | deduplicated | 6809 | 1249 | 48 |  | prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage; qeios_hosted_works:partial_coverage |  |
+| 2022 | 2022 | 8609 | false | complete | partial_known_scope | observed | partial_coverage | partial | deduplicated | 7329 | 1241 | 39 |  | copernicus_interactive_public_peer_review:partial_known_scope; prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage; qeios_hosted_works:partial_coverage | peerref:source_not_covering |
+| 2023 | 2023 | 11007 | false | complete | partial_known_scope | observed | partial_coverage | partial | deduplicated | 10379 | 599 | 29 |  | copernicus_interactive_public_peer_review:partial_known_scope; prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage; qeios_hosted_works:partial_coverage; the_unjournal:partial_coverage | peerref:source_not_covering |
+| 2024 | 2024 | 11521 | false | complete | partial_known_scope | observed | partial_coverage | partial | deduplicated | 10715 | 755 | 51 |  | copernicus_interactive_public_peer_review:partial_known_scope; prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage; qeios_hosted_works:partial_coverage; the_unjournal:partial_coverage | peerref:source_not_covering |
+| 2025 | 2025 | 11196 | false | complete | partial_known_scope | observed | partial_coverage | partial | deduplicated | 10156 | 975 | 65 |  | copernicus_interactive_public_peer_review:partial_known_scope; prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage; qeios_hosted_works:partial_coverage; the_unjournal:partial_coverage | peerref:source_not_covering |
+| 2026 | 2026 (year_to_date, cutoff 2026-09-30) | 7368 | true | complete | partial_known_scope | observed | partial_coverage | partial | deduplicated | 6523 | 828 | 17 |  | copernicus_interactive_public_peer_review:partial_known_scope; prelights:partial_coverage; prereview:partial_coverage; qeios_external_works:partial_coverage; qeios_hosted_works:partial_coverage; the_unjournal:partial_coverage | peerref:source_not_covering |
 
 Blank group cells (D-038): the member row and status that block the sum.
 None in this table.

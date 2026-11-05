@@ -56,11 +56,11 @@
   }
  },
  "openalex_diagnostics": {
-  "recorded_at": "2026-11-02T17:18:07Z",
+  "recorded_at": "2026-11-05T11:51:30Z",
   "request_cap": 4000,
-  "requests_used": 0,
+  "requests_used": 1,
   "role": "diagnostic",
-  "rows_written": 32,
+  "rows_written": 33,
   "scopes": {
    "works_by_doi__access_microbiology": {
     "pages": 9,
@@ -1030,6 +1030,16 @@
     "state": "reused",
     "walk_id": "w02"
    },
+   "works_by_doi__jmirx_bio": {
+    "pages": 1,
+    "reason": "",
+    "requests": 1,
+    "sha256": [
+     "d99041450f8f6d822183a97a3dbeb062bddb5597102dffc4dbf1b4f5255e1030"
+    ],
+    "state": "complete",
+    "walk_id": "w02"
+   },
    "works_by_doi__jmirx_med": {
     "pages": 3,
     "reason": "complete walk with latest ended_at_utc 2026-11-02T15:31:04Z",
@@ -1429,7 +1439,7 @@
   },
   "stage": "openalex_diagnostics"
  },
- "retrieval_finished_at": "2026-11-02T17:18:09Z",
+ "retrieval_finished_at": "2026-11-05T11:51:33Z",
  "retrieval_started_at": "2026-11-02T08:38:40Z",
  "run_id": "run_20261102_01",
  "sciety_index_snapshot": {
@@ -1552,14 +1562,14 @@
    "extraction_status": "complete",
    "items": 71776,
    "pages": 73,
-   "recorded_at": "2026-11-02T08:38:41Z",
+   "recorded_at": "2026-11-05T10:41:57Z",
    "scope": "works__10.1099__journal-article",
    "selected_walk_id": "w01",
    "selection_reason": "complete walk with latest ended_at_utc 2026-11-02T08:38:40Z",
    "software": {
     "executable": "C:\\Projects\\prc-platform-dataset\\.venv\\Scripts\\python.exe",
-    "git_commit": "5df973374b2f0f9920a263d212066a1d24527415",
-    "git_worktree": "clean",
+    "git_commit": "386ef1349acb2c9d6298f06d1268f9772959720e",
+    "git_worktree": "dirty",
     "implementation": "CPython",
     "platform": "Windows-11-10.0.26300-SP0",
     "python": "3.14.3"
@@ -1668,14 +1678,14 @@
    "extraction_status": "complete",
    "items": 1800,
    "pages": 3,
-   "recorded_at": "2026-11-02T08:38:53Z",
+   "recorded_at": "2026-11-05T10:41:58Z",
    "scope": "works__10.1099__posted-content",
    "selected_walk_id": "w01",
    "selection_reason": "complete walk with latest ended_at_utc 2026-11-02T08:38:53Z",
    "software": {
     "executable": "C:\\Projects\\prc-platform-dataset\\.venv\\Scripts\\python.exe",
-    "git_commit": "5df973374b2f0f9920a263d212066a1d24527415",
-    "git_worktree": "clean",
+    "git_commit": "386ef1349acb2c9d6298f06d1268f9772959720e",
+    "git_worktree": "dirty",
     "implementation": "CPython",
     "platform": "Windows-11-10.0.26300-SP0",
     "python": "3.14.3"
@@ -1784,14 +1794,14 @@
    "extraction_status": "complete",
    "items": 30281,
    "pages": 32,
-   "recorded_at": "2026-11-02T08:41:56Z",
+   "recorded_at": "2026-11-05T10:41:58Z",
    "scope": "works__10.12688__journal-article",
    "selected_walk_id": "w01",
    "selection_reason": "complete walk with latest ended_at_utc 2026-11-02T08:41:56Z",
    "software": {
     "executable": "C:\\Projects\\prc-platform-dataset\\.venv\\Scripts\\python.exe",
-    "git_commit": "5df973374b2f0f9920a263d212066a1d24527415",
-    "git_worktree": "clean",
+    "git_commit": "386ef1349acb2c9d6298f06d1268f9772959720e",
+    "git_worktree": "dirty",
     "implementation": "CPython",
     "platform": "Windows-11-10.0.26300-SP0",
     "python": "3.14.3"
@@ -1889,14 +1899,14 @@
    "extraction_status": "complete",
    "items": 929,
    "pages": 2,
-   "recorded_at": "2026-11-02T08:42:05Z",
+   "recorded_at": "2026-11-05T10:41:59Z",
    "scope": "works__10.12688__posted-content",
    "selected_walk_id": "w01",
    "selection_reason": "complete walk with latest ended_at_utc 2026-11-02T08:42:05Z",
    "software": {
     "executable": "C:\\Projects\\prc-platform-dataset\\.venv\\Scripts\\python.exe",
-    "git_commit": "5df973374b2f0f9920a263d212066a1d24527415",
-    "git_worktree": "clean",
+    "git_commit": "386ef1349acb2c9d6298f06d1268f9772959720e",
+    "git_worktree": "dirty",
     "implementation": "CPython",
     "platform": "Windows-11-10.0.26300-SP0",
     "python": "3.14.3"
@@ -2063,14 +2073,14 @@
    "extraction_status": "complete",
    "items": 4173,
    "pages": 6,
-   "recorded_at": "2026-11-02T08:42:32Z",
+   "recorded_at": "2026-11-05T10:41:59Z",
    "scope": "works__10.21468__journal-article",
    "selected_walk_id": "w01",
    "selection_reason": "complete walk with latest ended_at_utc 2026-11-02T08:42:32Z",
    "software": {
     "executable": "C:\\Projects\\prc-platform-dataset\\.venv\\Scripts\\python.exe",
-    "git_commit": "5df973374b2f0f9920a263d212066a1d24527415",
-    "git_worktree": "clean",
+    "git_commit": "386ef1349acb2c9d6298f06d1268f9772959720e",
+    "git_worktree": "dirty",
     "implementation": "CPython",
     "platform": "Windows-11-10.0.26300-SP0",
     "python": "3.14.3"
@@ -2181,14 +2191,14 @@
    "extraction_status": "complete",
    "items": 43422,
    "pages": 45,
-   "recorded_at": "2026-11-02T08:47:43Z",
+   "recorded_at": "2026-11-05T10:41:59Z",
    "scope": "works__10.2196__journal-article",
    "selected_walk_id": "w01",
    "selection_reason": "complete walk with latest ended_at_utc 2026-11-02T08:47:43Z",
    "software": {
     "executable": "C:\\Projects\\prc-platform-dataset\\.venv\\Scripts\\python.exe",
-    "git_commit": "5df973374b2f0f9920a263d212066a1d24527415",
-    "git_worktree": "clean",
+    "git_commit": "386ef1349acb2c9d6298f06d1268f9772959720e",
+    "git_worktree": "dirty",
     "implementation": "CPython",
     "platform": "Windows-11-10.0.26300-SP0",
     "python": "3.14.3"
@@ -2239,14 +2249,14 @@
    "extraction_status": "complete",
    "items": 4390,
    "pages": 6,
-   "recorded_at": "2026-11-02T11:51:59Z",
+   "recorded_at": "2026-11-05T10:42:00Z",
    "scope": "works__10.24072__journal-article",
    "selected_walk_id": "w01",
    "selection_reason": "complete walk with latest ended_at_utc 2026-11-02T08:49:21Z",
    "software": {
     "executable": "C:\\Projects\\prc-platform-dataset\\.venv\\Scripts\\python.exe",
-    "git_commit": "69160399db0c08dde728a3ffa0129f0574499bc5",
-    "git_worktree": "clean",
+    "git_commit": "386ef1349acb2c9d6298f06d1268f9772959720e",
+    "git_worktree": "dirty",
     "implementation": "CPython",
     "platform": "Windows-11-10.0.26300-SP0",
     "python": "3.14.3"
@@ -2297,14 +2307,14 @@
    "extraction_status": "complete",
    "items": 2005,
    "pages": 4,
-   "recorded_at": "2026-11-02T08:49:36Z",
+   "recorded_at": "2026-11-05T10:42:00Z",
    "scope": "works__10.32388__journal-article",
    "selected_walk_id": "w01",
    "selection_reason": "complete walk with latest ended_at_utc 2026-11-02T08:49:36Z",
    "software": {
     "executable": "C:\\Projects\\prc-platform-dataset\\.venv\\Scripts\\python.exe",
-    "git_commit": "5df973374b2f0f9920a263d212066a1d24527415",
-    "git_worktree": "clean",
+    "git_commit": "386ef1349acb2c9d6298f06d1268f9772959720e",
+    "git_worktree": "dirty",
     "implementation": "CPython",
     "platform": "Windows-11-10.0.26300-SP0",
     "python": "3.14.3"
@@ -2413,14 +2423,14 @@
    "extraction_status": "complete",
    "items": 6226,
    "pages": 8,
-   "recorded_at": "2026-11-02T08:50:14Z",
+   "recorded_at": "2026-11-05T10:42:00Z",
    "scope": "works__10.32388__posted-content",
    "selected_walk_id": "w01",
    "selection_reason": "complete walk with latest ended_at_utc 2026-11-02T08:50:14Z",
    "software": {
     "executable": "C:\\Projects\\prc-platform-dataset\\.venv\\Scripts\\python.exe",
-    "git_commit": "5df973374b2f0f9920a263d212066a1d24527415",
-    "git_worktree": "clean",
+    "git_commit": "386ef1349acb2c9d6298f06d1268f9772959720e",
+    "git_worktree": "dirty",
     "implementation": "CPython",
     "platform": "Windows-11-10.0.26300-SP0",
     "python": "3.14.3"
@@ -2471,14 +2481,14 @@
    "extraction_status": "complete",
    "items": 3520,
    "pages": 5,
-   "recorded_at": "2026-11-02T08:50:38Z",
+   "recorded_at": "2026-11-05T10:42:00Z",
    "scope": "works__10.3310__journal-article",
    "selected_walk_id": "w01",
    "selection_reason": "complete walk with latest ended_at_utc 2026-11-02T08:50:38Z",
    "software": {
     "executable": "C:\\Projects\\prc-platform-dataset\\.venv\\Scripts\\python.exe",
-    "git_commit": "5df973374b2f0f9920a263d212066a1d24527415",
-    "git_worktree": "clean",
+    "git_commit": "386ef1349acb2c9d6298f06d1268f9772959720e",
+    "git_worktree": "dirty",
     "implementation": "CPython",
     "platform": "Windows-11-10.0.26300-SP0",
     "python": "3.14.3"
@@ -2587,14 +2597,14 @@
    "extraction_status": "complete",
    "items": 105740,
    "pages": 107,
-   "recorded_at": "2026-11-02T09:00:54Z",
+   "recorded_at": "2026-11-05T10:42:00Z",
    "scope": "works__10.5194__journal-article",
    "selected_walk_id": "w01",
    "selection_reason": "complete walk with latest ended_at_utc 2026-11-02T09:00:54Z",
    "software": {
     "executable": "C:\\Projects\\prc-platform-dataset\\.venv\\Scripts\\python.exe",
-    "git_commit": "5df973374b2f0f9920a263d212066a1d24527415",
-    "git_worktree": "clean",
+    "git_commit": "386ef1349acb2c9d6298f06d1268f9772959720e",
+    "git_worktree": "dirty",
     "implementation": "CPython",
     "platform": "Windows-11-10.0.26300-SP0",
     "python": "3.14.3"
@@ -13844,14 +13854,14 @@
    "extraction_status": "complete",
    "items": 238529,
    "pages": 240,
-   "recorded_at": "2026-11-02T09:22:34Z",
+   "recorded_at": "2026-11-05T10:42:02Z",
    "scope": "works__10.5194__posted-content",
    "selected_walk_id": "w01",
    "selection_reason": "complete walk with latest ended_at_utc 2026-11-02T09:22:34Z",
    "software": {
     "executable": "C:\\Projects\\prc-platform-dataset\\.venv\\Scripts\\python.exe",
-    "git_commit": "5df973374b2f0f9920a263d212066a1d24527415",
-    "git_worktree": "clean",
+    "git_commit": "386ef1349acb2c9d6298f06d1268f9772959720e",
+    "git_worktree": "dirty",
     "implementation": "CPython",
     "platform": "Windows-11-10.0.26300-SP0",
     "python": "3.14.3"
@@ -18979,14 +18989,14 @@
    "extraction_status": "complete",
    "items": 2602,
    "pages": 4,
-   "recorded_at": "2026-11-02T09:22:56Z",
+   "recorded_at": "2026-11-05T10:42:09Z",
    "scope": "works__10.68336__journal-article",
    "selected_walk_id": "w01",
    "selection_reason": "complete walk with latest ended_at_utc 2026-11-02T09:22:56Z",
    "software": {
     "executable": "C:\\Projects\\prc-platform-dataset\\.venv\\Scripts\\python.exe",
-    "git_commit": "5df973374b2f0f9920a263d212066a1d24527415",
-    "git_worktree": "clean",
+    "git_commit": "386ef1349acb2c9d6298f06d1268f9772959720e",
+    "git_worktree": "dirty",
     "implementation": "CPython",
     "platform": "Windows-11-10.0.26300-SP0",
     "python": "3.14.3"
@@ -19153,14 +19163,14 @@
    "extraction_status": "complete",
    "items": 23242,
    "pages": 25,
-   "recorded_at": "2026-11-02T09:25:16Z",
+   "recorded_at": "2026-11-05T10:42:09Z",
    "scope": "works__10.7554__journal-article",
    "selected_walk_id": "w01",
    "selection_reason": "complete walk with latest ended_at_utc 2026-11-02T09:25:16Z",
    "software": {
     "executable": "C:\\Projects\\prc-platform-dataset\\.venv\\Scripts\\python.exe",
-    "git_commit": "5df973374b2f0f9920a263d212066a1d24527415",
-    "git_worktree": "clean",
+    "git_commit": "386ef1349acb2c9d6298f06d1268f9772959720e",
+    "git_worktree": "dirty",
     "implementation": "CPython",
     "platform": "Windows-11-10.0.26300-SP0",
     "python": "3.14.3"
@@ -34435,14 +34445,14 @@
    "extraction_status": "complete",
    "items": 10709,
    "pages": 12,
-   "recorded_at": "2026-11-02T09:26:33Z",
+   "recorded_at": "2026-11-05T10:42:09Z",
    "scope": "works__10.7554__posted-content",
    "selected_walk_id": "w01",
    "selection_reason": "complete walk with latest ended_at_utc 2026-11-02T09:26:33Z",
    "software": {
     "executable": "C:\\Projects\\prc-platform-dataset\\.venv\\Scripts\\python.exe",
-    "git_commit": "5df973374b2f0f9920a263d212066a1d24527415",
-    "git_worktree": "clean",
+    "git_commit": "386ef1349acb2c9d6298f06d1268f9772959720e",
+    "git_worktree": "dirty",
     "implementation": "CPython",
     "platform": "Windows-11-10.0.26300-SP0",
     "python": "3.14.3"
@@ -34493,14 +34503,14 @@
    "extraction_status": "complete",
    "items": 151,
    "pages": 2,
-   "recorded_at": "2026-11-02T09:26:40Z",
+   "recorded_at": "2026-11-05T10:42:10Z",
    "scope": "works__issn_2631-3952__journal-article",
    "selected_walk_id": "w01",
    "selection_reason": "complete walk with latest ended_at_utc 2026-11-02T09:26:40Z",
    "software": {
     "executable": "C:\\Projects\\prc-platform-dataset\\.venv\\Scripts\\python.exe",
-    "git_commit": "5df973374b2f0f9920a263d212066a1d24527415",
-    "git_worktree": "clean",
+    "git_commit": "386ef1349acb2c9d6298f06d1268f9772959720e",
+    "git_worktree": "dirty",
     "implementation": "CPython",
     "platform": "Windows-11-10.0.26300-SP0",
     "python": "3.14.3"
@@ -34551,14 +34561,72 @@
    "extraction_status": "complete",
    "items": 196,
    "pages": 2,
-   "recorded_at": "2026-11-02T09:26:46Z",
+   "recorded_at": "2026-11-05T10:42:10Z",
    "scope": "works__issn_2752-5783__journal-article",
    "selected_walk_id": "w01",
    "selection_reason": "complete walk with latest ended_at_utc 2026-11-02T09:26:46Z",
    "software": {
     "executable": "C:\\Projects\\prc-platform-dataset\\.venv\\Scripts\\python.exe",
-    "git_commit": "5df973374b2f0f9920a263d212066a1d24527415",
-    "git_worktree": "clean",
+    "git_commit": "386ef1349acb2c9d6298f06d1268f9772959720e",
+    "git_worktree": "dirty",
+    "implementation": "CPython",
+    "platform": "Windows-11-10.0.26300-SP0",
+    "python": "3.14.3"
+   },
+   "source": "crossref",
+   "walk_ids": [
+    "w01"
+   ],
+   "walk_states": {
+    "w01": "complete"
+   }
+  },
+  "crossref/works__issn_2819-2044__journal-article": {
+   "anomalies": [
+    {
+     "code": "short_page",
+     "items_in_page": 52,
+     "page": 1,
+     "record": "anomaly",
+     "rows": 1000,
+     "run_id": "run_20261102_01",
+     "scope": "works__issn_2819-2044__journal-article",
+     "source": "crossref",
+     "walk_id": "w01"
+    },
+    {
+     "code": "missing_next_cursor",
+     "page": 2,
+     "record": "anomaly",
+     "run_id": "run_20261102_01",
+     "scope": "works__issn_2819-2044__journal-article",
+     "source": "crossref",
+     "walk_id": "w01"
+    }
+   ],
+   "completed_at": "2026-11-05T09:55:03Z",
+   "completion": {
+    "accepted_items_total": 52,
+    "first_page_total_results": 52,
+    "last_page_total_results": 52,
+    "rule": "crossref_total_checked",
+    "terminal_evidence": "empty_page",
+    "tolerance_reason": "",
+    "total_delta": 0,
+    "total_results_moved_during_walk": false,
+    "total_tolerance": 0
+   },
+   "extraction_status": "complete",
+   "items": 52,
+   "pages": 2,
+   "recorded_at": "2026-11-05T10:42:10Z",
+   "scope": "works__issn_2819-2044__journal-article",
+   "selected_walk_id": "w01",
+   "selection_reason": "complete walk with latest ended_at_utc 2026-11-05T09:55:03Z",
+   "software": {
+    "executable": "C:\\Projects\\prc-platform-dataset\\.venv\\Scripts\\python.exe",
+    "git_commit": "386ef1349acb2c9d6298f06d1268f9772959720e",
+    "git_worktree": "dirty",
     "implementation": "CPython",
     "platform": "Windows-11-10.0.26300-SP0",
     "python": "3.14.3"

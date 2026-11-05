@@ -2,37 +2,38 @@
 
 Analysis cutoff: 2026-09-30; year 2026 is year_to_date (not annualised).
 Additivity: `row_series`. No all-row total is published in this table.
-Snapshot: Crossref/Sciety retrieval finished 2026-11-02T12:08:34Z.
+Snapshot: Crossref/Sciety retrieval finished 2026-11-05T10:42:10Z.
 Empty cells are not zeros: see `observation_status` and `extraction_status` in the CSV.
 `unique_works_to_cutoff` is blank for register-only rows, blocked extraction, an unresolved coverage start, a selector that matched no record (selector_no_match) or a source that does not cover the group (source_not_covering). `unique_works_to_cutoff`, `first_year_with_data` and `last_year_with_data` cover the eligible range only; included works counted outside it are reported in `n_works_outside_eligible_range` (D-060).
 
 | row_id | organisation_id | initiation_class | classification_confidence | prc_configuration | configuration_confidence | register_status | effective_register_status | data_status | data_source | provisional | extraction_status | eligible_start_year | eligible_end_year | first_year_with_data | last_year_with_data | unique_works_to_cutoff | n_works_excluded | n_works_outside_eligible_range |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | elife_reviewed_preprints | elife | author_initiated | high | core_publish_first | high | quantified | quantified | machine_readable | both | false | complete | 2022 | 2026 | 2022 | 2026 | 4815 | 16126 | 0 |
-| f1000research | f1000 | author_initiated | high | approval_threshold | high | quantified | quantified | machine_readable | crossref | false | complete | 2013 | 2026 | 2014 | 2026 | 11964 | 163 | 0 |
+| f1000research | f1000 | author_initiated | high | approval_threshold | high | quantified | quantified | machine_readable | crossref | false | complete | 2013 | 2026 | 2013 | 2026 | 12315 | 163 | 71 |
 | wellcome_open_research | f1000 | author_initiated | high | approval_threshold | high | quantified | quantified | machine_readable | crossref | false | complete | 2016 | 2026 | 2016 | 2026 | 4067 | 77 | 0 |
 | gates_open_research | gates_f1000 | author_initiated | high | approval_threshold | medium | quantified | quantified | machine_readable | crossref | false | complete | 2017 | 2024 | 2017 | 2024 | 508 | 3 | 53 |
-| verixiv | gates_f1000 | author_initiated | high | approval_threshold | medium | quantified | quantified | machine_readable | crossref | true | complete | 2024 | 2026 | 2024 | 2026 | 135 | 639 | 0 |
+| verixiv | gates_f1000 | author_initiated | high | approval_threshold | medium | quantified | quantified | machine_readable | crossref | false | complete | 2024 | 2026 | 2024 | 2026 | 135 | 639 | 0 |
 | open_research_europe | f1000 | author_initiated | high | approval_threshold | high | quantified | quantified | machine_readable | crossref | false | complete | 2021 | 2026 | 2021 | 2026 | 1577 | 59 | 0 |
 | hrb_open_research | f1000 | author_initiated | high | approval_threshold | high | quantified | quantified | machine_readable | crossref | false | complete | 2018 | 2026 | 2018 | 2026 | 758 | 6 | 0 |
-| stosunki_miedzynarodowe | f1000 | author_initiated | high | approval_threshold | high | quantified | quantified | machine_readable | crossref | true | complete | 2021 | 2026 | 2021 | 2026 | 99 | 2 | 0 |
-| nuclear_science_technology_open_research | f1000 | author_initiated | high | approval_threshold | high | quantified | quantified | machine_readable | crossref | true | complete | 2023 | 2026 | 2023 | 2026 | 70 | 1 | 0 |
-| digital_twin | f1000 | author_initiated | high | approval_threshold | high | quantified | quantified | machine_readable | crossref | true | complete | 2021 | 2025 | 2021 | 2025 | 51 | 0 | 0 |
-| molecular_psychology | f1000 | author_initiated | high | approval_threshold | high | quantified | quantified | machine_readable | crossref | true | complete | 2022 | 2026 | 2022 | 2025 | 28 | 0 | 0 |
-| materials_open_research | f1000 | author_initiated | high | approval_threshold | high | quantified | quantified | machine_readable | crossref | true | complete | 2021 | 2026 | 2022 | 2024 | 22 | 0 | 0 |
-| cobot | f1000 | author_initiated | high | approval_threshold | high | quantified | quantified | machine_readable | crossref | true | complete | 2022 | 2026 | 2022 | 2024 | 35 | 0 | 0 |
-| bioethics_open_research | f1000 | author_initiated | high | approval_threshold | high | quantified | quantified | machine_readable | crossref | true | complete | 2023 | 2026 | 2023 | 2025 | 10 | 0 | 0 |
+| stosunki_miedzynarodowe | f1000 | author_initiated | high | approval_threshold | high | quantified | quantified | machine_readable | crossref | false | complete | 2021 | 2026 | 2021 | 2026 | 99 | 2 | 0 |
+| nuclear_science_technology_open_research | f1000 | author_initiated | high | approval_threshold | high | quantified | quantified | machine_readable | crossref | false | complete | 2023 | 2026 | 2023 | 2026 | 70 | 1 | 0 |
+| digital_twin | f1000 | author_initiated | high | approval_threshold | high | quantified | quantified | machine_readable | crossref | false | complete | 2021 | 2025 | 2021 | 2025 | 51 | 0 | 0 |
+| molecular_psychology | f1000 | author_initiated | high | approval_threshold | high | quantified | quantified | machine_readable | crossref | false | complete | 2022 | 2026 | 2022 | 2025 | 28 | 0 | 0 |
+| materials_open_research | f1000 | author_initiated | high | approval_threshold | high | quantified | quantified | machine_readable | crossref | false | complete | 2021 | 2026 | 2022 | 2024 | 22 | 0 | 0 |
+| cobot | f1000 | author_initiated | high | approval_threshold | high | quantified | quantified | machine_readable | crossref | false | complete | 2022 | 2026 | 2022 | 2024 | 35 | 0 | 0 |
+| bioethics_open_research | f1000 | author_initiated | high | approval_threshold | high | quantified | quantified | machine_readable | crossref | false | complete | 2023 | 2026 | 2023 | 2025 | 10 | 0 | 0 |
 | nihr_open_research | f1000 | author_initiated | high | approval_threshold | high | quantified | quantified | machine_readable | crossref | false | complete | 2021 | 2026 | 2021 | 2026 | 337 | 16 | 0 |
 | health_open_research | f1000 | author_initiated | high | approval_threshold | high | quantified | quantified | machine_readable | crossref | false | complete | 2019 | 2026 | 2019 | 2026 | 73 | 1 | 0 |
 | open_research_africa | f1000 | author_initiated | high | approval_threshold | high | quantified | quantified | machine_readable | crossref | false | complete | 2018 | 2026 | 2018 | 2026 | 263 | 2 | 0 |
 | routledge_open_research | f1000 | author_initiated | medium | approval_threshold | medium | quantified | quantified | machine_readable | crossref | false | complete | 2021 | 2026 | 2022 | 2026 | 111 | 0 | 0 |
 | meded_publish | amee | author_initiated | high | approval_threshold | high | quantified | quantified | machine_readable | crossref | false | complete | 2016 | 2026 | 2016 | 2026 | 1365 | 14 | 5 |
 | emerald_open_research | emerald | author_initiated | high | approval_threshold | medium | quantified | quantified | machine_readable | crossref | false | complete | 2019 | 2023 | 2019 | 2023 | 150 | 0 | 0 |
-| metaror | metaror | author_initiated | high | core_publish_first | high | quantified | quantified | machine_readable | both | false | complete | 2024 | 2026 | 2024 | 2026 | 41 | 0 | 0 |
+| metaror | metaror | author_initiated | high | review_or_curation_service | high | quantified | quantified | machine_readable | both | false | complete | 2024 | 2026 | 2024 | 2026 | 41 | 0 | 0 |
 | pci_recommendations | pci | author_initiated | high | review_or_curation_service | high | quantified | quantified | machine_readable | both | false | complete | 2017 | 2026 | 2017 | 2026 | 781 | 23 | 14 |
 | scipost | scipost | author_initiated | high | hybrid_public_discussion | high | quantified | quantified | machine_readable | crossref | false | complete | 2016 | 2026 | 2016 | 2026 | 4096 | 42 | 0 |
-| copernicus_interactive_public_peer_review | copernicus | author_initiated | high | hybrid_public_discussion | high | quantified | quantified | machine_readable | crossref | false | complete | 2001 | 2026 | 2001 | 2026 | 67054 | 783 | 0 |
-| jmirx_med | jmir | mixed | medium | core_publish_first | medium | quantified | quantified | machine_readable | crossref | false | complete | 2020 | 2026 | 2020 | 2026 | 201 | 421 | 0 |
+| copernicus_interactive_public_peer_review | copernicus | author_initiated | high | hybrid_public_discussion | high | quantified | quantified | machine_readable | crossref | false | complete | 2001 | 2026 | 2001 | 2026 | 63507 | 4330 | 0 |
+| jmirx_med | jmir | mixed | medium | core_publish_first | medium | quantified | quantified | machine_readable | crossref | false | complete | 2020 | 2026 | 2020 | 2026 | 151 | 471 | 0 |
+| jmirx_bio | jmir | mixed | medium | core_publish_first | medium | quantified | quantified | machine_readable | crossref | false | complete | 2023 | 2026 | 2023 | 2026 | 14 | 38 | 0 |
 | access_microbiology | microbiology_society | author_initiated | high | hybrid_public_discussion | medium | quantified | quantified | machine_readable | both | false | complete | 2022 | 2026 | 2022 | 2026 | 850 | 428 | 0 |
 | review_commons | review_commons | author_initiated | high | review_or_curation_service | high | quantified | quantified | machine_readable | both | false | complete | 2020 | 2026 | 2020 | 2026 | 1446 | 16 | 0 |
 | peerref | peerref | author_initiated | high | review_or_curation_service | high | quantified | quantified | partial_coverage | sciety | false | complete | 2022 | 2026 |  |  |  |  |  |
