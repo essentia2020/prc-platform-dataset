@@ -183,8 +183,9 @@ python -m src.common.register --export       # regenerate both CSV registers
 python -m src.run_pipeline --list            # show the stage order
 python -m src.run_pipeline --stages all      # run every stage
 python -m src.run_pipeline --stages extract_crossref_works --force-new-walk   # new walk despite a complete one
-python -m src.run_pipeline --stages normalise,analyse,report                 # offline stages only, from existing interim files
+python -m src.run_pipeline --stages normalise,analyse                        # offline stages, from existing interim files
 PRC_OPENALEX_API_KEY=<key> python -m src.run_pipeline --stages openalex_diagnostics   # D-066 diagnostics after analyse (contacts the OpenAlex API; rows in data_quality_log.csv only)
+python -m src.run_pipeline --stages report                                  # figures and checksums after diagnostics
 python -m pytest                             # test suite (offline; no API is contacted)
 python tools/check_register_prefixes.py      # one-off register check: resolves one known work and one known review DOI per quantified Crossref row and compares owner prefix and member with the declared scopes (contacts the Crossref API; run by the maintainer before an extraction)
 PRC_RAW_STORE=<raw store root> python -m pytest tests/test_manifest_checksums_match.py
@@ -192,6 +193,9 @@ python tools/check_walk_shape.py --run <run_id> --raw-root <raw store root>   # 
 python tools/audit_text.py --tokens <path outside the repository> --history
 python tools/append_dq_rows.py <rows.csv> [--dry-run]   # insert preset rows into data/processed/data_quality_log.csv after the last preset row, written by the same CSV writer as the analysis stage (minimal quoting, LF); rows arrive as a CSV with the log's header or as the + lines of a unified diff
 ```
+
+Run `report` last because it writes `reports/CHECKSUMS.txt`, including the
+checksum of `data_quality_log.csv`, which diagnostics may update.
 
 Stage order, fixed in `src/run_pipeline.py`:
 

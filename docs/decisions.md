@@ -1607,6 +1607,12 @@ The descriptive `doi_pattern` of `access_microbiology` was tightened to `^10\.10
   https://help.openalex.org/access/pricing/ ;
   https://help.openalex.org/api/deprecations/ (read 2026-11-02).
 
+- Note 2026-11-05 (follow-up R5): the README's individual-stage example now
+  runs `normalise,analyse`, then `openalex_diagnostics`, then `report`.
+  The last stage writes `reports/CHECKSUMS.txt` after the diagnostics have
+  updated `data_quality_log.csv`. The pipeline's existing stage order and
+  the diagnostics implementation are unchanged.
+
 ## D-067: F1000Research: both DOI forms enter the row selector
 
 - **Date:** 2026-11-05
