@@ -833,9 +833,9 @@ completion of its evidence checks; outstanding checks are stated explicitly.
   test runs the peer-review stage, re-runs the works stage against the stored
   walks and asserts that the interim and the manifest entry are unchanged and
   that no request was made. The tables are regenerated locally by re-running
-  the peer-review stage against the complete walks of run_20261102_01 (zero
-  requests expected) followed by normalise, analyse, openalex_diagnostics
-  and report; the expected row value is 67,054, and any other value is
+  the peer-review stage against the complete walks of run_20261102_01 under
+  `PRC_MAX_REQUESTS=0` (every walk is reused; a first request would stop the
+  stage) followed by normalise, analyse, openalex_diagnostics and report; the expected row value is 67,054, and any other value is
   accounted for work by work before the release freeze.
 
 ## D-033: Candidate dispositions and ResearchHub reassessment

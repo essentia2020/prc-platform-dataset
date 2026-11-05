@@ -93,7 +93,11 @@ def main(argv: Sequence[str] | None = None) -> int:
     sources_config = load_sources_config()
     platforms = load_platforms()
     logger = JsonlLogger(run_config.run_id)
-    logger.event("pipeline_start", stages=[s[0] for s in select_stages(args.stages)])
+    from src.common.http import request_budget_from_env
+    budget = request_budget_from_env()  # PRC_MAX_REQUESTS; raises on a malformed value before any stage runs
+    logger.event("pipeline_start", stages=[s[0] for s in select_stages(args.stages)], max_requests=budget)
+    if budget is not None:
+        print(f"[info] request budget: {budget} (PRC_MAX_REQUESTS); the first request beyond it stops the stage")
 
     for name, module_path, optional in select_stages(args.stages):
         run = _resolve(module_path, optional)

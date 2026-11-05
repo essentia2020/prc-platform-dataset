@@ -7,7 +7,12 @@
 * retries HTTP 429, 5xx and transport errors with the configured backoff
   schedule, honouring ``Retry-After`` when present;
 * never retries 4xx other than 429 (those are reported as failed attempts);
-* returns *every* attempt so the caller can store rejected responses too.
+* returns *every* attempt so the caller can store rejected responses too;
+* counts its requests and, when a budget is set (``max_requests`` or the
+  environment variable ``PRC_MAX_REQUESTS``), refuses the first request
+  beyond it with ``RequestBudgetExhausted`` before any transport call.
+  ``PRC_MAX_REQUESTS=0`` makes a replay of stored walks provably offline:
+  a stage that needs even one request stops instead of contacting a source.
 
 The transport is injectable (``transport(url, headers, timeout) ->
 (status, headers, body)``) so tests run entirely offline.  The default
@@ -16,6 +21,7 @@ transport uses the standard library only.
 
 from __future__ import annotations
 
+import os
 import re
 import time
 import urllib.error
@@ -30,6 +36,23 @@ RETRYABLE_STATUSES = {429, 500, 502, 503, 504}
 
 class HttpError(RuntimeError):
     """Raised when a page cannot be retrieved within the attempt budget."""
+
+
+class RequestBudgetExhausted(HttpError):
+    """Raised before a request that would exceed the client's request budget."""
+
+
+REQUEST_BUDGET_ENV = "PRC_MAX_REQUESTS"
+
+
+def request_budget_from_env(environ=os.environ) -> int | None:
+    """``PRC_MAX_REQUESTS`` as a non-negative integer, or ``None`` when unset or empty."""
+    raw = (environ.get(REQUEST_BUDGET_ENV) or "").strip()
+    if not raw:
+        return None
+    if not raw.isdigit():
+        raise ValueError(f"{REQUEST_BUDGET_ENV} must be a non-negative integer, got {raw!r}")
+    return int(raw)
 
 
 @dataclass
@@ -111,8 +134,13 @@ class PoliteClient:
                  min_interval_seconds: float = 1.0, accept: str = "application/json",
                  transport: Transport = default_transport, sleeper: Callable[[float], None] = time.sleep,
                  clock: Callable[[], float] = time.monotonic, now_utc: Callable[[], str] | None = None,
-                 logger=None, secret_headers: dict[str, str] | None = None) -> None:
+                 logger=None, secret_headers: dict[str, str] | None = None,
+                 max_requests: int | None = None) -> None:
         self.user_agent = user_agent
+        # Request budget: every transport call (each attempt, whatever its
+        # outcome) counts one; ``None`` means unlimited.
+        self.max_requests = request_budget_from_env() if max_requests is None else int(max_requests)
+        self.requests_made = 0
         self.timeout = timeout_seconds
         self.max_attempts = max_attempts_per_page
         self.backoff = list(backoff_seconds or [2, 5, 15, 45, 120])
@@ -160,9 +188,17 @@ class PoliteClient:
         """
         result = PageResult(url=url)
         for number in range(1, self.max_attempts + 1):
+            if self.max_requests is not None and self.requests_made >= self.max_requests:
+                if self._logger is not None:
+                    self._logger.event("request_budget_exhausted", url=url, attempt=number,
+                                       requests_made=self.requests_made, max_requests=self.max_requests)
+                raise RequestBudgetExhausted(
+                    f"request budget of {self.max_requests} exhausted after {self.requests_made} request(s); "
+                    f"refusing {url}")
             self._throttle()
             sent_at = self._now_utc()
             self._last_request_at = self._clock()
+            self.requests_made += 1
             try:
                 status, headers, body = self._transport(url, {**self.headers, **self._secret_headers},
                                                         self.timeout)

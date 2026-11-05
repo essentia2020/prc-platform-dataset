@@ -184,6 +184,7 @@ python -m src.run_pipeline --list            # show the stage order
 python -m src.run_pipeline --stages all      # run every stage
 python -m src.run_pipeline --stages extract_crossref_works --force-new-walk   # new walk despite a complete one
 python -m src.run_pipeline --stages normalise,analyse                        # offline stages, from existing interim files
+PRC_MAX_REQUESTS=0 python -m src.run_pipeline --stages extract_crossref_peer_reviews   # replay from the stored walks of the run: complete walks are reused and the interim files rebuilt; the first request stops the stage (RequestBudgetExhausted, logged as request_budget_exhausted) and leaves a failed walk record for the scope it refused
 PRC_OPENALEX_API_KEY=<key> python -m src.run_pipeline --stages openalex_diagnostics   # D-066 diagnostics after analyse (contacts the OpenAlex API; rows in data_quality_log.csv only)
 python -m src.run_pipeline --stages report                                  # figures and checksums after diagnostics
 python -m pytest                             # test suite (offline; no API is contacted)
