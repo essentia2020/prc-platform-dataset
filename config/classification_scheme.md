@@ -23,11 +23,16 @@ A candidate enters the register only if it satisfies all three criteria.
 numbers.
 
 1. **Publish-first sequence.** The research work is publicly available
-   (posted or published) before, or independently of, the outcome of the
-   evaluation; the evaluation does not gate the work's first public
-   appearance. Conventional pre-publication peer review fails this criterion
-   and is recorded as a comparator (`comparator: true`), never as a register
-   row.
+   (posted or published) before the evaluation begins, independently of any
+   later publication decision; the evaluation does not gate the work's first
+   public appearance (D-075). The test is the public availability of the
+   work when reviewing starts, not the moment at which the review results
+   are disclosed: a service that reviews a public preprint and discloses the
+   reports only later (at transfer, at acceptance or never) satisfies the
+   criterion, while a service that reviews a confidential manuscript and
+   posts it only after a decision does not. Conventional pre-publication
+   peer review fails this criterion and is recorded as a comparator
+   (`comparator: true`), never as a register row.
 2. **Public evaluation or curation output.** The platform or service
    produces review reports, recommendations, assessments, approval statuses
    or curation statements that are publicly accessible and attributable to

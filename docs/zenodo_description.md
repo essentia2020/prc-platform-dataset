@@ -45,7 +45,7 @@ under the MIT License.
 Provenance. Analysis cutoff date, selected-walk policy and the `mailto`
 address are in `config/run.yaml` of the tagged commit; every data-affecting
 rule is a numbered decision in `docs/decisions.md`; known limits are in
-`docs/limitations.md` and `reports/tables/data_quality_log.csv`. The dataset
+`docs/limitations.md` and `data/processed/data_quality_log.csv`. The dataset
 is a supplement to the seminar presentation "Crossing the chasm: the
 Publish-Review-Curate model and the future of peer review" (Leiden
 University, 2026;

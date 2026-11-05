@@ -2415,6 +2415,28 @@ platforms:
       target and never add a work. The first record is issued in 2020, so
       the series starts with coverage_start_year 2020 although the service
       launched in December 2019.
+      Workflow changes since 2020, from the service's own pages (retrieved
+      2026-11-05): 2021-08-01, a preprint became mandatory before transfer
+      to an affiliate journal while public posting of the reports stayed
+      optional (https://www.reviewcommons.org/blog/new-policies-on-preprints-and-extended-scooping-protection/);
+      2022-06-01, reports and author response are posted by the service to
+      bioRxiv or medRxiv when the authors transfer to the first affiliate
+      journal (https://www.reviewcommons.org/blog/new-policy-review-commons-makes-preprint-peer-review-fully-transparent/);
+      2023-07-01, only manuscripts with a publicly available preprint are
+      reviewed (https://www.reviewcommons.org/authors/); 2024-04-08, a
+      six-month pilot in which Development and Journal of Cell Science
+      editors co-coordinate the review of initial submissions
+      (https://www.reviewcommons.org/blog/development-and-journal-of-cell-science-expand-collaboration-with-review-commons-a-new-trial-to-support-efficient-peer-review/);
+      affiliate journals 17 in 2021 and 28 on the About page
+      (https://www.reviewcommons.org/about/). Before 2023-07-01 a manuscript
+      could enter review before its preprint was posted (the 2021 policy
+      let authors post after reading the reports), so for the 2020-2023
+      part of the series the sequence of criterion 1 (D-075) holds per work
+      only where the preprint predates the review; the dataset does not
+      test this per work, and the series is kept whole with this note. The
+      counting event (the public report record) is unaffected. The external
+      review named no further change that is absent from the service's
+      pages.
     coverage_start_year: 2020
     coverage_end_year: null
     discipline_scope: life_sciences

@@ -126,7 +126,39 @@ coverage. No outcome is claimed for that request.
 Register coverage is systematic and includes verified services without
 machine-readable records; quantitative coverage is restricted to rows with
 reproducible selectors in Crossref or Sciety. Counts therefore describe the
-machine-readable part of the PRC landscape, not the whole of it.
+machine-readable part of the PRC landscape, not the whole of it. In numbers
+(register of this release and `register_summary.csv` of run_20261102_01):
+45 observation series of 27 organisations; 42 quantified and 3
+register-only series; 44 series in the published run, 41 quantified, 40
+with a value in `unique_works_to_cutoff`; `jmirx_bio` (D-072) joins the
+run after the local walk of its ISSN scope.
+
+- The series mix longstanding discussion journals (Copernicus since 2001,
+  F1000Research since 2013) with evaluation services launched after 2019.
+  Any statement about PRC adoption from these tables therefore depends on
+  the denominator chosen (all series, series active in a year, series of a
+  configuration, or works of a discipline), and the tables publish no
+  denominator: the group series are deduplicated counts of works within a
+  group, and the all-rows series is a deduplicated count across the whole
+  register. Choosing and justifying a denominator is left to the data
+  paper and is listed under Future work in the README.
+
+## Group tables sum series with different counting events
+
+`works_by_class_year`, `works_by_configuration_year` and their
+deduplicated counterparts sum observation series whose counting events
+differ: a posting event (first public posting), an evaluation event
+(earliest qualifying evaluation) or a final article. The sum runs along a
+classification axis, not along a process: a group cell is the number of
+unique works for which the series of that group recorded their respective
+counting event in that year. It must not be read as a stage of one
+publish–review–curate process, nor compared with another group's cell as if
+both measured the same event. This follows from the unit-of-analysis rule
+of `docs/analysis_plan.md` (the unique research work per register row per
+year of its earliest qualifying event; series are comparable over time
+within a row, never between rows). Separate families of indicators for
+public posting, public evaluation and curation outputs are listed under
+Future work in the README.
 
 ## Lower-bound group cells
 

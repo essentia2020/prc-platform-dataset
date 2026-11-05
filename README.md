@@ -31,7 +31,7 @@ platform exhibits. See `docs/analysis_plan.md`.
   `docs/data_dictionary.md` (§5.2 for `works_included.csv`, §6 for tables).
 - Which rules were decided and why, and what is known to be wrong or
   limited? `docs/decisions.md` (D-001 onwards), `docs/limitations.md` and
-  `reports/tables/data_quality_log.csv`.
+  `data/processed/data_quality_log.csv`.
 
 ## Definition
 
@@ -79,6 +79,17 @@ responses never increase counts. Gates Open Research and VeriXiv share
 `organisation_id = gates_f1000`; confirmed Version-of-Record/preprint overlap
 between them is reported, not an error. Only the two Qeios series are required
 to be disjoint.
+
+Counts of the register itself (from `config/platforms.yaml`): 45
+observation series of 27 organisations; 42 series have `register_status =
+quantified` and 3 are `register_only`. The published run
+`run_20261102_01` (`reports/tables/register_summary.csv`) covers 44 series,
+41 quantified, of which 40 carry a value in `unique_works_to_cutoff`
+(PeerRef is quantified but blank: its only source does not cover the row,
+`source_not_covering` in `data/processed/data_quality_log.csv`). The 45th series, `jmirx_bio` (D-072), has no run data until its
+ISSN scope is walked locally. "Platform" in this README means a service
+described by one or more rows, never a count; counts are stated per
+series, per organisation or per numeric series as above.
 
 ## Platform register
 
@@ -386,3 +397,14 @@ discussion for individually verified journals. Full statement:
    on eLife Reviewed Preprint records (and the matching `is-version-of`
    assertions) so that the 105 cross-row pairs of DQ-019 are counted once
    in the deduplicated tables (D-068).
+8. Three indicator families instead of one group sum: public posting,
+   public evaluation and curation outputs measured separately per series,
+   so that group comparisons no longer add posting, evaluation and
+   final-article events along a classification axis (external review
+   2026-11; see `docs/limitations.md`, "Group tables sum series with
+   different counting events").
+9. Denominators for adoption claims: a stated reference population (all
+   series, series active in a year, series of one configuration, or works
+   of a discipline) before any statement about PRC adoption, with a
+   sensitivity check separating longstanding discussion journals from
+   evaluation services launched after 2019 (external review 2026-11).

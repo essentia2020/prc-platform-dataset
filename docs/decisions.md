@@ -2014,6 +2014,56 @@ The descriptive `doi_pattern` of `access_microbiology` was tightened to `^10\.10
   rows; `n_evaluation_records`, the evaluation and work counts, every table
   and every figure are unchanged. Checksums of the record files change.
 
+## D-075: Criterion 1 names the start of the evaluation; Review Commons workflow history
+
+- **Date:** 2026-11-05
+- **Status:** applied
+- decided_by: researcher
+- **Trigger:** external review 2026-11, comment K7 (criterion 1 did not
+  state whether publish-first requires public availability before reviewing
+  begins or only before the review results are disclosed; a single
+  `model_since` with notes may not represent workflow changes, particularly
+  for Review Commons).
+- **Question:** What exactly does criterion 1 test, and how are dated
+  workflow changes of a service recorded?
+- **Options considered:** (a) criterion 1 tests public availability of the
+  work before the evaluation begins, independently of any later publication
+  decision; (b) criterion 1 tests public availability before the review
+  results are disclosed; (c) leave the wording as it was ("before, or
+  independently of, the outcome of the evaluation"). For the history: (i)
+  dated changes with URLs and retrieval date in `model_note`; (ii) a new
+  structured field; (iii) nothing.
+- **Decision:** (a) and (i). Criterion 1 in `config/classification_scheme.md`
+  now reads: the work is publicly available before the evaluation begins,
+  independently of any later publication decision; the disclosure moment of
+  the reports is a separate observable (`review_disclosure_timing`, D-069).
+  Review Commons' `model_note` records the dated changes found on the
+  service's own pages: 2021-08-01 preprint mandatory before transfer
+  (reports' public posting optional), 2022-06-01 reports and author
+  response posted by the service at transfer to the first affiliate
+  journal, 2023-07-01 only manuscripts with a public preprint reviewed,
+  2024-04-08 Development / Journal of Cell Science pilot, affiliate
+  journals 17 (2021) to 28 (About page); all retrieved 2026-11-05. Before
+  2023-07-01 a manuscript could enter review before its preprint was
+  posted, so for 2020–2023 criterion 1 holds per work only where the
+  preprint predates the review; the dataset does not test this per work and
+  the series is kept whole with the note. The external review named no
+  further change that is absent from the service's pages, so no entry is
+  marked "reported by external review, not verified on the service's
+  pages". A structured history field (ii) is deferred: one service needs
+  it so far.
+- **Evidence:**
+  https://www.reviewcommons.org/blog/new-policies-on-preprints-and-extended-scooping-protection/,
+  https://www.reviewcommons.org/blog/new-policy-review-commons-makes-preprint-peer-review-fully-transparent/,
+  https://www.reviewcommons.org/authors/,
+  https://www.reviewcommons.org/blog/development-and-journal-of-cell-science-expand-collaboration-with-review-commons-a-new-trial-to-support-efficient-peer-review/,
+  https://www.reviewcommons.org/about/ (all retrieved 2026-11-05);
+  `config/classification_scheme.md` (criterion 1); `config/platforms.yaml`
+  (`review_commons.model_note`).
+- **Consequences:** none for any table or figure; no row changes class,
+  configuration or coverage. The wording binds future candidate
+  assessments and the pending candidates of D-072.
+
 ## Q-4: Cross-DOI work correspondence for Gates Open Research / VeriXiv
 
 - **Date:** 2026-10-20
