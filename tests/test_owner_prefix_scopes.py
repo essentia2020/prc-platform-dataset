@@ -194,16 +194,18 @@ def test_jmirx_companion_items_are_kept_but_not_counted(pipeline_outputs):
     works = out.works("jmirx_med")
     assert [w["counting_record_id"] for w in works if w["included"] == "true"] == ["10.2196/35862"]
     assert sorted(w["work_doi"] for w in works if w["exclusion_reason"] == "companion_item") == \
-        ["10.2196/36198", "10.2196/36207"]
+        ["10.2196/36198", "10.2196/36207", "10.2196/999001", "10.2196/999002"]
     recs = {r["source_record_id"]: r for r in out.records("jmirx_med") if r["event_kind"] == "final_article"}
     assert recs["10.2196/36207"]["exclusion_reason"] == "companion_item"
     assert recs["10.2196/36198"]["exclusion_reason"] == "companion_item"
+    assert recs["10.2196/999001"]["exclusion_reason"] == "companion_item"
+    assert recs["10.2196/999002"]["exclusion_reason"] == "companion_item"
     assert recs["10.2196/35862"]["exclusion_reason"] == ""
     assert "10.2196/40000" not in recs      # other JMIR journal
     dq = [r for r in read_csv(out.processed / "data_quality_log.csv")
           if r["run_id"] == out.run_config.run_id and r["row_id"] == "jmirx_med"
           and r["issue_type"] == "companion_record" and r["status"] == "observed"]
-    assert len(dq) == 1 and dq[0]["n_records_affected"] == "2"
+    assert len(dq) == 1 and dq[0]["n_records_affected"] == "4"
 
 
 def test_jmirx_row_declares_no_peer_review_type():
@@ -345,7 +347,15 @@ def test_jmirx_bio_issn_walk_counts_articles_and_keeps_companions(pipeline_outpu
     works = out.works("jmirx_bio")
     assert [w["counting_record_id"] for w in works if w["included"] == "true"] == ["10.2196/68519"]
     assert sorted(w["work_doi"] for w in works if w["exclusion_reason"] == "companion_item") == \
-        ["10.2196/71629", "10.2196/71630"]
+        ["10.2196/71629", "10.2196/71630", "10.2196/999003", "10.2196/999004"]
+    recs = {r["source_record_id"]: r for r in out.records("jmirx_bio")
+            if r["event_kind"] == "final_article"}
+    assert recs["10.2196/999003"]["exclusion_reason"] == "companion_item"
+    assert recs["10.2196/999004"]["exclusion_reason"] == "companion_item"
+    dq = [r for r in read_csv(out.processed / "data_quality_log.csv")
+          if r["run_id"] == out.run_config.run_id and r["row_id"] == "jmirx_bio"
+          and r["issue_type"] == "companion_record" and r["status"] == "observed"]
+    assert len(dq) == 1 and dq[0]["n_records_affected"] == "4"
     cell = out.cell("works_by_row_year", row_id="jmirx_bio", year=2025)
     assert cell["count"] == "1" and cell["observation_status"] == "observed"
     assert out.cell("works_by_row_year", row_id="jmirx_bio", year=2022)["observation_status"] == "not_applicable"

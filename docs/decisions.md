@@ -1141,6 +1141,15 @@ is unchanged (D-016).
 
 - Note 2026-11-05: the companion regex of both JMIRx rows was generalised to the two title prefixes, `^(Peer Review\b|Author(s|[’']s|s[’'])? Responses? to )`. The previous form matched only "Peer Review of" and "Authors' Response to Peer Reviews of"; JMIRx Med also deposits "Peer Review for", "Peer Review “…”", "Author Response to", "Author’s Response(s) to Peer Review Reports for/on", "Authors’ Response to the Peer Review of" and "Author’s Response to a Commentary on". The gap was noticed on JMIRx Bio (10.2196/72764, D-072) and then measured on JMIRx Med: 50 companion items of run_20261102_01 had been counted as works (2020: 2, 2021: 13, 2022: 6, 2023: 3, 2024: 5, 2025: 17, 2026: 4); unique_works_to_cutoff of jmirx_med falls from 201 to 151, and jmirx_bio counts 14 works and 38 companions. Companion items are flagged at extraction (crossref_common), so the interim files were rebuilt from the stored walks without new requests. In a YAML double-quoted string, `\b` is parsed as a backspace, which made the first branch fail silently; `\\b` preserves the regex word boundary. Three of the 151 counted JMIRx Med works remain known companion-derived records: 10.2196/57116 (the deposited title misspells "Response" as "Reponse") and 10.2196/29878 and 10.2196/29879 ("Correction: Author(s)' Response(s) …"); these residuals are not encoded in the regex. Recorded as DQ-020.
 
+- Note 2026-11-05 (follow-up R6): both JMIRx fixtures now include
+  "Peer Review for" and "Author Response to" title forms, retained as
+  companion records without entering work counts. Direct tests load the
+  expression through the register loader for both rows and cover the eight
+  observed title families, apostrophe and plural variants, the three
+  unmatched residuals above, ordinary titles, and the YAML word boundary.
+  This adds regression coverage only; neither the regex nor the exclusion
+  rule changes.
+
 ## D-051: VeriXiv deposit confirmed; selector enabled; D-041 scheduled
 **Context:** run_20261026_01 found 314 unique 10.21956/verixiv.* review records
 targeting 185 unique 10.12688/verixiv.*.n preprints, all valid, reviews

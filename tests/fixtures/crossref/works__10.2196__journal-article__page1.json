@@ -3,6 +3,30 @@
  "message": {
   "items": [
    {
+    "DOI": "10.2196/999001",
+    "type": "journal-article",
+    "prefix": "10.2196",
+    "member": "2244",
+    "title": ["Peer Review for “Synthetic JMIRx Med article”"],
+    "container-title": ["JMIRx Med"],
+    "created": {"date-time": "2022-04-22T00:00:00Z"},
+    "deposited": {"date-time": "2022-04-22T00:00:00Z"},
+    "indexed": {"date-time": "2022-04-22T00:00:00Z"},
+    "issued": {"date-parts": [[2022, 4, 22]]}
+   },
+   {
+    "DOI": "10.2196/999002",
+    "type": "journal-article",
+    "prefix": "10.2196",
+    "member": "2244",
+    "title": ["Author Response to Peer Reviews of “Synthetic JMIRx Med article”"],
+    "container-title": ["JMIRx Med"],
+    "created": {"date-time": "2022-04-22T00:00:00Z"},
+    "deposited": {"date-time": "2022-04-22T00:00:00Z"},
+    "indexed": {"date-time": "2022-04-22T00:00:00Z"},
+    "issued": {"date-parts": [[2022, 4, 22]]}
+   },
+   {
     "DOI": "10.2196/35862",
     "type": "journal-article",
     "prefix": "10.2196",
@@ -186,7 +210,7 @@
     }
    }
   ],
-  "total-results": 4,
+  "total-results": 6,
   "next-cursor": null
  }
 }

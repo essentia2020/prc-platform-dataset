@@ -4,6 +4,32 @@
  "message": {
   "items": [
    {
+    "DOI": "10.2196/999003",
+    "type": "journal-article",
+    "prefix": "10.2196",
+    "member": "2244",
+    "ISSN": ["2819-2044"],
+    "title": ["Peer Review for “Synthetic JMIRx Bio article”"],
+    "container-title": ["JMIRx Bio"],
+    "created": {"date-time": "2025-03-08T00:00:00Z"},
+    "deposited": {"date-time": "2025-03-08T00:00:00Z"},
+    "indexed": {"date-time": "2025-03-08T00:00:00Z"},
+    "issued": {"date-parts": [[2025, 3, 8]]}
+   },
+   {
+    "DOI": "10.2196/999004",
+    "type": "journal-article",
+    "prefix": "10.2196",
+    "member": "2244",
+    "ISSN": ["2819-2044"],
+    "title": ["Author Response to Peer Reviews of “Synthetic JMIRx Bio article”"],
+    "container-title": ["JMIRx Bio"],
+    "created": {"date-time": "2025-03-08T00:00:00Z"},
+    "deposited": {"date-time": "2025-03-08T00:00:00Z"},
+    "indexed": {"date-time": "2025-03-08T00:00:00Z"},
+    "issued": {"date-parts": [[2025, 3, 8]]}
+   },
+   {
     "DOI": "10.2196/68519",
     "type": "journal-article",
     "prefix": "10.2196",
@@ -139,6 +165,6 @@
     }
    }
   ],
-  "total-results": 3
+  "total-results": 5
  }
 }
