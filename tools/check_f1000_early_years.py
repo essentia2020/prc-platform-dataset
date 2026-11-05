@@ -8,6 +8,7 @@ Print JSON to stdout (redirect to a file if desired). No network calls or
 dataset writes. Accepted page attempts only, with manifest SHA-256 checks.
 The cited historical w01 is inspected even if failed, labelled as such and
 never treated as the selected complete walk. Missing inputs exit 2.
+Four distinct walk traces also test pooled 2012 DOI multiplicities.
 """
 from __future__ import annotations
 
@@ -116,7 +117,9 @@ def compare(raw, interim, records, version_pattern):
     volume_number = [r for r in raw if VOLUME_NUMBER.match(r["doi"])]
     raw2012 = year_dois(volume_number, 2012)
     interim2012 = year_dois(interim, 2012)
-    processed2012 = {normalise_doi(r["work_doi"]) for r in records
+    # work_doi is a version-free stem after normalization. Compare the
+    # deposited version DOI on both sides instead.
+    processed2012 = {normalise_doi(r["source_record_id"]) for r in records
                      if r["row_entity_type"] == "work_record" and r["issued"][:4] == "2012"}
     all_interim = {r["doi"] for r in interim}
     return {
@@ -131,6 +134,49 @@ def compare(raw, interim, records, version_pattern):
         "interim_2012_not_in_this_raw_volume_number_2012": sorted(interim2012 - raw2012),
         "interim_2012_not_in_processed_2012": sorted(interim2012 - processed2012),
         "processed_2012_not_in_interim_2012": sorted(processed2012 - interim2012),
+    }
+
+
+def walk_paths(manifest_root, run_id, selected_walk_id):
+    paths = [("selected", manifest_root / run_id /
+              f"crossref__{SCOPE}__{selected_walk_id}.manifest.jsonl")]
+    paths += [(f"historical_{wid}", manifest_root / "run_20261026_01" /
+               f"crossref__{SCOPE}__{wid}.manifest.jsonl") for wid in ("w01", "w02")]
+    paths.append(("historical_20261027_w01", manifest_root / "run_20261027_01" /
+                  f"crossref__{SCOPE}__w01.manifest.jsonl"))
+    # A historical run selected explicitly must not count the same manifest twice.
+    unique = {}
+    for label, path in paths:
+        unique.setdefault(path, label)
+    return [(label, path) for path, label in unique.items()]
+
+
+def pooled_2012_summary(traces, version_pattern):
+    """Verify the four-walk account by DOI multiplicities, not arithmetic alone."""
+    by_trace = {
+        label: [r for r in records if r["issued"][:4] == "2012"
+                and VOLUME_NUMBER.match(r["doi"])]
+        for label, records in traces.items()
+    }
+    counts = {label: Counter(r["doi"] for r in records)
+              for label, records in by_trace.items()}
+    selected = counts.get("selected", Counter())
+    pooled = [r for records in by_trace.values() for r in records]
+    multiplicities = Counter(r["doi"] for r in pooled)
+    return {
+        "traces_read": len(by_trace),
+        "per_trace": {label: population(records, version_pattern)
+                      for label, records in by_trace.items()},
+        "pooled": population(pooled, version_pattern),
+        "doi_occurrence_histogram": dict(sorted(Counter(multiplicities.values()).items())),
+        "identical_doi_multisets": bool(selected) and all(c == selected for c in counts.values()),
+        "matches_four_copies_of_selected": (
+            len(counts) == 4 and bool(selected)
+            and all(n == 1 for n in selected.values())
+            and all(c == selected for c in counts.values())),
+        "basis": "accepted-page occurrences pooled across distinct walk manifests; "
+                 "failed traces are included for historical reconciliation only, "
+                 "not as the selected complete population",
     }
 
 
@@ -151,27 +197,28 @@ def main(argv=None):
         interim = read_csv(args.interim_root / f"crossref_works__{ROW}.csv")
         run_manifest = args.manifest_root / args.run / f"{args.run}.json"
         scope = json.loads(run_manifest.read_text(encoding="utf-8"))["scopes"][f"crossref/{SCOPE}"]
-        selected = args.manifest_root / args.run / f"crossref__{SCOPE}__{scope['selected_walk_id']}.manifest.jsonl"
-        paths = [("selected", selected)] + [
-            (f"historical_{wid}", args.manifest_root / "run_20261026_01" /
-             f"crossref__{SCOPE}__{wid}.manifest.jsonl") for wid in ("w01", "w02")]
+        paths = walk_paths(args.manifest_root, args.run, scope["selected_walk_id"])
         output = {"run_id": args.run,
                   "record_year_checks": {str(y): reconcile_year(records, works, y) for y in (2012, 2013)},
                   "interim_2012": population([r for r in interim if r["issued"][:4] == "2012"],
                                              platform["doi_version_pattern"]),
                   "raw_walk_checks": [], "errors": []}
         store = RawStore(args.raw_root)
+        traced_2012 = {}
         for label, path in paths:
             try:
                 walk, raw = raw_records(path, store, selector)
                 if label == "selected" and not walk.is_complete:
                     raise ValueError(f"selected walk is {walk.state}, not complete")
+                traced_2012[label] = [r for r in raw if r["issued"][:4] == "2012"]
                 output["raw_walk_checks"].append({
                     "label": label, "manifest": str(path), "walk_state": walk.state,
                     "walk_reason": walk.reason, "pages_checked": len(walk.pages),
                     **compare(raw, interim, records, platform["doi_version_pattern"])})
             except (OSError, ValueError, KeyError) as exc:
                 output["errors"].append(f"{label}: {exc}")
+        output["pooled_2012_check"] = pooled_2012_summary(
+            traced_2012, platform["doi_version_pattern"])
         print(json.dumps(output, ensure_ascii=False, indent=2))
         return 2 if output["errors"] else 0
     except (OSError, ValueError, KeyError, StopIteration) as exc:

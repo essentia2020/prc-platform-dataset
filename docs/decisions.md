@@ -1650,7 +1650,8 @@ The descriptive `doi_pattern` of `access_microbiology` was tightened to `^10\.10
   `15931.1 → 15931` as before. `launch_year` and `coverage_start_year`
   stay 2013: the platform's own About page (retrieved 2026-11-05) states
   the publication model but no launch year, so the recorded value is kept;
-  the 288 records issued in 2012 lie before the eligible range and are
+  the selected walk has 72 version records issued in 2012, representing
+  71 canonical works before the eligible range; those 71 works are
   reported in `register_summary.n_works_outside_eligible_range` (D-060),
   not in a cell. (b) is rejected: `10.3410` belongs to H1 Connect
   (Crossref member 4950); on 2026-11-05 its journal-article subset held
@@ -1658,12 +1659,18 @@ The descriptive `doi_pattern` of `access_microbiology` was tightened to `^10\.10
   alternate spellings and developer-test deposits, and none of the opened
   records carried a relation to `10.12688`; it is not a source of this row.
   (c) is rejected because the records are already in the raw store.
-- **Evidence:** raw-store check of 2026-11-05: the complete
-  walk `crossref/works__10.12688__journal-article/run_20261026_01/w01`
-  holds 2,180 journal-article records matching
-  `^10\.12688/f1000research\.\d+-\d+\.v\d+$` (issued 2012: 288, 2013: 1,328,
-  2014: 508, 2015: 40, 2016: 8, 2017: 4, 2019: 4; examples
-  `10.12688/f1000research.2-73.v1` through `2-79.v1`), none of which reached
+- **Evidence:** `f1000-early-year-reconciliation.json` at local head
+  `2747feb`, supplied 2026-11-05, reports no errors. The selected complete
+  walk `crossref/works__10.12688__journal-article/run_20261102_01/w01`
+  has 32 accepted pages and 545 journal-article records matching
+  `^10\.12688/f1000research\.\d+-\d+\.v\d+$`, with 545 distinct version
+  DOIs and 422 canonical works across all years. Issued-year record counts
+  are 2012: 72, 2013: 332, 2014: 127, 2015: 10, 2016: 2, 2017: 1,
+  2019: 1. The 2012 subset has 72 distinct DOIs and 71 canonical works;
+  the 2013 subset has 332 distinct DOIs and 296 canonical works.
+  The two historical traces of run_20261026_01 report the same populations;
+  w01 is failed, not complete, and w02 is complete.
+  Before the selector correction, no records of this form reached
   `data/interim/crossref_works__f1000research.csv`; 588 distinct targets
   of that form among the row's evaluation relations in run_20261102_01;
   https://f1000research.com/about (retrieved 2026-11-05);
@@ -1692,6 +1699,29 @@ The descriptive `doi_pattern` of `access_microbiology` was tightened to `^10\.10
   72 work records and 154 evaluation records; the work records represent
   71 canonical works. Counting distinct `canonical_work_id` values across
   all record types adds the empty string as a spurious 72nd value.
+
+- Note 2026-11-05 (DQ-018 reconciliation after local head 2747feb):
+  the original Phase B Step 1/K1 ruling supplied 288 records for 2012
+  and described them as a single complete-walk count. That figure was
+  copied into this decision and DQ-018. The follow-up clarification
+  identifies its actual basis as a pooled tally across four stored walks:
+  run_20261026_01/w01 (failed), run_20261026_01/w02 (complete),
+  run_20261027_01/w01 and the selected run_20261102_01/w01 (complete).
+  Each contributes the same 72 version records, giving 4 × 72 = 288
+  occurrences, not 288 selected-walk records or canonical works.
+  The original K1 counting command is not preserved; the provenance is
+  the K1 ruling and this follow-up clarification, not a filtered Crossref
+  `total-results` count. The original tally also stated 2,180 records
+  overall, with issued-year figures 2012: 288, 2013: 1,328, 2014: 508,
+  2015: 40, 2016: 8, 2017: 4, 2019: 4; these are retained here as the
+  superseded claim, not as selected-walk evidence.
+  The supplied diagnostic verifies three traces directly; the added
+  run_20261027_01/w01 trace and pooled DOI-multiplicity check verify the
+  four-trace account on the next local diagnostic run rather than infer
+  it from equal counts. The two interim/processed comparisons now use
+  `source_record_id` version DOIs on the processed side, not the
+  version-free `work_doi` stem. Only the diagnostic and evidence
+  description change; no work count, selector, table or figure changes.
 
 ## D-068: Cross-row preprint and version pairs are recorded, not merged
 

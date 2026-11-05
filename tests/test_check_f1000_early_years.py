@@ -8,7 +8,9 @@ import pytest
 from src.common.raw_store import RawStore
 from src.common.register import load_platforms
 from src.extract.selectors import crossref_selectors
-from tools.check_f1000_early_years import compare, population, raw_records, reconcile_year
+from tools.check_f1000_early_years import (
+    compare, population, pooled_2012_summary, raw_records, reconcile_year, walk_paths,
+)
 
 
 def record(doi, issued, flag="", title="Synthetic article"):
@@ -68,6 +70,48 @@ def test_population_and_comparison_distinguish_duplicates_versions_and_missing_d
     assert result["raw_2012_not_in_interim_any_year"] == [c["doi"]]
     assert result["raw_2012_in_interim_but_not_issued_2012"] == [b["doi"]]
     assert not result["interim_2012_not_in_processed_2012"]
+
+
+def test_comparison_uses_version_dois_not_processed_canonical_stems():
+    platform = next(r for r in load_platforms() if r["row_id"] == "f1000research")
+    pattern = platform["doi_version_pattern"]
+    stem = "10.12688/f1000research.1-19"
+    interim = [dict(doi=f"{stem}.v{n}", issued="2012") for n in (1, 2)]
+    records = [dict(record(r["doi"], "2012"), work_doi=stem,
+                    canonical_work_id=f"doi:{stem}") for r in interim]
+    matched = compare(interim, interim, records, pattern)
+    assert matched["interim_2012_not_in_processed_2012"] == []
+    assert matched["processed_2012_not_in_interim_2012"] == []
+    # A missing version must remain visible even if the canonical work is present.
+    missing = compare(interim, interim, records[:1], pattern)
+    assert missing["interim_2012_not_in_processed_2012"] == [f"{stem}.v2"]
+    extra = compare(interim, interim[:1], records, pattern)
+    assert extra["processed_2012_not_in_interim_2012"] == [f"{stem}.v2"]
+
+
+def test_four_trace_paths_include_20261027_without_repeating_selected_manifest(tmp_path):
+    paths = walk_paths(tmp_path, "run_20261102_01", "w01")
+    assert len(paths) == 4
+    assert [p.parent.name for _, p in paths] == [
+        "run_20261102_01", "run_20261026_01", "run_20261026_01", "run_20261027_01"]
+    assert paths[-1][1].name.endswith("__w01.manifest.jsonl")
+    assert len(walk_paths(tmp_path, "run_20261027_01", "w01")) == 3
+
+
+def test_pooled_check_verifies_doi_identity_not_just_equal_counts():
+    pattern = next(r for r in load_platforms() if r["row_id"] == "f1000research")["doi_version_pattern"]
+    a = dict(doi="10.12688/f1000research.1-19.v1", issued="2012")
+    b = dict(doi="10.12688/f1000research.1-19.v2", issued="2012")
+    traces = {label: [a, b] for label in ("selected", "old1", "old2", "old3")}
+    matched = pooled_2012_summary(traces, pattern)
+    assert matched["matches_four_copies_of_selected"]
+    assert matched["pooled"] == {
+        "record_lines": 8, "distinct_dois": 2, "distinct_canonical_work_ids": 1}
+    assert matched["doi_occurrence_histogram"] == {4: 2}
+    different = dict(traces, old3=[a, dict(b, doi="10.12688/f1000research.1-20.v1")])
+    assert not pooled_2012_summary(different, pattern)["matches_four_copies_of_selected"]
+    assert not pooled_2012_summary(dict(list(traces.items())[:3]), pattern)["matches_four_copies_of_selected"]
+    assert not pooled_2012_summary({k: [a, a] for k in traces}, pattern)["matches_four_copies_of_selected"]
 
 
 @pytest.mark.parametrize("state", ["complete", "failed"])
