@@ -303,18 +303,49 @@ def update_run_manifest_scope(path: Path, *, run_id: str, cutoff: str, policy: s
     return payload
 
 
-def update_run_manifest_field(path: Path, *, run_id: str, key: str, value, now=utc_now) -> dict:
-    """Set one run-level field of an existing run manifest (for example the
-    Sciety index snapshot record of D-058).  Scope entries are untouched."""
+def update_run_manifest_field(path: Path, *, run_id: str, key: str, value, now=utc_now,
+                              retrieval: bool = True) -> dict:
+    """Set one run-level field of an existing run manifest.  Scope entries are
+    untouched.
+
+    ``retrieval=True`` (the Sciety index snapshot record of D-058) advances
+    ``retrieval_finished_at``; ``retrieval=False`` (the OpenAlex diagnostics
+    record of D-066) leaves it alone: a diagnostic stage records its own
+    execution time inside its own field and never touches the retrieval
+    window (D-066, note of 2026-11-05)."""
     payload = load_run_manifest(path)
     if not payload:
         raise ManifestError(f"run manifest {path} does not exist")
     if payload.get("run_id") != run_id:
         raise ManifestError(f"run manifest {path} belongs to run {payload.get('run_id')!r}")
     payload[key] = value
-    payload["retrieval_finished_at"] = now()
+    if retrieval:
+        payload["retrieval_finished_at"] = now()
     write_run_manifest(path, payload)
     return payload
+
+
+RETRIEVAL_SOURCES = ("crossref", "sciety")
+
+
+def retrieval_snapshot(payload: dict) -> str:
+    """Timestamp printed as the data snapshot of the analysis tables.
+
+    The latest ``completed_at`` (``ended_at_utc`` of the selected walk) over
+    the Crossref and Sciety scopes of the run manifest, together with the
+    ``retrieved_at`` of the Sciety index snapshot (D-058). It depends only on
+    the walks the counts were built from: re-recording a scope from stored
+    pages, a diagnostic stage (D-066) or any other manifest write after the
+    retrieval leaves it unchanged. Empty when no selected walk is complete.
+    """
+    times = []
+    for entry in (payload.get("scopes") or {}).values():
+        if isinstance(entry, dict) and entry.get("source") in RETRIEVAL_SOURCES and entry.get("completed_at"):
+            times.append(str(entry["completed_at"]))
+    index = payload.get("sciety_index_snapshot") or {}
+    if isinstance(index, dict) and index.get("retrieved_at"):
+        times.append(str(index["retrieved_at"]))
+    return max(times) if times else ""
 
 
 def verify_walk_against_store(walk: WalkRecord, raw_root: Path) -> list[str]:

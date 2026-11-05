@@ -1657,6 +1657,30 @@ The descriptive `doi_pattern` of `access_microbiology` was tightened to `^10\.10
   The last stage writes `reports/CHECKSUMS.txt` after the diagnostics have
   updated `data_quality_log.csv`. The pipeline's existing stage order and
   the diagnostics implementation are unchanged.
+- Note 2026-11-05 (snapshot provenance): the diagnostics record was written
+  through the same manifest helper as the Sciety index snapshot, and that
+  helper advanced `retrieval_finished_at`; the analysis tables took their
+  snapshot line from that field. In run_20261102_01 the committed tables
+  therefore carried `2026-11-05T10:42:10Z` (the time the interim rebuild
+  re-recorded the last Crossref scope from stored pages) while the committed
+  manifest carried `2026-11-05T11:51:33Z` (the diagnostics run), and the
+  stage order normalise, analyse, openalex_diagnostics, report could not
+  reproduce the tables byte for byte. Two corrections: the diagnostics stage
+  writes its own `recorded_at` inside `openalex_diagnostics` and never
+  touches `retrieval_finished_at` (`update_run_manifest_field(...,
+  retrieval=False)`); the snapshot printed by the tables is now the latest
+  `completed_at` of the selected Crossref and Sciety walks together with the
+  `retrieved_at` of the Sciety index snapshot (`retrieval_snapshot` in
+  `src/common/manifest.py`), so it depends only on the walks the counts were
+  built from. The header line reads "Snapshot: last selected Crossref/Sciety
+  walk completed <timestamp>."; for run_20261102_01 it is
+  `2026-11-05T09:55:03Z`, the JMIRx Bio walk of D-072. `retrieval_finished_at`
+  keeps its meaning of the last write by a retrieval stage and still
+  advances when a scope is re-recorded from stored pages; it is no longer
+  printed. Regression tests: `tests/test_retrieval_snapshot.py` (the helper
+  ignores later manifest writes; the diagnostics write leaves the field; a
+  full offline run, diagnostics, and a second analyse produce identical
+  tables).
 
 ## D-067: F1000Research: both DOI forms enter the row selector
 

@@ -45,7 +45,7 @@ from ..common.dates import DateInterval, cutoff_status, parse_partial_date
 from ..common.eligibility import (EXCLUSION_REASONS, EventRecord, WorkDecision, binding_decision, choose_earliest,
                                   decide_work)
 from ..common.interim import read_csv, write_csv
-from ..common.manifest import DEFAULT_MANIFEST_ROOT
+from ..common.manifest import DEFAULT_MANIFEST_ROOT, retrieval_snapshot
 from ..common.run_state import RowState, load_row_states
 from ..normalise.clean_and_normalise import DEFAULT_PROCESSED_ROOT, records_path
 
@@ -610,7 +610,7 @@ def _write_table(tables_root: Path, name: str, columns: list[str], rows: list[Ma
              + (f"; year {cutoff.year} is year_to_date (not annualised)." if partial else "."),
              f"Additivity: `{additivity}`." + (" No all-row total is published in this table." if additivity != "deduplicated"
                                                 or "all_rows" not in name else ""),
-             f"Snapshot: Crossref/Sciety retrieval finished {snapshot or 'n/a'}.",
+             f"Snapshot: last selected Crossref/Sciety walk completed {snapshot or 'n/a'}.",
              "Empty cells are not zeros: see `observation_status` and `extraction_status` in the CSV.",
              ]
     if note:
@@ -772,7 +772,7 @@ def run(run_config: RunConfig, sources_config: Mapping[str, Any], platforms: lis
     if manifest.get("analysis_cutoff_date") and manifest["analysis_cutoff_date"] != cutoff.isoformat():
         raise AnalysisError(f"run manifest cutoff {manifest['analysis_cutoff_date']} differs from config "
                             f"{cutoff.isoformat()}; one cutoff per run_id")
-    snapshot = str(manifest.get("retrieval_finished_at") or manifest.get("retrieval_started_at") or "")
+    snapshot = retrieval_snapshot(manifest)  # latest selected Crossref/Sciety walk, not the last manifest write
     attribution = manifest.get("attribution") or {}
 
     analyses: dict[str, RowAnalysis] = {}

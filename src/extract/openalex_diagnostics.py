@@ -491,7 +491,9 @@ def run(run_config: RunConfig, sources_config: Mapping[str, Any], platforms: lis
     record["requests_used"] = budget.used
     manifest_file = run_manifest_path(manifests, run_config.run_id)
     if manifest_file.exists():
-        update_run_manifest_field(manifest_file, run_id=run_config.run_id, key=STAGE, value=record)
+        # D-066: the diagnostic records its own time in its own field only.
+        update_run_manifest_field(manifest_file, run_id=run_config.run_id, key=STAGE, value=record,
+                                  retrieval=False)
     if logger is not None:
         logger.event("openalex_diagnostics_end", rows_written=len(rows_out), requests_used=budget.used,
                      scopes=len(record["scopes"]))
