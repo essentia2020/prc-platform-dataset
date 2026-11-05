@@ -198,6 +198,14 @@ Decision entries in this log are identified by decision number, date and subject
   `tests/test_audit_self_clean.py` and
   `tests/test_manifest_checksums_match.py` are part of the test listing.
 - **Evidence:** not applicable (process decision).
+- **Note 2026-11-05 (internal pre-submission review, 2026-11-05, item S4):**
+  the three token-dependent tests in `tests/test_audit_self_clean.py` are
+  skipped with the reason "maintainer-only: PRC_AUDIT_TOKENS not set" when
+  the variable is absent, so that a public clone runs the suite without a
+  token file; with the variable set, a missing, empty or zero-token file
+  still fails. `tests/test_decision_log_consistency.py` now pins the current
+  `CITATION.cff` contract (`repository-code` present; `doi` absent until the
+  release freeze, D-006). `tools/audit_text.py` is unchanged.
 
 ## D-008: Audit tokens (R1) and voice rule (R4)
 

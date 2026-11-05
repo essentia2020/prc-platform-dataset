@@ -1,7 +1,9 @@
 """The audit engine passes on its own repository.
 
 The real token file is referenced by the ``PRC_AUDIT_TOKENS`` environment
-variable (a path outside the repository).  A missing, empty or zero-token
+variable (a path outside the repository).  When the variable is absent the
+three maintainer-only tests are skipped (a public clone has no token file;
+D-007, note of 2026-11-05).  When it is set, a missing, empty or zero-token
 file is a test FAILURE, never a skip: the self-audit is meaningless without
 R1 tokens.
 """
@@ -17,7 +19,7 @@ from tools import audit_text
 
 def _require_tokens(real_tokens_path: str | None) -> Path:
     if not real_tokens_path:
-        pytest.fail(f"{audit_text.TOKENS_ENV} is not set; point it at the local token file outside the repository")
+        pytest.skip(f"maintainer-only: {audit_text.TOKENS_ENV} not set")
     path = Path(real_tokens_path)
     if not path.is_file():
         pytest.fail(f"token file not found: {path}")
