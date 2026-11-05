@@ -456,6 +456,10 @@ gets no file and an older file is removed). Column order is fixed by
 
 `later_version` is informational: a work with several version records keeps
 every record and the earliest-dated record carries the counting event.
+A record issued in year Y therefore does not imply a count in Y: a work with
+records in several years is counted once, in the year of its earliest
+non-withdrawn record, and a record titled WITHDRAWN leaves the date pool while
+its sibling records remain.
 Flagged relation lines (`*_target`) never join to a work.
 
 Emerald's 13140 work uses `doi:10.1108/eor-03-2023-0005` as canonical

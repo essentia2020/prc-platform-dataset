@@ -1661,6 +1661,21 @@ The descriptive `doi_pattern` of `access_microbiology` was tightened to `^10\.10
   re-extraction is needed: the records are recovered from the existing
   complete walk.
 
+- Note 2026-11-05 (follow-up R3): the data dictionary clarifies that a
+  record's issued year need not be its canonical work's counting year.
+  `tools/check_f1000_early_years.py` compares the 2012 and 2013 record-year
+  populations with the selected counting events and reconciles raw record
+  occurrences, distinct version DOIs and canonical works against the interim
+  and processed files. It checks accepted-page hashes, distinguishes the
+  cited historical walk from the selected complete walk and makes no requests
+  or dataset changes. The 288 versus 226 record-line discrepancy remains
+  unresolved pending this check against the local raw store; neither DQ-018's
+  cited figure nor the observed counts is revised here.
+  In the processed snapshot at 9269f60, the 226 lines issued in 2012 comprise
+  72 work records and 154 evaluation records; the work records represent
+  71 canonical works. Counting distinct `canonical_work_id` values across
+  all record types adds the empty string as a spurious 72nd value.
+
 ## D-068: Cross-row preprint and version pairs are recorded, not merged
 
 - **Date:** 2026-11-05
