@@ -1139,6 +1139,8 @@ work-type records matching `companion_title_regex` are excluded as
 `companion_item` and logged as `companion_record`. Final-article counting
 is unchanged (D-016).
 
+- Note 2026-11-05: the companion regex of both JMIRx rows was generalised to the two title prefixes, `^(Peer Review\b|Author(s|[’']s|s[’'])? Responses? to )`. The previous form matched only "Peer Review of" and "Authors' Response to Peer Reviews of"; JMIRx Med also deposits "Peer Review for", "Peer Review “…”", "Author Response", "Author’s Response(s) to Peer Review Reports for/on", "Authors’ Response to the Peer Review of" and "Author’s Response to a Commentary on". The gap was noticed on JMIRx Bio (10.2196/72764, D-072) and then measured on JMIRx Med: 50 companion items of run_20261102_01 had been counted as works (2020: 2, 2021: 13, 2022: 6, 2023: 3, 2024: 5, 2025: 17, 2026: 4); unique_works_to_cutoff of jmirx_med falls from 201 to 151, and jmirx_bio counts 14 works and 38 companions. Companion items are flagged at extraction (crossref_common), so the interim files were rebuilt from the stored walks without new requests. Recorded as DQ-020.
+
 ## D-051: VeriXiv deposit confirmed; selector enabled; D-041 scheduled
 **Context:** run_20261026_01 found 314 unique 10.21956/verixiv.* review records
 targeting 185 unique 10.12688/verixiv.*.n preprints, all valid, reviews

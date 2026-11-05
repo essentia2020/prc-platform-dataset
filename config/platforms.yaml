@@ -2200,7 +2200,7 @@ platforms:
         prefix: "10.2196"
         record_types: [journal-article]
         container_titles: ["JMIRx Med"]
-        companion_title_regex: "^(Peer Review of |Authors[’'] Response to Peer Reviews? of )"
+        companion_title_regex: "^(Peer Review\\b|Author(s|[’']s|s[’'])? Responses? to )"
         sample_work_doi: "10.2196/35862"
         notes: >-
           Prefix 10.2196 covers all JMIR journals; selection is by
@@ -2283,7 +2283,7 @@ platforms:
         issn: ["2819-2044"]
         record_types: [journal-article]
         doi_regex: "^10\\.2196/"
-        companion_title_regex: "^(Peer Review of |Authors[’'] Response to Peer Reviews? of )"
+        companion_title_regex: "^(Peer Review\\b|Author(s|[’']s|s[’'])? Responses? to )"
         sample_work_doi: "10.2196/53721"
         notes: >-
           The ISSN filter returns only this journal's records (52 records on
