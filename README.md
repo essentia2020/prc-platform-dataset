@@ -271,7 +271,11 @@ scheduled for reassessment when the documentation stabilises, before release fre
 ```
 config/      platforms.yaml|csv, excluded_candidates.yaml|csv, classification_scheme.md,
              sources.yaml, run.yaml, audit_allowlist.yaml
-docs/        analysis_plan.md, data_dictionary.md, decisions.md, limitations.md
+docs/        analysis_plan.md, data_dictionary.md, decisions.md, limitations.md,
+             register_construction.md (how the candidate list was assembled),
+             zenodo_description.md (description text for the archive record),
+             reviews/ (responses to the external review and the internal
+             pre-submission review, 2026-11-05)
 src/         run_pipeline.py; common/ (config, register, identifiers, log, dates,
              http, raw_store, manifest, walk, interim, eligibility, aggregates,
              correspondence, preprint_pairs),

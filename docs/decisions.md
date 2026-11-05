@@ -3,7 +3,7 @@
 Numbered record of every design, classification and process decision. 
 Each entry states the date, the question, the options considered, the 
 decision, the evidence URL(s) and who decided. Every entry, D-001 through 
-D-066 and Q-1 through Q-5, carries decided_by: researcher. D-027 through 
+D-075 and Q-1 through Q-5, carries decided_by: researcher. D-027 through 
 D-031 document preparation choices; D-032 through D-035 record the decisions 
 on extraction, 2026-10-20, and govern their implementation; D-036 through D-041 
 record the decisions on normalisation, analysis and reporting, 2026-10-20; D-042 
@@ -22,7 +22,14 @@ the decisions of 2026-10-28 to 2026-10-31 on the posting-record gate, group cell
 lower bounds and the Gates Open Research data_status (D-059 was merged into D-061); 
 D-063 through D-065 record the decisions of 2026-10-31 on Crossref peer-review records 
 as the primary source for The Unjournal, MetaROR and Review Commons. D-066 records the 
-decision of 2026-11-02 on the three permitted uses of OpenAlex. Confidence and 
+decision of 2026-11-02 on the three permitted uses of OpenAlex. D-067 through D-075 
+record the decisions of 2026-11-05 on the external review of 2026-11 and the internal 
+pre-submission review, 2026-11-05 (both F1000Research DOI forms; cross-row preprint 
+and version pairs; two observed decision and disclosure fields; MetaROR on the 
+configuration axis; provisional flags cleared; the JMIRx Bio row and the PRC Alliance 
+pending candidates; evaluation event dates and the tie-break; one relation line per 
+review and target; criterion 1 and the Review Commons workflow history); dated notes 
+of 2026-11-05 are appended to D-007 and D-011. Confidence and 
 decision status are independent: a decided classification may retain medium or low 
 confidence without being provisional.
 Decision entries in this log are identified by decision number, date and subject.
