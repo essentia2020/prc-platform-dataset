@@ -819,7 +819,11 @@ completion of its evidence checks; outstanding checks are stated explicitly.
   `no_journal_attribution`. Of these, 3,547 had been counted to the cutoff
   (2022: 92, 2023: 180, 2024: 268, 2025: 590, 2026: 2,417) and 103 were already
   excluded as `future_event`; `unique_works_to_cutoff` of the row fell from
-  67,054 to 63,507 in the tables committed from 84a7a67 to c0fd61f. The
+  67,054 to 63,507. The Copernicus yearly series at both `9269f60` and
+  `c0fd61f` on `origin/main` was wrong for 2022–2026. Both commits were
+  publicly available for several hours before the repair. This was an
+  implementation error in the interim rebuild associated with 84a7a67,
+  not a change to the attribution or eligibility rules. The
   peer-review interim was untouched (111,803 evaluation records, 79,631
   distinct `is-review-of` targets before and after) and the run manifest kept
   `peer_review_is_review_of` among `signals_observed`; the loss was confined
