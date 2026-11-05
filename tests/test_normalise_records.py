@@ -110,3 +110,43 @@ def test_unknown_flag_is_a_hard_failure(tmp_path, monkeypatch):
         "row_id": "x", "row_entity_type": "work_record", "source": "crossref", "record_flag": "bogus"}])
     with pytest.raises(NormalisationError):
         build_row_records(row, state, tmp_path)
+
+
+# ---------------------------------------------------------------- D-067: two F1000Research DOI forms
+def _f1000_row():
+    from src.common import register
+    return {r["row_id"]: r for r in register.load_platforms()}["f1000research"]
+
+
+@pytest.mark.parametrize("doi, stem", [
+    ("10.12688/f1000research.2-73.v1", "10.12688/f1000research.2-73"),
+    ("10.12688/f1000research.1-10.v2", "10.12688/f1000research.1-10"),
+    ("10.12688/f1000research.15931.1", "10.12688/f1000research.15931"),
+    ("10.12688/f1000research.15931.2", "10.12688/f1000research.15931"),
+])
+def test_f1000research_canonical_stem_for_both_doi_forms(doi, stem):
+    from src.common.identifiers import canonical_doi
+    row = _f1000_row()
+    assert canonical_doi(doi, row["doi_version_pattern"]) == stem
+
+
+@pytest.mark.parametrize("doi", [
+    "10.12688/f1000research.2-73.v1", "10.12688/f1000research.1-10.v2", "10.12688/f1000research.15931.1",
+])
+def test_f1000research_selector_accepts_both_doi_forms(doi):
+    import re
+    row = _f1000_row()
+    assert re.match(row["extraction_selector"]["crossref"]["doi_regex"], doi)
+    assert re.match(row["doi_pattern"], doi)
+
+
+@pytest.mark.parametrize("doi", [
+    "10.12688/f1000research.15931",            # version-free stem is not a record DOI
+    "10.12688/f1000research.2-73.1",           # mixed forms are not accepted
+    "10.12688/f1000research.15931.v1",
+    "10.12688/wellcomeopenres.15931.1",        # other F1000-hosted venues keep their own rows
+])
+def test_f1000research_selector_rejects_other_forms(doi):
+    import re
+    row = _f1000_row()
+    assert not re.match(row["extraction_selector"]["crossref"]["doi_regex"], doi)

@@ -159,14 +159,14 @@ platforms:
     register_status: quantified
     data_status: machine_readable
     doi_prefix: "10.12688"
-    doi_pattern: "^10\\.12688/f1000research\\."
-    doi_version_pattern: "^(10\\.12688/f1000research\\.\\d+)\\.\\d+$"
+    doi_pattern: "^10\\.12688/f1000research\\.(?:\\d+\\.\\d+|\\d+-\\d+\\.v\\d+)$"
+    doi_version_pattern: "^(10\\.12688/f1000research\\.(?:\\d+-\\d+(?=\\.v\\d+$)|\\d+(?=\\.\\d+$)))\\.v?\\d+$"
     sciety_group_slug: null
     extraction_selector:
       crossref:
         prefix: "10.12688"
         record_types: [journal-article, peer-review]
-        doi_regex: "^10\\.12688/f1000research\\.\\d+\\.\\d+$"
+        doi_regex: "^10\\.12688/f1000research\\.(?:\\d+\\.\\d+|\\d+-\\d+\\.v\\d+)$"
         review_doi_prefix: "10.5256"
         review_doi_regex: "^10\\.5256/f1000research\\.\\d+\\.r\\d+$"
         sample_work_doi: "10.12688/f1000research.15931.1"
@@ -184,7 +184,7 @@ platforms:
     counting_event_date_field: issued
     evidence_url:
       - https://f1000research.com/about
-    verified_on: "2026-10-20"
+    verified_on: "2026-11-05"
 
   - row_id: wellcome_open_research
     row_label: "Wellcome Open Research"

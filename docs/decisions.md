@@ -1598,6 +1598,60 @@ The descriptive `doi_pattern` of `access_microbiology` was tightened to `^10\.10
   https://help.openalex.org/access/pricing/ ;
   https://help.openalex.org/api/deprecations/ (read 2026-11-02).
 
+## D-067: F1000Research: both DOI forms enter the row selector
+
+- **Date:** 2026-11-05
+- **Status:** applied at the local re-run (register change applied; counts
+  change when normalise/analyse/report are re-run on the existing walk)
+- decided_by: researcher
+- **Trigger:** external review 2026-11, comment K1 (F1000Research DOI
+  forms; the row begins in 2013 although the platform published from 2012).
+- **Question:** F1000Research registered its early articles under
+  `10.12688/f1000research.<vol>-<num>.v<n>` and later under
+  `10.12688/f1000research.<id>.<n>`. The row selector accepted the second
+  form only. Are the records of the first form part of the row, and is the
+  prefix `10.3410` a second source?
+- **Options considered:** (a) widen the row's `doi_regex`, `doi_pattern` and
+  `doi_version_pattern` so that both forms are selected and canonicalised
+  on a version-free stem, recovering the records from the existing complete
+  walk without re-extraction; (b) add `10.3410` as a second scope; (c) leave
+  the selector unchanged and document the gap as a limitation.
+- **Decision:** (a). `doi_regex` and `doi_pattern` accept
+  `^10\.12688/f1000research\.(?:\d+\.\d+|\d+-\d+\.v\d+)$`;
+  `doi_version_pattern` has one capture group whose value is the
+  version-free stem for either form (`…f1000research.<id>` or
+  `…f1000research.<vol>-<num>`), so `2-73.v1 → 2-73`, `1-10.v2 → 1-10` and
+  `15931.1 → 15931` as before. `launch_year` and `coverage_start_year`
+  stay 2013: the platform's own About page (retrieved 2026-11-05) states
+  the publication model but no launch year, so the recorded value is kept;
+  the 288 records issued in 2012 lie before the eligible range and are
+  reported in `register_summary.n_works_outside_eligible_range` (D-060),
+  not in a cell. (b) is rejected: `10.3410` belongs to H1 Connect
+  (Crossref member 4950); on 2026-11-05 its journal-article subset held
+  five F1000Research-labelled records among recommendation datasets,
+  alternate spellings and developer-test deposits, and none of the opened
+  records carried a relation to `10.12688`; it is not a source of this row.
+  (c) is rejected because the records are already in the raw store.
+- **Evidence:** raw-store check of 2026-11-05: the complete
+  walk `crossref/works__10.12688__journal-article/run_20261026_01/w01`
+  holds 2,180 journal-article records matching
+  `^10\.12688/f1000research\.\d+-\d+\.v\d+$` (issued 2012: 288, 2013: 1,328,
+  2014: 508, 2015: 40, 2016: 8, 2017: 4, 2019: 4; examples
+  `10.12688/f1000research.2-73.v1` through `2-79.v1`), none of which reached
+  `data/interim/crossref_works__f1000research.csv`; 588 distinct targets
+  of that form among the row's evaluation relations in run_20261102_01;
+  https://f1000research.com/about (retrieved 2026-11-05);
+  https://api.crossref.org/prefixes/10.3410 and
+  https://api.crossref.org/works?filter=prefix:10.3410,type:journal-article&rows=1000
+  (retrieved 2026-11-05); `data/processed/data_quality_log.csv` row DQ-018;
+  `tests/test_normalise_records.py` (canonicalisation of both forms).
+- **Consequences:** after the local re-run, the f1000research cells
+  2013–2019 gain works (2012 enters `n_works_outside_eligible_range`), the
+  `author_initiated` and `approval_threshold` group cells and the all-rows
+  tables change accordingly, and Figures 1, 2, 3, 6 and 8 are redrawn. No
+  re-extraction is needed: the records are recovered from the existing
+  complete walk.
+
 ## Q-4: Cross-DOI work correspondence for Gates Open Research / VeriXiv
 
 - **Date:** 2026-10-20
