@@ -442,7 +442,7 @@ gets no file and an older file is removed). Column order is fixed by
 | `evaluation_url` | string or empty | Sciety output URL; never a counting key |
 | `evaluation_identity_status` | enum | `source_only`, `doi_confirmed`, `cross_source_confirmed`, `unresolved` |
 | `event_kind` | enum | `posting`, `final_article` (work records, following the row's `counting_event`), `evaluation` |
-| `event_date_raw` | string | as asserted by the source (first non-empty field of `counting_event_date_field`; `issued` then `created` for Crossref reviews; `published` for Sciety) |
+| `event_date_raw` | string | as asserted by the source (first non-empty field of `counting_event_date_field`; `issued` only for Crossref evaluation records, D-073; `published` for Sciety) |
 | `event_date_precision` | enum or empty | `year`, `month`, `day` |
 | `event_interval_start`, `event_interval_end` | date or empty | closed calendar interval; empty when no date is asserted |
 | `created`, `deposited`, `indexed`, `issued`, `posted` | string or empty | Crossref diagnostics, as asserted |
@@ -512,11 +512,12 @@ no work. A work all of whose records are titled WITHDRAWN is excluded with
 `no_journal_attribution` is excluded with that reason.
 
 **Tie-break for overlapping candidate intervals** (deterministic, in this
-order): (1) the record with the finer `event_date_precision`; (2) Crossref
-record over Sciety record; (3) `posted-content` over `journal-article`; (4)
-the lexicographically smallest `source_record_id`. The analytical interval
-remains the conservative interval of the chosen record;
-`date_order_ambiguous = true` is recorded.
+order): (1) the record with the finer `event_date_precision`; (2) among
+records of that precision, the earlier interval (start, then end; D-073);
+(3) Crossref record over Sciety record; (4) `posted-content` over
+`journal-article`; (5) the lexicographically smallest `source_record_id`.
+The analytical interval remains the conservative interval of the chosen
+record; `date_order_ambiguous = true` is recorded.
 
 ### 5.3 `data_quality_log.csv`
 

@@ -225,7 +225,11 @@ def review_records(row: Mapping[str, Any], interim_rows: list[Mapping[str, str]]
         if doi not in seen:
             seen.add(doi)
             rec = _blank_record(row_id, "evaluation_record", "crossref")
-            rec.update(_event_date(r, ("issued", "created")))
+            # D-073: the event date of a Crossref evaluation record is ``issued``
+            # only. ``created`` is a registration timestamp and stays a
+            # diagnostic column; a record without ``issued`` has no interval and
+            # is excluded downstream with ``missing_event_date``.
+            rec.update(_event_date(r, ("issued",)))
             rec.update(
                 source_record_id=doi, source_record_type=r.get("type") or "peer-review",
                 identifier_flag=r.get("doi_flag", ""),

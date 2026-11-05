@@ -1944,6 +1944,44 @@ The descriptive `doi_pattern` of `access_microbiology` was tightened to `^10\.10
   row) and Figures 1, 2, 3, 6 and 8 change; `excluded_candidates.csv`
   gains eight rows now.
 
+## D-073: Evaluation event date from `issued` only; earlier interval in the tie-break
+
+- **Date:** 2026-11-05
+- **Status:** applied (code); no counting event of run_20261102_01 changes
+- decided_by: researcher
+- **Trigger:** external review 2026-11, comment K10 (the Crossref evaluation
+  branch fell back from `issued` to `created`, contradicting the documented
+  date semantics; the tie-break for overlapping candidate intervals ordered
+  same-precision records by record id, not by date).
+- **Question:** (a) May `created` ever date a Crossref evaluation record?
+  (b) Among candidates of the same precision whose intervals overlap a
+  coarser record, which one is chosen?
+- **Options considered:** (a1) keep the fallback and document it; (a2)
+  `issued` only, `created` kept as a diagnostic column, undated records
+  excluded with `missing_event_date`. (b1) keep the id order; (b2) insert
+  the interval (start, end) into the sort key after the precision rank and
+  before source, type and record id.
+- **Decision:** (a2) and (b2). `created` is a registration timestamp and
+  `docs/limitations.md` already declares it a provenance diagnostic; the
+  code now matches that statement. The tie-break reads: finer precision;
+  earlier interval; Crossref over Sciety; `posted-content` over
+  `journal-article`; smallest `source_record_id` (`docs/data_dictionary.md`
+  §5.2).
+- **Evidence:** internal pre-submission review, 2026-11-05: in
+  run_20261102_01 no Crossref evaluation record used the `created` fallback
+  (0 of all evaluation records have empty `issued`), and of the 36
+  `date_order_ambiguous` cases that mix year- and day-precision candidates
+  none is displaced by the new key (0 displaced). Code:
+  `src/normalise/clean_and_normalise.py` (`review_records`),
+  `src/common/eligibility.py` (`choose_earliest`); tests
+  `tests/test_eligibility_rules.py`
+  (`test_tie_break_prefers_the_earlier_day_record_over_a_smaller_record_id`,
+  `test_evaluation_record_without_issued_has_no_interval_and_is_missing_event_date`).
+- **Consequences:** none for the published tables and figures of
+  run_20261102_01 (0 fallback uses, 0 displaced cases); the rule binds
+  future runs. `event_date_raw` of a Crossref evaluation record is now
+  `issued` or empty.
+
 ## Q-4: Cross-DOI work correspondence for Gates Open Research / VeriXiv
 
 - **Date:** 2026-10-20

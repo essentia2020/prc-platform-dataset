@@ -185,3 +185,40 @@ def test_url_canonicalisation_lowercases_host_only():
     assert canonicalise_url("HTTPS://Example.ORG/Some/Path?Q=1#Frag") == "HTTPS://example.org/Some/Path?Q=1#Frag"
     assert canonicalise_url("https://example.org/path/") != canonicalise_url("https://example.org/path")
     assert work_id_from_url("https://Example.org/x").startswith("url:https://example.org/")
+
+
+# ------------------------------------------------------------------- D-073
+def test_tie_break_prefers_the_earlier_day_record_over_a_smaller_record_id():
+    """Two day-precision records overlap one year-precision record; the earlier day wins, not the smaller id."""
+    chosen, ambiguous, source = choose_earliest([
+        EventRecord("a-later", "crossref", "evaluation", d("2024-06-20")),
+        EventRecord("b-earlier", "crossref", "evaluation", d("2024-02-01")),
+        EventRecord("c-year", "crossref", "evaluation", d("2024")),
+    ])
+    assert chosen.record_id == "b-earlier" and ambiguous and source == "crossref"
+    # two records with the same day still fall through to the record id
+    chosen, ambiguous, _ = choose_earliest([
+        EventRecord("z", "crossref", "evaluation", d("2024-02-01")),
+        EventRecord("y", "crossref", "evaluation", d("2024-02-01")),
+        EventRecord("c-year", "crossref", "evaluation", d("2024")),
+    ])
+    assert chosen.record_id == "y" and ambiguous
+
+
+def test_evaluation_record_without_issued_has_no_interval_and_is_missing_event_date():
+    """D-073: ``created`` is never the event date of a Crossref evaluation record."""
+    from src.normalise.clean_and_normalise import review_records
+
+    row = {"row_id": "x", "doi_version_pattern": None, "extraction_selector": {"crossref": {}}}
+    interim = [{"doi": "10.21956/test.1.r1", "type": "peer-review", "issued": "", "created": "2024-03-01T10:00:00Z",
+                "target_doi": "10.12688/test.1.1", "target_relation_type": "is-review-of"}]
+    recs = review_records(row, interim, set())
+    ev = [r for r in recs if r["row_entity_type"] == "evaluation_record"]
+    assert len(ev) == 1
+    assert ev[0]["event_date_raw"] == "" and ev[0]["event_interval_start"] == "" and ev[0]["event_interval_end"] == ""
+    assert ev[0]["created"] == "2024-03-01T10:00:00Z"      # kept as a diagnostic column
+    # downstream: the undated evaluation cannot be a counting event
+    decision = decide_work(counting_event="earliest_qualifying_evaluation", postings=[],
+                           evaluations=[EventRecord("10.21956/test.1.r1", "crossref", "evaluation", None)], finals=[],
+                           cutoff=CUTOFF, requires_evaluation=False)
+    assert not decision.included and decision.exclusion_reason == "missing_event_date"

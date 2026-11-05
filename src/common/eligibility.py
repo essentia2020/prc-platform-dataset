@@ -74,7 +74,11 @@ def choose_earliest(records: list[EventRecord]) -> tuple[EventRecord | None, boo
         return candidates[0], False, ""
 
     def key(r: EventRecord):
+        # D-073: among candidates of the same precision the earlier interval
+        # wins before source, type and record id; previously two day-precision
+        # records overlapping a year-precision record were ordered by id.
         return (_PRECISION_RANK[r.interval.precision],
+                (r.interval.start, r.interval.end),
                 0 if r.source == "crossref" else 1,
                 0 if r.record_type == "posted-content" else 1,
                 r.record_id)
