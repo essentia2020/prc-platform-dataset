@@ -2,6 +2,22 @@
 
 ## Source coverage
 
+Notices deposited as `journal-article` are counted as works in 1.5.0:
+the measurement at `9269f60` identifies 30 such works across F1000Research
+(2/12,315; 0.016240%), Wellcome Open Research (1/4,067; 0.024588%),
+SciPost (23/4,096; 0.561523%) and JMIRx Med (4/151; 2.649007%), recorded
+in DQ-021 through DQ-024. The case-insensitive title-prefix screen
+`^(Correction|Corrigendum|Erratum|Retraction)\b` was joined to included,
+in-range canonical works, deduplicated by row and canonical id, and
+inspected title by title: 51 candidates comprise 30 notices and 21 ordinary
+research works. A delimiter-qualified pattern with a journal-article-only
+guard avoids the observed Copernicus false positive but remains a heuristic;
+Crossref `update-to` / `relation` coverage has not yet been measured on the
+stored walks. D-076 approves identification in principle but defers
+implementation to the next minor release, pending a metadata-first
+assessment with the title pattern as fallback; these counts are unchanged
+at the release freeze.
+
 - **Crossref** covers only platforms that deposit DOIs and, for reviews,
   only those depositing `peer-review` records with `is-review-of`
   relations. Platforms whose reviews live only on their own site or on

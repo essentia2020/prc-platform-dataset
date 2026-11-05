@@ -3,7 +3,7 @@
 Numbered record of every design, classification and process decision. 
 Each entry states the date, the question, the options considered, the 
 decision, the evidence URL(s) and who decided. Every entry, D-001 through 
-D-075 and Q-1 through Q-5, carries decided_by: researcher. D-027 through 
+D-076 and Q-1 through Q-5, carries decided_by: researcher. D-027 through
 D-031 document preparation choices; D-032 through D-035 record the decisions 
 on extraction, 2026-10-20, and govern their implementation; D-036 through D-041 
 record the decisions on normalisation, analysis and reporting, 2026-10-20; D-042 
@@ -32,6 +32,8 @@ review and target; criterion 1 and the Review Commons workflow history); dated n
 of 2026-11-05 are appended to D-007 and D-011. Confidence and 
 decision status are independent: a decided classification may retain medium or low 
 confidence without being provisional.
+D-076 records the 2026-11-05 approval in principle of notice identification,
+with implementation deferred to the next minor release.
 Decision entries in this log are identified by decision number, date and subject.
 
 ---
@@ -2117,6 +2119,183 @@ The descriptive `doi_pattern` of `access_microbiology` was tightened to `^10\.10
 - **Consequences:** none for any table or figure; no row changes class,
   configuration or coverage. The wording binds future candidate
   assessments and the pending candidates of D-072.
+
+## D-076: Notice identification approved in principle; implementation deferred
+
+- **Date:** 2026-11-05
+- **Status:** approved in principle, implementation deferred to the next minor release
+- decided_by: researcher
+- **Trigger:** ruling of 2026-11-05 on the R2 measurement following internal
+  pre-submission review, 2026-11-05.
+- **Question:** should separate correction, corrigendum, erratum and
+  retraction notices deposited as `journal-article` remain counted in
+  1.5.0, or be excluded before the release freeze?
+- **Options considered:** retain the counted works and document the measured
+  limitation; implement a broad title-prefix exclusion now; implement a
+  delimiter-qualified title pattern with a journal-article-only guard now;
+  defer implementation until Crossref `update-to` / `relation` coverage
+  has been measured and a metadata-first rule can be assessed.
+- **Decision:** identification of separate notices is approved in principle,
+  but implementation is deferred to the next minor release. The agreed
+  title-based design, pending the `update-to` assessment, is the
+  case-insensitive pattern
+  `^(Correction|Corrigendum|Erratum|Retraction)(:|\s+(to|for)\b)`
+  restricted to `journal-article` records on the 25 journal-output rows.
+  Records would be retained with a `correction_notice` flag, not dropped.
+  No pattern, flag, exclusion rule or counted-work change is implemented
+  for this freeze.
+- **Rationale:** SciPost exceeds the 0.5% threshold by 0.061523 percentage
+  points; on JMIRx Med, two of the four notices are correction-to-companion
+  residuals already documented under D-050. The measured net effect is
+  30 works across four rows. Title matching, even with a record-type
+  guard, is a heuristic with a demonstrated false-positive class.
+  Crossref offers `update-to` / `relation` metadata whose coverage has
+  not yet been measured on the stored walks. Introducing a heuristic now
+  and replacing it with a metadata rule next release would change the same
+  four series twice.
+- **Consequences:** the 30 notice works remain counted in 1.5.0.
+  Preset rows DQ-021 through DQ-024 record them as `issue_type=other`,
+  with their DOIs and unchanged count status. The limitation and release
+  note are documented; tables, figures, register configuration, extraction
+  and counting code are unchanged. DQ-018's raw-record reconciliation
+  remains a release-freeze blocker; this decision does not resolve it.
+- **Next-release task (not undertaken now):** measure Crossref `update-to`
+  / `relation` coverage for the 30 notices and across all 25 journal-output
+  rows from stored walks; assess false positives, false negatives and
+  notice-to-target identification; propose metadata-first identification
+  with the title pattern as a fallback before implementing an exclusion.
+
+### Evidence
+
+Measurement date: 2026-11-05. The supplied
+`prc_run_20261102_01_9269f60_processed.zip` contains `works_included.csv`
+and all `records_*.csv` following the local rebuild at `9269f60`.
+Its SHA-256 is
+`34aab8dcf633d7746d3ffa538973aa9c65e4235669a4ca6092bb9125c5eb01ed`.
+
+The screen matches `^(Correction|Corrigendum|Erratum|Retraction)\b`,
+case-insensitively, on work-record titles after trimming outer whitespace,
+requiring an empty record-level exclusion reason. Candidates are joined
+to works with both `included=true` and `in_eligible_range=true`, then
+deduplicated by `(row_id, canonical_work_id)` and assigned the work's
+`counting_year`. Denominators use all counted works under those same
+conditions and agree with `register_summary.csv` at `9269f60`.
+All 51 candidate titles were inspected: 30 are notices and 21 are ordinary
+research works. The latter comprise 20 Copernicus papers and one
+F1000Research paper about correction methods or data, not notices.
+
+The table covers every register row whose `output_types` includes
+`version_of_record`. Years omitted from a row's notice-year column are
+zero within its eligible range, not observations outside that range.
+Rapid Reviews: Infectious Diseases is an evaluation-only overlay row
+without work-record titles for its 700 counted targets, so its notice
+share is not estimable by this screen; the supplementary VeriXiv screen
+finds zero matching counted works out of 135.
+
+| Row | Counted works | Screen | Notices | Ordinary | Notice share | Notice works by counting year |
+|---|---:|---:|---:|---:|---:|---|
+| `elife_reviewed_preprints` | 4,815 | 0 | 0 | 0 | 0.000000% | 0 in all eligible years |
+| `f1000research` | 12,315 | 3 | 2 | 1 | 0.016240% | 2017: 1; 2018: 1 |
+| `wellcome_open_research` | 4,067 | 1 | 1 | 0 | 0.024588% | 2025: 1 |
+| `gates_open_research` | 508 | 0 | 0 | 0 | 0.000000% | 0 in all eligible years |
+| `open_research_europe` | 1,577 | 0 | 0 | 0 | 0.000000% | 0 in all eligible years |
+| `hrb_open_research` | 758 | 0 | 0 | 0 | 0.000000% | 0 in all eligible years |
+| `stosunki_miedzynarodowe` | 99 | 0 | 0 | 0 | 0.000000% | 0 in all eligible years |
+| `nuclear_science_technology_open_research` | 70 | 0 | 0 | 0 | 0.000000% | 0 in all eligible years |
+| `digital_twin` | 51 | 0 | 0 | 0 | 0.000000% | 0 in all eligible years |
+| `molecular_psychology` | 28 | 0 | 0 | 0 | 0.000000% | 0 in all eligible years |
+| `materials_open_research` | 22 | 0 | 0 | 0 | 0.000000% | 0 in all eligible years |
+| `cobot` | 35 | 0 | 0 | 0 | 0.000000% | 0 in all eligible years |
+| `bioethics_open_research` | 10 | 0 | 0 | 0 | 0.000000% | 0 in all eligible years |
+| `nihr_open_research` | 337 | 0 | 0 | 0 | 0.000000% | 0 in all eligible years |
+| `health_open_research` | 73 | 0 | 0 | 0 | 0.000000% | 0 in all eligible years |
+| `open_research_africa` | 263 | 0 | 0 | 0 | 0.000000% | 0 in all eligible years |
+| `routledge_open_research` | 111 | 0 | 0 | 0 | 0.000000% | 0 in all eligible years |
+| `meded_publish` | 1,365 | 0 | 0 | 0 | 0.000000% | 0 in all eligible years |
+| `emerald_open_research` | 150 | 0 | 0 | 0 | 0.000000% | 0 in all eligible years |
+| `scipost` | 4,096 | 23 | 23 | 0 | 0.561523% | 2020: 1; 2021: 2; 2022: 2; 2023: 3; 2024: 2; 2025: 4; 2026: 9 |
+| `copernicus_interactive_public_peer_review` | 63,507 | 20 | 0 | 20 | 0.000000% | 0 in all eligible years |
+| `jmirx_med` | 151 | 4 | 4 | 0 | 2.649007% | 2021: 2; 2024: 1; 2026: 1 |
+| `jmirx_bio` | 14 | 0 | 0 | 0 | 0.000000% | 0 in all eligible years |
+| `access_microbiology` | 850 | 0 | 0 | 0 | 0.000000% | 0 in all eligible years |
+| `qeios_hosted_works` | 3,603 | 0 | 0 | 0 | 0.000000% | 0 in all eligible years |
+
+D-060 excludes all 398 eLife screening matches and all 10 Access
+Microbiology matches as `no_posting_record`, even where a record's
+exclusion reason is empty. They therefore contribute no counted notices.
+The eLife gate requires a `posted-content` record of the same canonical
+stem, not simply a journal-article date in 2023 or later.
+
+The two F1000Research retractions are separate notices naming different
+original article DOIs ([2017 notice](https://doi.org/10.12688/f1000research.11888.1),
+[2018 notice](https://doi.org/10.12688/f1000research.15324.1)).
+The Wellcome item is also a separate notice identifying a different
+original article ([notice](https://doi.org/10.12688/wellcomeopenres.25462.1)).
+The delimiter-qualified pattern still matches the ordinary Copernicus
+paper "Correction for a measurement artifact of the Multi-Angle Absorption
+Photometer (MAAP) at high black carbon mass concentration levels", labelled
+as a research article on its [publication page](https://doi.org/10.5194/amtd-5-6553-2012).
+Its matched record is `posted-content`, so the agreed record-type guard
+avoids this observed false positive; it does not establish that no ordinary
+journal article could have a similar title.
+
+The complete 51-candidate evidence follows. Identical titles do not merge
+distinct canonical works; in particular, the two SciPost corrections
+ending `8.4.088-update-1` and `8.4.088-update-2` remain distinct.
+
+| Row | Canonical work id | Year | Matched record type | Classification | Title |
+|---|---|---:|---|---|---|
+| `f1000research` | `doi:10.12688/f1000research.11888` | 2017 | journal-article | notice | RETRACTION:  How blockchain-timestamped protocols could improve the trustworthiness of medical science |
+| `f1000research` | `doi:10.12688/f1000research.15324` | 2018 | journal-article | notice | RETRACTION: Optimization of conditions for the biological treatment of textile dyes using isolated soil bacteria |
+| `f1000research` | `doi:10.12688/f1000research.17082` | 2018 | journal-article | ordinary_article | Correction of gene model annotations improves isoform abundance estimates: the example of ketohexokinase (Khk) |
+| `wellcome_open_research` | `doi:10.12688/wellcomeopenres.25462` | 2025 | journal-article | notice | RETRACTION: The genome sequence of the horse’s hoof clam, Hippopus hippopus (Linnaeus, 1758) |
+| `scipost` | `doi:10.21468/scipostphys.10.5.099-update-1` | 2025 | journal-article | notice | Correction: The folded spin-1/2 XXZ model: II. Thermodynamics and hydrodynamics with a minimal set of charges |
+| `scipost` | `doi:10.21468/scipostphys.12.6.207-update-1` | 2023 | journal-article | notice | Correction: Exact hydrodynamic solution of a double domain wall melting in the spin-1/2 XXZ model |
+| `scipost` | `doi:10.21468/scipostphys.13.2.013-update-1` | 2022 | journal-article | notice | Correction: Multiple relaxation times in perturbed XXZ chain |
+| `scipost` | `doi:10.21468/scipostphys.13.4.088-update-1` | 2022 | journal-article | notice | Correction: Scaling at quantum phase transitions above the upper critical dimension |
+| `scipost` | `doi:10.21468/scipostphys.15.1.009-update-1` | 2023 | journal-article | notice | Correction: Electronic excitations of the charged nitrogen-vacancy center in diamond obtained using time-independent variational density functional calculations |
+| `scipost` | `doi:10.21468/scipostphys.15.3.088-update-1` | 2024 | journal-article | notice | Correction: Loop counting matters in SMEFT |
+| `scipost` | `doi:10.21468/scipostphys.16.2.057-update-1` | 2024 | journal-article | notice | Correction: The Virasoro minimal string |
+| `scipost` | `doi:10.21468/scipostphys.18.1.009-update-1` | 2026 | journal-article | notice | Correction: Excitonic Bloch equations from first principles |
+| `scipost` | `doi:10.21468/scipostphys.18.3.078-update-1` | 2026 | journal-article | notice | Correction: Single-boson exchange formulation of the Schwinger-Dyson equation and its application to the functional renormalization group |
+| `scipost` | `doi:10.21468/scipostphys.18.3.083-update-1` | 2025 | journal-article | notice | Correction: On the origin of species thermodynamics and the black hole - tower correspondence |
+| `scipost` | `doi:10.21468/scipostphys.20.2.047-update-1` | 2026 | journal-article | notice | Correction: On-demand analogue spacetime in superconducting networks: Grey holes, dynamical instability and exceptional points |
+| `scipost` | `doi:10.21468/scipostphys.20.3.090-update-1` | 2026 | journal-article | notice | Correction: Spin-orbital magnetism in moiré Wigner molecules |
+| `scipost` | `doi:10.21468/scipostphys.20.6.152-update-1` | 2026 | journal-article | notice | Correction: BCOV on the large Hilbert space |
+| `scipost` | `doi:10.21468/scipostphys.8.4.060-update-1` | 2020 | journal-article | notice | Correction: Asymptotic temperature of a lossy condensate |
+| `scipost` | `doi:10.21468/scipostphys.8.6.082-update-1` | 2021 | journal-article | notice | Correction: Ferromagnetism of LaCoO$_3$ films |
+| `scipost` | `doi:10.21468/scipostphyscodeb.35-update-1` | 2025 | journal-article | notice | Correction: QArray: A GPU-accelerated constant capacitance model simulator for large quantum dot arrays |
+| `scipost` | `doi:10.21468/scipostphyscore.4.2.010-update-1` | 2025 | journal-article | notice | Correction: The Folded Spin-1/2 XXZ Model: I. Diagonalisation, Jamming, and Ground State Properties |
+| `scipost` | `doi:10.21468/scipostphyscore.6.1.012-update-1` | 2023 | journal-article | notice | Correction: Composite-boson formalism applied to strongly bound fermion pairs in a one-dimensional trap |
+| `scipost` | `doi:10.21468/scipostphyscore.8.4.088-update-1` | 2026 | journal-article | notice | Correction: Classification of topological insulators and superconductors with multiple order-two point group symmetries |
+| `scipost` | `doi:10.21468/scipostphyscore.8.4.088-update-2` | 2026 | journal-article | notice | Correction: Classification of topological insulators and superconductors with multiple order-two point group symmetries |
+| `scipost` | `doi:10.21468/scipostphyslectnotes.106-update-1` | 2026 | journal-article | notice | Correction: Lecture notes on large deviations in non-equilibrium diffusive systems |
+| `scipost` | `doi:10.21468/scipostphyslectnotes.24-update-1` | 2021 | journal-article | notice | Correction: Phase transitions in the early universe |
+| `scipost` | `doi:10.21468/scipostphyslectnotes.82-update-1` | 2026 | journal-article | notice | Correction: The quantum Ising chain for beginners |
+| `copernicus_interactive_public_peer_review` | `doi:10.5194/amt-2018-18` | 2018 | posted-content | ordinary_article | Correction of CCI cloud data over the Swiss Alps using ground-based radiation measurements |
+| `copernicus_interactive_public_peer_review` | `doi:10.5194/amt-2020-293` | 2020 | posted-content | ordinary_article | Correction of a lunar irradiance model for aerosol optical depth retrieval and comparison with star photometer |
+| `copernicus_interactive_public_peer_review` | `doi:10.5194/amt-2021-171` | 2021 | posted-content | ordinary_article | Correction of wind bias for the lidar on-board Aeolus using telescope temperatures |
+| `copernicus_interactive_public_peer_review` | `doi:10.5194/amtd-4-7337-2011` | 2011 | posted-content | ordinary_article | Correction technique for raman water vapor lidar signal dependent bias and suitability for water vapor trend monitoring in the upper troposphere |
+| `copernicus_interactive_public_peer_review` | `doi:10.5194/amtd-5-3611-2012` | 2012 | posted-content | ordinary_article | Correction of static pressure on a research aircraft in accelerated flight using differential pressure measurements |
+| `copernicus_interactive_public_peer_review` | `doi:10.5194/amtd-5-6553-2012` | 2012 | posted-content | ordinary_article | Correction for a measurement artifact of the Multi-Angle Absorption Photometer (MAAP) at high black carbon mass concentration levels |
+| `copernicus_interactive_public_peer_review` | `doi:10.5194/amtd-7-8521-2014` | 2014 | posted-content | ordinary_article | Correction of raindrop size distributions measured by Parsivel disdrometers, using a two-dimensional-video-disdrometer as a reference |
+| `copernicus_interactive_public_peer_review` | `doi:10.5194/amtd-8-6395-2015` | 2015 | posted-content | ordinary_article | Correction of water vapor absorption for aerosol remote sensing with ceilometers |
+| `copernicus_interactive_public_peer_review` | `doi:10.5194/egusphere-2023-1862` | 2023 | posted-content | ordinary_article | Correction of stratospheric age-of-air derived from SF                   <sub>6</sub>                   for the effect of chemical sinks |
+| `copernicus_interactive_public_peer_review` | `doi:10.5194/egusphere-2023-2356` | 2023 | posted-content | ordinary_article | Correction of temperature and relative humidity biases in ERA5 by bivariate quantile mapping: Implications for contrail classification |
+| `copernicus_interactive_public_peer_review` | `doi:10.5194/egusphere-2025-4954` | 2025 | posted-content | ordinary_article | Correction and Calibration Protocol for Isotope Data via CRDS: A Study Case for N                   <sub>2</sub>                   O and Other Isotope Systems |
+| `copernicus_interactive_public_peer_review` | `doi:10.5194/essd-2025-796` | 2026 | posted-content | ordinary_article | Correction of the Observatoire Haute Provence electrochemical concentration cell (ECC) ozonesonde 1991–2023 data record |
+| `copernicus_interactive_public_peer_review` | `doi:10.5194/gmd-2024-185` | 2024 | posted-content | ordinary_article | Correction of Air-Sea Heat Fluxes in the NEMO Ocean General Circulation Model Using Neural Networks |
+| `copernicus_interactive_public_peer_review` | `doi:10.5194/gmdd-6-2551-2013` | 2013 | posted-content | ordinary_article | Correction of approximation errors with Random Forests applied to modelling of aerosol first indirect effect |
+| `copernicus_interactive_public_peer_review` | `doi:10.5194/hessd-11-9027-2014` | 2014 | posted-content | ordinary_article | Correction of systematic model forcing bias of CLM using assimilation of cosmic-ray neutrons and land surface temperature: a study in the Heihe catchment, China |
+| `copernicus_interactive_public_peer_review` | `doi:10.5194/hessd-12-5749-2015` | 2015 | posted-content | ordinary_article | Correction of real-time satellite precipitation with satellite soil moisture observations |
+| `copernicus_interactive_public_peer_review` | `doi:10.5194/hessd-7-9067-2010` | 2010 | posted-content | ordinary_article | Correction of upstream flow and hydraulic state with data assimilation in the context of flood forecasting |
+| `copernicus_interactive_public_peer_review` | `doi:10.5194/mr-2021-64` | 2021 | posted-content | ordinary_article | Correction of field instabilities in biomolecular solid-state NMR by simultaneous acquisition of a frequency reference |
+| `copernicus_interactive_public_peer_review` | `doi:10.5194/tcd-9-2709-2015` | 2015 | posted-content | ordinary_article | Correction of albedo measurements due to unknown geometry |
+| `copernicus_interactive_public_peer_review` | `doi:10.5194/wes-2023-11` | 2023 | posted-content | ordinary_article | Correction of motion influence for nacelle based lidar systems on floating wind turbines |
+| `jmirx_med` | `doi:10.2196/109921` | 2026 | journal-article | notice | Retraction: Comparison Between Male and Female Survivors of Sexual Abuse and Assault in Relation to Age at Admission to Therapy, Age of Onset, and Age at Last Sexual Assault: Retrospective Observational Study |
+| `jmirx_med` | `doi:10.2196/29878` | 2021 | journal-article | notice | Correction: Authors’ Response to Peer Reviews of “Impact of COVID-19 Testing Strategies and Lockdowns on Disease Management Across Europe, South America, and the United States: Analysis Using Skew-Normal Distributions” |
+| `jmirx_med` | `doi:10.2196/29879` | 2021 | journal-article | notice | Correction: Author’s Responses to Peer Reviews of “Forecasting the COVID-19 Pandemic in Saudi Arabia Using a Modified Singular Spectrum Analysis Approach: Model Development and Data Analysis” |
+| `jmirx_med` | `doi:10.2196/64958` | 2024 | journal-article | notice | Correction: Human Brucellosis in Iraq: Spatiotemporal Data Analysis From 2007-2018 |
 
 ## Q-4: Cross-DOI work correspondence for Gates Open Research / VeriXiv
 
