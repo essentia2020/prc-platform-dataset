@@ -1,6 +1,6 @@
 """Polite HTTP client used by every extraction module.
 
-* identifies itself with ``User-Agent: <label>/1.4.0 (mailto:<address>)``;
+* identifies itself with ``User-Agent: <label>/<version> (mailto:<address>)``;
 * keeps at least ``min_interval_seconds`` between requests to one host and
   tightens that interval when a response carries ``X-Rate-Limit-Limit`` /
   ``X-Rate-Limit-Interval`` headers;

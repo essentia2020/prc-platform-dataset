@@ -1,4 +1,4 @@
-# PRC Platform Dataset 1.4.0
+# PRC Platform Dataset 1.5.0
 
 An open, reproducible dataset of research works flowing through
 Publish–Review–Curate (PRC) platforms. Platforms are classified on two
@@ -305,40 +305,54 @@ logs/        extraction_<run_id>.jsonl (outside Git)
 The repository tracks configuration, documentation, the data-quality log,
 the page manifests, the published tables and figures and `reports/CHECKSUMS.txt`
 (D-056). Harvested records are not tracked: for each run they are deposited
-as a release archive. For `run_20261102_01` the archive
-`prc-platform-dataset_run_20261102_01.zip` (99.4 MB) contains
+as a release archive. Release 1.5.0 deposits the S13-validated snapshot of
+`run_20261102_01` (data baseline 9affb3c) as
+`prc-platform-dataset_run_20261102_01_v1.5.0.zip` (102,104,909 bytes): 636
+payload files — `data/interim/*` (97 CSV files plus `.gitkeep`),
 `data/processed/records_*.csv`, `works_included.csv`,
-`normalisation_summary.json`, `analysis_manifest.json`, `data/interim/*`, a
-copy of `data/manifests/run_20261102_01/` and `SHA256SUMS.txt` with the digest
-of each file — 631 files; the same sums and the sum of the archive itself are
-in `reports/release_archive_run_20261102_01.sha256`. Archive SHA-256:
-`a1783244b25b202ac1f824a7f454ec31f96631569746270f41dfb55a291bf627`.
-Zenodo DOI: [10.5281/zenodo.23891928](https://doi.org/10.5281/zenodo.23891928).
-The archive of the preceding run, `run_20261027_01`, remains available under
-[10.5281/zenodo.23812673](https://doi.org/10.5281/zenodo.23812673) and is
-superseded by this one.
+`normalisation_summary.json`, `analysis_manifest.json` (45 files) and a copy
+of `data/manifests/run_20261102_01/` (493 files) — plus `SHA256SUMS.txt`
+with the digest of each file (637 ZIP members). The same sums and the sum of
+the archive itself are in
+`reports/release_archive_run_20261102_01_v1.5.0.sha256`. Archive SHA-256:
+`da814ac04d985971bf1e6e77191cd3e84d60a5659a38a0bed04fac1e9aa01dbe`.
+Zenodo DOI of this archive:
+[10.5281/zenodo.24015301](https://doi.org/10.5281/zenodo.24015301)
+(reserved; resolves once the record is published); all versions of the
+dataset: [10.5281/zenodo.23812672](https://doi.org/10.5281/zenodo.23812672).
+The archive was built by `tools/build_release_archive.py` against the S13
+evidence of 9affb3c: snapshot and evidence hashes checked before and after
+the build, the ZIP re-extracted and every payload hash verified.
 
-The interim layer of this archive contains 96 CSV files plus `.gitkeep`.
-The deposit was recorded in 4a9c1d4 on 2026-11-02; its documented code
-baseline is d0b4806. Three CSVs are header-only carryovers from
-`run_20261027_01`, contain no data records, and have no output binding in
-the selected `run_20261102_01` replay:
-`crossref_peer_reviews__jmirx_med.csv`,
-`crossref_peer_reviews__unattributed__10.2196.csv`, and
-`crossref_works__rapid_reviews_infectious_diseases.csv`. D-050 removes the
-JMIR peer-review scope; no such scope is selected in this run. RRID uses
-Sciety as primary and Crossref peer-review records as a cross-check, but
-has no Crossref works output binding.
+The archive deposited on 2026-11-02 for the same run
+(`prc-platform-dataset_run_20261102_01.zip`, 631 files, SHA-256
+`a1783244b25b202ac1f824a7f454ec31f96631569746270f41dfb55a291bf627`,
+[10.5281/zenodo.23891928](https://doi.org/10.5281/zenodo.23891928); deposit
+recorded in 4a9c1d4, documented code baseline d0b4806) is superseded by
+this one and remains unchanged. The archive of the preceding run,
+`run_20261027_01`, remains available under
+[10.5281/zenodo.23812673](https://doi.org/10.5281/zenodo.23812673).
 
-The archive predates the 2026-11-05 JMIRx Bio extension under D-072 and
-the D-057 precedent, and therefore does not contain
-`crossref_works__jmirx_bio.csv`. S13 validated the extended baseline at
-9affb3c from stored walks, rebuilding 94 run-owned interim files and
-verifying the three carryovers against the committed archive checksum
-manifest. It did not extract the published ZIP as replay input. The
-1.4.0 archive alone is insufficient to reproduce the extended baseline.
-The planned 1.5.0 archive will contain the complete validated snapshot;
-the original 1.4.0 deposit remains unchanged.
+Between the two archives of `run_20261102_01`, 605 files are identical, 5
+are added and 26 changed; none is removed. Added:
+`crossref_works__jmirx_bio.csv`, `records_jmirx_bio.csv` and the three
+JMIRx Bio page manifests (D-072). Changed: `crossref_works__f1000research.csv`
+and `records_f1000research.csv` (+545 records in the early DOI form, +422
+canonical works, D-067); `crossref_works__jmirx_med.csv` and
+`records_jmirx_med.csv` (companion flags, same line count, D-050 note of
+2026-11-05); nineteen record files that lose 118,448 duplicated relation
+lines (D-074; the eighteen F1000-infrastructure rows and Copernicus);
+`works_included.csv` (+474 lines); the run manifest and the two processed
+JSON summaries (D-066, D-071, D-072). The three header-only carryovers from
+`run_20261027_01` — `crossref_peer_reviews__jmirx_med.csv`,
+`crossref_peer_reviews__unattributed__10.2196.csv` and
+`crossref_works__rapid_reviews_infectious_diseases.csv` — contain no data
+records and have no output binding in the selected `run_20261102_01` replay
+(D-050 removes the JMIR peer-review scope; RRID uses Sciety as primary and
+Crossref peer-review records as a cross-check); they are retained
+unchanged and verified by digest rather than rebuilt. The 1.5.0 archive
+uses `/` member names, a fixed member timestamp and sorted members; the
+2026-11-02 archive used backslash member names.
 
 ## Licensing
 
@@ -404,8 +418,8 @@ discussion for individually verified journals. Full statement:
    `openalex_volume_check` row each) and the Gates Open Research–VeriXiv
    pair signal on the D-041 residual (one `openalex_pair_signal` row; 0
    shared OpenAlex work ids); both leave rows in the data-quality log only. Still
-   open: source-level yearly counts (`openalex.source_ids` is empty for
-   1.4.0 — deferred because the OpenAlex source of a merged Copernicus
+   open: source-level yearly counts (`openalex.source_ids` is empty in
+   1.5.0, as in the 2026-11-02 deposit — deferred because the OpenAlex source of a merged Copernicus
    record is the final article, D-066 follow-up 2), and the topic, country
    and citation enrichment for the article, which is done outside the
    release pipeline on the CWTS OpenAlex dump and will be recorded by one

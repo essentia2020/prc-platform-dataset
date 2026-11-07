@@ -4,4 +4,4 @@
 EXAMPLE = "previous release 0.1.0 of the dataset"
 # audit-fixture: end
 
-CURRENT = "PRC Platform Dataset 1.4.0"
+CURRENT = "PRC Platform Dataset 1.5.0"

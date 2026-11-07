@@ -129,5 +129,5 @@ def test_cutoff_and_release_metadata(repo_root):
     assert run.analysis_cutoff_date.isoformat() == "2026-09-30"
     assert not run.cutoff_is_year_end
     cff = yaml.safe_load((repo_root / "CITATION.cff").read_text(encoding="utf-8"))
-    assert "doi" not in cff                                              # added at the release freeze (D-006)
+    assert cff["doi"] == "10.5281/zenodo.24015301"                              # reserved at S2 of 1.5.0 (D-006; D-056 note 2026-11-06)
     assert cff["repository-code"] == "https://github.com/essentia2020/prc-platform-dataset"

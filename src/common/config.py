@@ -61,7 +61,8 @@ class RunConfig:
 
     def user_agent(self) -> str:
         """Value of the HTTP User-Agent header for polite-pool requests."""
-        return f"{self.user_agent_label}/1.4.0 (mailto:{self.mailto})"
+        from src import __version__
+        return f"{self.user_agent_label}/{__version__} (mailto:{self.mailto})"
 
 
 def _read_yaml(path: Path) -> Mapping[str, Any]:

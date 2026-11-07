@@ -1,4 +1,4 @@
-# Decision log — PRC Platform Dataset 1.4.0
+# Decision log — PRC Platform Dataset 1.5.0
 
 Numbered record of every design, classification and process decision. 
 Each entry states the date, the question, the options considered, the 
@@ -1341,6 +1341,41 @@ history rewrite is involved (D-004, D-042): the files were never committed.
   approved upload; no interim Zenodo version is created for this, and the
   original 1.4.0 deposit remains unchanged. The decision above is
   unchanged.
+- Note 2026-11-06 (1.5.0 archive built, verified and bound to a reserved
+  DOI): `prc-platform-dataset_run_20261102_01_v1.5.0.zip` was built locally
+  by `tools/build_release_archive.py` (53164d2; tool SHA-256
+  af98ecc6113241ddb1306623bf6fbb58ff0620720287a89723e2d83c86d1f799) from
+  the main checkout with `--data-commit 9affb3c…` and the S13 evidence
+  bundle `prc-s13-evidence-9affb3c-v1.3` as the inventory of record.
+  Result PASS: 636 payload files (interim 98 including `.gitkeep`,
+  processed 45, manifests 493), 637 ZIP members, 102,104,909 bytes, SHA-256
+  `da814ac04d985971bf1e6e77191cd3e84d60a5659a38a0bed04fac1e9aa01dbe`; 677
+  distinct source hashes verified unchanged before and after the build;
+  every extracted payload hash verified; the data-quality log is a
+  protected input and stays in Git only. Inventory against the 2026-11-02
+  deposit (record 23891928): 605 files identical, 5 added (D-072), 26
+  changed (D-067, D-050, D-074, D-066, D-071, D-072), 0 removed; the
+  record-file line deltas reconcile exactly with D-074 (−118,448 over 19
+  files) and D-067 (+545). Zenodo: a new-version draft (record 24015301)
+  was created from record 23891928 within concept 10.5281/zenodo.23812672
+  and its version DOI 10.5281/zenodo.24015301 reserved on 2026-11-06; no
+  file uploaded, nothing published, the 2026-11-02 record untouched. The
+  external checksum file
+  `reports/release_archive_run_20261102_01_v1.5.0.sha256` carries two
+  header lines (`# archive:`, `# zenodo_doi:`); its DOI header was
+  `pending` at build time and was set to the reserved DOI at S2 — only that
+  line changed (file SHA-256 6902ed3b… → 01b94b3c…); the ZIP and the S1
+  verification report `S1-archive-verification-v1.5.0.json` (kept outside
+  Git, still recording `pending`) are unchanged. Audit policy at S2:
+  `CURRENT_RELEASE` is 1.5.0; R2-detected occurrences of the superseded
+  deposit's version pass only through exact file-scoped allow-list literals
+  or, in `docs/release_notes.md`, inside that version's own `## <version>`
+  section (the separately defined release-notes section rule); the history scan
+  judges each revision by its own `pyproject.toml` version and allow-list,
+  read as data, and reports five acknowledged findings of record (a
+  lineage word in the 278c356 commit message; four R3 citations in
+  f39664c:`docs/register_construction.md` that predate their allow-list
+  entries). The decision above is unchanged.
 
 ## D-057: Windowed retrieval for `works__10.5256__peer-review` (D-045 option c)
 Two shape-consistent walks of this scope on 2026-10-27 (31 non-empty pages and an

@@ -1,8 +1,9 @@
 cff-version: 1.2.0
 message: "If you use this dataset or its code, please cite it using the metadata below."
 type: dataset
-title: "PRC Platform Dataset 1.4.0"
-version: "1.4.0"
+title: "PRC Platform Dataset 1.5.0"
+version: "1.5.0"
+doi: "10.5281/zenodo.24015301"
 authors:
   - family-names: Kochetkov
     given-names: Dmitry

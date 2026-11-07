@@ -12,4 +12,4 @@ from the earlier version 1.2 to this one.
 
 Outside the markers only neutral text appears: Python 3.10, DOI
 10.21468/scipost.1.2, a threshold of 2.5 ratings, and the current release
-identifier 1.4.0.
+identifier 1.5.0.

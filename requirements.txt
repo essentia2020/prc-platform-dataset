@@ -4,3 +4,4 @@ pandas>=2.0
 matplotlib>=3.8
 seaborn>=0.13
 pytest>=8.0
+tomli>=2.0; python_version < "3.11"

@@ -45,6 +45,11 @@ import fnmatch
 
 import yaml
 
+try:
+    import tomllib
+except ModuleNotFoundError:  # Python 3.10, the declared minimum
+    import tomli as tomllib  # type: ignore[no-redef]
+
 REPO_ROOT = Path(__file__).resolve().parents[1]
 ALLOWLIST_PATH = REPO_ROOT / "config" / "audit_allowlist.yaml"
 TOKENS_ENV = "PRC_AUDIT_TOKENS"
@@ -74,7 +79,9 @@ CONTEXT_WORDS_RE = re.compile(
     re.IGNORECASE,
 )
 CONTEXT_WINDOW = 80
-CURRENT_RELEASE = {"1.4.0", "v1.4.0"}
+CURRENT_RELEASE = {"1.5.0", "v1.5.0"}  # pinned to [project].version by tests; see release_from_pyproject()
+RELEASE_NOTES_PATH = "docs/release_notes.md"
+HEADING_RE = re.compile(r"^(#{1,6})[ \t]+(.+?)[ \t]*$", re.MULTILINE)
 DEPENDENCY_LABELS_RE = re.compile(
     r"(?:python|pyyaml|pandas|seaborn|matplotlib|pytest|pip|schema|cff-version)",
     re.IGNORECASE,
@@ -189,6 +196,13 @@ class Engine:
 
     tokens: Sequence[tuple[str, re.Pattern[str]]]
     allowlist: Sequence[AllowEntry] = field(default_factory=list)
+    # Release context of the scanned text: [project].version of the working
+    # tree, or of the revision being scanned in --history.
+    current_release: frozenset[str] = frozenset(CURRENT_RELEASE)
+    # Strict fallback of a revision whose release context is unavailable
+    # (--history after a CONTEXT diagnostic): no allow-list entries and no
+    # automatic release-notes section exemption either.
+    strict: bool = False
 
     # -- R1 -----------------------------------------------------------------
     def rule_r1(self, text: str, path: str) -> Iterator[Hit]:
@@ -205,7 +219,7 @@ class Engine:
         for match in VERSION_RE.finditer(text):
             start, end = match.span()
             value = match.group(0)
-            if value in CURRENT_RELEASE:
+            if value in self.current_release:
                 continue
             if _in_spans(start, end, exempt):
                 continue
@@ -272,11 +286,18 @@ class Engine:
 
     def allow_spans(self, rule: str, path: str, text: str) -> list[Span]:
         spans: list[Span] = []
+        if rule == "R2" and path == RELEASE_NOTES_PATH and not self.strict:
+            spans.extend(historical_section_spans(text, self.current_release))
         for entry in self.allowlist:
             if entry.rule_id != rule or entry.file != path:
                 continue
             if entry.literal is not None:
                 spans.extend(_literal_spans(text, entry.literal))
+            elif rule == "R2":
+                # R2 yaml_path entries exempt the selected scalar nodes' source
+                # spans only (structural entry, 2026-11-06); R3/R4 keep the
+                # value-search behaviour below.
+                spans.extend(yaml_path_source_spans(text, entry.yaml_path or ""))
             else:
                 for value in yaml_path_values(text, entry.yaml_path or ""):
                     spans.extend(_literal_spans(text, value))
@@ -326,6 +347,91 @@ def _literal_spans(text: str, literal: str) -> list[Span]:
         idx = text.find(literal, idx + 1)
     return spans
 
+
+def historical_section_spans(text: str, current_release: frozenset[str]) -> list[Span]:
+    """Exact occurrences of a non-current version inside its own ``## <version>`` section.
+
+    A heading whose whole title is a version string that is not the current
+    release opens a historical section; it ends at the next heading of equal
+    or higher level. Only that exact version string is exempt, only inside
+    that section, only for R2. Other versions, ``v``-prefixed forms, lineage
+    words and every other rule are unaffected.
+    """
+    spans: list[Span] = []
+    heads = list(HEADING_RE.finditer(text))
+    for i, head in enumerate(heads):
+        level, title = len(head.group(1)), head.group(2).strip()
+        if not VERSION_RE.fullmatch(title) or title in current_release:
+            continue
+        end = len(text)
+        for nxt in heads[i + 1:]:
+            if len(nxt.group(1)) <= level:
+                end = nxt.start()
+                break
+        for occ in re.finditer(r"(?<![\w.+-])" + re.escape(title) + r"(?![\w.+-])", text[head.start():end]):
+            spans.append(Span(head.start() + occ.start(), head.start() + occ.end()))
+    return spans
+
+
+def release_from_pyproject(text: str | None) -> frozenset[str]:
+    """``[project].version`` of a pyproject.toml text, parsed as TOML, as {"X.Y.Z", "vX.Y.Z"}.
+
+    Raises AuditConfigError when the text is unreadable, not valid TOML, has
+    no [project] table, or its version is missing or not a string.
+    """
+    if text is None:
+        raise AuditConfigError("pyproject.toml is not decodable text")
+    try:
+        data = tomllib.loads(text)
+    except tomllib.TOMLDecodeError as exc:
+        raise AuditConfigError(f"pyproject.toml is not valid TOML: {exc}") from exc
+    project = data.get("project")
+    if not isinstance(project, dict):
+        raise AuditConfigError("pyproject.toml has no [project] table")
+    version = project.get("version")
+    if not isinstance(version, str) or not version.strip():
+        raise AuditConfigError("[project].version is missing or not a string")
+    version = version.strip()
+    return frozenset({version, f"v{version}"})
+
+
+def yaml_path_source_spans(text: str, path_expr: str) -> list[Span]:
+    """Source spans of the scalar nodes selected by ``path_expr`` (key.sub[*].leaf).
+
+    Spans come from the YAML node marks, so only the selected scalars are
+    covered - never copies of their decoded values in comments, sibling fields
+    or elsewhere. Quoted scalars include their quotes; block scalars cover the
+    whole block. Raises AuditConfigError on unparseable YAML.
+    """
+    try:
+        root = yaml.compose(text)
+    except yaml.YAMLError as exc:
+        raise AuditConfigError(f"yaml_path on unparseable YAML: {exc}") from exc
+    if root is None:
+        return []
+    # Each entry is (node, lower, upper): the node and the physical source
+    # window inside which its selection is valid - the parent sequence, or
+    # the stretch from the selecting key to the end of the parent mapping.
+    # yaml.compose() resolves an alias to its anchored node, whose marks lie
+    # where the anchor was defined; a node outside its window is therefore
+    # an alias into another part of the document and is dropped, so an
+    # exemption can never reach text outside the selected path.
+    nodes: list[tuple[yaml.Node, int, int]] = [(root, root.start_mark.index, root.end_mark.index)]
+    for key, index in _PATH_TOKEN_RE.findall(path_expr):
+        selected: list[tuple[yaml.Node, int, int]] = []
+        for node, lower, upper in nodes:
+            if not (lower <= node.start_mark.index and node.end_mark.index <= upper):
+                continue
+            if key and isinstance(node, yaml.MappingNode):
+                for k, v in node.value:
+                    if isinstance(k, yaml.ScalarNode) and k.value == key:
+                        selected.append((v, k.end_mark.index, node.end_mark.index))
+            elif not key and isinstance(node, yaml.SequenceNode):
+                items = node.value if index == "*" else node.value[int(index):int(index) + 1]
+                selected.extend((item, node.start_mark.index, node.end_mark.index) for item in items)
+        nodes = selected
+    return [Span(n.start_mark.index, n.end_mark.index) for n, lower, upper in nodes
+            if isinstance(n, yaml.ScalarNode) and lower <= n.start_mark.index and n.end_mark.index <= upper]
 
 def fixture_spans_of(text: str) -> list[Span]:
     """Spans between balanced ``audit-fixture: begin`` / ``end`` markers."""
@@ -425,7 +531,21 @@ def load_tokens(cli_path: str | None, env_path: str | None = None) -> list[tuple
 def load_allowlist(path: Path = ALLOWLIST_PATH) -> list[AllowEntry]:
     if not path.exists():
         return []
-    data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    return parse_allowlist(path.read_text(encoding="utf-8"), str(path))
+
+
+def parse_allowlist(text: str, path: str = "<allowlist>") -> list[AllowEntry]:
+    """Parse allow-list YAML read as data (also used for historical revisions)."""
+    try:
+        data = yaml.safe_load(text)
+    except yaml.YAMLError as exc:
+        raise AuditConfigError(f"{path}: allow-list is not valid YAML: {exc}") from exc
+    if data is None:
+        # An empty document (or an explicit YAML null) is a readable empty
+        # policy, like ``allowlist: []``. Any other non-mapping root is not.
+        data = {}
+    if not isinstance(data, Mapping):
+        raise AuditConfigError(f"{path}: allow-list root must be a mapping, not {type(data).__name__}")
     entries = data.get("allowlist", [])
     if not isinstance(entries, list):
         raise AuditConfigError(f"{path}: 'allowlist' must be a list")
@@ -485,6 +605,23 @@ def read_text(data: bytes) -> str | None:
     return text.replace("\r\n", "\n").replace("\r", "\n")
 
 
+def read_metadata_text(data: bytes, label: str) -> str:
+    """Strict decoding for release-context metadata (pyproject.toml, allow-list).
+
+    read_text() scans arbitrary source text with replacement characters;
+    metadata that decides the release context must be exactly readable.
+    NUL bytes or invalid UTF-8 raise AuditConfigError, which the history
+    driver turns into a CONTEXT diagnostic and the strict fallback.
+    """
+    if b"\0" in data:
+        raise AuditConfigError(f"{label} contains NUL bytes")
+    try:
+        text = data.decode("utf-8", errors="strict")
+    except UnicodeDecodeError as exc:
+        raise AuditConfigError(f"{label} is not valid UTF-8 at byte {exc.start}") from exc
+    return text.replace("\r\n", "\n").replace("\r", "\n")
+
+
 # ---------------------------------------------------------------------------
 # Audit drivers
 # ---------------------------------------------------------------------------
@@ -499,39 +636,117 @@ def audit_working_tree(engine: Engine, root: Path, files: Iterable[str] | None =
     return hits
 
 
+def _blob_text(sha: str, root: Path, cache: dict[str, str | None]) -> str | None:
+    if sha not in cache:
+        raw = subprocess.run(["git", "cat-file", "blob", sha], cwd=root, check=True, capture_output=True).stdout
+        cache[sha] = read_text(raw)
+    return cache[sha]
+
+
+def _metadata_blob_text(sha: str, label: str, root: Path, cache: dict[str, "str | AuditConfigError"]) -> str:
+    """Strictly decoded metadata blob; a decoding failure is cached and re-raised per revision."""
+    if sha not in cache:
+        raw = subprocess.run(["git", "cat-file", "blob", sha], cwd=root, check=True, capture_output=True).stdout
+        try:
+            cache[sha] = read_metadata_text(raw, label)
+        except AuditConfigError as exc:
+            cache[sha] = exc
+    cached = cache[sha]
+    if isinstance(cached, AuditConfigError):
+        raise cached
+    return cached
+
+
+STRICT_SUFFIX = "; R2 judged with an empty current-release set and no exemptions"
+
+
+def _revision_context(rev: str, shas: dict[str, str], root: Path, blob_cache: dict[str, str | None],
+                      meta_cache: "dict[str, str | AuditConfigError] | None" = None,
+                      ) -> tuple[frozenset[str], list[AllowEntry], str, list[Hit]]:
+    """Release set, allow-list, allow-list blob SHA and CONTEXT diagnostics of one revision.
+
+    Readable context is used as is (a readable empty allow-list is a valid
+    empty policy). Any unreadable or invalid piece of context - missing or
+    invalid pyproject.toml, undecodable, unparseable or schema-invalid
+    allow-list - yields a CONTEXT diagnostic and the strict fallback: empty
+    current-release set and no exemptions. Nothing is inherited from the
+    working tree.
+    """
+    if meta_cache is None:
+        meta_cache = {}
+    diagnostics: list[Hit] = []
+    release: frozenset[str] = frozenset()
+    if "pyproject.toml" not in shas:
+        diagnostics.append(Hit("CONTEXT", "pyproject.toml", 1, 1, rev[:10], "revision has no pyproject.toml" + STRICT_SUFFIX, rev))
+    else:
+        try:
+            release = release_from_pyproject(_metadata_blob_text(shas["pyproject.toml"], "pyproject.toml", root, meta_cache))
+        except AuditConfigError as exc:
+            diagnostics.append(Hit("CONTEXT", "pyproject.toml", 1, 1, rev[:10], str(exc) + STRICT_SUFFIX, rev))
+    allowlist: list[AllowEntry] = []
+    allow_sha = shas.get("config/audit_allowlist.yaml", "")
+    if allow_sha:
+        try:
+            allow_text = _metadata_blob_text(allow_sha, "config/audit_allowlist.yaml", root, meta_cache)
+            allowlist = parse_allowlist(allow_text, f"{rev[:10]}:config/audit_allowlist.yaml")
+        except AuditConfigError as exc:
+            diagnostics.append(Hit("CONTEXT", "config/audit_allowlist.yaml", 1, 1, rev[:10], str(exc) + STRICT_SUFFIX, rev))
+    if diagnostics:
+        release, allowlist = frozenset(), []
+    return release, allowlist, allow_sha, diagnostics
+
+
 def audit_history(engine: Engine, root: Path) -> list[Hit]:
-    """Scan every blob at every revision and every commit message."""
+    """Scan every blob at every revision and every commit message.
+
+    Each revision is judged against its own release context (see
+    _revision_context), read as data; no historical code is executed. The
+    deduplication key carries the release set, the allow-list blob SHA and
+    the strict flag, so an identical blob is re-judged whenever the policy
+    differs. CONTEXT diagnostics are emitted per revision.
+    """
     hits: list[Hit] = []
     try:
         revisions = [r for r in _git(["rev-list", "--all"], root).split() if r]
     except subprocess.CalledProcessError:
         return hits
-    seen: set[tuple[str, str]] = set()
+    seen: set[tuple[str, str, frozenset[str], str, bool]] = set()
     blob_cache: dict[str, str | None] = {}
+    meta_cache: dict[str, str | AuditConfigError] = {}
+    engine_cache: dict[tuple[frozenset[str], str, bool], Engine] = {}
     for rev in revisions:
         tree = _git(["ls-tree", "-r", "-z", rev], root)
+        records: list[tuple[str, str]] = []
+        shas: dict[str, str] = {}
         for record in tree.split("\0"):
             if not record:
                 continue
             meta, _, path = record.partition("\t")
             _, kind, sha = meta.split()
-            if kind != "blob" or not is_text_candidate(path):
+            if kind != "blob":
                 continue
-            key = (sha, path)
+            shas[path] = sha
+            if is_text_candidate(path):
+                records.append((path, sha))
+        release, allowlist, allow_sha, diagnostics = _revision_context(rev, shas, root, blob_cache, meta_cache)
+        strict = bool(diagnostics)
+        hits.extend(diagnostics)
+        ctx = (release, allow_sha, strict)
+        if ctx not in engine_cache:
+            engine_cache[ctx] = Engine(tokens=engine.tokens, allowlist=allowlist, current_release=release, strict=strict)
+        rev_engine = engine_cache[ctx]
+        for path, sha in records:
+            key = (sha, path, release, allow_sha, strict)
             if key in seen:
                 continue
             seen.add(key)
-            if sha not in blob_cache:
-                raw = subprocess.run(["git", "cat-file", "blob", sha], cwd=root, check=True, capture_output=True).stdout
-                blob_cache[sha] = read_text(raw)
-            text = blob_cache[sha]
+            text = _blob_text(sha, root, blob_cache)
             if text is None:
                 continue
-            hits.extend(engine.scan(text, path, revision=rev))
+            hits.extend(rev_engine.scan(text, path, revision=rev))
         message = _git(["log", "-1", "--format=%B", rev], root)
-        hits.extend(engine.scan(message, f"<commit-message {rev[:10]}>", revision=rev))
+        hits.extend(rev_engine.scan(message, f"<commit-message {rev[:10]}>", revision=rev))
     return hits
-
 
 def run_audit(
     tokens_path: str | None,
@@ -542,7 +757,11 @@ def run_audit(
 ) -> list[Hit]:
     tokens = load_tokens(tokens_path, env_path)
     allowlist = load_allowlist(allowlist_path or (root / "config" / "audit_allowlist.yaml"))
-    engine = Engine(tokens=tokens, allowlist=allowlist)
+    pyproject = root / "pyproject.toml"
+    if not pyproject.exists():
+        raise AuditConfigError(f"{pyproject}: missing; release context unknown")
+    release = release_from_pyproject(read_metadata_text(pyproject.read_bytes(), str(pyproject)))
+    engine = Engine(tokens=tokens, allowlist=allowlist, current_release=release)
     hits = audit_working_tree(engine, root)
     if history:
         hits.extend(audit_history(engine, root))

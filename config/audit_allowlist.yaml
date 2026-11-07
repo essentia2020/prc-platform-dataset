@@ -9,29 +9,23 @@
 
 allowlist:
 
-  # D-076: release-specific notice disclosure, approved 2026-11-05.
+  # ---- R2: historical mentions of the 1.4.0 deposit --------------------------
+  # Reviewed exact full-line spans only (release 1.5.0, S2). Never a bare
+  # version literal, never a whole file. The temporary D-076 literals for
+  # 1.5.0 were removed when 1.5.0 became the current release.
+  # Structural (approved 2026-11-06): the scalar values selected by
+  # allowlist[*].literal in this file are stored matching patterns; their
+  # repetition here is exempt under R2 only. This is not a review of future
+  # literals - new or broadened entries still require review.
   - rule_id: R2
     file: config/audit_allowlist.yaml
-    literal: "1.5.0"
-  - rule_id: R2
-    file: docs/release_notes.md
-    literal: "## 1.5.0"
+    yaml_path: allowlist[*].literal
   - rule_id: R2
     file: docs/decisions.md
-    literal: "retraction notices deposited as `journal-article` remain counted in\n  1.5.0, or be excluded before the release freeze?"
+    literal: "- **Question:** Will release 1.4.0 use a new Zenodo concept record or"
   - rule_id: R2
-    file: data/processed/data_quality_log.csv
-    literal: "These 2 notice works are counted in 1.5.0"
-  - rule_id: R2
-    file: data/processed/data_quality_log.csv
-    literal: "This notice work is counted in 1.5.0"
-  - rule_id: R2
-    file: data/processed/data_quality_log.csv
-    literal: "These 23 notice works are counted in 1.5.0"
-  - rule_id: R2
-    file: data/processed/data_quality_log.csv
-    literal: "These 4 notice works are counted in 1.5.0"
-
+    file: docs/decisions.md
+    literal: "  original 1.4.0 deposit remains unchanged. The decision above is"
   # ---- R3: permitted citation contexts -----------------------------------
   # Source 1: PRC definition (README "Definition", classification scheme).
   - rule_id: R3

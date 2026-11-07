@@ -206,7 +206,7 @@ sources:
       calls.
 
 http_defaults:
-  user_agent_template: "{label}/1.4.0 (mailto:{mailto})"
+  user_agent_template: "{label}/{version} (mailto:{mailto})"
   timeout_seconds: 60
   max_attempts_per_page: 5
   backoff_seconds: [2, 5, 15, 45, 120]
