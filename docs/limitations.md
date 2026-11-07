@@ -145,7 +145,7 @@ reproducible selectors in Crossref or Sciety. Counts therefore describe the
 machine-readable part of the PRC landscape, not the whole of it. In numbers
 (register of this release and `register_summary.csv` of run_20261102_01):
 45 observation series of 27 organisations; 42 quantified and 3
-register-only series; 44 series in the published run, 41 quantified, 40
+register-only series; 45 series in the published run, 42 quantified, 41
 with a value in `unique_works_to_cutoff`; `jmirx_bio` (D-072) joins the
 run after the local walk of its ISSN scope.
 

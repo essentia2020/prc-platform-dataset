@@ -83,11 +83,14 @@ to be disjoint.
 Counts of the register itself (from `config/platforms.yaml`): 45
 observation series of 27 organisations; 42 series have `register_status =
 quantified` and 3 are `register_only`. The published run
-`run_20261102_01` (`reports/tables/register_summary.csv`) covers 44 series,
-41 quantified, of which 40 carry a value in `unique_works_to_cutoff`
-(PeerRef is quantified but blank: its only source does not cover the row,
-`source_not_covering` in `data/processed/data_quality_log.csv`). The 45th series, `jmirx_bio` (D-072), has no run data until its
-ISSN scope is walked locally. "Platform" in this README means a service
+`run_20261102_01` (`reports/tables/register_summary.csv`, data baseline
+9affb3c) covers all 45 series, 42 quantified, of which 41 carry a value in
+`unique_works_to_cutoff` (PeerRef is quantified but blank: its only source
+does not cover the row, `source_not_covering` in
+`data/processed/data_quality_log.csv`). The `jmirx_bio` series (D-072) was
+walked by ISSN scope within the same run: 14 unique works to the cutoff
+(38 excluded), years 2023-2026, `extraction_status = complete`.
+"Platform" in this README means a service
 described by one or more rows, never a count; counts are stated per
 series, per organisation or per numeric series as above.
 
@@ -377,7 +380,8 @@ Citation metadata is in `CITATION.cff`. Source code and documentation:
 archive of each run is on Zenodo (see Data availability). The dataset is a supplement to the seminar presentation listed there under
 `references` (`isSupplementTo`; seminar page with the recording:
 <https://www.universiteitleiden.nl/en/events/2026/09/crossing-the-chasm-the-publish-review-curate-model-and-the-future-of-peer-review>);
-the dataset DOI is added at the release freeze.
+the dataset DOI 10.5281/zenodo.24015301 and the publication date
+2026-11-07 of the 1.5.0 archive are recorded in `CITATION.cff`.
 
 ## Authorship and tooling
 
@@ -414,8 +418,9 @@ discussion for individually verified journals. Full statement:
    (per-platform data confirmation).
 3. OpenAlex as a diagnostic source (D-066). Two of the three permitted
    uses ran in `run_20261102_01` as the `openalex_diagnostics` stage: the
-   per-row volume check (31 rows resolved by counting-record DOI, one
-   `openalex_volume_check` row each) and the Gates Open Research–VeriXiv
+   per-row volume check (32 rows resolved by counting-record DOI, one
+   `openalex_volume_check` row each; 31 before the JMIRx Bio scope was
+   walked, D-072) and the Gates Open Research–VeriXiv
    pair signal on the D-041 residual (one `openalex_pair_signal` row; 0
    shared OpenAlex work ids); both leave rows in the data-quality log only. Still
    open: source-level yearly counts (`openalex.source_ids` is empty in

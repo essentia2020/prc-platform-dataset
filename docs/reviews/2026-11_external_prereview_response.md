@@ -1,6 +1,6 @@
-# Response scaffold: Denis Kosyakov review
+# Response: external pre-review by Denis Kosyakov
 
-Reviewer: Denis Kosyakov. Date of comments: 2026-11.
+Reviewer: Denis Kosyakov (external pre-review). Date of comments: 2026-11-03.
 
 ## Acceptance criterion
 

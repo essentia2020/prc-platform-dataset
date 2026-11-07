@@ -2,8 +2,7 @@
 
 Text for the description field of the Zenodo record that holds the release
 archive of a run. The values below are those of the 1.5.0 archive of
-`run_20261102_01` (reserved DOI 10.5281/zenodo.24015301; the record is a
-draft until published) and match `README.md`, Data availability. For a
+`run_20261102_01` (DOI 10.5281/zenodo.24015301, published 2026-11-07) and match `README.md`, Data availability. For a
 later archive, update the archive name, the file count, the SHA-256 digest
 and the supersession paragraph.
 The text is plain prose because the Zenodo description field renders only
